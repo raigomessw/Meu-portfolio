@@ -1,0 +1,97 @@
+:root {
+  /* Fontes */
+  font-family: sans-serif, Arial, Helvetica;
+  line-height: 1.6;
+  font-weight: 400;
+
+  /* Cores Tema Escuro */
+  --bg-dark: #0e0e0e;
+  --text-dark: #eee;
+  --accent-dark: #00bfff;
+  --bg-navbar-dark: rgba(0, 0, 0, 0.5);
+  --shadow-dark: rgba(255, 255, 255, 0.1);
+
+  
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ... restante do seu index.css ... */
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #00000000;
+  /* Outros estilos do body */
+}
+
+/* Estilos para links e botões (use as variáveis para cores) */
+a {
+  color: var(--accent-light);
+  /* ... */
+}
+a:hover {
+  color: var(--accent-light); /* Ajuste para o hover */
+}
+
+button {
+  background-color: #f9f9f9; /* Ou use uma variável se quiser mudar */
+  color: var(--text-light);
+  border: 1px solid #ccc; /* Ou use uma variável */
+  /* ... */
+}
+button:hover {
+  border-color: var(--accent-light);
+}
+
+/* Estilos específicos para Navbar (use as variáveis) */
+.navbar {
+  background-color: var(--bg-navbar-light);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px var(--shadow-light);
+  /* ... outros estilos da navbar ... */
+}
+
+.logo a {
+  color: var(--text-light);
+  /* ... */
+}
+
+.navLink {
+  color: var(--text-light);
+  /* ... */
+}
+
+.navLink:hover {
+  color: var(--accent-light);
+}
+
+/* Estilos específicos para Hero (use as variáveis) */
+.hero {
+  background-color: var(--bg-light); /* Se a Hero tiver um fundo específico */
+  color: var(--text-light);
+  /* ... outros estilos da hero ... */
+}
+
+.hero h1 {
+  color: var(--text-light);
+}
+
+.hero p {
+  color: var(--text-light);
+}
+
+.hero div a {
+  background-color: var(--accent-light);
+  color: var(--bg-light);
+  border: 1px solid var(--accent-light);
+}
+
+.hero div a:last-child {
+  background-color: transparent;
+  color: var(--accent-light);
+}

@@ -1,0 +1,46 @@
+.work {
+ padding: 40px;
+}
+
+.work h2 {
+ font-size: 2em;
+ margin-bottom: 25px;
+ text-align: center;
+}
+
+.projects-list {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Layout em grid para os projetos */
+ gap: 30px;
+}
+
+.project-card {
+ border: 1px solid #ccc; /* Borda de exemplo */
+ border-radius: 8px;
+ overflow: hidden; /* Para garantir que a borda cubra o conteúdo */
+}
+
+.project-card h3 {
+ padding: 15px;
+ font-size: 1.2em;
+ margin-bottom: 0;
+}
+
+.project-card p {
+ padding: 0 15px 15px;
+ line-height: 1.4;
+}
+
+.project-card a {
+ display: block;
+ padding: 10px 15px;
+ text-decoration: none;
+ background-color: #eee; /* Cor de fundo do link */
+ color: #333;
+ text-align: center;
+ border-top: 1px solid #ccc;
+}
+
+.project-card a:hover {
+ background-color: #ddd;
+}

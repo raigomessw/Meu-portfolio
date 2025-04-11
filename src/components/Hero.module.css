@@ -1,0 +1,238 @@
+.hero {
+ position: relative;
+ width: 100%;
+ height: 100vh;
+ overflow: hidden;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
+ /* font-family: 'YourChosenFont', sans-serif; */ /* Adicione sua fonte aqui */
+}
+
+.backgroundContainer {
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ overflow: hidden;
+ z-index: -1;
+}
+
+.backgroundVideo {
+ position: absolute;
+ top: 50%;
+ left: 50%;
+ min-width: 100%;
+ min-height: 100%;
+ width: auto;
+ height: auto;
+ transform: translate(-50%, -50%);
+ object-fit: cover;
+}
+
+.blurOverlay {
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Cor preta transparente com 50% de opacidade */
+ z-index: 0;
+}
+
+.content {
+ position: relative;
+ z-index: 1;
+ color: #fbfbff; /* Cor do texto */
+ display: flex;
+ align-items: center;
+ justify-content: center; /* Centralizar o conteúdo principal */
+ padding: 50px;
+ width: 80%;
+ max-width: 800px; /* Reduzir a largura máxima já que não há imagem */
+ text-align: center; /* Centralizar o texto também */
+}
+
+.textColumn {
+ text-align: center; /* Centralizar o texto dentro da coluna */
+ max-width: 100%; /* A coluna ocupa toda a largura do content */
+}
+
+.textColumn h1 {
+ font-size: 4em;
+ margin-bottom: 10px;
+ font-weight: 700;
+}
+
+.tagline {
+ font-size: 1.5em;
+ color: #a8b2d1;
+ font-weight: 400;
+ text-shadow: 0 1px 3px rgba(255, 255, 255, 0.2);
+ background-image: linear-gradient(45deg, #a8b2d1 0%, #c2d1ff 50%, #a8b2d1 100%);
+ background-size: 200% auto;
+ -webkit-background-clip: text;
+ background-clip: text;
+ color: transparent;
+ animation: subtleDiagonalLoop 5s linear infinite alternate;
+ transition: text-shadow 0.3s ease;
+}
+
+.tagline:hover {
+ text-shadow: 0 2px 5px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes subtleDiagonalLoop {
+ 0% {
+   background-position: 0% 0%;
+ }
+ 100% {
+   background-position: 100% 100%;
+ }
+}
+
+.description {
+ font-size: 1.1em;
+ line-height: 1.7;
+ margin-bottom: 30px;
+}
+
+.socialLinks {
+ display: flex;
+ gap: 20px;
+ margin-bottom: 30px;
+ font-size: 1.5em;
+ justify-content: center; /* Centralizar os ícones sociais */
+}
+
+.socialLinks a {
+ 
+ color: #a8b2d1; 
+ transition: color 0.3s ease, background-color 0.3s ease; /* Adiciona transição para o background */
+ background-color: transparent; /* Fundo transparente inicialmente */
+ background-clip: text;
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: inherit; /* Mantém a cor inicial */
+}
+
+.socialLinks a:hover {
+ color: #fff; /* Cor do ícone ao passar o mouse */
+ background: linear-gradient(90deg, #00c6ff, #775ada, #ff8e9e);
+ background-clip: text;
+ -webkit-text-fill-color: transparent; /* O gradiente preenche o ícone */
+}
+
+.contactButton {
+ position: relative;
+ display: inline-block;
+ padding: 15px 30px;
+ color: #fff;
+ text-decoration: none;
+ border: 2px solid transparent;
+ border-radius: 8px;
+ font-size: 1.2em;
+ overflow: hidden;
+}
+
+.contactButton {
+ position: relative;
+ display: inline-block;
+ padding: 15px 30px;
+ color: #fff;
+ text-decoration: none;
+ border: 2px solid #00c6ff; /* Cor inicial da borda */
+ border-radius: 8px;
+ font-size: 1.2em;
+ overflow: hidden;
+ transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.contactButton::before {
+ content: '';
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ background: linear-gradient(90deg, #00c6ff 0%, #775ada 50%, #ff8e9e 100%); /* Gradiente moderno */
+ opacity: 0;
+ transition: opacity 0.3s ease;
+ z-index: -1;
+}
+
+.contactButton:hover {
+ color: #fff;
+ border-color: #775ada; /* Mudar a cor da borda no hover, opcional */
+}
+
+.contactButton:hover::before {
+ opacity: 1;
+}
+
+/* ... seus estilos existentes ... */
+
+.scrollDownContainer {
+ position: absolute;
+ bottom: 30px; /* Ajuste a distância da parte inferior conforme necessário */
+ left: 50%;
+ transform: translateX(-50%);
+ z-index: 2; /* Garante que fique acima do vídeo e do overlay */
+}
+
+.scrollDownButton {
+ background: transparent;
+ border: none;
+ color: #fff;
+ cursor: pointer;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ opacity: 0.8;
+ transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.scrollDownButton:hover {
+ opacity: 1;
+ 
+}
+
+.scrollDownButton svg {
+ font-size: 2em;
+}
+
+.scrollDownText {
+ margin-top: 5px;
+ font-size: 0.9em;
+}
+
+/* Removendo os estilos da imageColumn */
+
+/* Responsividade */
+@media (max-width: 768px) {
+ .content {
+   padding: 30px;
+ }
+
+ .textColumn h1 {
+   font-size: 3em;
+ }
+
+ .tagline {
+   font-size: 1.3em;
+ }
+
+ .description {
+   font-size: 1em;
+ }
+
+ .socialLinks {
+   font-size: 1.3em;
+ }
+
+ .contactButton {
+   font-size: 1em;
+   padding: 12px 25px;
+ }
+}

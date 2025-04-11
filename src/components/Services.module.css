@@ -1,0 +1,45 @@
+.services {
+ background-color: #111214;
+ color: #fbfbff;
+ padding: 0; /* Remova o padding padrão para controlar a altura */
+ min-height: 100vh; /* Garante 100vh de altura */
+ display: flex;
+ align-items: center; /* Centraliza verticalmente o conteúdo */
+ justify-content: center; /* Centraliza horizontalmente o conteúdo */
+ text-align: center;
+ position: relative; /* Para posicionamento absoluto se necessário */
+}
+
+.container {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 0 20px;
+}
+
+.title {
+ font-size: 2.5em;
+ font-weight: bold;
+ margin-bottom: 20px;
+ transition: color 0.5s ease; /* Transição suave para a cor */
+}
+
+.description {
+ font-size: 1.1em;
+ line-height: 1.7;
+ margin-bottom: 30px;
+ transition: color 0.5s ease; /* Transição suave para a cor */
+}
+
+/* Estilos opcionais para a lista de serviços */
+/* ... */
+
+/* Responsividade */
+@media (max-width: 768px) {
+ .title {
+   font-size: 2em;
+ }
+ .description {
+   font-size: 1em;
+ }
+ /* ... */
+}
