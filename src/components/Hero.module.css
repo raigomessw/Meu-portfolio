@@ -7,7 +7,7 @@
  flex-direction: column;
  justify-content: center;
  align-items: center;
- /* font-family: 'YourChosenFont', sans-serif; */ /* Adicione sua fonte aqui */
+font-family: 'YourChosenFont', sans-serif; 
 }
 
 .backgroundContainer {
@@ -18,6 +18,7 @@
  height: 100%;
  overflow: hidden;
  z-index: -1;
+ transition: filter 0.5s ease;
 }
 
 .backgroundVideo {
@@ -38,8 +39,9 @@
  left: 0;
  width: 100%;
  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Cor preta transparente com 50% de opacidade */
- z-index: 0;
+ backdrop-filter: blur(20px);
+background-color: rgba(0, 0, 0, 0.685); /* Cor preta transparente com 50% de opacidade */
+ z-index: 1;
 }
 
 .content {
@@ -78,10 +80,19 @@
  color: transparent;
  animation: subtleDiagonalLoop 5s linear infinite alternate;
  transition: text-shadow 0.3s ease;
+ transition: transform 0.3s ease, text-shadow 0.3s ease;
 }
 
 .tagline:hover {
- text-shadow: 0 2px 5px rgba(255, 255, 255, 0.5);
+ transform: translateY(-3px);
+ text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+ background-image: linear-gradient(to right, #647dee, #b16cea);
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+}
+
+@keyframes subtleDiagonalLoop {
+
 }
 
 @keyframes subtleDiagonalLoop {
@@ -171,7 +182,7 @@
  opacity: 1;
 }
 
-/* ... seus estilos existentes ... */
+
 
 .scrollDownContainer {
  position: absolute;

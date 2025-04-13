@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './BackgroundVideo.module.css';
-import gradientVideo from '../assets/gradient-video.mp4'; // Importe seu vídeo de gradiente
+import gradientVideo from '../assets/gradient-video.mp4';
 
 function BackgroundVideo({ children }) {
   return (

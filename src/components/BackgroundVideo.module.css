@@ -1,58 +1,48 @@
 .backgroundContainer {
- position: fixed; /* Fixa o fundo na tela */
+ position: absolute;
  top: 0;
  left: 0;
  width: 100%;
- height: 100vh;
- overflow: hidden; /* Garante que o vídeo não ultrapasse as dimensões */
- z-index: -1; /* Coloca o fundo atrás do conteúdo */
+ height: 100%;
+ overflow: hidden;
+ z-index: -1;
 }
 
 .backgroundVideo {
- position: absolute;
- top: 50%;
- left: 50%;
- min-width: 100%;
- min-height: 100%;
- width: auto;
- height: auto;
- transform: translate(-50%, -50%); /* Centraliza o vídeo */
- object-fit: cover; /* Preenche o container mantendo a proporção */
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    object-fit: cover;
 }
 
 .contentOverlay {
- position: relative; /* Cria um contexto de posicionamento para os filhos */
- width: 100%;
- height: 100%;
- backdrop-filter: blur(20px); /* Ajuste o valor do blur conforme necessário */
- /* Opcional: adicione uma camada semi-transparente para melhorar a legibilidade do texto */
- background-color: rgba(22, 20, 20, 0.871); /* Branco com 10% de opacidade */
- display: flex;
- flex-direction: column;
- /* Alinhe o conteúdo conforme necessário (ex: ao topo) */
- align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
-
-
 
 .blurOverlay {
- position: relative;
- top: 0;
- left: 0;
- width: 100%;
- height: 100%;
-background-color: rgba(18, 18, 18, 0.775); /* Branco com 10% de opacidade */
- backdrop-filter: blur(10px);
- display: flex;
- justify-content: center;
- align-items: center;
- /* Adicione outros estilos conforme necessário */
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.877);
+    backdrop-filter: blur(40px);
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-
-
 .content {
- position: relative; /* Coloque o conteúdo principal acima da camada de blur */
- z-index: 2;
- padding: 20px; /* Adicione algum espaçamento ao conteúdo */
+    position: relative;
+    z-index: 2;
+    padding: 20px;
 }
