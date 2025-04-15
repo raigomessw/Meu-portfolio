@@ -11,8 +11,6 @@
   --bg-navbar-dark: rgba(0, 0, 0, 0.5);
   --shadow-dark: rgba(255, 255, 255, 0.1);
 
-  
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -25,7 +23,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #00000000;
+  background-color: var(--bg-light); /* Use a variável de cor de fundo */
   /* Outros estilos do body */
 }
 
@@ -39,7 +37,7 @@ a:hover {
 }
 
 button {
-  background-color: #f9f9f9; /* Ou use uma variável se quiser mudar */
+  background-color: var(--bg-button-light); /* Ou use uma variável se quiser mudar */
   color: var(--text-light);
   border: 1px solid #ccc; /* Ou use uma variável */
   /* ... */
