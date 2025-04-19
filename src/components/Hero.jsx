@@ -3,23 +3,20 @@ import { Link } from 'react-router-dom';
 import styles from './Hero.module.css';
 import gradientVideo from '../assets/gradient-video.mp4';
 import { faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faEnvelope, faChevronDown } from '@fortawesome/free-solid-svg-icons'; // Import faChevronDown
+import { faEnvelope, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function Hero() {
   const handleScrollToServices = () => {
     const servicesSection = document.getElementById('services');
-    console.log("Services Section Element:", servicesSection); // Add this line
     if (servicesSection) {
       servicesSection.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      console.log("Services section not found!"); // See if this gets logged
     }
   };
 
   return (
     <section className={styles.hero}>
-      <div className={styles.backgroundContainer}>
+      <div  className={styles.backgroundContainer}>
         <video
           autoPlay
           loop
@@ -51,8 +48,13 @@ function Hero() {
         </div>
       </div>
       <div className={styles.scrollDownContainer}>
-        <button onClick={handleScrollToServices} className={styles.scrollDownButton}>
-          <FontAwesomeIcon icon={faChevronDown} />
+        <button 
+          onClick={handleScrollToServices} 
+          className={styles.scrollDownButton}
+          aria-label="Scroll down to see services"
+          tabIndex="0"
+        >
+          <FontAwesomeIcon icon={faArrowDown} />
           <span className={styles.scrollDownText}>Services</span>
         </button>
       </div>

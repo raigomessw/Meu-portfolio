@@ -1,95 +1,86 @@
 :root {
-  /* Fontes */
-  font-family: sans-serif, Arial, Helvetica;
-  line-height: 1.6;
-  font-weight: 400;
+    /* Fontes */
+    font-family: Inter, sans-serif;
+    line-height: 1.6;
+    font-weight: 400;
+  
+    /* Cores Tema Escuro */
+    --bg-dark-primary: #121212;
+    --bg-dark-secondary: #181818;
+    --bg-dark-tertiary: #0d0d0d;
+  
+    --text-light-primary: #f5f5f5;
+    --text-light-secondary: #ffffff;
+    --text-light-tertiary: #eeeeee;
+    --text-light-quaternary: #a8b2d1;
+    --text-light-quinary: #cccccc;
+  
+    --accent-light-primary: #64ffda;
+    --accent-light-secondary: #c7441ca8;
+    --accent-light-tertiary: #00ff99;
+    --accent-light-quaternary: #b16cea;
+    --accent-light-quinary: #4c6ef5;
+    --accent-light-senary: #00c6ff;
+    --accent-light-septenary: #ff8e9e;
+  
+    --bg-navbar-dark: rgba(0, 0, 0, 0.3);
+    --shadow-dark: rgba(255, 255, 255, 0.1);
+  
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* ... restante do seu index.css ... */
+  
+  body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background-color: var(--bg-dark-primary); /* Use a variável de cor de fundo */
+    color: var(--text-light-primary);
+    /* Outros estilos do body */
+  }
+  
+  /* Estilos para links e botões (use as variáveis para cores) */
+  a {
+    color: var(--accent-light-primary);
+    /* ... */
+  }
+  a:hover {
+    color: var(--accent-light-secondary); /* Ajuste para o hover */
+  }
 
-  /* Cores Tema Escuro */
-  --bg-dark: #0e0e0e;
-  --text-dark: #eee;
-  --accent-dark: #00bfff;
-  --bg-navbar-dark: rgba(0, 0, 0, 0.5);
-  --shadow-dark: rgba(255, 255, 255, 0.1);
+  
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* ... restante do seu index.css ... */
-
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: var(--bg-light); /* Use a variável de cor de fundo */
-  /* Outros estilos do body */
-}
 
 /* Estilos para links e botões (use as variáveis para cores) */
-a {
-  color: var(--accent-light);
-  /* ... */
-}
-a:hover {
-  color: var(--accent-light); /* Ajuste para o hover */
-}
-
-button {
-  background-color: var(--bg-button-light); /* Ou use uma variável se quiser mudar */
-  color: var(--text-light);
-  border: 1px solid #ccc; /* Ou use uma variável */
-  /* ... */
-}
-button:hover {
-  border-color: var(--accent-light);
-}
-
 /* Estilos específicos para Navbar (use as variáveis) */
 .navbar {
-  background-color: var(--bg-navbar-light);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 6px var(--shadow-light);
-  /* ... outros estilos da navbar ... */
+  /* ... other styles ... */
 }
 
-.logo a {
-  color: var(--text-light);
-  /* ... */
+.logo a { color: var(--text-light-secondary);
+    /* ... */
 }
 
-.navLink {
-  color: var(--text-light);
-  /* ... */
+.logo a:hover {
+    /* ... other styles ... */
 }
 
+.navLink.active { color: var(--accent-light-primary);
+    /* ... */
+}
+
+.navLink.active::after { background-color: var(--accent-light-secondary);
+    /* ... */
+}
+
+.navLink { color: var(--text-light-primary);
+    /* ... */
+}
 .navLink:hover {
-  color: var(--accent-light);
-}
-
-/* Estilos específicos para Hero (use as variáveis) */
-.hero {
-  background-color: var(--bg-light); /* Se a Hero tiver um fundo específico */
-  color: var(--text-light);
-  /* ... outros estilos da hero ... */
-}
-
-.hero h1 {
-  color: var(--text-light);
-}
-
-.hero p {
-  color: var(--text-light);
-}
-
-.hero div a {
-  background-color: var(--accent-light);
-  color: var(--bg-light);
-  border: 1px solid var(--accent-light);
-}
-
-.hero div a:last-child {
-  background-color: transparent;
-  color: var(--accent-light);
+    color: var(--accent-light-secondary); /* Keep this for hover effect */
+    /* ... */
 }

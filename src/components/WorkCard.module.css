@@ -1,5 +1,5 @@
 .workCard {
-  background: rgba(20, 20, 20, 0.6); /* Semi-transparent background */
+  background: rgba(20, 20, 20, 0.8); /* Semi-transparent background */
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -21,7 +21,7 @@
 
 .cardContent {
   padding: 20px;
-  color: #eeeeee;
+  color: var(--text-light-tertiary);
 }
 
 .cardTitle {
@@ -32,7 +32,7 @@
 
 .cardDescription {
   font-size: 1rem;
-  line-height: 1.5;
+  line-height: 1.5; 
   color: #cccccc;
   margin-bottom: 15px;
 }
@@ -45,7 +45,7 @@
 
 .tag {
   background-color: #333;
-  color: #fff;
+  color: var(--text-light-secondary);
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 0.8rem;
@@ -54,8 +54,8 @@
 }
 
 .viewButton {
-  background-color: #00bfff;
-  color: #121212;
+  background-color: var(--accent-light-senary);
+  color: var(--bg-dark-primary);
   padding: 10px 20px;
   border: none;
   border-radius: 5px;

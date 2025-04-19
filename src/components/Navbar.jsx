@@ -1,42 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from './Navbar.module.css';
 import { Link } from 'react-router-dom';
 
 function Navbar() {
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
 
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);
   };
 
-  useEffect(() => {
-    setIsVisible(true); // Trigger the effect when the component mounts
-  }, []);
-
-  const navListClasses = `${styles.navList} ${isNavOpen ? styles.navOpen : ''} ${isVisible ? 'visible' : ''}`;
+  const navListClasses = `${styles.navList} ${isNavOpen ? styles.navOpen : ''}`;
 
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
-        <div className={`${styles.logo} ${isVisible ? 'visible' : ''}`}>
+        <div className={styles.logo}>
           <Link to="/">Rai Gomes</Link>
         </div>
         <ul className={navListClasses}>
-          <li className={`${isVisible ? 'visible' : ''}`}><Link to="/work" className={styles.navLink}>My Work</Link></li>
-          <li className={`${isVisible ? 'visible' : ''}`}><Link to="/about" className={styles.navLink}>About</Link></li>
-          <li className={`${isVisible ? 'visible' : ''}`}><Link to="/contact" className={styles.navLink}>Let's Connect</Link></li>
+          <li><Link to="/work" className={styles.navLink}>My Work</Link></li>
+          <li><Link to="/about" className={styles.navLink}>About</Link></li>
+          <li><Link to="/contact" className={styles.navLink}>Let's Connect</Link></li>
         </ul>
 
-        {/* Hamburger Menu - Added the 'open' class conditionally */}
-        <div
-          className={`${styles.hamburger} ${isNavOpen ? styles.open : ''} ${isVisible ? 'visible' : ''}`}
-          onClick={toggleNav}
-        >
+        <button className={`${styles.hamburger} ${isNavOpen ? styles.open : ''}`} onClick={toggleNav} aria-label={isNavOpen ? "Close navigation menu" : "Open navigation menu"} tabIndex="0">
           <span></span>
           <span></span>
           <span></span>
-        </div>
+          </button>
       </div>
     </nav>
   );

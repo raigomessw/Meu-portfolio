@@ -1,8 +1,8 @@
 .services {
- background-color: #111214;
- color: #fbfbff;
- padding: 0; /* Remova o padding padrão para controlar a altura */
- min-height: 100vh; /* Garante 100vh de altura */
+ background-color: var(--bg-dark-secondary);
+ color: var(--text-light-primary);
+ padding: 0;
+ min-height: 100vh;
  display: flex;
  align-items: center; /* Centraliza verticalmente o conteúdo */
  justify-content: center; /* Centraliza horizontalmente o conteúdo */
@@ -42,4 +42,14 @@
    font-size: 1em;
  }
  /* ... */
+}
+.service-item {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.service-item {
+  min-height: 100vh;
 }
