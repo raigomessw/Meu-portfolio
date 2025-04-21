@@ -1,74 +1,106 @@
-import React, { useState } from 'react';
-import styles from './Navbar.module.css';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import styles from './Navbar.module.css';
 
 function Navbar() {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
+  // Toggle menu
   const toggleNav = () => {
     setIsNavOpen(!isNavOpen);
   };
 
-  const scrollToWorkSection = (e) => {
-    // Prevent default only if we're already on the homepage
-    if (location.pathname === '/' || location.pathname === '/work') {
-      e.preventDefault();
-      
-      // Close mobile menu if it's open
-      if (isNavOpen) {
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isNavOpen && !event.target.closest(`.${styles.navbar}`)) {
         setIsNavOpen(false);
       }
-      
-      // Find the work section
-      const workSection = document.getElementById('work');
-      
-      // Scroll to the work section if it exists
-      if (workSection) {
-        workSection.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
+    };
+
+    // Track scroll position
+    const handleScroll = () => {
+      const offset = window.scrollY;
+      if (offset > 60) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
       }
-    }
-    // If we're not on the homepage, the Link will navigate normally
-  };
+    };
 
-  let navListClasses = `${styles.navList} ${isNavOpen ? styles.navOpen : ''}`;
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('scroll', handleScroll);
 
-  navListClasses = isNavOpen ? navListClasses : `${navListClasses} ${styles.navClosed}`;
+    // Cleanup
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isNavOpen]);
+
+  // Close mobile menu when changing routes
+  useEffect(() => {
+    setIsNavOpen(false);
+  }, [location]);
+
+  // Dynamic classes
+  const navbarClasses = `${styles.navbar} ${scrolled ? styles.scrolled : ''}`;
+  const navListClasses = `${styles.navList} ${isNavOpen ? styles.navOpen : ''}`;
 
   return (
-    <nav className={styles.navbar}>
+    <nav className={navbarClasses}>
       <div className={styles.container}>
         <div className={styles.logo}>
-          <Link to="/">Rai Gomes</Link>
+          <Link to="/">
+            <span className={styles.logoText}>Rai Gomes</span>
+            <span className={styles.logoAccent}>.</span>
+          </Link>
         </div>
+        
         <ul className={navListClasses}>
           <li>
             <Link 
               to="/work" 
-              className={styles.navLink} 
-              onClick={scrollToWorkSection}
+              className={`${styles.navLink} ${location.pathname === '/work' ? styles.active : ''}`}
             >
               My Work
             </Link>
           </li>
-          <li><Link to="/about" className={styles.navLink}>About</Link></li>
-          <li><Link to="/contact" className={styles.navLink}>Let's Connect</Link></li>
+          <li>
+            <Link 
+              to="/about" 
+              className={`${styles.navLink} ${location.pathname === '/about' ? styles.active : ''}`}
+            >
+              About
+            </Link>
+          </li>
+          <li>
+            <Link 
+              to="/contact" 
+              className={`${styles.navLink} ${location.pathname === '/contact' ? styles.active : ''}`}
+            >
+              Let's Connect
+            </Link>
+          </li>
         </ul>
 
         <button 
           className={`${styles.hamburger} ${isNavOpen ? styles.open : ''}`} 
           onClick={toggleNav} 
           aria-label={isNavOpen ? "Close navigation menu" : "Open navigation menu"} 
+          aria-expanded={isNavOpen}
           tabIndex="0"
         >
-          <FontAwesomeIcon icon={isNavOpen ? faTimes : faBars} />
+          <span className={styles.hamburgerLine}></span>
+          <span className={styles.hamburgerLine}></span>
+          <span className={styles.hamburgerLine}></span>
         </button>
       </div>
+      
+      {/* Backdrop for mobile menu */}
+      {isNavOpen && <div className={styles.backdrop} onClick={() => setIsNavOpen(false)} />}
     </nav>
   );
 }
