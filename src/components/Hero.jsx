@@ -77,13 +77,13 @@ function Hero() {
             Transforming complex challenges into elegant and effective solutions.
           </p>
           <div ref={socialsRef} className={`${styles.socialLinks} ${styles.hidden}`}>
-            <a href="https://www.linkedin.com/in/seunome/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon}>
+            <a href="https://www.linkedin.com/in/rai-gomes-6487b2153/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon}>
               <FontAwesomeIcon icon={faLinkedin} />
             </a>
-            <a href="https://github.com/seunome/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon}>
+            <a href="https://github.com/raigomessw" target="_blank" rel="noopener noreferrer" className={styles.socialIcon}>
               <FontAwesomeIcon icon={faGithub} />
             </a>
-            <a href="mailto:seuemail@email.com" className={styles.socialIcon}>
+            <a href="mailto:raigomessw@gmail.com"className={styles.socialIcon}>
               <FontAwesomeIcon icon={faEnvelope} />
             </a>
           </div>
@@ -91,9 +91,9 @@ function Hero() {
             ref={buttonRef} 
             to="/contact" 
             className={`${styles.contactButton} ${styles.hidden}`}
-            aria-label="Entre em contato"
+            aria-label="Get in Touch"
           >
-            <span className={styles.buttonText}>Let's Talk</span>
+            <span className={styles.buttonText}>Get in Touch</span>
             <span className={styles.buttonHighlight}></span>
           </Link>
         </div>

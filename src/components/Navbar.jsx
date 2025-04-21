@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styles from './Navbar.module.css';
 import { Link, useLocation } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 function Navbar() {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -34,7 +36,9 @@ function Navbar() {
     // If we're not on the homepage, the Link will navigate normally
   };
 
-  const navListClasses = `${styles.navList} ${isNavOpen ? styles.navOpen : ''}`;
+  let navListClasses = `${styles.navList} ${isNavOpen ? styles.navOpen : ''}`;
+
+  navListClasses = isNavOpen ? navListClasses : `${navListClasses} ${styles.navClosed}`;
 
   return (
     <nav className={styles.navbar}>
@@ -62,9 +66,7 @@ function Navbar() {
           aria-label={isNavOpen ? "Close navigation menu" : "Open navigation menu"} 
           tabIndex="0"
         >
-          <span></span>
-          <span></span>
-          <span></span>
+          <FontAwesomeIcon icon={isNavOpen ? faTimes : faBars} />
         </button>
       </div>
     </nav>
