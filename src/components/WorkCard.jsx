@@ -1,11 +1,11 @@
-
 import React from 'react';
 import styles from './WorkCard.module.css';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-function WorkCard({ image, title, description, tags }) {
+function WorkCard({ title, description, tags }) {
   return (
     <div className={styles.workCard}>
-      <img src={image} alt={title} className={styles.cardImage} />
       <div className={styles.cardContent}>
         <h3 className={styles.cardTitle}>{title}</h3>
         <p className={styles.cardDescription}>{description}</p>
@@ -16,7 +16,10 @@ function WorkCard({ image, title, description, tags }) {
             </span>
           ))}
         </div>
-        <button className={styles.viewButton}>View</button>
+        <button className={styles.viewButton}>
+          View Project
+          <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
+        </button>
       </div>
     </div>
   );
