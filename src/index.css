@@ -18,7 +18,7 @@
     --accent-light-primary: #64ffda;
     --accent-light-secondary: #ffffffd9;
     --accent-light-tertiary: #00ff99;
-    --accent-light-quaternary: #163183;
+    --accent-light-quaternary: #2a375f;
     --accent-light-quinary: #243577;
     --accent-light-senary: #59a4fa;
     --accent-light-septenary: #7f7879;
@@ -32,13 +32,13 @@
     -moz-osx-font-smoothing: grayscale;
   }
   
-  /* ... restante do seu index.css ... */
+
   
   body {
     margin: 0;
     min-width: 320px;
     min-height: 100vh;
-    background-color: var(--bg-dark-primary); /* Use a variável de cor de fundo */
+    background-color: var(--bg-dark-primary); /* variável de cor de fundo */
     color: var(--text-light-primary);
     /* Outros estilos do body */
   }
