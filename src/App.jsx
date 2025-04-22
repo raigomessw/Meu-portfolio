@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 // Scroll handler component for router
 function ScrollToSection() {
@@ -26,7 +27,6 @@ function ScrollToSection() {
   
   return null;
 }
-
 function App() {
   return (
     <BrowserRouter>
@@ -37,6 +37,8 @@ function App() {
         <Route path="/work" element={<HomePage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="*" element={<Footer className="footer" />} />
+        
       </Routes>
     </BrowserRouter>
   );
