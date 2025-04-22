@@ -1,9 +1,16 @@
+/* Work.module.css */
 .workContainer {
   height: 100vh;
   width: 100%;
   position: relative;
   overflow: hidden;
   scroll-snap-type: y mandatory;
+  background-color: var(--bg-dark-primary);
+}
+
+.projectSections {
+  height: 100%;
+  position: relative;
 }
 
 .section {
@@ -13,16 +20,40 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.section.active {
+  opacity: 1;
+  z-index: 2;
+  pointer-events: all;
+}
+
+.backgroundImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
-  position: relative;
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  transition: transform 8s ease-out;
+  transform: scale(1.05);
 }
 
-.section:before {
-  content: '';
+.section.active .backgroundImage {
+  transform: scale(1);
+}
+
+.sectionOverlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -30,17 +61,11 @@
   bottom: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.7) 0%,
-    rgba(0, 0, 0, 0.3) 100%
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0.8) 100%
   );
-}
-
-.section.active {
-  z-index: 2;
-}
-
-.section:not(.active) {
-  opacity: 0.7;
+  z-index: 1;
 }
 
 .workCard {
@@ -53,17 +78,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(50px);
+  opacity: 0;
 }
 
-.active .workCard {
+.cardVisible {
   transform: translateY(0);
   opacity: 1;
-}
-
-.section:not(.active) .workCard {
-  transform: translateY(30px);
-  opacity: 0.7;
 }
 
 /* Navigation dots */
@@ -87,6 +109,29 @@
   transition: all 0.3s ease;
   cursor: pointer;
   padding: 0;
+  position: relative;
+}
+
+.navDot::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.navDot:hover::after {
+  opacity: 1;
+  visibility: visible;
 }
 
 .navDot.active {
@@ -100,6 +145,110 @@
   background-color: rgba(255, 255, 255, 0.8);
 }
 
+/* Navigation arrows */
+.navArrows {
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 100;
+}
+
+.navArrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.navArrow:hover {
+  background-color: var(--accent-light-senary);
+  transform: scale(1.1);
+}
+
+.navArrow.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Loading */
+.loadingContainer {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-dark-primary);
+}
+
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent-light-senary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loadingText {
+  color: var(--text-light-secondary);
+  font-size: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Progress indicator */
+.progressIndicator {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  z-index: 10;
+}
+
+.currentProject, .totalProjects {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.progressBar {
+  width: 100px;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--accent-light-senary);
+  transition: width 0.5s ease;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .navDots {
@@ -108,5 +257,35 @@
   
   .workCard {
     padding: 15px;
+  }
+  
+  .navArrows {
+    right: 15px;
+    bottom: 20px;
+  }
+  
+  .progressIndicator {
+    left: 15px;
+    bottom: 20px;
+  }
+  
+  .navDot::after {
+    display: none; /* Hide tooltips on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .navDot {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .navArrow {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .progressBar {
+    width: 60px;
   }
 }

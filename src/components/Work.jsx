@@ -1,43 +1,59 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import styles from './Work.module.css';
 import WorkCard from './WorkCard';
-
-// Importando as imagens localmente (assume que as imagens serão movidas para a pasta assets)
-import fitnessImage from '../assets/Fitness.jpeg'; 
-import tenisImage from '../assets/Tenis.jpeg';
-import cafeImage from '../assets/Cafe.jpeg';
+import WorkFilters from './WorkFilters';
+import { useWorkProjects } from './WorkProjectContext';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 function Work() {
+  const { projects } = useWorkProjects();
   const [activeSection, setActiveSection] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState(0);
   const workSections = useRef([]);
   const workRef = useRef(null);
-  
-  const projects = [
-    {
-      id: "work1",
-      title: "Super Mario 3D World",
-      description: "A platform game for the Nintendo Switch with innovative gameplay mechanics and stunning visuals.",
-      tags: ['Nintendo', 'Switch', 'Platform'],
-      backgroundImage: fitnessImage
-    },
-    {
-      id: "work2",
-      title: "Design System",
-      description: "A comprehensive design system with reusable components, styleguides and documentation.",
-      tags: ['Design', 'Web', 'Components'],
-      backgroundImage:  tenisImage
-    },
-    {
-      id: "work3",
-      title: "Website",
-      description: "A responsive website built with modern web technologies featuring seamless interactions.",
-      tags: ['Website', 'HTML', 'CSS', 'JS'],
-      backgroundImage: cafeImage
+
+  // Handle preloading images
+  useEffect(() => {
+    if (projects.length === 0) {
+      setIsLoading(false);
+      return;
     }
-  ];
+    
+    const imagePromises = projects.map(project => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.src = project.backgroundImage;
+        img.onload = () => {
+          setImagesLoaded(prev => prev + 1);
+          resolve();
+        };
+        img.onerror = () => resolve(); // Continue even if an image fails to load
+      });
+    });
+
+    Promise.all(imagePromises).then(() => {
+      setIsLoading(false);
+    });
+  }, [projects]);
+
+  // Reset workSections when projects change
+  useEffect(() => {
+    workSections.current = workSections.current.slice(0, projects.length);
+    if (activeSection >= projects.length && projects.length > 0) {
+      setActiveSection(0);
+      setTimeout(() => {
+        scrollToSection(0);
+      }, 100);
+    }
+  }, [projects]);
 
   // Handle intersection observer for scroll sections
   useEffect(() => {
+    if (projects.length === 0) return;
+    
     const options = {
       root: null,
       rootMargin: '0px',
@@ -48,7 +64,9 @@ function Work() {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const index = workSections.current.findIndex(section => section === entry.target);
-          setActiveSection(index);
+          if (index !== -1) {
+            setActiveSection(index);
+          }
         }
       });
     }, options);
@@ -63,7 +81,28 @@ function Work() {
         if (section) observer.unobserve(section);
       });
     };
-  }, []);
+  }, [projects, isLoading]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        navigateToSection(activeSection + 1);
+      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        navigateToSection(activeSection - 1);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeSection, projects]);
+
+  // Navigate to previous/next section
+  const navigateToSection = (index) => {
+    if (index >= 0 && index < projects.length) {
+      scrollToSection(index);
+    }
+  };
 
   // Scroll to section when nav buttons are clicked
   const scrollToSection = (index) => {
@@ -71,43 +110,157 @@ function Work() {
       workSections.current[index].scrollIntoView({ 
         behavior: 'smooth'
       });
+      setActiveSection(index);
     }
   };
 
+  // Handle wheel events for smooth scrolling
+  useEffect(() => {
+    let wheelTimeout;
+    let isScrolling = false;
+
+    const handleWheel = (e) => {
+      if (projects.length <= 1) return;
+      
+      e.preventDefault();
+      
+      if (isScrolling) return;
+      isScrolling = true;
+
+      if (e.deltaY > 0) {
+        navigateToSection(activeSection + 1);
+      } else {
+        navigateToSection(activeSection - 1);
+      }
+
+      clearTimeout(wheelTimeout);
+      wheelTimeout = setTimeout(() => {
+        isScrolling = false;
+      }, 800);
+    };
+
+    const workContainer = workRef.current;
+    if (workContainer) {
+      workContainer.addEventListener('wheel', handleWheel, { passive: false });
+    }
+
+    return () => {
+      if (workContainer) {
+        workContainer.removeEventListener('wheel', handleWheel);
+      }
+      clearTimeout(wheelTimeout);
+    };
+  }, [activeSection, projects]);
+
+  if (isLoading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loader}>
+          <div className={styles.spinner}></div>
+          <div className={styles.loadingText}>
+            Carregando projetos... {imagesLoaded}/{projects.length}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (projects.length === 0) {
+    return (
+      <div id="work" className={styles.workContainer} ref={workRef}>
+        <WorkFilters />
+        <div className={styles.noProjectsContainer}>
+          <div className={styles.noProjectsMessage}>
+            <h3>Nenhum projeto encontrado</h3>
+            <p>Tente outros filtros ou remova os filtros atuais</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div id="work" className={styles.workContainer} ref={workRef}>
-      {/* Navigation dots */}
-      <div className={styles.navDots}>
-        {projects.map((project, index) => (
+      <WorkFilters />
+      
+      {/* Navigation arrows */}
+      {projects.length > 1 && (
+        <div className={styles.navArrows}>
           <button 
-            key={`nav-${index}`}
-            className={`${styles.navDot} ${activeSection === index ? styles.active : ''}`}
-            onClick={() => scrollToSection(index)}
-            aria-label={`View ${project.title} project`}
-          />
-        ))}
-      </div>
+            className={`${styles.navArrow} ${styles.upArrow} ${activeSection === 0 ? styles.disabled : ''}`}
+            onClick={() => navigateToSection(activeSection - 1)}
+            disabled={activeSection === 0}
+            aria-label="Projeto anterior"
+          >
+            <FontAwesomeIcon icon={faChevronUp} />
+          </button>
+          <button 
+            className={`${styles.navArrow} ${styles.downArrow} ${activeSection === projects.length - 1 ? styles.disabled : ''}`}
+            onClick={() => navigateToSection(activeSection + 1)}
+            disabled={activeSection === projects.length - 1}
+            aria-label="Próximo projeto"
+          >
+            <FontAwesomeIcon icon={faChevronDown} />
+          </button>
+        </div>
+      )}
+
+      {/* Navigation dots */}
+      {projects.length > 1 && (
+        <div className={styles.navDots}>
+          {projects.map((project, index) => (
+            <button 
+              key={`nav-${index}`}
+              className={`${styles.navDot} ${activeSection === index ? styles.active : ''}`}
+              onClick={() => scrollToSection(index)}
+              aria-label={`Ver projeto ${project.title}`}
+              data-tooltip={project.title}
+            />
+          ))}
+        </div>
+      )}
       
       {/* Project sections */}
-      {projects.map((project, index) => (
-        <section 
-          key={project.id}
-          id={project.id}
-          ref={el => workSections.current[index] = el}
-          className={`${styles.section} ${activeSection === index ? styles.active : ''}`}
-          style={{ 
-            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(${project.backgroundImage})`
-          }}
-        >
-          <div className={styles.workCard}>
-            <WorkCard
-              title={project.title}
-              description={project.description}
-              tags={project.tags}
+      <div className={styles.projectSections}>
+        {projects.map((project, index) => (
+          <section 
+            key={project.id}
+            id={project.id}
+            ref={el => workSections.current[index] = el}
+            className={`${styles.section} ${activeSection === index ? styles.active : ''}`}
+            data-index={index}
+          >
+            <div 
+              className={styles.backgroundImage}
+              style={{ 
+                backgroundImage: `url(${project.backgroundImage})`
+              }}
             />
-          </div>
-        </section>
-      ))}
+            <div className={styles.sectionOverlay} />
+            <div className={`${styles.workCard} ${activeSection === index ? styles.cardVisible : ''}`}>
+              <WorkCard
+                title={project.title}
+                description={project.description}
+                tags={project.tags}
+                projectLink={project.projectLink}
+                projectDetails={project.details}
+              />
+            </div>
+            {projects.length > 1 && (
+              <div className={styles.progressIndicator}>
+                <span className={styles.currentProject}>{index + 1}</span>
+                <div className={styles.progressBar}>
+                  <div 
+                    className={styles.progressFill} 
+                    style={{ width: `${((index + 1) / projects.length) * 100}%` }}
+                  />
+                </div>
+                <span className={styles.totalProjects}>{projects.length}</span>
+              </div>
+            )}
+          </section>
+        ))}
+      </div>
     </div>
   );
 }
