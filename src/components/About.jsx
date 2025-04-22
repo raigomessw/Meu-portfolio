@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import styles from './About.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ProfileImage from '../assets/Profile.jpeg'; // Ensure this path is correct
 import { 
   faReact, 
   faJs, 
@@ -11,10 +12,12 @@ import {
   faLinkedin, 
   faGithub 
 } from '@fortawesome/free-brands-svg-icons';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faBrain, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 
 function AboutPage() {
-  // Skills with improved accessibility descriptions
+  // Skills data
+  // Using FontAwesome icons for skills
+  // Note: Ensure to import the icons you need from FontAwesome
   const skills = [
     { name: "Figma", icon: faFigma, level: 90, description: "Design system creation, prototyping, and UI design" },
     { name: "React", icon: faReact, level: 90, description: "Component architecture, hooks, state management" },
@@ -22,19 +25,28 @@ function AboutPage() {
     { name: "HTML5", icon: faHtml5, level: 95, description: "Semantic markup, accessibility, web standards" },
     { name: "CSS3", icon: faCss3Alt, level: 90, description: "Flexbox, Grid, animations, responsive design" },
     { name: "Vue", icon: faVuejs, level: 80, description: "Vue components, Vue Router, Vuex" },
+    { name: "Framer", icon: faLayerGroup, level: 85, description: "Interactive prototyping, animation, and design" },
+    { name: "AI", icon: faBrain, level: 80, description: "AI tools integration, prompt engineering, generative design" },
   ];
 
   // Refs for scroll animation elements
   const skillsRef = useRef(null);
   const statsRef = useRef(null);
+  const philosophyRef = useRef(null);
 
-  // Handle scroll animations
+  // Handle scroll animations - fixed animation function
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add(styles.animate);
+            if (entry.target.classList.contains(styles.progressBar)) {
+              // Set the width directly from the data-width attribute
+              const targetWidth = entry.target.getAttribute('data-width');
+              entry.target.style.width = targetWidth;
+            } else {
+              entry.target.classList.add(styles.animate);
+            }
           }
         });
       },
@@ -45,12 +57,28 @@ function AboutPage() {
     if (skillsRef.current) {
       const skillBars = skillsRef.current.querySelectorAll(`.${styles.progressBar}`);
       skillBars.forEach(bar => observer.observe(bar));
+      
+      // Also observe the skill items for animation
+      const skillItems = skillsRef.current.querySelectorAll(`.${styles.skill}`);
+      skillItems.forEach((item, index) => {
+        item.style.setProperty('--animation-order', index);
+        observer.observe(item);
+      });
     }
 
     // Observe stat items
     if (statsRef.current) {
       const statItems = statsRef.current.querySelectorAll(`.${styles.statItem}`);
       statItems.forEach(item => observer.observe(item));
+    }
+    
+    // Observe philosophy items
+    if (philosophyRef.current) {
+      const philosophyItems = philosophyRef.current.querySelectorAll(`.${styles.philosophyItem}`);
+      philosophyItems.forEach((item, index) => {
+        item.style.setProperty('--animation-order', index);
+        observer.observe(item);
+      });
     }
 
     return () => observer.disconnect();
@@ -81,8 +109,9 @@ function AboutPage() {
         <div className={styles.profileSection}>
           <div className={styles.profileImageContainer}>
             <div className={styles.profileImage} aria-label="Profile picture">
-              {/* Replace with actual image when available */}
-              <div className={styles.imagePlaceholder} aria-hidden="true">R</div>
+              {ProfileImage && <img src={ProfileImage} alt="Profile" />}
+              {ProfileImage ? null : <div className={styles.loadingPlaceholder} aria-hidden="true">Loading...</div>} 
+              <div className={styles.loadingPlaceholder} aria-hidden="true">Loading...</div>
             </div>
             
             {/* Social links moved near profile image */}
@@ -160,7 +189,7 @@ function AboutPage() {
           </div>
         </div>
         
-        <div className={styles.philosophySection}>
+        <div className={styles.philosophySection} ref={philosophyRef}>
           <h2>My Design Philosophy</h2>
           <div className={styles.philosophyItems}>
             <div className={styles.philosophyItem}>
