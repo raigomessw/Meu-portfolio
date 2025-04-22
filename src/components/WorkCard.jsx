@@ -1,10 +1,10 @@
 // WorkCard.jsx
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import styles from './WorkCard.module.css';
 import { faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-function WorkCard({ title, description, tags, projectLink }) {
+function WorkCard({ title, description, tags, projectLink, projectDetails }) {
   const [modalOpen, setModalOpen] = useState(false);
 
   const openModal = (e) => {
@@ -23,7 +23,7 @@ function WorkCard({ title, description, tags, projectLink }) {
           <h3 className={styles.cardTitle}>{title}</h3>
           <p className={styles.cardDescription}>{description}</p>
           <div className={styles.cardTags}>
-            {tags.map((tag, index) => (
+            {tags && tags.map((tag, index) => (
               <span key={index} className={styles.tag}>
                 {tag}
               </span>
@@ -35,17 +35,17 @@ function WorkCard({ title, description, tags, projectLink }) {
               className={styles.viewButton}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`Visitar projeto ${title}`}
+              aria-label={`Visit project ${title}`}
             >
-              Visitar Projeto
+              Visit project
               <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
             </a>
             <button 
               className={styles.detailsButton}
               onClick={openModal}
-              aria-label={`Ver detalhes do projeto ${title}`}
+              aria-label={`View project details ${title}`}
             >
-              Ver Detalhes
+              View Details
             </button>
           </div>
         </div>
@@ -61,29 +61,37 @@ function WorkCard({ title, description, tags, projectLink }) {
               <h2 className={styles.modalTitle}>{title}</h2>
               
               <div className={styles.modalSection}>
-                <h3>Sobre o Projeto</h3>
+                <h3>About the Project</h3>
                 <p>{description}</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula.</p>
+                {projectDetails && projectDetails.challenge && (
+                  <p>{projectDetails.challenge}</p>
+                )}
               </div>
               
               <div className={styles.modalSection}>
-                <h3>Tecnologias Utilizadas</h3>
+                <h3>Technologies Used</h3>
                 <div className={styles.modalTags}>
-                  {tags.map((tag, index) => (
+                  {tags && tags.map((tag, index) => (
                     <span key={index} className={styles.tag}>
                       {tag}
                     </span>
                   ))}
-                  <span className={styles.tag}>JavaScript</span>
-                  <span className={styles.tag}>React</span>
-                  <span className={styles.tag}>CSS Modules</span>
+                  {projectDetails && projectDetails.technologies && 
+                    projectDetails.technologies.map((tech, idx) => (
+                      <span key={`tech-${idx}`} className={styles.tag}>
+                        {tech}
+                      </span>
+                    ))
+                  }
                 </div>
               </div>
               
-              <div className={styles.modalSection}>
-                <h3>Desafios e Soluções</h3>
-                <p>Nunc aliquet bibendum enim facilisis gravida neque convallis a. Dui faucibus in ornare quam viverra orci sagittis eu volutpat. Elementum pulvinar etiam non quam lacus suspendisse.</p>
-              </div>
+              {projectDetails && projectDetails.solution && (
+                <div className={styles.modalSection}>
+                  <h3>Challenges and Solutions</h3>
+                  <p>{projectDetails.solution}</p>
+                </div>
+              )}
               
               <div className={styles.modalActions}>
                 <a 
@@ -92,7 +100,7 @@ function WorkCard({ title, description, tags, projectLink }) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Visitar Projeto
+                  Visit Project
                   <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
                 </a>
               </div>
@@ -104,4 +112,12 @@ function WorkCard({ title, description, tags, projectLink }) {
   );
 }
 
-export default WorkCard;
+// Usar memo para evitar re-renderizações desnecessárias
+export default memo(WorkCard, (prevProps, nextProps) => {
+  // Comparação personalizada para melhorar performance
+  return (
+    prevProps.title === nextProps.title &&
+    prevProps.description === nextProps.description &&
+    JSON.stringify(prevProps.tags) === JSON.stringify(nextProps.tags)
+  );
+});

@@ -1,17 +1,18 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import styles from './Work.module.css';
 import WorkCard from './WorkCard';
 import WorkFilters from './WorkFilters';
+import WorkGridView from './WorkGridView';
 import { useWorkProjects } from './WorkProjectContext';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faChevronDown, faThLarge, faSquare } from "@fortawesome/free-solid-svg-icons";
 
 function Work() {
   const { projects } = useWorkProjects();
   const [activeSection, setActiveSection] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState(0);
+  const [viewMode, setViewMode] = useState('fullscreen'); // 'fullscreen' or 'grid'
   const workSections = useRef([]);
   const workRef = useRef(null);
 
@@ -50,9 +51,9 @@ function Work() {
     }
   }, [projects]);
 
-  // Handle intersection observer for scroll sections
+  // Handle intersection observer for scroll sections (only in fullscreen mode)
   useEffect(() => {
-    if (projects.length === 0) return;
+    if (projects.length === 0 || viewMode !== 'fullscreen') return;
     
     const options = {
       root: null,
@@ -81,10 +82,12 @@ function Work() {
         if (section) observer.unobserve(section);
       });
     };
-  }, [projects, isLoading]);
+  }, [projects, isLoading, viewMode]);
 
-  // Keyboard navigation
+  // Keyboard navigation (only in fullscreen mode)
   useEffect(() => {
+    if (viewMode !== 'fullscreen') return;
+    
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
         navigateToSection(activeSection + 1);
@@ -95,7 +98,7 @@ function Work() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeSection, projects]);
+  }, [activeSection, projects, viewMode]);
 
   // Navigate to previous/next section
   const navigateToSection = (index) => {
@@ -114,14 +117,14 @@ function Work() {
     }
   };
 
-  // Handle wheel events for smooth scrolling
+  // Handle wheel events for smooth scrolling (only in fullscreen mode)
   useEffect(() => {
+    if (projects.length <= 1 || viewMode !== 'fullscreen') return;
+    
     let wheelTimeout;
     let isScrolling = false;
 
     const handleWheel = (e) => {
-      if (projects.length <= 1) return;
-      
       e.preventDefault();
       
       if (isScrolling) return;
@@ -150,7 +153,12 @@ function Work() {
       }
       clearTimeout(wheelTimeout);
     };
-  }, [activeSection, projects]);
+  }, [activeSection, projects, viewMode]);
+
+  // Toggle view mode
+  const toggleViewMode = () => {
+    setViewMode(prev => prev === 'fullscreen' ? 'grid' : 'fullscreen');
+  };
 
   if (isLoading) {
     return (
@@ -179,88 +187,111 @@ function Work() {
     );
   }
 
-  return (
-    <div id="work" className={styles.workContainer} ref={workRef}>
-      <WorkFilters />
-      
-      {/* Navigation arrows */}
-      {projects.length > 1 && (
-        <div className={styles.navArrows}>
-          <button 
-            className={`${styles.navArrow} ${styles.upArrow} ${activeSection === 0 ? styles.disabled : ''}`}
-            onClick={() => navigateToSection(activeSection - 1)}
-            disabled={activeSection === 0}
-            aria-label="Projeto anterior"
-          >
-            <FontAwesomeIcon icon={faChevronUp} />
-          </button>
-          <button 
-            className={`${styles.navArrow} ${styles.downArrow} ${activeSection === projects.length - 1 ? styles.disabled : ''}`}
-            onClick={() => navigateToSection(activeSection + 1)}
-            disabled={activeSection === projects.length - 1}
-            aria-label="Próximo projeto"
-          >
-            <FontAwesomeIcon icon={faChevronDown} />
-          </button>
-        </div>
-      )}
+  // Toggle view button
+  const viewToggleButton = (
+    <button 
+      className={styles.viewToggleButton}
+      onClick={toggleViewMode}
+      aria-label={`Alternar para visualização em ${viewMode === 'fullscreen' ? 'grade' : 'tela cheia'}`}
+    >
+      <FontAwesomeIcon icon={viewMode === 'fullscreen' ? faThLarge : faSquare} />
+    </button>
+  );
 
-      {/* Navigation dots */}
-      {projects.length > 1 && (
-        <div className={styles.navDots}>
-          {projects.map((project, index) => (
-            <button 
-              key={`nav-${index}`}
-              className={`${styles.navDot} ${activeSection === index ? styles.active : ''}`}
-              onClick={() => scrollToSection(index)}
-              aria-label={`Ver projeto ${project.title}`}
-              data-tooltip={project.title}
-            />
-          ))}
-        </div>
-      )}
+  return (
+    <div 
+      id="work" 
+      className={`${styles.workContainer} ${viewMode === 'grid' ? styles.gridModeContainer : ''}`} 
+      ref={workRef}
+    >
+      <WorkFilters />
+      {viewToggleButton}
       
-      {/* Project sections */}
-      <div className={styles.projectSections}>
-        {projects.map((project, index) => (
-          <section 
-            key={project.id}
-            id={project.id}
-            ref={el => workSections.current[index] = el}
-            className={`${styles.section} ${activeSection === index ? styles.active : ''}`}
-            data-index={index}
-          >
-            <div 
-              className={styles.backgroundImage}
-              style={{ 
-                backgroundImage: `url(${project.backgroundImage})`
-              }}
-            />
-            <div className={styles.sectionOverlay} />
-            <div className={`${styles.workCard} ${activeSection === index ? styles.cardVisible : ''}`}>
-              <WorkCard
-                title={project.title}
-                description={project.description}
-                tags={project.tags}
-                projectLink={project.projectLink}
-                projectDetails={project.details}
-              />
+      {viewMode === 'fullscreen' ? (
+        <>
+          {/* Navigation arrows */}
+          {projects.length > 1 && (
+            <div className={styles.navArrows}>
+              <button 
+                className={`${styles.navArrow} ${styles.upArrow} ${activeSection === 0 ? styles.disabled : ''}`}
+                onClick={() => navigateToSection(activeSection - 1)}
+                disabled={activeSection === 0}
+                aria-label="Projeto anterior"
+              >
+                <FontAwesomeIcon icon={faChevronUp} />
+              </button>
+              <button 
+                className={`${styles.navArrow} ${styles.downArrow} ${activeSection === projects.length - 1 ? styles.disabled : ''}`}
+                onClick={() => navigateToSection(activeSection + 1)}
+                disabled={activeSection === projects.length - 1}
+                aria-label="Próximo projeto"
+              >
+                <FontAwesomeIcon icon={faChevronDown} />
+              </button>
             </div>
-            {projects.length > 1 && (
-              <div className={styles.progressIndicator}>
-                <span className={styles.currentProject}>{index + 1}</span>
-                <div className={styles.progressBar}>
-                  <div 
-                    className={styles.progressFill} 
-                    style={{ width: `${((index + 1) / projects.length) * 100}%` }}
+          )}
+
+          {/* Navigation dots */}
+          {projects.length > 1 && (
+            <div className={styles.navDots}>
+              {projects.map((project, index) => (
+                <button 
+                  key={`nav-${index}`}
+                  className={`${styles.navDot} ${activeSection === index ? styles.active : ''}`}
+                  onClick={() => scrollToSection(index)}
+                  aria-label={`Ver projeto ${project.title}`}
+                  data-tooltip={project.title}
+                />
+              ))}
+            </div>
+          )}
+          
+          {/* Project sections */}
+          <div className={styles.projectSections}>
+            {projects.map((project, index) => (
+              <section 
+                key={project.id}
+                id={project.id}
+                ref={el => workSections.current[index] = el}
+                className={`${styles.section} ${activeSection === index ? styles.active : ''}`}
+                data-index={index}
+              >
+                <div 
+                  className={styles.backgroundImage}
+                  style={{ 
+                    backgroundImage: `url(${project.backgroundImage})`
+                  }}
+                />
+                <div className={styles.sectionOverlay} />
+                <div className={`${styles.workCard} ${activeSection === index ? styles.cardVisible : ''}`}>
+                  <WorkCard
+                    title={project.title}
+                    description={project.description}
+                    tags={project.tags}
+                    projectLink={project.projectLink}
+                    projectDetails={project.details}
                   />
                 </div>
-                <span className={styles.totalProjects}>{projects.length}</span>
-              </div>
-            )}
-          </section>
-        ))}
-      </div>
+                {projects.length > 1 && (
+                  <div className={styles.progressIndicator}>
+                    <span className={styles.currentProject}>{index + 1}</span>
+                    <div className={styles.progressBar}>
+                      <div 
+                        className={styles.progressFill} 
+                        style={{ width: `${((index + 1) / projects.length) * 100}%` }}
+                      />
+                    </div>
+                    <span className={styles.totalProjects}>{projects.length}</span>
+                  </div>
+                )}
+              </section>
+            ))}
+          </div>
+        </>
+      ) : (
+        // Grid view
+        <WorkGridView projects={projects} />
+      )}
     </div>
   );
 }

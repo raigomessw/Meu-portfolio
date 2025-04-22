@@ -1,0 +1,15 @@
+.sectionTitle{
+    display: flex;
+    position: relative;
+    justify-content: center;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(120deg, #ffffff 0%, #e2e2e2 50%, #bbaacc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+    
+}

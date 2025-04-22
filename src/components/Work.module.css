@@ -1,4 +1,4 @@
-/* Work.module.css */
+
 .workContainer {
   height: 100vh;
   width: 100%;
@@ -6,6 +6,11 @@
   overflow: hidden;
   scroll-snap-type: y mandatory;
   background-color: var(--bg-dark-primary);
+}
+
+.gridModeContainer {
+  overflow-y: auto;
+  scroll-snap-type: none;
 }
 
 .projectSections {
@@ -181,6 +186,31 @@
   cursor: not-allowed;
 }
 
+/* View toggle button */
+.viewToggleButton {
+  position: fixed;
+  right: 15px;
+  top: 15px;
+  z-index: 100;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.viewToggleButton:hover {
+  background-color: var(--accent-light-senary);
+  transform: scale(1.1);
+}
+
 /* Loading */
 .loadingContainer {
   height: 100vh;
@@ -249,6 +279,29 @@
   transition: width 0.5s ease;
 }
 
+/* No projects message */
+.noProjectsContainer {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.noProjectsMessage {
+  text-align: center;
+  color: var(--text-light-secondary);
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.noProjectsMessage h3 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .navDots {
@@ -272,6 +325,11 @@
   .navDot::after {
     display: none; /* Hide tooltips on mobile */
   }
+  
+  .viewToggleButton {
+    right: 10px;
+    top: 10px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -287,5 +345,10 @@
   
   .progressBar {
     width: 60px;
+  }
+  
+  .viewToggleButton {
+    width: 32px;
+    height: 32px;
   }
 }
