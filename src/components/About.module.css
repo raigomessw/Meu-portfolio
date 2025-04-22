@@ -1,300 +1,437 @@
 .aboutContainer {
-    position: relative;
-    min-height: 100vh;
-    width: 100%;
-    color: var(--text-light-primary);
-    padding-top: 96px; /* Espaço para a navbar */
-    overflow-x: hidden;
-  }
-  
-  .backgroundVideo {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-  }
-  
-  .video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(20px);
-  }
-  
-  .content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    z-index: 1;
-    position: relative;
-  }
-  
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  color: var(--text-light-primary);
+  padding-top: 96px; /* Space for navbar */
+  overflow-x: hidden;
+}
+
+.backgroundVideo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(20px);
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  z-index: 1;
+  position: relative;
+}
+
+.profileSection {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+.profileImageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.profileImage {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid var(--accent-light-senary);
+  box-shadow: 0 0 20px rgba(0, 198, 255, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profileImage:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(0, 198, 255, 0.6);
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, var(--accent-light-quinary), var(--accent-light-senary));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 5rem;
+  font-weight: bold;
+  color: white;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.socialLinks a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light-quaternary);
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.socialLinks a:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--accent-light-senary);
+  transform: translateY(-3px);
+}
+
+.resumeLink {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: auto !important;
+  padding: 0 15px;
+  border-radius: 20px !important;
+  background: linear-gradient(45deg, var(--accent-light-quinary), var(--accent-light-senary), transparent 150%) !important;
+  color: white !important;
+}
+
+.resumeText {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.profileInfo {
+  max-width: 800px;
+}
+
+.profileInfo h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.profileInfo h2 {
+  font-size: 1.8rem;
+  color: var(--text-light-quaternary);
+  margin-bottom: 20px;
+}
+
+.profileInfo p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  color: var(--text-light-tertiary);
+}
+
+.quote {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  font-style: italic;
+  margin: 30px 0;
+  padding-left: 20px;
+  border-left: 4px solid var(--accent-light-senary);
+  color: var(--text-light-quaternary);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 40px;
+  align-items: center;
+}
+
+.statItem {
+  flex: 1;
+  min-width: 150px;
+  text-align: center;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.statItem.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.statItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.number {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: var(--text-light-quaternary);
+}
+
+.ctaContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 200px;
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 12px 30px;
+  background: linear-gradient(45deg, var(--accent-light-quinary), var(--accent-light-senary));
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 198, 255, 0.3);
+}
+
+.ctaButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 198, 255, 0.5);
+}
+
+.skillsSection {
+  margin: 80px 0;
+  scroll-margin-top: 100px;
+}
+
+.skillsSection h2 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  text-align: center;
+  background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.skillsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.skill {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.skill:hover {
+  transform: translateY(-5px);
+}
+
+.skillIconContainer {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.skillIcon {
+  font-size: 1.8rem;
+  color: var(--accent-light-senary);
+}
+
+.skillInfo {
+  flex: 1;
+}
+
+.skillInfo h3 {
+  margin-bottom: 5px;
+  font-size: 1.2rem;
+}
+
+.skillDescription {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  color: var(--text-light-quaternary);
+  line-height: 1.4;
+}
+
+.progressContainer {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
+  border-radius: 3px;
+  width: 0;
+  transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.progressBar.animate {
+  width: attr(data-width);
+}
+
+/* Script will set the width from data-width when in view */
+.animate {
+  width: attr(data-width) !important;
+}
+
+.philosophySection {
+  margin: 80px 0;
+}
+
+.philosophySection h2 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  text-align: center;
+  background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.philosophyItems {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.philosophyItem {
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+}
+
+.philosophyItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.philosophyItem h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: var(--accent-light-senary);
+}
+
+.philosophyItem p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-light-quaternary);
+}
+
+/* Media queries for responsiveness */
+@media (min-width: 768px) {
   .profileSection {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    margin-bottom: 60px;
+    flex-direction: row;
+    align-items: flex-start;
   }
   
   .profileImageContainer {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .profileImage {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 4px solid var(--accent-light-senary);
-    box-shadow: 0 0 20px rgba(0, 198, 255, 0.4);
-  }
-  
-  .imagePlaceholder {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, var(--accent-light-quinary), var(--accent-light-senary));
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 5rem;
-    font-weight: bold;
-    color: white;
+    flex: 0 0 200px;
+    margin-top: 20px;
   }
   
   .profileInfo {
-    max-width: 800px;
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 20px;
   }
   
   .profileInfo h1 {
-    font-size: 3rem;
-    margin-bottom: 10px;
-    background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    font-size: 2.5rem;
   }
   
   .profileInfo h2 {
-    font-size: 1.8rem;
-    color: var(--text-light-quaternary);
-    margin-bottom: 20px;
-  }
-  
-  .profileInfo p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    margin-bottom: 20px;
-    color: var(--text-light-tertiary);
+    font-size: 1.5rem;
   }
   
   .stats {
-    display: flex;
-    gap: 30px;
-    margin-top: 40px;
-  }
-  
-  .statItem {
-    text-align: center;
-    flex: 1;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .statItem:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  .number {
-    display: block;
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 5px;
-    background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  
-  .label {
-    font-size: 0.9rem;
-    color: var(--text-light-quaternary);
-  }
-  
-  .skillsSection {
-    margin: 80px 0;
-  }
-  
-  .skillsSection h2 {
-    font-size: 2.5rem;
-    margin-bottom: 40px;
-    text-align: center;
-    background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  
-  .skillsContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
-  }
-  
-  .skill {
-    display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 20px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s ease;
   }
   
-  .skill:hover {
-    transform: translateY(-5px);
-  }
-  
-  .skillIconContainer {
-    width: 50px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.1);
-  }
-  
-  .skillIcon {
-    font-size: 1.8rem;
-    color: var(--accent-light-senary);
-  }
-  
-  .skillInfo {
-    flex: 1;
-  }
-  
-  .skillInfo h3 {
-    margin-bottom: 10px;
-    font-size: 1.2rem;
-  }
-  
-  .progressContainer {
-    width: 100%;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  
-  .progressBar {
-    height: 100%;
-    background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
-    border-radius: 3px;
-    transition: width 1.5s ease-out;
-  }
-  
-  .philosophySection {
-    margin: 80px 0;
-  }
-  
+  .skillsSection h2,
   .philosophySection h2 {
-    font-size: 2.5rem;
-    margin-bottom: 40px;
-    text-align: center;
-    background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    font-size: 2rem;
   }
-  
-  .philosophyItems {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
+}
+
+/* Animation for elements when they come into view */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .philosophyItem {
-    padding: 30px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .philosophyItem:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  .philosophyItem h3 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: var(--accent-light-senary);
-  }
-  
-  .philosophyItem p {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: var(--text-light-quaternary);
-  }
-  
-  /* Media queries para responsividade */
-  @media (min-width: 768px) {
-    .profileSection {
-      flex-direction: row;
-      align-items: center;
-    }
-    
-    .profileImageContainer {
-      flex: 0 0 200px;
-    }
-    
-    .profileInfo {
-      flex: 1;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .content {
-      padding: 20px;
-    }
-    
-    .profileInfo h1 {
-      font-size: 2.5rem;
-    }
-    
-    .profileInfo h2 {
-      font-size: 1.5rem;
-    }
-    
-    .stats {
-      flex-direction: column;
-      gap: 20px;
-    }
-    
-    .skillsSection h2,
-    .philosophySection h2 {
-      font-size: 2rem;
-    }
-  }
+}
+
+.skill, .philosophyItem {
+  animation: fadeInUp 0.6s ease forwards;
+  animation-play-state: paused;
+  animation-delay: calc(var(--animation-order) * 0.1s);
+  opacity: 0;
+}
+
+.skill.animate, .philosophyItem.animate {
+  animation-play-state: running;
+}
