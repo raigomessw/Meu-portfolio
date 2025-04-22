@@ -83,7 +83,7 @@ function Hero() {
             <a href="https://github.com/raigomessw" target="_blank" rel="noopener noreferrer" className={styles.socialIcon}>
               <FontAwesomeIcon icon={faGithub} />
             </a>
-            <a href="mailto:raigomessw@gmail.com"className={styles.socialIcon}>
+            <a href="mailto:raigomessw@gmail.com" className={styles.socialIcon}>
               <FontAwesomeIcon icon={faEnvelope} />
             </a>
           </div>

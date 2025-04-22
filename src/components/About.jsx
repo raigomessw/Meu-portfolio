@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import styles from './About.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ProfileImage from '../assets/Profile.jpeg'; // Ensure this path is correct
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';// Certifique-se de que esse caminho está correto
 import { 
   faReact, 
   faJs, 
@@ -13,6 +12,7 @@ import {
   faGithub 
 } from '@fortawesome/free-brands-svg-icons';
 import { faDownload, faBrain, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
+const ProfileImage = new URL('../assets/Profile.jpeg', import.meta.url).href;
 
 function AboutPage() {
   // Skills data
@@ -109,23 +109,27 @@ function AboutPage() {
         <div className={styles.profileSection}>
           <div className={styles.profileImageContainer}>
             <div className={styles.profileImage} aria-label="Profile picture">
-              {ProfileImage && <img src={ProfileImage} alt="Profile" />}
-              {ProfileImage ? null : <div className={styles.loadingPlaceholder} aria-hidden="true">Loading...</div>} 
-              <div className={styles.loadingPlaceholder} aria-hidden="true">Loading...</div>
+              <img className={styles.profileImage} loading="lazy"src={ProfileImage} alt="Profile" />
+              <span className={styles.profileImageOverlay}></span>
+
             </div>
             
             {/* Social links moved near profile image */}
             <div className={styles.socialLinks}>
-              <a href="https://www.linkedin.com/in/yourprofile/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
+              <a href="https://www.linkedin.com/in/rai-gomes-6487b2153/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
                 <FontAwesomeIcon icon={faLinkedin} />
               </a>
-              <a href="https://github.com/yourprofile/" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
+              <a href="https://github.com/raigomessw" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
                 <FontAwesomeIcon icon={faGithub} />
               </a>
               {/* Resume download option */}
-              <a href="/path/to/your-resume.pdf" download className={styles.resumeLink} aria-label="Download Resume">
+              <a href="../assets/Rai Gomes CV ENG.pdf" download className={styles.resumeLink} aria-label="Download Resume">
                 <FontAwesomeIcon icon={faDownload} />
-                <span className={styles.resumeText}>Resume</span>
+                <span className={styles.resumeText}>Resume-EN</span>
+              </a>
+              <a href="../assets/Rai Gomes CV SV.pdf" download className={styles.resumeLink} aria-label="Download Resume">
+                <FontAwesomeIcon icon={faDownload} />
+                <span className={styles.resumeText}>Resume-SW</span>
               </a>
             </div>
           </div>

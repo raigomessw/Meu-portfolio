@@ -197,7 +197,7 @@ function Services() {
                 </div>
                 <h3 className={styles.cardTitle}>{service.title}</h3>
                 <p className={styles.cardDescription}>{service.description}</p>
-                <div className={styles.cardButton}>Learn more</div>
+                
               </div>
               
               {/* Brilho que segue o cursor */}

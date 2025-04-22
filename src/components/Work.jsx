@@ -179,8 +179,8 @@ function Work() {
         <WorkFilters />
         <div className={styles.noProjectsContainer}>
           <div className={styles.noProjectsMessage}>
-            <h3>Nenhum projeto encontrado</h3>
-            <p>Tente outros filtros ou remova os filtros atuais</p>
+            <h3>No projects found</h3>
+            <p>Try other filters or remove the current filters.</p>
           </div>
         </div>
       </div>
@@ -192,7 +192,7 @@ function Work() {
     <button 
       className={styles.viewToggleButton}
       onClick={toggleViewMode}
-      aria-label={`Alternar para visualização em ${viewMode === 'fullscreen' ? 'grade' : 'tela cheia'}`}
+      aria-label={`Switch to view in ${viewMode === 'fullscreen' ? 'grade' : 'tela cheia'}`}
     >
       <FontAwesomeIcon icon={viewMode === 'fullscreen' ? faThLarge : faSquare} />
     </button>
@@ -216,7 +216,7 @@ function Work() {
                 className={`${styles.navArrow} ${styles.upArrow} ${activeSection === 0 ? styles.disabled : ''}`}
                 onClick={() => navigateToSection(activeSection - 1)}
                 disabled={activeSection === 0}
-                aria-label="Projeto anterior"
+                aria-label="Previous project"
               >
                 <FontAwesomeIcon icon={faChevronUp} />
               </button>
@@ -224,7 +224,7 @@ function Work() {
                 className={`${styles.navArrow} ${styles.downArrow} ${activeSection === projects.length - 1 ? styles.disabled : ''}`}
                 onClick={() => navigateToSection(activeSection + 1)}
                 disabled={activeSection === projects.length - 1}
-                aria-label="Próximo projeto"
+                aria-label="Next project"
               >
                 <FontAwesomeIcon icon={faChevronDown} />
               </button>
@@ -239,7 +239,7 @@ function Work() {
                   key={`nav-${index}`}
                   className={`${styles.navDot} ${activeSection === index ? styles.active : ''}`}
                   onClick={() => scrollToSection(index)}
-                  aria-label={`Ver projeto ${project.title}`}
+                  aria-label={`View project ${project.title}`}
                   data-tooltip={project.title}
                 />
               ))}

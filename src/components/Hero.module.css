@@ -73,17 +73,18 @@
   z-index: 3;
   color: #fbfbff;
   display: flex;
-  align-items: center;
   justify-content: center;
   padding: 50px;
   width: 80%;
   max-width: 800px;
+  margin: 0 auto;
   text-align: center;
 }
 
 .textColumn {
   text-align: center;
   max-width: 100%;
+  
 }
 
 .textColumn h1 {
@@ -236,9 +237,10 @@
 .scrollDownContainer {
   position: absolute;
   bottom: 40px;
-  left: 50%;
+justify-content: center;
   transform: translateX(-50%);
   z-index: 2;
+  
 }
 
 .scrollDownButton {
