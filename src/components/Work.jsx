@@ -11,31 +11,32 @@ function Work() {
   const { projects } = useWorkProjects();
   const [activeSection, setActiveSection] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [imagesLoaded, setImagesLoaded] = useState(0);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const [viewMode, setViewMode] = useState('fullscreen'); // 'fullscreen' or 'grid'
   const workSections = useRef([]);
   const workRef = useRef(null);
 
-  // Handle preloading images
+  // Handle preloading only the first few images for better initial loading
   useEffect(() => {
     if (projects.length === 0) {
       setIsLoading(false);
       return;
     }
     
-    const imagePromises = projects.map(project => {
+    // Only preload the first image and critical images
+    const criticalImages = projects.slice(0, 1).map(project => {
       return new Promise((resolve) => {
         const img = new Image();
         img.src = project.backgroundImage;
         img.onload = () => {
-          setImagesLoaded(prev => prev + 1);
+          setLoadingProgress(100);
           resolve();
         };
         img.onerror = () => resolve(); // Continue even if an image fails to load
       });
     });
 
-    Promise.all(imagePromises).then(() => {
+    Promise.all(criticalImages).then(() => {
       setIsLoading(false);
     });
   }, [projects]);
@@ -67,6 +68,13 @@ function Work() {
           const index = workSections.current.findIndex(section => section === entry.target);
           if (index !== -1) {
             setActiveSection(index);
+            
+            // Preload the next image when section becomes visible
+            if (index < projects.length - 1) {
+              const nextProject = projects[index + 1];
+              const img = new Image();
+              img.src = nextProject.backgroundImage;
+            }
           }
         }
       });
@@ -162,11 +170,14 @@ function Work() {
 
   if (isLoading) {
     return (
-      <div className={styles.loadingContainer}>
+      <div className={styles.loadingContainer} role="alert" aria-busy="true" aria-label="Loading projects">
         <div className={styles.loader}>
           <div className={styles.spinner}></div>
           <div className={styles.loadingText}>
-            Carregando projetos... {imagesLoaded}/{projects.length}
+            Carregando projetos... {loadingProgress}%
+          </div>
+          <div className={styles.progressBar}>
+            <div className={styles.progressFill} style={{ width: `${loadingProgress}%` }}></div>
           </div>
         </div>
       </div>
@@ -177,7 +188,7 @@ function Work() {
     return (
       <div id="work" className={styles.workContainer} ref={workRef}>
         <WorkFilters />
-        <div className={styles.noProjectsContainer}>
+        <div className={styles.noProjectsContainer} role="alert">
           <div className={styles.noProjectsMessage}>
             <h3>No projects found</h3>
             <p>Try other filters or remove the current filters.</p>
@@ -192,9 +203,12 @@ function Work() {
     <button 
       className={styles.viewToggleButton}
       onClick={toggleViewMode}
-      aria-label={`Switch to view in ${viewMode === 'fullscreen' ? 'grade' : 'tela cheia'}`}
+      aria-label={`Switch to ${viewMode === 'fullscreen' ? 'grid' : 'fullscreen'} view mode`}
     >
       <FontAwesomeIcon icon={viewMode === 'fullscreen' ? faThLarge : faSquare} />
+      <span className={styles.srOnly}>
+        {viewMode === 'fullscreen' ? 'Grid View' : 'Fullscreen View'}
+      </span>
     </button>
   );
 
@@ -203,6 +217,8 @@ function Work() {
       id="work" 
       className={`${styles.workContainer} ${viewMode === 'grid' ? styles.gridModeContainer : ''}`} 
       ref={workRef}
+      role="region"
+      aria-label="Projects showcase"
     >
       <WorkFilters />
       {viewToggleButton}
@@ -211,7 +227,7 @@ function Work() {
         <>
           {/* Navigation arrows */}
           {projects.length > 1 && (
-            <div className={styles.navArrows}>
+            <div className={styles.navArrows} role="navigation" aria-label="Project navigation">
               <button 
                 className={`${styles.navArrow} ${styles.upArrow} ${activeSection === 0 ? styles.disabled : ''}`}
                 onClick={() => navigateToSection(activeSection - 1)}
@@ -233,14 +249,21 @@ function Work() {
 
           {/* Navigation dots */}
           {projects.length > 1 && (
-            <div className={styles.navDots}>
+            <div 
+              className={styles.navDots} 
+              role="tablist"
+              aria-label="Project navigation dots"
+            >
               {projects.map((project, index) => (
                 <button 
                   key={`nav-${index}`}
                   className={`${styles.navDot} ${activeSection === index ? styles.active : ''}`}
                   onClick={() => scrollToSection(index)}
                   aria-label={`View project ${project.title}`}
+                  aria-selected={activeSection === index}
+                  role="tab"
                   data-tooltip={project.title}
+                  tabIndex={activeSection === index ? 0 : -1}
                 />
               ))}
             </div>
@@ -255,14 +278,20 @@ function Work() {
                 ref={el => workSections.current[index] = el}
                 className={`${styles.section} ${activeSection === index ? styles.active : ''}`}
                 data-index={index}
+                aria-hidden={activeSection !== index}
+                role="tabpanel"
+                aria-labelledby={`project-${project.id}`}
               >
                 <div 
                   className={styles.backgroundImage}
                   style={{ 
-                    backgroundImage: `url(${project.backgroundImage})`
+                    backgroundImage: activeSection === index || Math.abs(activeSection - index) <= 1 
+                      ? `url(${project.backgroundImage})`
+                      : 'none'
                   }}
+                  aria-hidden="true"
                 />
-                <div className={styles.sectionOverlay} />
+                <div className={styles.sectionOverlay} aria-hidden="true" />
                 <div className={`${styles.workCard} ${activeSection === index ? styles.cardVisible : ''}`}>
                   <WorkCard
                     title={project.title}
@@ -273,7 +302,7 @@ function Work() {
                   />
                 </div>
                 {projects.length > 1 && (
-                  <div className={styles.progressIndicator}>
+                  <div className={styles.progressIndicator} aria-hidden="true">
                     <span className={styles.currentProject}>{index + 1}</span>
                     <div className={styles.progressBar}>
                       <div 
@@ -290,10 +319,23 @@ function Work() {
         </>
       ) : (
         // Grid view
-        <WorkGridView projects={projects} />
+        <WorkGridView 
+          ref={workRef}
+          projects={projects} 
+          onViewDetails={(project) => {
+            // Switch to fullscreen mode and navigate to the project
+            setViewMode('fullscreen');
+            const projectIndex = projects.findIndex(p => p.id === project.id);
+            if (projectIndex >= 0) {
+              setTimeout(() => {
+                navigateToSection(projectIndex);
+              }, 100);
+            }
+          }}
+        />
       )}
     </div>
   );
 }
 
-export default Work;
+export default React.memo(Work);

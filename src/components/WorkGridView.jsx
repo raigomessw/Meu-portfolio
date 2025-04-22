@@ -1,26 +1,39 @@
-import React, { memo, useRef } from 'react';
+import React, { memo, useState } from 'react';
 import styles from './WorkGridView.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faEye } from '@fortawesome/free-solid-svg-icons';
-import useInView from '../hooks/useInView'; // Hook personalizado que criaremos
+import useIntersectionObserver from '../Hooks/useIntersectionObserver';
 
-const WorkGridItem = memo(({ project, onViewDetails }) => {
-  const cardRef = useRef(null);
-  const isInView = useInView(cardRef, { threshold: 0.1 });
+
+const WorkGridItem = memo(({ project, onViewDetails, index }) => {
+  const [elementRef, isInView] = useIntersectionObserver({ threshold: 0.1 });
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  
+  // When element comes into view, start loading the image
+  React.useEffect(() => {
+    if (isInView && !isImageLoaded) {
+      const img = new Image();
+      img.src = project.backgroundImage;
+      img.onload = () => setIsImageLoaded(true);
+    }
+  }, [isInView, isImageLoaded, project.backgroundImage]);
   
   return (
     <div 
-      ref={cardRef}
+      ref={elementRef}
       className={`${styles.gridCard} ${isInView ? styles.inView : ''}`}
       style={{ 
-        backgroundImage: isInView ? `url(${project.backgroundImage})` : 'none',
-        backgroundColor: 'rgba(30, 30, 30, 0.8)'
+        backgroundImage: isImageLoaded ? `url(${project.backgroundImage})` : 'none',
+        backgroundColor: 'rgba(30, 30, 30, 0.8)',
+        animationDelay: `${index * 0.1}s`
       }}
+      tabIndex={0}
+      aria-label={`Project: ${project.title}`}
     >
-      <div className={styles.cardOverlay}></div>
+      <div className={styles.cardOverlay} aria-hidden="true"></div>
       <div className={styles.cardContent}>
-        <h3 className={styles.cardTitle}>{project.title}</h3>
-        <div className={styles.cardTags}>
+        <h3 id={`grid-project-${project.id}`} className={styles.cardTitle}>{project.title}</h3>
+        <div className={styles.cardTags} aria-label="Project tags">
           {project.tags.map((tag, index) => (
             <span key={index} className={styles.tag}>{tag}</span>
           ))}
@@ -45,8 +58,8 @@ const WorkGridItem = memo(({ project, onViewDetails }) => {
           </button>
         </div>
       </div>
-      {!isInView && (
-        <div className={styles.loadingPlaceholder}>
+      {!isImageLoaded && (
+        <div className={styles.loadingPlaceholder} aria-hidden="true">
           <div className={styles.placeholderTitle}></div>
           <div className={styles.placeholderTags}>
             <div className={styles.placeholderTag}></div>
@@ -60,19 +73,56 @@ const WorkGridItem = memo(({ project, onViewDetails }) => {
 });
 
 function WorkGridView({ projects, onViewDetails }) {
+  // Handle keyboard navigation
+  const handleKeyDown = (e, index) => {
+    const gridItems = document.querySelectorAll(`.${styles.gridCard}`);
+    
+    if (e.key === 'ArrowRight' && index < gridItems.length - 1) {
+      gridItems[index + 1].focus();
+    } else if (e.key === 'ArrowLeft' && index > 0) {
+      gridItems[index - 1].focus();
+    } else if (e.key === 'ArrowDown') {
+      const itemsPerRow = Math.floor(
+        document.querySelector(`.${styles.gridContainer}`).clientWidth / 
+        gridItems[0].clientWidth
+      );
+      
+      if (index + itemsPerRow < gridItems.length) {
+        gridItems[index + itemsPerRow].focus();
+      }
+    } else if (e.key === 'ArrowUp') {
+      const itemsPerRow = Math.floor(
+        document.querySelector(`.${styles.gridContainer}`).clientWidth / 
+        gridItems[0].clientWidth
+      );
+      
+      if (index - itemsPerRow >= 0) {
+        gridItems[index - itemsPerRow].focus();
+      }
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      onViewDetails(projects[index]);
+    }
+  };
+
   return (
-    <div className={styles.gridContainer}>
+    <div 
+      className={styles.gridContainer}
+      role="region"
+      aria-label="Projects grid view"
+    >
       {projects.length === 0 ? (
-        <div className={styles.noResults}>
+        <div className={styles.noResults} role="alert">
           <h3>No projects found</h3>
           <p>Try changing your filters or check back later for new projects.</p>
         </div>
       ) : (
-        projects.map(project => (
+        projects.map((project, index) => (
           <WorkGridItem 
             key={project.id} 
             project={project}
             onViewDetails={onViewDetails}
+            index={index}
+            onKeyDown={(e) => handleKeyDown(e, index)}
           />
         ))
       )}

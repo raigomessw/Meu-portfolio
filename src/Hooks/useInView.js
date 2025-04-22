@@ -1,47 +1,38 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
-// Hook para detectar quando um elemento está visível no viewport
-function useInView(ref, options = {}) {
+/**
+ * A custom hook that determines if an element is in the viewport
+ * @param {React.RefObject} ref - The reference to the element to observe
+ * @param {Object} options - IntersectionObserver options
+ * @param {number} options.threshold - How much of the element needs to be visible (0-1)
+ * @param {string} options.rootMargin - Margin around the root
+ * @returns {boolean} - Whether the element is in view or not
+ */
+const useInView = (ref, { threshold = 0.1, rootMargin = '0px' } = {}) => {
   const [isInView, setIsInView] = useState(false);
-  const observerRef = useRef(null);
-  
+
   useEffect(() => {
-    if (!ref.current) return;
-    
-    const callback = (entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          
-          // Se for configurado para não observar mais depois de ficar visível
-          if (options.once !== false) {
-            observer.unobserve(entry.target);
-          }
-        } else if (options.once === false) {
-          setIsInView(false);
-        }
-      });
-    };
-    
-    // Criar um novo IntersectionObserver
-    observerRef.current = new IntersectionObserver(callback, {
-      root: options.root || null,
-      rootMargin: options.rootMargin || '0px',
-      threshold: options.threshold || 0
-    });
-    
-    // Começar a observar o elemento
-    observerRef.current.observe(ref.current);
-    
-    // Limpar ao desmontar
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold, rootMargin }
+    );
+
+    observer.observe(element);
+
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
+      if (element) {
+        observer.unobserve(element);
       }
+      observer.disconnect();
     };
-  }, [ref, options.root, options.rootMargin, options.threshold, options.once]);
-  
+  }, [ref, threshold, rootMargin]);
+
   return isInView;
-}
+};
 
 export default useInView;

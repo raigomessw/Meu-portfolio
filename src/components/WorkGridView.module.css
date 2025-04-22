@@ -8,6 +8,7 @@
   max-height: 100vh;
   animation: fadeIn 0.4s ease;
   margin-top: 2%;
+  transition: all 0.3s ease-in-out;
 }
 
 .gridCard {
@@ -27,11 +28,20 @@
 .gridCard.inView {
   opacity: 1;
   transform: translateY(0);
+  animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.gridCard:hover {
+.gridCard:hover, .gridCard:focus {
   transform: translateY(-8px);
   box-shadow: 0 16px 30px rgba(0, 0, 0, 0.4);
+  outline: 2px solid var(--accent-light-senary);
+}
+
+/* Focus styles for accessibility */
+.gridCard:focus-visible {
+  outline: 3px solid var(--accent-light-senary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3);
 }
 
 .cardOverlay {
@@ -50,7 +60,8 @@
   transition: opacity 0.3s ease;
 }
 
-.gridCard:hover .cardOverlay {
+.gridCard:hover .cardOverlay,
+.gridCard:focus .cardOverlay {
   opacity: 0.95;
 }
 
@@ -70,7 +81,8 @@
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.gridCard:hover .cardContent {
+.gridCard:hover .cardContent,
+.gridCard:focus .cardContent {
   transform: translateY(-10px);
 }
 
@@ -92,11 +104,12 @@
 }
 
 .tag {
-  background-color: rgba(55, 53, 53, 0.7);
-  color: var(--text-light-primary);
+  background-color: rgba(55, 53, 53, 0.9);
+  color: #ffffff; /* Improved contrast */
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 0.75rem;
+  font-weight: 500; /* Improved readability */
   letter-spacing: 0.5px;
   transition: all 0.2s ease;
 }
@@ -118,7 +131,8 @@
   line-height: 1.5;
 }
 
-.gridCard:hover .cardDescription {
+.gridCard:hover .cardDescription,
+.gridCard:focus .cardDescription {
   opacity: 1;
   max-height: 120px;
 }
@@ -132,7 +146,8 @@
   transition-delay: 0.1s;
 }
 
-.gridCard:hover .cardActions {
+.gridCard:hover .cardActions,
+.gridCard:focus .cardActions {
   opacity: 1;
   transform: translateY(0);
 }
@@ -157,21 +172,27 @@
 }
 
 .detailsButton {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.2); /* Improved contrast */
   color: var(--text-light-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   flex: 1;
 }
 
-.viewButton:hover {
+.viewButton:hover, .viewButton:focus {
   background-color: var(--bg-dark-tertiary);
   box-shadow: 0 0 15px rgba(182, 182, 182, 0.4);
   transform: translateY(-3px);
 }
 
-.detailsButton:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+.detailsButton:hover, .detailsButton:focus {
+  background-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-3px);
+}
+
+/* Improved accessibility for buttons */
+.viewButton:focus-visible, .detailsButton:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
 }
 
 .buttonIcon {
@@ -179,11 +200,13 @@
 }
 
 .viewButton:hover .buttonIcon,
-.detailsButton:hover .buttonIcon {
+.detailsButton:hover .buttonIcon,
+.viewButton:focus .buttonIcon,
+.detailsButton:focus .buttonIcon {
   transform: translateX(3px);
 }
 
-/* Loading placeholder */
+/* Improved loading placeholder */
 .loadingPlaceholder {
   position: absolute;
   top: 0;
@@ -205,6 +228,7 @@
   border-radius: 4px;
   margin-bottom: 15px;
   animation: shimmer 1.5s infinite;
+  background-size: 200% 100%;
 }
 
 .placeholderTags {
@@ -219,6 +243,7 @@
   background: linear-gradient(90deg, #222 0%, #333 50%, #222 100%);
   border-radius: 4px;
   animation: shimmer 1.5s infinite;
+  background-size: 200% 100%;
 }
 
 .placeholderDescription {
@@ -227,9 +252,10 @@
   background: linear-gradient(90deg, #222 0%, #333 50%, #222 100%);
   border-radius: 4px;
   animation: shimmer 1.5s infinite;
+  background-size: 200% 100%;
 }
 
-/* No results state */
+/* Improved no results state */
 .noResults {
   grid-column: 1 / -1;
   display: flex;
@@ -241,6 +267,7 @@
   background: rgba(0, 0, 0, 0.3);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.5s ease;
 }
 
 .noResults h3 {
@@ -254,6 +281,20 @@
   max-width: 600px;
 }
 
+/* Screen reader only class */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Improved animations */
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -269,6 +310,17 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
