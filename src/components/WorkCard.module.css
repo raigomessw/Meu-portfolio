@@ -54,7 +54,6 @@
   line-height: 1.6;
   color: var(--text-light-quaternary);
   margin-bottom: 24px;
-  max-width: 85%;
 }
 
 .cardTags {
@@ -95,6 +94,7 @@
   font-size: 1rem;
   display: flex;
   align-items: center;
+  text-align: center;
   gap: 10px;
   position: relative;
   overflow: hidden;
@@ -114,8 +114,8 @@
 }
 
 .viewButton:hover {
-  background-color: var(--accent-light-quaternary);
-  box-shadow: 0 0 15px rgba(0, 198, 255, 0.4);
+  background-color: var(--bg-dark-tertiary);
+  box-shadow: 0 0 15px rgba(182, 182, 182, 0.4);
   transform: translateY(-3px);
 }
 
@@ -233,7 +233,7 @@
 }
 
 .modalButton {
-  background-color: var(--accent-light-senary);
+  background-color: var(--bg-dark-secondary);
   color: var(--bg-dark-primary);
   padding: 12px 30px;
   border-radius: 8px;
@@ -249,7 +249,9 @@
 }
 
 .modalButton:hover {
-  background-color: var(--accent-light-quaternary);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  background-color: var(--bg-dark-secondary);
   transform: translateY(-3px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }

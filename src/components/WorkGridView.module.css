@@ -1,0 +1,206 @@
+/* WorkGridView.module.css */
+.gridContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    padding: 80px 40px 40px 40px;
+    overflow-y: auto;
+    max-height: 100vh;
+    animation: fadeIn 0.4s ease;
+    margin-top: 2%;
+  }
+  
+  .gridCard {
+    height: 360px;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+  }
+  
+  .gridCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.4);
+  }
+  
+  .cardOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
+    z-index: 1;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+  }
+  
+  .gridCard:hover .cardOverlay {
+    opacity: 0.95;
+  }
+  
+  .cardContent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 25px;
+    z-index: 2;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    transform: translateY(0);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .gridCard:hover .cardContent {
+    transform: translateY(-10px);
+  }
+  
+  .cardTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    background: linear-gradient(to right, var(--text-light-secondary), var(--text-light-quaternary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .cardTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .tag {
+    background-color: rgba(55, 53, 53, 0.502);
+    color: var( --text-light-primary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .cardDescription {
+    display: flex;
+    font-size: 0.9rem;
+    color: var( --text-light-primary);
+    max-width: 85%;
+    margin-bottom: 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .gridCard:hover .cardDescription {
+    opacity: 1;
+    max-height: 100px;
+  }
+  
+  .gridCard:hover .cardContent {
+    height: 100%;
+    transform: translateY(0px);
+  }
+
+  .gridCard:hover .cardDescription {
+    max-height: 150px;
+  }
+  
+  .gridCard:hover .viewButton {
+    width: 90%;
+    margin-bottom: 10px;
+  }
+
+
+  .buttonContainer {
+    display: flex;
+   justify-content: center;
+  }
+  
+
+  .viewButton {
+    background-color: var(--accent-light-senary);
+    position: relative;
+    color: var(--bg-dark-primary);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-size: 1rem; /* Use rem para responsividade */    
+    text-decoration: none;
+    display: flex;
+    align-items: center;    
+    text-align: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    opacity: 0; /* Hide button by default */
+  }
+
+  
+  .viewButton:hover {
+    background-color: var(--bg-dark-tertiary);
+  box-shadow: 0 0 15px rgba(182, 182, 182, 0.4);
+  transform: translateY(-3px);
+    box-shadow: 0 0 15px rgba(16, 102, 126, 0.4);
+  }
+  
+  /* Show button on card hover */
+  .gridCard:hover .viewButton {
+    opacity: 1;
+  }
+
+  .buttonIcon {
+    transition: transform 0.3s ease;
+  }
+  
+  .viewButton:hover .buttonIcon {
+    transform: translateX(3px);
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .gridContainer {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      padding: 80px 20px 20px 20px;
+      gap: 16px;
+    }
+    
+    .gridCard {
+      height: 320px;
+    }
+    
+    .cardContent {
+      padding: 20px;
+    }
+
+    .cardTitle {
+      font-size: 1.3rem; /* Ajuste para telas menores */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .gridContainer {
+      grid-template-columns: 1fr;
+      padding: 70px 15px 15px 15px;
+    }
+  }

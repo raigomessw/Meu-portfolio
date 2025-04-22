@@ -1,6 +1,5 @@
-// Arquivo: WorkProjectContext.jsx
-// Esse arquivo cria um contexto para gerenciar o estado dos projetos globalmente
-import React, { createContext, useState, useContext, useEffect } from 'react';
+// WorkProjectContext.jsx
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 
 // Importando as imagens localmente
 import fitnessImage from '../assets/Fitness.jpeg'; 
@@ -12,13 +11,15 @@ const WorkProjectContext = createContext();
 export const useWorkProjects = () => useContext(WorkProjectContext);
 
 export const WorkProjectProvider = ({ children }) => {
-  const [projects, setProjects] = useState([
+  // Lista completa de projetos - em aplicação real pode vir de uma API
+  const [allProjects, setAllProjects] = useState([
     {
       id: "work1",
       title: "Super Mario 3D World",
       description: "A platform game for the Nintendo Switch with innovative gameplay mechanics and stunning visuals.",
       tags: ['Nintendo', 'Switch', 'Platform'],
       backgroundImage: fitnessImage,
+      thumbnailImage: fitnessImage, // Idealmente, use uma versão menor da imagem
       projectLink: "https://example.com/project1",
       details: {
         challenge: "The main challenge was to create a game that appeals to both casual and hardcore gamers, balancing difficulty and fun.",
@@ -32,6 +33,7 @@ export const WorkProjectProvider = ({ children }) => {
       description: "A comprehensive design system with reusable components, styleguides and documentation.",
       tags: ['Design', 'Web', 'Components'],
       backgroundImage: tenisImage,
+      thumbnailImage: tenisImage,
       projectLink: "https://example.com/project2",
       details: {
         challenge: "Creating a unified design language that works across multiple platforms while maintaining flexibility for different product needs.",
@@ -45,6 +47,7 @@ export const WorkProjectProvider = ({ children }) => {
       description: "A responsive website built with modern web technologies featuring seamless interactions.",
       tags: ['Website', 'HTML', 'CSS', 'JS'],
       backgroundImage: cafeImage,
+      thumbnailImage: cafeImage,
       projectLink: "https://example.com/project3",
       details: {
         challenge: "Building a high-performance website that maintains visual richness and interactive elements without sacrificing loading speed.",
@@ -54,46 +57,91 @@ export const WorkProjectProvider = ({ children }) => {
     }
   ]);
   
-  const [filteredProjects, setFilteredProjects] = useState(projects);
+  // Estado para projetos filtrados - os que correspondem aos filtros ativos
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  
+  // Estado para projetos carregados no componente - pode ser menor que a lista completa
+  const [loadedProjects, setLoadedProjects] = useState([]);
+  
+  // Filtros ativos
   const [activeFilters, setActiveFilters] = useState([]);
   
-  // Filtrar projetos com base nas tags selecionadas
+  // Estado para controle de paginação
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  
+  // Função para filtrar projetos
   useEffect(() => {
     if (activeFilters.length === 0) {
-      setFilteredProjects(projects);
+      setFilteredProjects(allProjects);
     } else {
-      const filtered = projects.filter(project => 
+      const filtered = allProjects.filter(project => 
         project.tags.some(tag => activeFilters.includes(tag))
       );
       setFilteredProjects(filtered);
     }
-  }, [activeFilters, projects]);
+    
+    // Resetar paginação quando filtros mudarem
+    setPage(1);
+    setHasMore(true);
+    setLoadedProjects([]);
+  }, [activeFilters, allProjects]);
   
-  // Função para alternar filtros
-  const toggleFilter = (tag) => {
+  // Carregar projetos iniciais
+  useEffect(() => {
+    loadMoreProjects(5);
+  }, [filteredProjects]); // eslint-disable-line react-hooks/exhaustive-deps
+  
+  // Função para carregar mais projetos - paginação
+  const loadMoreProjects = useCallback((count = 3) => {
+    const startIdx = loadedProjects.length;
+    const endIdx = startIdx + count;
+    
+    const newProjects = filteredProjects.slice(startIdx, endIdx);
+    
+    if (newProjects.length > 0) {
+      setLoadedProjects(prev => [...prev, ...newProjects]);
+    }
+    
+    // Verificar se ainda existem mais projetos para carregar
+    setHasMore(endIdx < filteredProjects.length);
+    setPage(prev => prev + 1);
+  }, [filteredProjects, loadedProjects]);
+  
+  // Alternar filtros
+  const toggleFilter = useCallback((tag) => {
     setActiveFilters(prevFilters => 
       prevFilters.includes(tag) 
         ? prevFilters.filter(f => f !== tag)
         : [...prevFilters, tag]
     );
-  };
+  }, []);
   
   // Recuperar todas as tags únicas
-  const getAllTags = () => {
+  const getAllTags = useCallback(() => {
     const allTags = new Set();
-    projects.forEach(project => {
+    allProjects.forEach(project => {
       project.tags.forEach(tag => allTags.add(tag));
     });
     return Array.from(allTags);
-  };
+  }, [allProjects]);
+  
+  // Adicionar novo projeto - útil para administração de conteúdo
+  const addProject = useCallback((project) => {
+    setAllProjects(prev => [...prev, project]);
+  }, []);
   
   return (
     <WorkProjectContext.Provider value={{
-      projects: filteredProjects,
-      allProjects: projects,
+      projects: loadedProjects,
+      allProjects,
+      filteredProjects,
       activeFilters,
       toggleFilter,
-      getAllTags
+      getAllTags,
+      loadMoreProjects,
+      hasMoreProjects: hasMore,
+      addProject
     }}>
       {children}
     </WorkProjectContext.Provider>

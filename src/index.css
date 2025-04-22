@@ -5,7 +5,7 @@
     font-weight: 400;
   
     /* Cores Tema Escuro */
-    --bg-dark-primary: #1a1919;
+    --bg-dark-primary: #050404;
     --bg-dark-secondary: #000000;
     --bg-dark-tertiary: #0d0d0d;
   
@@ -16,12 +16,12 @@
     --text-light-quinary: #cccccc;
   
     --accent-light-primary: #64ffda;
-    --accent-light-secondary: #c7441ca8;
+    --accent-light-secondary: #ffffffd9;
     --accent-light-tertiary: #00ff99;
-    --accent-light-quaternary: #b16cea;
-    --accent-light-quinary: #476af7;
+    --accent-light-quaternary: #163183;
+    --accent-light-quinary: #243577;
     --accent-light-senary: #59a4fa;
-    --accent-light-septenary: #ff0022;
+    --accent-light-septenary: #7f7879;
   
     --bg-navbar-dark: rgba(0, 0, 0, 0.3);
     --shadow-dark: rgba(255, 255, 255, 0.1);
