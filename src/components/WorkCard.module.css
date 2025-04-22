@@ -1,3 +1,4 @@
+/* WorkCard.module.css */
 .workCard {
   background: rgba(0, 0, 0, 0.6);
   border-radius: 16px;
@@ -79,11 +80,14 @@
   color: var(--text-light-secondary);
 }
 
-.viewButton {
-  background-color: transparent;
-  color: var(--accent-light-senary);
+.buttonContainer {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.viewButton, .detailsButton {
   padding: 12px 24px;
-  border: 2px solid var(--accent-light-senary);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -94,20 +98,180 @@
   gap: 10px;
   position: relative;
   overflow: hidden;
+  text-decoration: none;
+}
+
+.viewButton {
+  background-color: var(--accent-light-senary);
+  color: var(--bg-dark-primary);
+  border: none;
+}
+
+.detailsButton {
+  background-color: transparent;
+  color: var(--text-light-secondary);
+  border: 2px solid var(--text-light-secondary);
 }
 
 .viewButton:hover {
-  background-color: var(--accent-light-senary);
-  color: var(--bg-dark-primary);
+  background-color: var(--accent-light-quaternary);
   box-shadow: 0 0 15px rgba(0, 198, 255, 0.4);
+  transform: translateY(-3px);
+}
+
+.detailsButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-3px);
 }
 
 .buttonIcon {
   transition: transform 0.3s ease;
 }
 
-.viewButton:hover .buttonIcon {
+.viewButton:hover .buttonIcon,
+.detailsButton:hover .buttonIcon {
   transform: translateX(5px);
+}
+
+/* Modal styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal {
+  background: rgba(10, 10, 10, 0.95);
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: var(--text-light-quaternary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.closeButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: rotate(90deg);
+}
+
+.modalContent {
+  padding: 40px;
+  color: var(--text-light-secondary);
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.modalTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  background: linear-gradient(to right, var(--text-light-secondary), var(--accent-light-senary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.modalSection {
+  margin-bottom: 30px;
+}
+
+.modalSection h3 {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  color: var(--accent-light-senary);
+}
+
+.modalSection p {
+  margin-bottom: 15px;
+  line-height: 1.6;
+  color: var(--text-light-quaternary);
+}
+
+.modalTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.modalActions {
+  margin-top: 40px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modalButton {
+  background-color: var(--accent-light-senary);
+  color: var(--bg-dark-primary);
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.modalButton:hover {
+  background-color: var(--accent-light-quaternary);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive design */
@@ -125,8 +289,50 @@
     max-width: 100%;
   }
   
-  .viewButton {
-    padding: 10px 20px;
+  .viewButton, .detailsButton {
+    padding: 10px 18px;
     font-size: 0.9rem;
+  }
+  
+  .modalContent {
+    padding: 30px;
+  }
+  
+  .modalTitle {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .buttonContainer {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .viewButton, .detailsButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .cardContent {
+    padding: 20px;
+  }
+  
+  .cardTitle {
+    font-size: 1.5rem;
+  }
+  
+  .modalContent {
+    padding: 20px;
+  }
+  
+  .modalTitle {
+    font-size: 1.6rem;
+  }
+  
+  .closeButton {
+    top: 10px;
+    right: 10px;
   }
 }
