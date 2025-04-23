@@ -503,7 +503,8 @@
 
 .ctaButton:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(var(--accent-color-rgb, 110, 7, 243), 0.5);
+  color: #ffffff;
+  box-shadow: 0 8px 25px rgba(var(--accent-color-rgb, 110, 7, 243), 0.9);
 }
 
 .ctaButton:hover::before {

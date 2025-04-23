@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import styles from './Contact.module.css';
 
 function ContactForm({ 
@@ -9,12 +11,18 @@ function ContactForm({
   submitStatus,
   handleChange,
   handleBlur,
-  handleSubmit 
+  handleSubmit,
+  formRef
 }) {
   return (
-    <form onSubmit={handleSubmit} className={styles.form} noValidate>
+    <form 
+      ref={formRef}
+      onSubmit={handleSubmit} 
+      className={styles.form} 
+      noValidate
+    >
       <div className={styles.formGroup}>
-        <label htmlFor="name" className={styles.label}>Nome</label>
+        <label htmlFor="name" className={styles.label}>Name</label>
         <input
           type="text"
           id="name"
@@ -51,7 +59,7 @@ function ContactForm({
           aria-invalid={formErrors.email ? "true" : "false"}
           aria-describedby={formErrors.email ? "email-error" : undefined}
           className={formErrors.email ? `${styles.input} ${styles.inputError}` : styles.input}
-          placeholder="your.email@exemple.com"
+          placeholder="your.email@example.com"
           required
         />
         {formErrors.email && (
@@ -77,7 +85,7 @@ function ContactForm({
           aria-invalid={formErrors.confirmEmail ? "true" : "false"}
           aria-describedby={formErrors.confirmEmail ? "confirm-email-error" : undefined}
           className={formErrors.confirmEmail ? `${styles.input} ${styles.inputError}` : styles.input}
-          placeholder="Confirm your Email"
+          placeholder="Confirm your email"
           required
         />
         {formErrors.confirmEmail && (
@@ -92,7 +100,7 @@ function ContactForm({
       </div>
       
       <div className={styles.formGroup}>
-        <label htmlFor="subject" className={styles.label}>Subject</label>
+        <label htmlFor="subject" className={styles.label}>Subject (Optional)</label>
         <input
           type="text"
           id="subject"
@@ -100,7 +108,7 @@ function ContactForm({
           value={formData.subject}
           onChange={handleChange}
           className={styles.input}
-          placeholder="Message subject (optional)"
+          placeholder="What is this about?"
         />
       </div>
       
@@ -141,7 +149,12 @@ function ContactForm({
             <span className={styles.loader}></span>
             <span>Sending...</span>
           </>
-        ) : 'Send Message'}
+        ) : (
+          <>
+            Send Message
+            <FontAwesomeIcon icon={faPaperPlane} className={styles.submitIcon} />
+          </>
+        )}
       </button>
       
       {submitMessage && (
