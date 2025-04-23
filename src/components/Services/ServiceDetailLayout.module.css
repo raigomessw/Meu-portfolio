@@ -1,0 +1,606 @@
+/* ========== CONTAINER ========== */
+.container {
+  --accent-color: rgba(110, 7, 243, 1);
+  --accent-color-soft: rgba(110, 7, 243, 0.15);
+  --card-hover-transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  min-height: 100vh;
+  background-color: var(--color-bg-1, #121218);
+  color: var(--color-text-1, #f0f0f0);
+  overflow: hidden;
+}
+
+/* ========== HERO SECTION ========== */
+.hero {
+  position: relative;
+  height: 70vh;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4rem;
+  overflow: hidden;
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2.5rem;
+  max-width: 800px;
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  animation: fadeIn 1s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.iconWrapper {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  font-size: 2.2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transform: scale(1);
+  transition: transform 0.3s ease;
+}
+
+.container:hover .iconWrapper {
+  transform: scale(1.05) rotate(5deg);
+}
+
+.title {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #ffffff 30%, var(--accent-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: var(--color-text-1, #f0f0f0);
+  max-width: 600px;
+  margin: 0 auto;
+  opacity: 0.9;
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+/* ========== SECTIONS ========== */
+.section {
+  padding: 7rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  scroll-margin-top: 100px; /* Melhora o scroll para links de âncora */
+}
+
+.section:nth-child(odd) {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0),
+    var(--accent-color-soft),
+    rgba(0, 0, 0, 0)
+  );
+  border-radius: 30px;
+}
+
+.container.inView .section {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.sectionContent {
+  max-width: 850px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.sectionTitle {
+  font-size: 2.2rem;
+  margin-bottom: 2.5rem;
+  font-weight: 700;
+  color: var(--color-text-0, #ffffff);
+  position: relative;
+  padding-bottom: 1rem;
+  line-height: 1.3;
+  text-align: left;
+  display: inline-block;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 80px;
+  height: 4px;
+  background-color: var(--accent-color);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.section:hover .sectionTitle::after {
+  width: 100%;
+}
+
+.description {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  margin-bottom: 3.5rem;
+  color: var(--color-text-1, #f0f0f0);
+  text-align: left;
+  max-width: 100%;
+  opacity: 0.95;
+}
+
+/* ========== BENEFITS GRID ========== */
+.benefitsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.75rem;
+  margin-top: 3rem;
+}
+
+.benefitItem {
+  display: flex;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1.75rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: all var(--card-hover-transition);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+}
+
+.benefitItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.benefitIcon {
+  color: var(--accent-color);
+  font-size: 1.3rem;
+  margin-right: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.benefitItem:hover .benefitIcon {
+  background-color: var(--accent-color);
+  color: white;
+  transform: scale(1.1);
+}
+
+.benefitItem p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* ========== PROCESS LIST ========== */
+.processList {
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+  margin-top: 3rem;
+  position: relative;
+}
+
+.processList::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 1px;
+  height: calc(100% - 60px);
+  background: linear-gradient(
+    to bottom,
+    var(--accent-color),
+    rgba(255, 255, 255, 0.1)
+  );
+}
+
+.processStep {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 70px;
+  transition: transform 0.3s ease;
+}
+
+.processStep:hover {
+  transform: translateX(10px);
+}
+
+.stepNumber {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 42px;
+  height: 42px;
+  background-color: var(--accent-color);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  box-shadow: 0 5px 15px rgba(var(--accent-color), 0.3);
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.processStep:hover .stepNumber {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(var(--accent-color), 0.4);
+}
+
+.stepTitle {
+  font-size: 1.5rem;
+  margin-bottom: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-0, #ffffff);
+  line-height: 1.4;
+  margin-top: 0;
+}
+
+.stepDescription {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--color-text-1, #f0f0f0);
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* ========== CASE STUDIES ========== */
+.caseStudiesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2.5rem;
+  margin-top: 3rem;
+}
+
+.caseStudyCard {
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  height: 100%;
+}
+
+.caseStudyCard:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  border-color: var(--accent-color);
+}
+
+.caseStudyCard:focus-visible {
+  outline: 3px solid var(--accent-color);
+  outline-offset: 3px;
+}
+
+.caseStudyImage {
+  width: 100%;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  transition: all 0.5s ease;
+}
+
+.caseStudyCard:hover .caseStudyImage {
+  transform: scale(1.05);
+}
+
+.caseStudyImage::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.8),
+    transparent
+  );
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.caseStudyCard:hover .caseStudyImage::after {
+  opacity: 0.4;
+}
+
+.caseStudyContent {
+  padding: 1.75rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.caseStudyTitle {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+  font-weight: 600;
+  color: var(--color-text-0, #ffffff);
+  line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.caseStudyCard:hover .caseStudyTitle {
+  color: var(--accent-color);
+}
+
+.caseStudyCompany {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.caseStudyResult {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  border-left: 3px solid var(--accent-color);
+}
+
+/* ========== TOOLS LIST ========== */
+.toolsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.toolTag {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.8rem 1.4rem;
+  border-radius: 30px;
+  color: var(--color-text-0, #ffffff);
+  font-size: 0.95rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  text-align: center;
+  line-height: 1.2;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toolTag:hover {
+  background-color: var(--accent-color-soft);
+  transform: translateY(-3px);
+  border-color: var(--accent-color);
+}
+
+/* ========== CTA SECTION ========== */
+.ctaSection {
+  background: linear-gradient(135deg, 
+    rgba(var(--accent-color-rgb, 110, 7, 243), 0.15), 
+    rgba(0, 0, 0, 0.5)
+  );
+  text-align: center;
+  padding: 8rem 2rem;
+  margin-bottom: 0;
+  border-radius: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaSection::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+  opacity: 0.15;
+  filter: blur(40px);
+}
+
+.ctaTitle {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-0, #ffffff);
+  line-height: 1.2;
+  text-align: center;
+}
+
+.ctaText {
+  font-size: 1.2rem;
+  max-width: 700px;
+  margin: 0 auto 3.5rem;
+  color: var(--color-text-1, #f0f0f0);
+  line-height: 1.6;
+  text-align: center;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.5rem;
+  background: var(--accent-color);
+  color: white;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  gap: 0.8rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(var(--accent-color-rgb, 110, 7, 243), 0.4);
+}
+
+.ctaButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.7s ease;
+}
+
+.ctaButton:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(var(--accent-color-rgb, 110, 7, 243), 0.5);
+}
+
+.ctaButton:hover::before {
+  left: 100%;
+}
+
+.ctaButton svg {
+  transition: transform 0.3s ease;
+}
+
+.ctaButton:hover svg {
+  transform: translateX(5px);
+}
+
+/* ========== RESPONSIVIDADE ========== */
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.8rem;
+  }
+  
+  .description {
+    font-size: 1rem;
+  }
+  
+  .section {
+    padding: 5rem 1.5rem;
+  }
+  
+  .processStep {
+    padding-left: 55px;
+  }
+  
+  .ctaTitle {
+    font-size: 2rem;
+  }
+  
+  .benefitsGrid,
+  .caseStudiesGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .benefitItem {
+    padding: 1.5rem;
+  }
+}
+
+/* Ajustes para telas muito pequenas */
+@media (max-width: 480px) {
+  .section {
+    padding: 4rem 1.25rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.6rem;
+  }
+  
+  .heroContent {
+    padding: 1.5rem;
+  }
+  
+  .caseStudyImage {
+    height: 160px;
+  }
+  
+  .toolsList {
+    justify-content: center;
+  }
+}
+
+/* ========== TEMA ESCURO APRIMORADO ========== */
+@media (prefers-color-scheme: dark) {
+  .container {
+    --color-text-0: #ffffff;
+    --color-text-1: #f0f0f0;
+  }
+  
+  /* Outros ajustes específicos para tema escuro */
+  .benefitItem {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  }
+  
+  .caseStudyCard {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* ========== ACESSIBILIDADE ========== */
+:focus-visible {
+  outline: 3px solid var(--accent-color);
+  outline-offset: 3px;
+}

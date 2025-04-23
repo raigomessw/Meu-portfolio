@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { WorkProjectProvider } from './components/WorkProjectContext';
+import { WorkProjectProvider } from './components/Work/WorkProjectContext';
 import './index.css';
 
 

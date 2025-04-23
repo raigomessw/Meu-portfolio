@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import styles from './About.module.css';
+import styles from './About.module.css'; // Ensure this path is correct
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';// Certifique-se de que esse caminho está correto
+
 import { 
   faReact, 
   faJs, 
@@ -12,7 +13,9 @@ import {
   faGithub 
 } from '@fortawesome/free-brands-svg-icons';
 import { faDownload, faBrain, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
-const ProfileImage = new URL('../assets/Profile.jpeg', import.meta.url).href;
+const ProfileImage = new URL('./assets/Profile.jpeg', import.meta.url).href;
+const ResumeEN = new URL('/resume/Rai Gomes CV ENG.pdf', import.meta.url).href;
+const ResumeSW = new URL('/resume/Rai Gomes CV SV.pdf', import.meta.url).href;
 
 function AboutPage() {
   // Skills data
@@ -99,7 +102,7 @@ function AboutPage() {
             className={styles.video}
             aria-hidden="true"
           >
-            <source src="/src/assets/gradient-video.mp4" type="video/mp4" />
+            <source src="../components/common/video/gradient-video.mp4" type="video/mp4" />
           </video>
         </picture>
         <div className={styles.overlay}></div>
@@ -122,12 +125,12 @@ function AboutPage() {
               <a href="https://github.com/raigomessw" target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile">
                 <FontAwesomeIcon icon={faGithub} />
               </a>
-              {/* Resume download option */}
-              <a href="../assets/Rai Gomes CV ENG.pdf" download className={styles.resumeLink} aria-label="Download Resume">
+              {/* Links de currículo atualizados */}
+              <a href={ResumeEN} download className={styles.resumeLink} aria-label="Download Resume">
                 <FontAwesomeIcon icon={faDownload} />
                 <span className={styles.resumeText}>Resume-EN</span>
               </a>
-              <a href="../assets/Rai Gomes CV SV.pdf" download className={styles.resumeLink} aria-label="Download Resume">
+              <a href={ResumeSW} download className={styles.resumeLink} aria-label="Download Resume">
                 <FontAwesomeIcon icon={faDownload} />
                 <span className={styles.resumeText}>Resume-SW</span>
               </a>

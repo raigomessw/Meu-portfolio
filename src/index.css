@@ -1,86 +1,127 @@
 :root {
-    /* Fontes */
-    font-family: Inter, sans-serif;
-    line-height: 1.6;
-    font-weight: 400;
+  /* Fontes */
+  --font-primary: Inter, system-ui, sans-serif;
+  --font-secondary: 'Inter', sans-serif;
+  --font-monospace: 'JetBrains Mono', monospace;
   
-    /* Cores Tema Escuro */
-    --bg-dark-primary: #050404;
-    --bg-dark-secondary: #000000;
-    --bg-dark-tertiary: #0d0d0d;
+  /* Sistema de cores - Dark Theme */
+  /* Base de cores para backgrounds */
+  --color-bg-0: #0c0c0e;        /* Base mais escura */
+  --color-bg-1: #121218;        /* Fundo principal */
+  --color-bg-2: #16161e;        /* Componentes, cards */
+  --color-bg-3: #1e1e29;        /* Componentes elevados */
+  --color-bg-4: #25253a;        /* Áreas destacadas */
   
-    --text-light-primary: #f5f5f5;
-    --text-light-secondary: #ffffff;
-    --text-light-tertiary: #eeeeee;
-    --text-light-quaternary: #a8b2d1;
-    --text-light-quinary: #cccccc;
+  /* Overlay e transparências */
+  --color-overlay-1: rgba(0, 0, 0, 0.3);
+  --color-overlay-2: rgba(12, 12, 14, 0.7);
   
-    --accent-light-primary: #64ffda;
-    --accent-light-secondary: #ffffffd9;
-    --accent-light-tertiary: #00ff99;
-    --accent-light-quaternary: #2a375f;
-    --accent-light-quinary: #243577;
-    --accent-light-senary: #59a4fa;
-    --accent-light-septenary: #7f7879;
+  /* Tons de roxo (accent) */
+  --color-primary-lighter: #b794ff;  /* Roxo claro */
+  --color-primary-light: #9a5bff;    /* Roxo médio-claro */
+  --color-primary: #6e07f3;          /* Roxo principal */
+  --color-primary-dark: #5805c5;     /* Roxo escuro */
+  --color-primary-darker: #400396;   /* Roxo mais escuro */
   
-    --bg-navbar-dark: rgba(0, 0, 0, 0.3);
-    --shadow-dark: rgba(255, 255, 255, 0.1);
+  /* Cores semânticas */
+  --color-success: #4ade80;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
   
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+  /* Níveis de texto */
+  --color-text-0: #ffffff;     /* Texto de maior ênfase */
+  --color-text-1: #f0f0f0;     /* Texto primário */
+  --color-text-2: #d0d0d0;     /* Texto secundário */
+  --color-text-3: #a0a0a0;     /* Texto terciário/descrição */
+  --color-text-4: #808080;     /* Texto desabilitado */
   
-
+  /* Bordas */
+  --color-border-1: rgba(255, 255, 255, 0.05);
+  --color-border-2: rgba(255, 255, 255, 0.1);
+  --color-border-3: rgba(110, 7, 243, 0.3);
   
-  body {
-    margin: 0;
-    min-width: 320px;
-    min-height: 100vh;
-    background-color: var(--bg-dark-primary); /* variável de cor de fundo */
-    color: var(--text-light-primary);
-    /* Outros estilos do body */
-  }
+  /* Sombras */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 5px 20px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --shadow-primary: 0 5px 15px rgba(110, 7, 243, 0.2);
   
-  /* Estilos para links e botões (use as variáveis para cores) */
-  a {
-    color: var(--accent-light-primary);
-    /* ... */
-  }
-  a:hover {
-    color: var(--accent-light-secondary); /* Ajuste para o hover */
-  }
-
+  /* Gradientes */
+  --gradient-primary: linear-gradient(135deg, var(--color-primary-light), var(--color-primary-dark));
+  --gradient-text: linear-gradient(180deg, #ffffff 0%, var(--color-primary) 100%);
+  --gradient-bg: linear-gradient(135deg, var(--color-bg-1) 0%, var(--color-bg-2) 100%);
   
-
-
-/* Estilos para links e botões (use as variáveis para cores) */
-/* Estilos específicos para Navbar (use as variáveis) */
-.navbar {
-  /* ... other styles ... */
+  /* Efeitos */
+  --transition-fast: all 0.2s ease;
+  --transition-normal: all 0.3s ease;
+  --transition-slow: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-full: 9999px;
 }
 
-.logo a { color: var(--text-light-secondary);
-    /* ... */
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--color-bg-1);
+  color: var(--color-text-1);
+  font-family: var(--font-primary);
+  line-height: 1.6;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Estilos para links e botões */
+a {
+  color: var(--color-primary-light);
+  text-decoration: none;
+  transition: var(--transition-normal);
+}
+
+a:hover {
+  color: var(--color-primary-lighter);
+}
+
+button {
+  font-family: var(--font-primary);
+  transition: var(--transition-normal);
+}
+
+/* Estilos para Navbar */
+.navbar {
+  background-color: var(--color-overlay-1);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border-1);
+}
+
+.logo a { 
+  color: var(--color-text-0);
+  font-weight: 600;
 }
 
 .logo a:hover {
-    /* ... other styles ... */
+  color: var(--color-primary-light);
 }
 
-.navLink.active { color: var(--accent-light-primary);
-    /* ... */
+.navLink.active { 
+  color: var(--color-primary-light);
+  font-weight: 500;
 }
 
-.navLink.active::after { background-color: var(--accent-light-secondary);
-    /* ... */
+.navLink.active::after { 
+  background-color: var(--color-primary);
 }
 
-.navLink { color: var(--text-light-primary);
-    /* ... */
+.navLink { 
+  color: var(--color-text-1);
 }
+
 .navLink:hover {
-    color: var(--accent-light-secondary); /* Keep this for hover effect */
-    /* ... */
+  color: var(--color-primary-light);
 }

@@ -1,0 +1,196 @@
+/* ========== LAYOUT PRINCIPAL ========== */
+.workContainer {
+  position: relative;
+  min-height: 100vh;
+  padding: 6rem 0 4rem;
+  overflow: hidden;
+  color: var(--color-text-1);
+  background-color: var(--color-bg-1);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  transition: var(--transition-slow);
+}
+
+/* ========== ELEMENTOS DE FUNDO ========== */
+.backgroundWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.darkGradient {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-bg, linear-gradient(135deg, #121212 0%, #1a1a1a 100%));
+}
+
+.noiseTexture {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' fill='none'/%3E%3C/svg%3E");
+}
+
+.glowEffect {
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(110, 7, 243, 0.15) 0%, rgba(110, 7, 243, 0) 70%);
+  filter: blur(100px);
+  opacity: 0.6;
+  animation: pulse 10s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+/* ========== CABEÇALHO ========== */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+  background: var(--gradient-text, linear-gradient(180deg, #ffffff 0%, #6e07f3 100%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  font-size: 1.2rem;
+  color: var(--color-text-3, #a0a0a0);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ========== CONTROLES E FILTROS ========== */
+.controlsBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.mobileFilterToggle {
+  display: none; /* Inicialmente oculto em desktop */
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(var(--color-primary-rgb, 110, 7, 243), 0.2);
+  color: var(--color-primary-light, #9a5bff);
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: var(--border-radius-full, 50px);
+  cursor: pointer;
+  font-weight: 500;
+  transition: var(--transition-normal, all 0.3s ease);
+}
+
+.mobileFilterToggle:hover {
+  background: rgba(var(--color-primary-rgb, 110, 7, 243), 0.3);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.filterButton {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border-2, rgba(255, 255, 255, 0.1));
+  border-radius: var(--border-radius-full, 50px);
+  padding: 0.6rem 1.5rem;
+  font-size: 0.95rem;
+  color: var(--color-text-3, #a0a0a0);
+  cursor: pointer;
+  transition: var(--transition-normal, all 0.3s ease);
+}
+
+.filterButton:hover {
+  border-color: var(--color-primary, #6e07f3);
+  color: var(--color-primary, #6e07f3);
+  background: rgba(var(--color-primary-rgb, 110, 7, 243), 0.1);
+}
+
+.filterButton.active {
+  background: var(--color-primary, #6e07f3);
+  color: var(--color-text-0, white);
+  border-color: var(--color-primary, #6e07f3);
+}
+
+/* ========== ELEMENTOS DE CARREGAMENTO ========== */
+.loaderContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid rgba(var(--color-primary-rgb, 110, 7, 243), 0.2);
+  border-radius: 50%;
+  border-top-color: var(--color-primary, #6e07f3);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========== RESPONSIVIDADE ========== */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2.2rem;
+  }
+  
+  .mobileFilterToggle {
+    display: flex; /* Exibido em mobile */
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .filters {
+    display: none;
+    flex-direction: column;
+    padding: 1rem;
+    background: rgba(30, 30, 30, 0.9);
+    border-radius: var(--border-radius-md, 12px);
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+  }
+  
+  .filtersVisible {
+    display: flex;
+  }
+}

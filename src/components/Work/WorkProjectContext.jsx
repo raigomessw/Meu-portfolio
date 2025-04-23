@@ -1,9 +1,9 @@
 // WorkProjectContext.jsx
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 // Importando as imagens localmente
-import fitnessImage from '../assets/Fitness.jpeg'; 
-import tenisImage from '../assets/Tenis.jpeg';
-import cafeImage from '../assets/Cafe.jpeg';
+import fitnessImage from './assets/Fitness.jpeg'; 
+import tenisImage from './assets/Tenis.jpeg';
+import cafeImage from './assets/Cafe.jpeg';
 
 const WorkProjectContext = createContext();
 

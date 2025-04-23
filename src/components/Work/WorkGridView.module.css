@@ -1,0 +1,260 @@
+/* ========== Container e Layout ========== */
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  position: relative;
+  transition: var(--transition-slow);
+}
+
+/* ========== Card Styles ========== */
+.gridCard {
+  position: relative;
+  height: 380px; /* Altura fixa para consistência */
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  box-shadow: var(--shadow-md, 0 5px 20px rgba(0, 0, 0, 0.2));
+  transition: var(--transition-slow);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(40px);
+  border: 1px solid var(--color-border-1);
+  display: flex;
+  flex-direction: column; /* Organiza o conteúdo verticalmente */
+}
+
+.inView {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gridCard:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-primary), var(--shadow-md, 0 5px 20px rgba(0, 0, 0, 0.2));
+  transform: translateY(-5px);
+}
+
+.gridCard:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-lg, 0 10px 30px rgba(0, 0, 0, 0.3));
+}
+
+/* ========== Overlay e Backgrounds ========== */
+.cardOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 0.2) 0%, 
+    rgba(0, 0, 0, 0.6) 50%,
+    rgba(0, 0, 0, 0.9) 100%);
+  opacity: 1;
+  transition: var(--transition-normal);
+  z-index: 1;
+}
+
+.cardOverlay.hovered {
+  background: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 0.4) 0%, 
+    rgba(0, 0, 0, 0.7) 50%,
+    rgba(0, 0, 0, 0.95) 100%);
+}
+
+/* ========== Conteúdo do Card ========== */
+.cardContent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  z-index: 2;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  max-height: 100%;
+}
+
+/* ========== Elementos de Texto ========== */
+.cardTitle {
+  font-size: 1.5rem;
+  margin-bottom: 0.8rem;
+  color: var(--color-text-0);
+  transition: transform 0.4s ease;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  font-weight: 600;
+}
+
+.gridCard:hover .cardTitle {
+  transform: translateY(-5px);
+}
+
+.cardTags {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  transition: transform 0.4s ease 0.05s;
+}
+
+.gridCard:hover .cardTags {
+  transform: translateY(-5px);
+}
+
+.tag {
+  background: rgba(var(--color-primary-rgb, 110, 7, 243), 0.3);
+  color: var(--color-primary-lighter, #b794ff);
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--border-radius-full, 50px);
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap; /* Evita quebra de linha nos tags */
+}
+
+.cardDescription {
+  font-size: 0.95rem;
+  color: var(--color-text-2, #d0d0d0);
+  margin-bottom: 1.5rem;
+  transition: transform 0.4s ease 0.1s;
+  opacity: 0.8;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limita a 2 linhas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+  line-height: 1.5;
+}
+
+.gridCard:hover .cardDescription {
+  transform: translateY(-5px);
+}
+
+/* ========== Botões e Ações ========== */
+.cardActions {
+  display: flex;
+  gap: 1rem;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.4s ease 0.15s;
+  z-index: 10;
+}
+
+.gridCard:hover .cardActions,
+.gridCard:focus-within .cardActions {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.viewButton,
+.detailsButton {
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--border-radius-full, 50px);
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition-normal);
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+  white-space: nowrap;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0; /* Evita que os botões encolham */
+}
+
+.viewButton {
+  background: var(--color-primary, #6e07f3);
+  color: var(--color-text-0, #ffffff);
+  border: none;
+  text-decoration: none;
+}
+
+.viewButton:hover {
+  background: var(--color-primary-light, #9a5bff);
+  transform: translateY(-3px);
+}
+
+.detailsButton {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--color-text-0, #ffffff);
+  border: 1px solid var(--color-border-2, rgba(255, 255, 255, 0.1));
+}
+
+.detailsButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-3px);
+}
+
+.buttonIcon {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.viewButton:hover .buttonIcon,
+.detailsButton:hover .buttonIcon {
+  transform: translateX(3px);
+}
+
+/* ========== Placeholders e Loaders ========== */
+.loadingPlaceholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg-2, rgba(30, 30, 30, 0.8));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.placeholderPulse {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    var(--color-bg-2, rgba(30, 30, 30, 0.8)) 0%, 
+    var(--color-bg-3, rgba(60, 60, 60, 0.8)) 50%, 
+    var(--color-bg-2, rgba(30, 30, 30, 0.8)) 100%);
+  background-size: 200% 100%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: -200% 0%;
+  }
+}
+
+/* ========== Responsividade ========== */
+@media (max-width: 768px) {
+  .gridContainer {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .cardActions {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .viewButton, 
+  .detailsButton {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .cardTitle {
+    font-size: 1.3rem;
+  }
+}

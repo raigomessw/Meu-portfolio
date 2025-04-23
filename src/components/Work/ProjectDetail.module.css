@@ -1,0 +1,248 @@
+.projectDetail {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 2rem 1rem;
+ color: var(--text-color, #333);
+}
+
+/* Header Styles */
+.projectHeader {
+ margin-bottom: 3rem;
+}
+
+.headerContent {
+ text-align: center;
+ margin-bottom: 2rem;
+}
+
+.backLink {
+ display: inline-flex;
+ align-items: center;
+ gap: 0.5rem;
+ color: var(--accent-color, #6e07f3);
+ text-decoration: none;
+ font-weight: 500;
+ margin-bottom: 1.5rem;
+ transition: transform 0.3s ease;
+}
+
+.backLink:hover {
+ transform: translateX(-5px);
+}
+
+.projectHeader h1 {
+ font-size: 2.8rem;
+ margin: 1rem 0;
+ background: linear-gradient(180deg, var(--heading-color, #333) 0%, var(--accent-color, #6e07f3) 100%);
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+}
+
+.tags {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 0.8rem;
+ justify-content: center;
+ margin: 1.5rem 0;
+}
+
+.tag {
+ background: var(--tag-bg, rgba(110, 7, 243, 0.1));
+ color: var(--accent-color, #6e07f3);
+ padding: 0.4rem 1rem;
+ border-radius: 50px;
+ font-size: 0.9rem;
+ font-weight: 500;
+}
+
+.heroImage {
+ border-radius: 20px;
+ overflow: hidden;
+ box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+ max-height: 600px;
+}
+
+.heroImage img {
+ width: 100%;
+ height: 100%;
+ object-fit: cover;
+ display: block;
+}
+
+/* Section Styles */
+.section {
+ margin: 4rem 0;
+}
+
+.sectionTitle {
+ font-size: 1.8rem;
+ margin-bottom: 1.5rem;
+ display: flex;
+ align-items: center;
+ gap: 1rem;
+}
+
+.description {
+ font-size: 1.1rem;
+ line-height: 1.8;
+ color: var(--text-secondary, #555);
+}
+
+/* Process Section */
+.processSection {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+ gap: 2rem;
+}
+
+.processCard {
+ background: var(--card-bg, #ffffff);
+ padding: 2rem;
+ border-radius: 15px;
+ box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+ transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.processCard:hover {
+ transform: translateY(-5px);
+ box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.processIcon {
+ width: 60px;
+ height: 60px;
+ border-radius: 50%;
+ background: var(--icon-bg, rgba(110, 7, 243, 0.1));
+ color: var(--accent-color, #6e07f3);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 1.5rem;
+ margin-bottom: 1.5rem;
+}
+
+.processCard h3 {
+ margin: 1rem 0;
+ font-size: 1.4rem;
+}
+
+.processCard p {
+ line-height: 1.6;
+ color: var(--text-secondary, #555);
+}
+
+/* Tech List */
+.techList {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 1rem;
+ list-style: none;
+ padding: 0;
+}
+
+.techItem {
+ background: var(--tech-bg, #f6f6f6);
+ padding: 0.8rem 1.2rem;
+ border-radius: 8px;
+ font-weight: 500;
+}
+
+/* External Links */
+.externalLinks {
+ margin: 3rem 0;
+ display: flex;
+ justify-content: center;
+}
+
+.externalLink {
+ display: inline-flex;
+ align-items: center;
+ gap: 0.8rem;
+ background: var(--accent-color, #6e07f3);
+ color: white;
+ padding: 1rem 2rem;
+ border-radius: 50px;
+ text-decoration: none;
+ font-weight: 600;
+ transition: all 0.3s ease;
+}
+
+.externalLink:hover {
+ transform: translateY(-3px);
+ box-shadow: 0 5px 15px rgba(110, 7, 243, 0.3);
+}
+
+/* Project Navigation */
+.projectNavigation {
+ margin-top: 4rem;
+ border-top: 1px solid var(--border-color, #eee);
+ padding-top: 2rem;
+ display: flex;
+ justify-content: space-between;
+}
+
+.navLink {
+ flex: 1;
+ padding: 1rem;
+ text-decoration: none;
+ color: var(--text-color, #333);
+ transition: transform 0.3s ease;
+}
+
+.navLink span {
+ font-size: 0.9rem;
+ color: var(--text-secondary, #666);
+}
+
+.navLink h4 {
+ margin: 0.5rem 0 0 0;
+ font-size: 1.2rem;
+ color: var(--accent-color, #6e07f3);
+}
+
+.prevLink {
+ text-align: left;
+}
+
+.nextLink {
+ text-align: right;
+}
+
+.prevLink:hover {
+ transform: translateX(-5px);
+}
+
+.nextLink:hover {
+ transform: translateX(5px);
+}
+
+/* Not Found */
+.notFound {
+ text-align: center;
+ padding: 4rem 1rem;
+}
+
+.notFound h1 {
+ font-size: 2rem;
+ margin-bottom: 1rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+ .projectHeader h1 {
+   font-size: 2rem;
+ }
+ 
+ .processSection {
+   grid-template-columns: 1fr;
+ }
+ 
+ .projectNavigation {
+   flex-direction: column;
+   gap: 1.5rem;
+ }
+ 
+ .navLink {
+   text-align: center;
+ }
+}

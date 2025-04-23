@@ -3,8 +3,15 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import Navbar from './components/layout/Navbar/Navbar';
+import Footer from './components/layout/Footer/Footer';
+import WorkPage from './pages/WorkPage';
+import ProjectDetail from './components/Work/ProjectDetail';
+import MarketResearch from './components/Services/MarketResearch';
+import UserResearch from './components/Services/UserResearch';
+import MVPPrototyping from './components/Services/MVPPrototyping';
+import DesignValidation from './components/Services/DesignValidation';
+
 
 // Scroll handler component for router
 function ScrollToSection() {
@@ -27,6 +34,7 @@ function ScrollToSection() {
   
   return null;
 }
+
 function App() {
   return (
     <BrowserRouter>
@@ -34,12 +42,16 @@ function App() {
       <ScrollToSection />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/work" element={<HomePage />} />
+        <Route path="/work" element={<WorkPage />} />
+        <Route path="/work/:projectId" element={<ProjectDetail />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="*" element={<Footer className="footer" />} />
-        
+        <Route path="/contact" element={<ContactPage />} /> 
+        <Route path="/services/market-research" element={<MarketResearch />} />
+  <Route path="/services/user-research" element={<UserResearch />} />
+  <Route path="/services/mvp-prototyping" element={<MVPPrototyping />} />
+  <Route path="/services/design-validation" element={<DesignValidation />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }

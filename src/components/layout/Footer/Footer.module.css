@@ -1,0 +1,438 @@
+.footer {
+  --footer-animation-timing: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  width: 100%;
+  padding: 80px 0 40px;
+  background-color: rgba(10, 10, 15, 0.95);
+  color: var(--text-light-tertiary);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Efeitos de fundo aprimorados */
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(0, 198, 255, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(131, 56, 236, 0.03) 0%, transparent 70%);
+  z-index: 0;
+  opacity: 0.8;
+  animation: backgroundPulse 15s infinite alternate ease-in-out;
+}
+
+@keyframes backgroundPulse {
+  0% {
+    opacity: 0.7;
+    background-position: 0% 0%, 100% 100%;
+  }
+  100% {
+    opacity: 1;
+    background-position: 5% 10%, 95% 90%;
+  }
+}
+
+/* Conteúdo principal */
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 30px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Seção superior do footer */
+.footerTop {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 50px;
+  gap: 40px;
+}
+
+/* Seção do logotipo */
+.logoSection {
+  flex: 1;
+  min-width: 240px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.name {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--accent-light-quinary), var(--accent-light-senary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.02em;
+  transform: translateZ(0);
+  position: relative;
+  display: inline-block;
+}
+
+.name::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 4px;
+  bottom: -6px;
+  left: 0;
+  background: linear-gradient(90deg, var(--accent-light-quinary), transparent);
+  border-radius: 2px;
+  transition: width var(--footer-animation-timing);
+}
+
+.logoSection:hover .name::after {
+  width: 100%;
+}
+
+.title {
+  font-size: 1rem;
+  color: var(--text-light-quaternary);
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  max-width: 300px;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+
+/* Seção de navegação */
+.navigationSection {
+  flex: 1;
+  min-width: 200px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.navigationTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-light-secondary);
+  position: relative;
+  padding-left: 14px;
+}
+
+.navigationTitle::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-light-quinary);
+  box-shadow: 0 0 10px var(--accent-light-quinary);
+}
+
+.footerNav {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-left: 14px;
+}
+
+.footerLink {
+  color: var(--text-light-tertiary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  padding: 3px 0;
+  font-size: 0.95rem;
+  transform-origin: left;
+}
+
+.footerLink::before {
+  content: '→';
+  position: absolute;
+  left: -14px;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all var(--footer-animation-timing);
+  color: var(--accent-light-quinary);
+}
+
+.footerLink::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(to right, var(--accent-light-quinary), transparent);
+  transition: width var(--footer-animation-timing);
+}
+
+.footerLink:hover {
+  color: var(--text-light-primary);
+  transform: translateX(8px);
+}
+
+.footerLink:hover::before {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.footerLink:hover::after {
+  width: 100%;
+}
+
+.footerLink:focus-visible {
+  outline: 2px solid var(--accent-light-quinary);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* Seção social */
+.socialSection {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.socialContainer {
+  margin-bottom: 20px;
+}
+
+.socialTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-light-secondary);
+}
+
+.socialIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-light-quaternary);
+  transition: all var(--footer-animation-timing);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.socialIcon svg {
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.socialIcon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, var(--accent-light-quinary), var(--accent-light-senary));
+  opacity: 0;
+  transition: opacity var(--footer-animation-timing);
+  z-index: 1;
+}
+
+.socialIcon:hover {
+  color: #fff;
+  transform: translateY(-5px) rotate(5deg);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.socialIcon:hover svg {
+  transform: scale(1.2);
+}
+
+.socialIcon:hover::before {
+  opacity: 1;
+}
+
+.socialIcon:focus-visible {
+  outline: 2px solid var(--accent-light-quinary);
+  outline-offset: 4px;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: shimmer 4s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 150%;
+  }
+}
+
+/* Seção inferior do footer */
+.footerBottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-light-quaternary);
+  position: relative;
+  padding-top: 5px;
+}
+
+.copyright, .made {
+  margin-bottom: 10px;
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.footerBottom:hover .copyright,
+.footerBottom:hover .made {
+  color: var(--text-light-tertiary);
+}
+
+.heartIcon {
+  display: inline-block;
+  color: #ff3e6c;
+  margin: 0 4px;
+  animation: pulse 1.5s infinite;
+  filter: drop-shadow(0 0 2px rgba(255, 62, 108, 0.5));
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Animações de entrada */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Media queries aprimorados */
+@media (max-width: 992px) {
+  .footerTop {
+    gap: 50px;
+  }
+  
+  .logoSection, .navigationSection {
+    flex-basis: 45%;
+  }
+}
+
+@media (max-width: 768px) {
+  .footerTop {
+    flex-direction: column;
+    gap: 40px;
+  }
+  
+  .navigationSection {
+    order: 3;
+  }
+  
+  .socialSection {
+    justify-content: flex-start;
+    margin-top: 10px;
+  }
+  
+  .footerBottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .name {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 60px 0 30px;
+  }
+  
+  .content {
+    padding: 0 20px;
+  }
+  
+  .footerNav {
+    gap: 12px;
+  }
+  
+  .socialIcon {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+/* Acessibilidade - Modo de alto contraste */
+@media (prefers-contrast: more) {
+  .footer {
+    background-color: #000;
+    border-top: 1px solid #666;
+  }
+  
+  .footerLink, .socialIcon {
+    color: #fff;
+  }
+  
+  .divider {
+    background: #666;
+  }
+}
+
+/* Dark mode refinado */
+@media (prefers-color-scheme: dark) {
+  .footer::before {
+    opacity: 0.5;
+  }
+}
