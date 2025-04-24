@@ -1,113 +1,156 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { throttle, detectDeviceCapability } from '../../utils/performance';
+import BackgroundVideo from '../common/BackgroundVideo';
+ // Importe a imagem do perfil
+
 import styles from './Hero.module.css';
-import gradientVideo from '../common/video/gradient-video.mp4';
-import { faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faEnvelope, faArrowDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// Importe seus ícones conforme necessário
 
 function Hero() {
+  const [isVisible, setIsVisible] = useState(false);
   const heroRef = useRef(null);
-  const titleRef = useRef(null);
-  const taglineRef = useRef(null);
+  const contentRef = useRef(null);
+  const headingRef = useRef(null);
   const descriptionRef = useRef(null);
-  const socialsRef = useRef(null);
   const buttonRef = useRef(null);
-  const scrollRef = useRef(null);
-
+  const imageRef = useRef(null);
+  
+  // Detectar dispositivos de baixa performance
+  const deviceCaps = detectDeviceCapability();
+  const ProfileImage = new URL('../common/Image/profile.jpeg', import.meta.url).href;
+  
   useEffect(() => {
-    // Animação de entrada dos elementos
-    const heroElement = heroRef.current;
-    const titleElement = titleRef.current;
-    const taglineElement = taglineRef.current;
-    const descriptionElement = descriptionRef.current;
-    const socialsElement = socialsRef.current;
-    const buttonElement = buttonRef.current;
-    const scrollElement = scrollRef.current;
-
-    // Aplicar classes de animação com atraso progressivo
-    setTimeout(() => titleElement.classList.add(styles.animateIn), 300);
-    setTimeout(() => taglineElement.classList.add(styles.animateIn), 600);
-    setTimeout(() => descriptionElement.classList.add(styles.animateIn), 900);
-    setTimeout(() => socialsElement.classList.add(styles.animateIn), 1200);
-    setTimeout(() => buttonElement.classList.add(styles.animateIn), 1500);
-    setTimeout(() => scrollElement.classList.add(styles.animateIn), 1800);
-
-    // Efeito parallax no scroll
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      if (heroElement) {
-        heroElement.style.transform = `translateY(${scrollPosition * 0.2}px)`;
-      }
+    // Otimização 1: Aplicar will-change apenas quando necessário
+    const applyHardwareAcceleration = () => {
+      const elementsToOptimize = [
+        headingRef.current,
+        descriptionRef.current,
+        buttonRef.current,
+        imageRef.current
+      ].filter(Boolean);
+      
+      elementsToOptimize.forEach(element => {
+        element.style.willChange = 'transform, opacity';
+        element.style.transform = 'translateZ(0)';
+        element.style.backfaceVisibility = 'hidden';
+      });
     };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleScrollToServices = () => {
-    const servicesSection = document.getElementById('services');
-    if (servicesSection) {
-      servicesSection.scrollIntoView({ behavior: 'smooth' });
+    
+    // Otimização 2: Usar IntersectionObserver em vez de eventos de scroll
+    if ('IntersectionObserver' in window && heroRef.current) {
+      const observer = new IntersectionObserver(
+        entries => {
+          if (entries[0].isIntersecting) {
+            // Só executar as animações quando o elemento estiver visível
+            requestAnimationFrame(() => {
+              setIsVisible(true);
+              applyHardwareAcceleration();
+            });
+            observer.unobserve(heroRef.current);
+          }
+        },
+        { threshold: 0.1 }
+      );
+      
+      observer.observe(heroRef.current);
+      return () => observer.disconnect();
+    } else {
+      // Fallback para browsers sem suporte
+      setIsVisible(true);
+      applyHardwareAcceleration();
     }
-  };
-
+  }, []);
+  
+  // Otimização 3: Throttle para efeito parallax
+  useEffect(() => {
+    if (deviceCaps.shouldUseReducedEffects || !heroRef.current) return;
+    
+    const handleMouseMove = throttle((e) => {
+      requestAnimationFrame(() => {
+        if (!contentRef.current || !imageRef.current) return;
+        
+        const { clientX, clientY } = e;
+        const moveX = (clientX / window.innerWidth - 0.5) * 20;
+        const moveY = (clientY / window.innerHeight - 0.5) * 20;
+        
+        contentRef.current.style.transform = `translate3d(${moveX * -0.5}px, ${moveY * -0.5}px, 0)`;
+        imageRef.current.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+      });
+    }, 30);
+    
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [deviceCaps.shouldUseReducedEffects]);
+  
   return (
-    <section className={styles.hero} ref={heroRef}>
-      <div className={styles.backgroundContainer}>
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className={styles.backgroundVideo}
-        >
-          <source src={gradientVideo} type="video/mp4" />
-          Seu navegador não suporta vídeos.
-        </video>
-        <div className={styles.blurOverlay}></div>
-        <div className={styles.particlesOverlay}></div>
-      </div>
-      <div className={styles.content}>
-        <div className={styles.textColumn}>
-          <h1 ref={titleRef} className={styles.hidden}>Rai Gomes</h1>
-          <p ref={taglineRef} className={`${styles.tagline} ${styles.hidden}`}>UI/UX Designer & Front-End Developer</p>
-          <p ref={descriptionRef} className={`${styles.description} ${styles.hidden}`}>
-            Passionate about crafting intuitive and user-centered digital experiences. 
-            Transforming complex challenges into elegant and effective solutions.
+    <section 
+      id="home" 
+      className={`${styles.hero} ${isVisible ? styles.visible : ''} ${deviceCaps.shouldUseReducedEffects ? styles.reducedMotion : ''}`} 
+      ref={heroRef}
+    >
+      {/* Substituindo o background estático pelo vídeo */}
+      {!deviceCaps.shouldUseReducedEffects ? (
+        <BackgroundVideo>
+          {/* O conteúdo dentro do BackgroundVideo é gerenciado pelo overlay do componente */}
+          <div className={styles.blurOverlay}></div>
+        </BackgroundVideo>
+      ) : (
+        <div className={styles.heroBackground}>
+          {/* Fallback para dispositivos de baixa performance */}
+          <div className={styles.backgroundGradient}></div>
+          <div className={styles.particleOverlay}></div>
+        </div>
+      )}
+      
+      <div className={styles.heroContent}>
+        <div className={styles.heroTextContainer} ref={contentRef}>
+          <h1 className={styles.heroTitle} ref={headingRef}>
+            <span className={styles.greeting}>Hello, I am</span>
+            <span className={styles.name}>Rai Gomes</span>
+            <span className={styles.role}>UI/UX Designer & Frontend Developer</span>
+          </h1>
+          
+          <p className={styles.heroDescription} ref={descriptionRef}>
+          I develop intuitive and efficient interfaces that provide high-performance and user-focused web experiences.
           </p>
-          <div ref={socialsRef} className={`${styles.socialLinks} ${styles.hidden}`}>
-            <a href="https://www.linkedin.com/in/rai-gomes-6487b2153/" target="_blank" rel="noopener noreferrer" className={styles.socialIcon}>
-              <FontAwesomeIcon icon={faLinkedin} />
-            </a>
-            <a href="https://github.com/raigomessw" target="_blank" rel="noopener noreferrer" className={styles.socialIcon}>
-              <FontAwesomeIcon icon={faGithub} />
-            </a>
-            <a href="mailto:raigomessw@gmail.com" className={styles.socialIcon}>
-              <FontAwesomeIcon icon={faEnvelope} />
-            </a>
+          
+          <div className={styles.heroCta} ref={buttonRef}>
+            <Link to="/contact" className={styles.primaryBtn}>
+            Get in touch
+            </Link>
+            <Link to="/work" className={styles.secondaryBtn}>
+            View Projects
+            </Link>
           </div>
-          <Link 
-            ref={buttonRef} 
-            to="/contact" 
-            className={`${styles.contactButton} ${styles.hidden}`}
-            aria-label="Get in Touch"
-          >
-            <span className={styles.buttonText}>Get in Touch</span>
-            <span className={styles.buttonHighlight}></span>
-          </Link>
+        </div>
+        
+        <div className={styles.heroImageContainer}>
+          <div className={styles.imageWrapper} ref={imageRef}>
+            {/* Use imagens WebP com fallback */}
+            <picture>
+              <img 
+                src={ProfileImage} 
+                alt="Rai Gomes" 
+                className={styles.heroImage}
+                width="450"
+                height="450"
+                loading="eager" 
+                decoding="async"
+              />
+            </picture>
+          </div>
         </div>
       </div>
-      <div ref={scrollRef} className={`${styles.scrollDownContainer} ${styles.hidden}`}>
-        <button 
-          onClick={handleScrollToServices} 
-          className={styles.scrollDownButton}
-          aria-label="Scroll down to see services"
-          tabIndex="0"
-        >
-          <FontAwesomeIcon icon={faArrowDown} className={styles.scrollIcon} />
-          <span className={styles.scrollDownText}>Services</span>
-        </button>
+      
+      <div className={styles.scrollDown}>
+        <a href="#about" aria-label="Scroll to the about section">
+          <span className={styles.scrollIcon}></span>
+          <span className={styles.scrollText}>Scroll down</span>
+        </a>
       </div>
     </section>
   );

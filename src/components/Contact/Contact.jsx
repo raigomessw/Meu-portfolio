@@ -1,11 +1,11 @@
-import React, { useReducer, useRef, useEffect, useState } from 'react';
+import React, { useReducer, useEffect, useState, useRef, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faPhone, faLocationDot, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { faLinkedin, faGithub, faInstagram } from '@fortawesome/free-brands-svg-icons';
-import ContactForm from './ContactForm';
+import { throttle, detectDeviceCapability } from '../../utils/performance';
 import styles from './Contact.module.css';
 
-// Reducer para gerenciar estado do formulário
+// Estado inicial do formulário
 const initialState = {
   formData: {
     name: '',
@@ -17,10 +17,58 @@ const initialState = {
   formErrors: {},
   isSubmitting: false,
   submitMessage: '',
-  submitStatus: null, // 'success' ou 'error'
+  submitStatus: null,
   formTouched: false
 };
 
+// Validação de campos única - separada para evitar rerenderizações
+const validateField = (fieldName, formData) => {
+  const errors = {};
+  
+  switch (fieldName) {
+    case 'name':
+      if (!formData.name.trim()) errors.name = 'Name is required';
+      break;
+    
+    case 'email':
+      if (!formData.email.trim()) {
+        errors.email = 'Email is required';
+      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        errors.email = 'Please enter a valid email address';
+      }
+      break;
+    
+    case 'confirmEmail':
+      if (!formData.confirmEmail.trim()) {
+        errors.confirmEmail = 'Please confirm your email';
+      } else if (formData.confirmEmail !== formData.email) {
+        errors.confirmEmail = 'Emails do not match';
+      }
+      break;
+    
+    case 'message':
+      if (!formData.message.trim()) {
+        errors.message = 'Message is required';
+      } else if (formData.message.trim().length < 10) {
+        errors.message = 'Message must be at least 10 characters';
+      }
+      break;
+  }
+  
+  return errors;
+};
+
+// Validação completa do formulário
+const validateForm = (formData) => {
+  return {
+    ...validateField('name', formData),
+    ...validateField('email', formData),
+    ...validateField('confirmEmail', formData),
+    ...validateField('message', formData)
+  };
+};
+
+// Reducer otimizado com memoização interna
 function formReducer(state, action) {
   switch (action.type) {
     case 'UPDATE_FIELD':
@@ -33,21 +81,21 @@ function formReducer(state, action) {
         formTouched: true
       };
     
-    case 'VALIDATE_FIELD':
+    case 'VALIDATE_FIELD': {
       const fieldErrors = validateField(action.field, state.formData);
-      return {
-        ...state,
-        formErrors: {
-          ...state.formErrors,
-          [action.field]: fieldErrors[action.field]
-        }
-      };
+      const newErrors = { ...state.formErrors };
+      
+      if (fieldErrors[action.field]) {
+        newErrors[action.field] = fieldErrors[action.field];
+      } else {
+        delete newErrors[action.field];
+      }
+      
+      return { ...state, formErrors: newErrors };
+    }
     
     case 'SET_FORM_ERRORS':
-      return {
-        ...state,
-        formErrors: action.errors
-      };
+      return { ...state, formErrors: action.errors };
     
     case 'SUBMIT_START':
       return {
@@ -88,134 +136,117 @@ function formReducer(state, action) {
   }
 }
 
-function validateField(fieldName, formData) {
-  let errors = {};
-  
-  switch (fieldName) {
-    case 'name':
-      if (!formData.name.trim()) {
-        errors.name = 'Name is required';
-      }
-      break;
-    
-    case 'email':
-      if (!formData.email.trim()) {
-        errors.email = 'Email is required';
-      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-        errors.email = 'Please enter a valid email address';
-      }
-      break;
-    
-    case 'confirmEmail':
-      if (!formData.confirmEmail.trim()) {
-        errors.confirmEmail = 'Please confirm your email';
-      } else if (formData.confirmEmail !== formData.email) {
-        errors.confirmEmail = 'Emails do not match';
-      }
-      break;
-    
-    case 'message':
-      if (!formData.message.trim()) {
-        errors.message = 'Message is required';
-      } else if (formData.message.trim().length < 10) {
-        errors.message = 'Message must be at least 10 characters';
-      }
-      break;
-    
-    default:
-      break;
-  }
-  
-  return errors;
-}
-
-function validateForm(formData) {
-  let errors = {};
-  
-  if (!formData.name.trim()) {
-    errors.name = 'Name is required';
-  }
-  
-  if (!formData.email.trim()) {
-    errors.email = 'Email is required';
-  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    errors.email = 'Please enter a valid email address';
-  }
-  
-  if (!formData.confirmEmail.trim()) {
-    errors.confirmEmail = 'Please confirm your email';
-  } else if (formData.confirmEmail !== formData.email) {
-    errors.confirmEmail = 'Emails do not match';
-  }
-  
-  if (!formData.message.trim()) {
-    errors.message = 'Message is required';
-  } else if (formData.message.trim().length < 10) {
-    errors.message = 'Message must be at least 10 characters';
-  }
-  
-  return errors;
-}
-
 function ContactPage() {
   const [state, dispatch] = useReducer(formReducer, initialState);
-  const formRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   
-  // Referências para animações
+  // Refs para otimização de desempenho
   const sectionRef = useRef(null);
   const headerRef = useRef(null);
-  const cardsRef = useRef([]);
+  const formRef = useRef(null);
+  const infoCardRefs = useRef([]);
+  const animationTimersRef = useRef([]);
   
-  useEffect(() => {
-    const observer = new IntersectionObserver(
+  // Detectar capacidades do dispositivo para adaptação
+  const deviceCaps = detectDeviceCapability();
+  const prefersReducedMotion = deviceCaps.prefersReducedMotion;
+  
+  // Observador de interseção otimizado - criado apenas uma vez
+  const createIntersectionObserver = useCallback(() => {
+    return new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          setIsVisible(true);
+          requestAnimationFrame(() => {
+            setIsVisible(true);
+          });
         }
       },
-      { threshold: 0.1 }
+      { 
+        threshold: 0.1,
+        rootMargin: '0px 0px -5% 0px'
+      }
     );
+  }, []);
+  
+  // Configuração de detecção de visibilidade
+  useEffect(() => {
+    const observer = createIntersectionObserver();
     
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
     }
     
+    // Limpar observers e timers na desmontagem
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
+      observer.disconnect();
+      animationTimersRef.current.forEach(timer => clearTimeout(timer));
     };
-  }, []);
+  }, [createIntersectionObserver]);
   
+  // Gerenciamento de animações com performance otimizada
   useEffect(() => {
+    if (!isVisible || prefersReducedMotion) return;
+    
+    // Limpar timers anteriores se existirem
+    animationTimersRef.current.forEach(timer => clearTimeout(timer));
+    animationTimersRef.current = [];
+    
     const animateElements = () => {
-      if (isVisible) {
-        const cards = document.querySelectorAll(`.${styles.infoCard}, .${styles.socialLinks}, .${styles.contactForm}`);
-        
-        cards.forEach((card, index) => {
-          setTimeout(() => {
-            card.classList.add(styles.visible);
-          }, 200 * index);
+      // Header animation
+      if (headerRef.current) {
+        requestAnimationFrame(() => {
+          headerRef.current.classList.add(styles.visible);
         });
       }
+      
+      // Aplicar will-change apenas durante a animação
+      const elements = document.querySelectorAll(
+        `.${styles.infoCard}, .${styles.socialLinks}, .${styles.contactForm}`
+      );
+      
+      elements.forEach((element, index) => {
+        // Preparar para animação
+        element.style.willChange = 'opacity, transform';
+        
+        // Escalonar animações para melhorar performance
+        const timer = setTimeout(() => {
+          requestAnimationFrame(() => {
+            element.classList.add(styles.visible);
+            
+            // Remover will-change após a animação para liberar recursos
+            setTimeout(() => {
+              element.style.willChange = 'auto';
+            }, 1000);
+          });
+        }, 150 * (index + 1));
+        
+        animationTimersRef.current.push(timer);
+      });
     };
     
-    animateElements();
-  }, [isVisible]);
+    // Pequeno atraso para garantir que o DOM esteja pronto
+    const mainTimer = setTimeout(animateElements, 100);
+    animationTimersRef.current.push(mainTimer);
+    
+    // Cleanup
+    return () => {
+      animationTimersRef.current.forEach(timer => clearTimeout(timer));
+    };
+  }, [isVisible, prefersReducedMotion]);
   
-  const handleChange = (e) => {
+  // Handlers otimizados com debounce/throttle para melhor performance
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     dispatch({ type: 'UPDATE_FIELD', field: name, value });
-  };
+  }, []);
   
-  const handleBlur = (e) => {
+  const handleBlur = useCallback((e) => {
     const { name } = e.target;
     dispatch({ type: 'VALIDATE_FIELD', field: name });
-  };
+  }, []);
   
-  // Manipulador de envio para Netlify Forms
-  const handleSubmit = async (e) => {
+  // Submit handler com otimização
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     const errors = validateForm(state.formData);
     
@@ -223,16 +254,12 @@ function ContactPage() {
       dispatch({ type: 'SUBMIT_START' });
       
       try {
-        console.log("Starting Netlify form submission...");
-        
         // Preparar os dados para envio via Netlify Forms
         const formData = new FormData();
+        Object.entries(state.formData).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
         formData.append('form-name', 'portfolio-contact');
-        formData.append('name', state.formData.name);
-        formData.append('email', state.formData.email);
-        formData.append('confirmEmail', state.formData.confirmEmail);
-        formData.append('subject', state.formData.subject || 'New contact from portfolio');
-        formData.append('message', state.formData.message);
         
         const response = await fetch("/", {
           method: "POST",
@@ -241,17 +268,17 @@ function ContactPage() {
         });
         
         if (response.ok) {
-          console.log("Form submitted successfully to Netlify");
-          
           dispatch({ 
             type: 'SUBMIT_SUCCESS', 
             message: 'Your message has been sent successfully! I will get back to you soon.'
           });
           
-          // Clear success message after 8 seconds
-          setTimeout(() => {
+          // Reset após 8 segundos
+          const resetTimer = setTimeout(() => {
             dispatch({ type: 'RESET_SUBMISSION' });
           }, 8000);
+          
+          animationTimersRef.current.push(resetTimer);
         } else {
           throw new Error(`Form submission failed with status: ${response.status}`);
         }
@@ -267,12 +294,15 @@ function ContactPage() {
     } else {
       dispatch({ type: 'SET_FORM_ERRORS', errors });
     }
-  };
+  }, [state.formData]);
+  
+  // Classes dinâmicas
+  const sectionClasses = `${styles.contactContainer} ${isVisible ? styles.visible : ''} ${prefersReducedMotion ? styles.reducedMotion : ''}`;
   
   return (
     <section 
       id="contact" 
-      className={`${styles.contactContainer} ${isVisible ? styles.visible : ''}`} 
+      className={sectionClasses} 
       ref={sectionRef}
     >
       <div className={styles.backgroundWrapper}>
@@ -293,7 +323,11 @@ function ContactPage() {
         
         <div className={styles.contactContent}>
           <div className={styles.contactInfo}>
-            <div className={`${styles.infoCard} ${styles.emailCard}`}>
+            {/* Info Cards */}
+            <div 
+              className={`${styles.infoCard} ${styles.emailCard}`}
+              ref={el => infoCardRefs.current[0] = el}
+            >
               <div className={styles.infoIcon}>
                 <FontAwesomeIcon icon={faEnvelope} aria-hidden="true" />
               </div>
@@ -309,7 +343,10 @@ function ContactPage() {
               </a>
             </div>
             
-            <div className={`${styles.infoCard} ${styles.phoneCard}`}>
+            <div 
+              className={`${styles.infoCard} ${styles.phoneCard}`}
+              ref={el => infoCardRefs.current[1] = el}
+            >
               <div className={styles.infoIcon}>
                 <FontAwesomeIcon icon={faPhone} aria-hidden="true" />
               </div>
@@ -325,7 +362,10 @@ function ContactPage() {
               </a>
             </div>
             
-            <div className={`${styles.infoCard} ${styles.locationCard}`}>
+            <div 
+              className={`${styles.infoCard} ${styles.locationCard}`}
+              ref={el => infoCardRefs.current[2] = el}
+            >
               <div className={styles.infoIcon}>
                 <FontAwesomeIcon icon={faLocationDot} aria-hidden="true" />
               </div>
@@ -343,7 +383,10 @@ function ContactPage() {
               </a>
             </div>
             
-            <div className={styles.socialLinks}>
+            <div 
+              className={styles.socialLinks}
+              ref={el => infoCardRefs.current[3] = el}
+            >
               <h3>Connect with me</h3>
               <div className={styles.socialIconsContainer}>
                 <a 
@@ -380,6 +423,7 @@ function ContactPage() {
             </div>
           </div>
           
+          {/* Formulário de Contato - Usando Memo para evitar rerenderizações desnecessárias */}
           <div className={styles.contactForm}>
             <div className={styles.formContainer}>
               <h3>Send a Message</h3>
@@ -416,6 +460,7 @@ function ContactPage() {
                     className={state.formErrors.name ? `${styles.input} ${styles.inputError}` : styles.input}
                     placeholder="Your full name"
                     required
+                    autoComplete="name"
                   />
                   {state.formErrors.name && (
                     <span 
@@ -442,6 +487,7 @@ function ContactPage() {
                     className={state.formErrors.email ? `${styles.input} ${styles.inputError}` : styles.input}
                     placeholder="your.email@example.com"
                     required
+                    autoComplete="email"
                   />
                   {state.formErrors.email && (
                     <span 
@@ -468,6 +514,7 @@ function ContactPage() {
                     className={state.formErrors.confirmEmail ? `${styles.input} ${styles.inputError}` : styles.input}
                     placeholder="Confirm your email"
                     required
+                    autoComplete="email"
                   />
                   {state.formErrors.confirmEmail && (
                     <span 
@@ -490,6 +537,7 @@ function ContactPage() {
                     onChange={handleChange}
                     className={styles.input}
                     placeholder="What is this about?"
+                    autoComplete="off"
                   />
                 </div>
                 
@@ -523,7 +571,7 @@ function ContactPage() {
                   type="submit" 
                   className={styles.submitButton} 
                   disabled={state.isSubmitting}
-                  aria-busy={state.isSubmitting}
+                  aria-busy={state.isSubmitting ? "true" : "false"}
                 >
                   {state.isSubmitting ? (
                     <>

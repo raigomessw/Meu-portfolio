@@ -589,3 +589,49 @@
     padding: 14px;
   }
 }
+
+/* Adicione essas otimizações no final do arquivo */
+
+/* Otimizações de desempenho */
+.contactContainer.reducedMotion * {
+  transition-duration: 0.001s !important;
+  animation-duration: 0.001s !important;
+  animation: none !important;
+}
+
+.contactContainer.reducedMotion .gradientBackground {
+  animation: none !important;
+  background-position: 0% 50% !important;
+}
+
+/* Prevenir animações durante scroll */
+body.is-scrolling .gradientBackground {
+  animation-play-state: paused !important;
+}
+
+/* Melhorar renderização com GPU */
+.contactContainer:not(.reducedMotion) .infoCard,
+.contactContainer:not(.reducedMotion) .socialLinks,
+.contactContainer:not(.reducedMotion) .contactForm,
+.contactContainer:not(.reducedMotion) .contactHeader {
+  transform: translate3d(0, 0, 0);
+}
+
+/* Otimizar apenas durante animações */
+.infoCard.visible,
+.socialLinks.visible,
+.contactForm.visible {
+  will-change: auto !important;
+}
+
+/* Melhorias para dispositivos mais fracos */
+@media (max-width: 768px) {
+  .gradientBackground {
+    background-size: 300% 300%; /* Reduzir complexidade */
+    animation-duration: 20s; /* Mais lento */
+  }
+  
+  .patternGrid {
+    opacity: 0.1; /* Menos visível para melhor performance */
+  }
+}

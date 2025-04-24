@@ -1,12 +1,27 @@
 .aboutContainer {
   position: relative;
   min-height: 100vh;
-  width: 100%;
-  color: var(--text-light-primary);
-  padding-top: 96px; /* Space for navbar */
+  color: white;
   overflow-x: hidden;
+  opacity: 0;
+  transform: translateY(20px) translateZ(0);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  contain: layout paint style; /* Isolar para evitar repaints globais */
+  will-change: opacity, transform;
 }
 
+.aboutContainer.visible {
+  opacity: 1;
+  transform: translateY(0) translateZ(0);
+}
+
+/* Redução de movimento para melhor performance */
+.aboutContainer.reducedMotion * {
+  transition-duration: 0.001s !important;
+  animation-duration: 0.001s !important;
+}
+
+/* Background de vídeo otimizado */
 .backgroundVideo {
   position: fixed;
   top: 0;
@@ -14,12 +29,14 @@
   width: 100%;
   height: 100%;
   z-index: -1;
+  contain: strict; /* Isolar para performance */
 }
 
 .video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: translateZ(0); /* Força aceleração por hardware */
 }
 
 .overlay {
@@ -28,287 +45,330 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(20px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px); /* Blur para vídeo de fundo */
+  -webkit-backdrop-filter: blur(10px);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  z-index: 1;
   position: relative;
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 120px 0 80px;
+  z-index: 1;
+  contain: content; /* Isolar para otimizar reflows */
 }
 
+/* Seção de Perfil */
 .profileSection {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  margin-bottom: 60px;
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) 2fr;
+  gap: 50px;
+  align-items: start;
+  margin-bottom: 80px;
+  contain: layout style;
 }
 
 .profileImageContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+  position: sticky;
+  top: 120px; /* Ajustar com base na altura do navbar */
+  transition: transform 0.3s ease;
+  will-change: transform;
 }
 
+/* Otimização da imagem de perfil */
 .profileImage {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border-radius: 20px;
   overflow: hidden;
-  border: 4px solid var(--accent-light-senary);
-  box-shadow: 0 0 20px rgba(0, 198, 255, 0.4);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform: translateZ(0);
+  will-change: transform;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
 .profileImage img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: translateZ(0);
 }
 
-.profileImage:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 30px rgba(0, 198, 255, 0.6);
-  filter: brightness(1.1);
+.profileImageOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(35, 166, 213, 0.3),
+    rgba(231, 60, 126, 0.3)
+  );
+  border-radius: 20px;
+  mix-blend-mode: overlay;
 }
 
-.imagePlaceholder {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, var(--accent-light-quinary), var(--accent-light-senary));
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 5rem;
-  font-weight: bold;
-  color: white;
-}
-
+/* Links sociais */
 .socialLinks {
   display: flex;
+  flex-wrap: wrap;
   gap: 15px;
-  margin-top: 10px;
+  margin-top: 25px;
+  justify-content: center;
 }
 
 .socialLinks a {
   display: flex;
-  justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
   background: rgba(255, 255, 255, 0.1);
-  color: var(--text-light-quaternary);
+  border-radius: 50%;
+  color: white;
+  text-decoration: none;
   font-size: 1.2rem;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, background 0.3s ease;
+  will-change: transform, background-color;
+  transform: translateZ(0);
 }
 
 .socialLinks a:hover {
+  transform: translateY(-5px) translateZ(0);
   background: rgba(255, 255, 255, 0.2);
-  color: var(--accent-light-senary);
-  transform: translateY(-3px);
 }
 
 .resumeLink {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  gap: 5px;
   width: auto !important;
-  padding: 0 15px;
   border-radius: 20px !important;
-  background: linear-gradient(45deg, var(--accent-light-quinary), var(--accent-light-senary), transparent 150%) !important;
-  color: white !important;
+  padding: 0 15px;
+  gap: 8px;
 }
 
 .resumeText {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  width: 100px;
-  
 }
 
+/* Informações de perfil */
 .profileInfo {
-  max-width: 800px;
+  color: rgba(255, 255, 255, 0.9);
+  contain: content; /* Isolar para performance */
 }
 
 .profileInfo h1 {
-  font-size: 3rem;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
   margin-bottom: 10px;
-  background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
+  background: linear-gradient(135deg, #ffffff 0%, #aacfe2 100%);
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
+  transform: translateZ(0); /* Melhora renderização de texto com gradient */
 }
 
 .profileInfo h2 {
-  font-size: 1.8rem;
-  color: var(--text-light-quaternary);
-  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: var(--accent-light-senary, #23a6d5);
+  margin-bottom: 25px;
+  font-weight: 600;
 }
 
 .profileInfo p {
-  font-size: 1.1rem;
-  line-height: 1.8;
+  font-size: 1.05rem;
+  line-height: 1.7;
   margin-bottom: 20px;
-  color: var(--text-light-tertiary);
+  color: rgba(255, 255, 255, 0.85);
 }
 
+/* Citação */
 .quote {
-  font-size: 1.2rem;
-  line-height: 1.6;
+  border-left: 4px solid var(--accent-light-senary, #23a6d5);
+  padding-left: 20px;
   font-style: italic;
   margin: 30px 0;
-  padding-left: 20px;
-  border-left: 4px solid var(--accent-light-senary);
-  color: var(--text-light-quaternary);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.95);
 }
 
+/* Estatísticas */
 .stats {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 30px;
   margin-top: 40px;
-  align-items: center;
 }
 
 .statItem {
-  flex: 1;
-  min-width: 150px;
   text-align: center;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.5s ease, box-shadow 0.5s ease;
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(20px) translateZ(0);
+  transition: 
+    opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform, opacity;
+  transition-delay: calc(var(--animation-order, 0) * 0.1s);
 }
 
 .statItem.animate {
   opacity: 1;
-  transform: translateY(0);
-}
-
-.statItem:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(0) translateZ(0);
 }
 
 .number {
   display: block;
   font-size: 2.5rem;
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 5px;
-  background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
+  background: linear-gradient(135deg, #23a6d5, #e73c7e);
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
+  transform: translateZ(0);
 }
 
 .label {
   font-size: 0.9rem;
-  color: var(--text-light-quaternary);
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.3;
 }
 
+/* CTA button */
 .ctaContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 200px;
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 20px;
 }
 
 .ctaButton {
   display: inline-block;
   padding: 12px 30px;
-  background: linear-gradient(45deg, var(--accent-light-quinary), var(--accent-light-senary));
+  background: linear-gradient(135deg, #23a6d5, #e73c7e);
   color: white;
   text-decoration: none;
-  border-radius: 50px;
+  border-radius: 30px;
   font-weight: 600;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 198, 255, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform: translateZ(0);
+  will-change: transform, box-shadow;
 }
 
 .ctaButton:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 198, 255, 0.5);
+  transform: translateY(-3px) translateZ(0);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
+/* Seção de habilidades */
 .skillsSection {
-  margin: 80px 0;
-  scroll-margin-top: 100px;
+  margin-bottom: 80px;
+  contain: content;
 }
 
-.skillsSection h2 {
-  font-size: 2.5rem;
+.skillsSection h2,
+.philosophySection h2 {
+  font-size: 2rem;
   margin-bottom: 40px;
   text-align: center;
-  background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  position: relative;
+  display: inline-block;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.skillsSection h2::after,
+.philosophySection h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 60px;
+  height: 3px;
+  background: var(--accent-light-senary, #23a6d5);
+  border-radius: 2px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .skillsContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 30px;
 }
 
 .skill {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  padding: 25px;
   display: flex;
   align-items: flex-start;
   gap: 20px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(30px) translateZ(0);
+  transition: 
+    opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+  will-change: transform, opacity;
+  transition-delay: calc(var(--animation-order, 0) * 0.1s);
+  contain: layout style;
 }
 
 .skill:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) translateZ(0);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.skill.animate {
+  opacity: 1;
+  transform: translateY(0) translateZ(0);
 }
 
 .skillIconContainer {
-  width: 50px;
-  height: 50px;
-  min-width: 50px;
+  flex-shrink: 0;
+  width: 55px;
+  height: 55px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  border-radius: 10px;
+  justify-content: center;
   background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-size: 1.8rem;
+  color: var(--accent-light-senary, #23a6d5);
+  transition: transform 0.3s ease;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
-.skillIcon {
-  font-size: 1.8rem;
-  color: var(--accent-light-senary);
+.skill:hover .skillIconContainer {
+  transform: scale(1.1) translateZ(0);
 }
 
 .skillInfo {
   flex: 1;
+  min-width: 0;
 }
 
 .skillInfo h3 {
-  margin-bottom: 5px;
   font-size: 1.2rem;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: white;
 }
 
 .skillDescription {
   font-size: 0.9rem;
-  margin-bottom: 10px;
-  color: var(--text-light-quaternary);
-  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 15px;
+  line-height: 1.5;
 }
 
 .progressContainer {
@@ -317,37 +377,23 @@
   background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
   overflow: hidden;
+  contain: strict;
 }
 
 .progressBar {
   height: 100%;
-  background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
+  width: 0%; /* Começa em 0% e anima até o valor desejado */
+  background: linear-gradient(90deg, #23a6d5, #e73c7e);
   border-radius: 3px;
-  width: 0;
-  transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: width;
+  transform: translateZ(0);
 }
 
-.progressBar.animate {
-  width: attr(data-width);
-}
-
-/* Script will set the width from data-width when in view */
-.animate {
-  width: attr(data-width) !important;
-}
-
+/* Seção de filosofia */
 .philosophySection {
-  margin: 80px 0;
-}
-
-.philosophySection h2 {
-  font-size: 2.5rem;
-  margin-bottom: 40px;
-  text-align: center;
-  background: linear-gradient(to right, var(--accent-light-quinary), var(--accent-light-senary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  margin-bottom: 60px;
+  contain: content;
 }
 
 .philosophyItems {
@@ -357,92 +403,128 @@
 }
 
 .philosophyItem {
+  background: rgba(255, 255, 255, 0.08);
   padding: 30px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 15px;
   text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(30px) translateZ(0);
+  transition: 
+    opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+  will-change: transform, opacity;
+  transition-delay: calc(var(--animation-order, 0) * 0.15s);
+  contain: layout style;
+}
+
+.philosophyItem.animate {
+  opacity: 1;
+  transform: translateY(0) translateZ(0);
 }
 
 .philosophyItem:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px) translateZ(0);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .philosophyItem h3 {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   margin-bottom: 15px;
-  color: var(--accent-light-senary);
+  color: var(--accent-light-senary, #23a6d5);
 }
 
 .philosophyItem p {
   font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
   line-height: 1.6;
-  color: var(--text-light-quaternary);
 }
 
-/* Media queries for responsiveness */
-@media (min-width: 768px) {
+/* Pausa animações durante scroll */
+body.is-scrolling .progressBar {
+  transition-duration: 0.001s !important;
+}
+
+/* Responsividade */
+@media (max-width: 991px) {
   .profileSection {
-    flex-direction: row;
-    align-items: flex-start;
+    grid-template-columns: 1fr;
+    gap: 40px;
   }
   
   .profileImageContainer {
-    flex: 0 0 200px;
-    margin-top: 20px;
+    position: relative;
+    top: 0;
+    text-align: center;
+    margin: 0 auto;
   }
   
-  .profileInfo {
-    flex: 1;
+  .profileInfo h1 {
+    text-align: center;
+  }
+  
+  .profileInfo h2 {
+    text-align: center;
+  }
+
+  .skillsContainer {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
 }
 
 @media (max-width: 768px) {
   .content {
-    padding: 20px;
+    width: 95%;
+    padding: 100px 0 60px;
   }
   
+  .skillsContainer {
+    grid-template-columns: 1fr;
+  }
+  
+  .profileImage {
+    width: 250px;
+    height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
   .profileInfo h1 {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
   }
   
-  .profileInfo h2 {
-    font-size: 1.5rem;
+  .philosophyItems {
+    grid-template-columns: 1fr;
   }
   
-  .stats {
-    flex-direction: column;
-    gap: 20px;
+  .socialLinks {
+    flex-wrap: wrap;
+    justify-content: center;
   }
   
-  .skillsSection h2,
-  .philosophySection h2 {
-    font-size: 2rem;
+  .resumeLink {
+    flex: 1 1 calc(50% - 15px);
+    justify-content: center;
   }
 }
 
-/* Animation for elements when they come into view */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+/* Preferência por movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  .aboutContainer,
+  .statItem,
+  .skill,
+  .progressBar,
+  .philosophyItem,
+  .ctaButton,
+  .socialLinks a {
+    transition-duration: 0.001s !important;
+    animation-duration: 0.001s !important;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .progressBar {
+    transition: none !important;
   }
-}
-
-.skill, .philosophyItem {
-  animation: fadeInUp 0.6s ease forwards;
-  animation-play-state: paused;
-  animation-delay: calc(var(--animation-order) * 0.1s);
-  opacity: 0;
-}
-
-.skill.animate, .philosophyItem.animate {
-  animation-play-state: running;
 }

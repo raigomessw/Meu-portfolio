@@ -1,609 +1,335 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useWorkProjects } from './WorkProjectContext';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faArrowLeft, 
-  faExternalLinkAlt, 
-  faCode, 
-  faPalette, 
-  faLightbulb,
-  faCalendarAlt,
-  faUsers,
-  faLayerGroup,
-  faChevronLeft,
-  faChevronRight,
-  faExpand,
-  faTimes,
-  faLink
-} from '@fortawesome/free-solid-svg-icons';
-import { faGithub, faFigma } from '@fortawesome/free-brands-svg-icons';
+import { faArrowLeft, faExternalLinkAlt, faCode, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { throttle, detectDeviceCapability } from '../../utils/performance';
 import styles from './ProjectDetail.module.css';
+import { useWorkProjects } from './WorkProjectContext';
 
 function ProjectDetail() {
-  const { projectId } = useParams();
+  // Obtenha os projetos do contexto
   const { allProjects } = useWorkProjects();
-  const project = allProjects.find(p => p.id === projectId);
+  const { projectId } = useParams();
   const navigate = useNavigate();
-  
+  const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [currentSection, setCurrentSection] = useState('overview');
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState(0);
+  const [galleryVisible, setGalleryVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   
-  const sectionRefs = {
-    hero: useRef(null),
-    overview: useRef(null),
-    process: useRef(null),
-    features: useRef(null),
-    gallery: useRef(null),
-    technologies: useRef(null)
-  };
-
-  const prevNextProjects = getPrevNextProjects(allProjects, projectId);
+  const headerRef = useRef(null);
+  const contentRef = useRef(null);
+  const galleryRef = useRef(null);
+  const modalRef = useRef(null);
+  const imageRefs = useRef([]);
+  const loadingTimers = useRef([]);
   
-  // Handle scroll and loading
+  const deviceCaps = detectDeviceCapability();
+  const prefersReducedMotion = deviceCaps.prefersReducedMotion;
+  
+  // Encontrar projeto pelo ID
   useEffect(() => {
-    window.scrollTo(0, 0);
-    setLoading(true);
+    // Usar allProjects do contexto para encontrar o projeto pelo ID
+    const foundProject = allProjects.find(p => p.id === projectId);
     
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 800);
-    
-    const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const currentProgress = Math.min(Math.max(window.scrollY / totalScroll, 0), 1);
-      setScrollProgress(currentProgress);
+    if (foundProject) {
+      document.title = `${foundProject.title} | Projeto - Rai Gomes`;
+      setProject(foundProject);
       
-      // Update current section based on scroll position
-      for (const [section, ref] of Object.entries(sectionRefs)) {
-        if (ref.current) {
-          const { top, bottom } = ref.current.getBoundingClientRect();
-          const threshold = window.innerHeight * 0.4;
-          
-          if (top <= threshold && bottom >= threshold) {
-            setCurrentSection(section);
-            break;
-          }
-        }
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
+      // Simular um tempo de carregamento mínimo para evitar flash
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 500);
+      
+      loadingTimers.current.push(timer);
+    } else {
+      navigate('/work', { replace: true });
+    }
     
     return () => {
-      clearTimeout(timer);
+      document.title = 'Portfolio - Rai Gomes';
+      loadingTimers.current.forEach(timer => clearTimeout(timer));
+    };
+  }, [projectId, navigate, allProjects]);
+  
+  // Animações de entrada - otimizadas para evitar jank
+  useEffect(() => {
+    if (!loading && !prefersReducedMotion) {
+      // Layout header
+      const showHeader = setTimeout(() => {
+        if (headerRef.current) {
+          headerRef.current.classList.add(styles.visible);
+        }
+      }, 100);
+      
+      // Layout content com atraso para evitar trabalho simultâneo
+      const showContent = setTimeout(() => {
+        if (contentRef.current) {
+          contentRef.current.classList.add(styles.visible);
+        }
+      }, 300);
+      
+      loadingTimers.current.push(showHeader, showContent);
+    }
+    
+    return () => {
+      loadingTimers.current.forEach(timer => clearTimeout(timer));
+    };
+  }, [loading, prefersReducedMotion]);
+  
+  // Rastrear imagens carregadas
+  const handleImageLoaded = useCallback(() => {
+    setImagesLoaded(prev => {
+      const newCount = prev + 1;
+      // Mostrar galeria apenas quando todas as imagens estiverem carregadas
+      if (project && newCount >= (project.images?.length || 0)) {
+        requestAnimationFrame(() => {
+          setGalleryVisible(true);
+        });
+      }
+      return newCount;
+    });
+  }, [project]);
+  
+  // Fechar com ESC e evitar scroll quando modal aberto
+  useEffect(() => {
+    if (selectedImage !== null) {
+      document.body.style.overflow = 'hidden';
+      
+      const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+          setSelectedImage(null);
+        }
+      };
+      
+      window.addEventListener('keydown', handleEscape);
+      return () => {
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', handleEscape);
+      };
+    }
+  }, [selectedImage]);
+  
+  // Detectar cliques fora do modal para fechar
+  const handleOutsideClick = useCallback((e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      setSelectedImage(null);
+    }
+  }, []);
+  
+  // Voltar para página de trabalhos
+  const goBack = useCallback(() => {
+    navigate('/work');
+  }, [navigate]);
+  
+  // Scroll suave para o conteúdo
+  const scrollToContent = useCallback(() => {
+    window.scrollTo({
+      top: window.innerHeight,
+      behavior: 'smooth'
+    });
+  }, []);
+  
+  // Optimized scroll handler with throttle
+  const handleScroll = throttle(() => {
+    if (!headerRef.current) return;
+    
+    const scrollPos = window.scrollY;
+    const opacity = Math.max(0, Math.min(1, 1 - scrollPos / 300));
+    const scale = Math.max(0.92, Math.min(1, 1 - scrollPos / 1000));
+    
+    requestAnimationFrame(() => {
+      headerRef.current.style.opacity = opacity;
+      headerRef.current.style.transform = `scale(${scale})`;
+    });
+  }, 60);
+  
+  useEffect(() => {
+    if (!loading && !prefersReducedMotion) {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+    }
+    
+    return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [projectId]);
+  }, [loading, handleScroll, prefersReducedMotion]);
   
-  if (!project) {
+  // Classes dinâmicas
+  const containerClass = `${styles.projectContainer} 
+    ${prefersReducedMotion ? styles.reducedMotion : ''} 
+    ${loading ? styles.loading : ''}`;
+  
+  if (loading) {
     return (
-      <motion.div 
-        className={styles.notFound}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        <div className={styles.notFoundContent}>
-          <h1>Project Not Found</h1>
-          <p>The project you're looking for doesn't exist or has been removed.</p>
-          <Link to="/work" className={styles.backButton}>
-            <FontAwesomeIcon icon={faArrowLeft} />
-            <span>Back to Projects</span>
-          </Link>
-        </div>
-      </motion.div>
+      <div className={styles.loadingContainer}>
+        <div className={styles.loader}></div>
+        <p>Carregando projeto...</p>
+      </div>
     );
   }
-
-  // Handle keyboard navigation for gallery
-  useEffect(() => {
-    const handleKeydown = (e) => {
-      if (lightboxOpen) {
-        if (e.key === 'Escape') setLightboxOpen(false);
-        if (e.key === 'ArrowLeft') navigateGallery('prev');
-        if (e.key === 'ArrowRight') navigateGallery('next');
-      }
-    };
-    
-    window.addEventListener('keydown', handleKeydown);
-    return () => window.removeEventListener('keydown', handleKeydown);
-  }, [lightboxOpen, activeImageIndex]);
-
-  const navigateGallery = (direction) => {
-    if (!project.gallery || project.gallery.length <= 1) return;
-    
-    if (direction === 'next') {
-      setActiveImageIndex((prevIndex) => 
-        prevIndex < project.gallery.length - 1 ? prevIndex + 1 : 0
-      );
-    } else {
-      setActiveImageIndex((prevIndex) => 
-        prevIndex > 0 ? prevIndex - 1 : project.gallery.length - 1
-      );
-    }
-  };
-
+  
+  if (!project) return null;
+  
   return (
-    <motion.div 
-      className={`${styles.projectDetail} ${loading ? styles.loading : ''}`}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      {/* Progress bar */}
-      <div className={styles.progressBar}>
-        <div 
-          className={styles.progressIndicator} 
-          style={{ width: `${scrollProgress * 100}%` }} 
-        />
-      </div>
-      
-      {/* Side navigation */}
-      <nav className={styles.sideNavigation}>
-        <ul>
-          {Object.keys(sectionRefs).map((section) => (
-            section !== 'hero' && (
-              <li key={section} className={currentSection === section ? styles.active : ''}>
-                <a href={`#${section}`} 
-                   onClick={(e) => {
-                     e.preventDefault();
-                     sectionRefs[section].current.scrollIntoView({ behavior: 'smooth' });
-                   }}
-                >
-                  <span className={styles.navDot}></span>
-                  <span className={styles.navLabel}>{formatSectionName(section)}</span>
-                </a>
-              </li>
-            )
-          ))}
-        </ul>
-      </nav>
-      
-      {/* Hero Section */}
+    <div className={containerClass}>
       <header 
-        className={styles.projectHeader}
-        ref={sectionRefs.hero}
+        className={styles.projectHeader} 
+        ref={headerRef} 
+        style={{ backgroundImage: `url(${project.backgroundImage})` }}
       >
-        <div className={styles.heroBackdrop}>
-          {!loading && (
+        <div className={styles.headerOverlay}></div>
+        <div className={styles.headerContent}>
+          <div className={styles.backButton} onClick={goBack}>
+            <FontAwesomeIcon icon={faArrowLeft} />
+            <span>Voltar para Projetos</span>
+          </div>
+          
+          <h1 className={styles.projectTitle}>{project.title}</h1>
+          
+          <div className={styles.projectMeta}>
+            {project.date && (
+              <span className={styles.projectDate}>{project.date}</span>
+            )}
+            
+            <div className={styles.projectTags}>
+              {project.tags.map((tag, idx) => (
+                <span key={idx} className={styles.tag}>{tag}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        {/* Indicador de rolagem para o conteúdo */}
+        <div 
+          className={styles.scrollIndicator} 
+          onClick={scrollToContent}
+          aria-hidden="true"
+        >
+          <span className={styles.scrollIconArrow}></span>
+        </div>
+      </header>
+      
+      <main className={styles.projectContent} ref={contentRef}>
+        <section className={styles.projectOverview}>
+          <h2>Visão Geral</h2>
+          <p>{project.overview || project.description}</p>
+          
+          {project.details?.challenge && (
             <>
-              <div className={styles.heroBackdropImage} style={{
-                backgroundImage: `url(${project.backgroundImage})`
-              }}></div>
-              <div className={styles.heroBackdropOverlay}></div>
+              <h3>O Desafio</h3>
+              <p>{project.details.challenge}</p>
             </>
           )}
-        </div>
-
-        <div className={styles.navbar}>
-          <Link to="/work" className={styles.backButton}>
-            <FontAwesomeIcon icon={faArrowLeft} />
-            <span>All Projects</span>
-          </Link>
           
+          {project.details?.solution && (
+            <>
+              <h3>A Solução</h3>
+              <p>{project.details.solution}</p>
+            </>
+          )}
+        </section>
+        
+        <section className={styles.projectTech}>
+          <h2>Tecnologias Utilizadas</h2>
+          <ul className={styles.techList}>
+            {project.details?.technologies?.map((tech, idx) => (
+              <li key={idx} className={styles.techItem}>
+                {tech.icon && <FontAwesomeIcon icon={tech.icon} />}
+                {tech.name || tech}
+              </li>
+            ))}
+          </ul>
+        </section>
+        
+        <section className={styles.projectLinks}>
           {project.projectLink && (
             <a 
               href={project.projectLink} 
               target="_blank" 
-              rel="noopener noreferrer" 
-              className={styles.externalLinkButton}
+              rel="noopener noreferrer"
+              className={`${styles.projectLink} ${styles.liveLink}`}
             >
-              <span>View Live</span>
-              <FontAwesomeIcon icon={faExternalLinkAlt} />
+              <FontAwesomeIcon icon={faGlobe} />
+              Ver Projeto
             </a>
           )}
-        </div>
+          
+          {project.githubLink && (
+            <a 
+              href={project.githubLink} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className={`${styles.projectLink} ${styles.codeLink}`}
+            >
+              <FontAwesomeIcon icon={faCode} />
+              Ver Código
+            </a>
+          )}
+        </section>
         
-        <div className={styles.heroContent}>
-          <motion.div 
-            className={styles.heroTextContent}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: loading ? 0 : 1, y: loading ? 20 : 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
+        {project.images && project.images.length > 0 && (
+          <section 
+            className={`${styles.projectGallery} ${galleryVisible ? styles.visible : ''}`}
+            ref={galleryRef}
           >
-            <div className={styles.projectMeta}>
-              {project.details.date && (
-                <div className={styles.metaItem}>
-                  <FontAwesomeIcon icon={faCalendarAlt} />
-                  <span>{project.details.date}</span>
+            <h2>Galeria</h2>
+            <div className={styles.galleryGrid}>
+              {project.images.map((image, idx) => (
+                <div 
+                  key={idx} 
+                  className={styles.galleryItem}
+                  onClick={() => setSelectedImage(image)}
+                  style={{ animationDelay: `${idx * 0.1}s` }}
+                >
+                  <img 
+                    src={image.thumbnail || image.src} 
+                    alt={image.alt || `${project.title} - Imagem ${idx + 1}`}
+                    loading="lazy"
+                    decoding="async"
+                    ref={el => imageRefs.current[idx] = el}
+                    onLoad={handleImageLoaded}
+                  />
+                  <div className={styles.imageOverlay}>
+                    <FontAwesomeIcon icon={faExternalLinkAlt} />
+                  </div>
                 </div>
-              )}
-              
-              {project.details.client && (
-                <div className={styles.metaItem}>
-                  <FontAwesomeIcon icon={faUsers} />
-                  <span>{project.details.client}</span>
-                </div>
-              )}
-            </div>
-            
-            <h1 className={styles.projectTitle}>{project.title}</h1>
-            
-            <div className={styles.tags}>
-              {project.tags.map(tag => (
-                <span key={tag} className={styles.tag}>{tag}</span>
               ))}
             </div>
-            
-            <p className={styles.projectSummary}>
-              {project.summary || project.description.split('.')[0] + '.'}
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            className={styles.heroImageContainer}
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-            animate={{ opacity: loading ? 0 : 1, y: 0, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+          </section>
+        )}
+        
+        {selectedImage && (
+          <div 
+            className={styles.imageModal} 
+            onClick={handleOutsideClick}
           >
-            {loading ? (
-              <div className={styles.imageSkeleton}></div>
-            ) : (
+            <div 
+              className={styles.modalContent} 
+              ref={modalRef}
+            >
               <img 
-                src={project.heroImage || project.backgroundImage} 
-                alt={project.title} 
-                className={styles.heroMainImage}
+                src={selectedImage.src} 
+                alt={selectedImage.alt || 'Imagem em destaque'}
+                className={styles.modalImage}
               />
-            )}
-          </motion.div>
-        </div>
-        
-        <div className={styles.scrollIndicator}>
-          <div className={styles.mouse}>
-            <div className={styles.mouseWheel}></div>
+              
+              {selectedImage.caption && (
+                <p className={styles.imageCaption}>{selectedImage.caption}</p>
+              )}
+              
+              <button 
+                className={styles.closeModal}
+                onClick={() => setSelectedImage(null)}
+                aria-label="Fechar imagem"
+              >
+                &times;
+              </button>
+            </div>
           </div>
-          <span>Scroll to explore</span>
-        </div>
-      </header>
-      
-      <div className={styles.projectContent}>
-        {/* Overview Section */}
-        <section 
-          id="overview" 
-          ref={sectionRefs.overview}
-          className={styles.section}
-        >
-          <ScrollAnimation>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Overview</h2>
-              <div className={styles.sectionDivider}></div>
-            </div>
-            
-            <div className={styles.description}>
-              {loading ? (
-                <>
-                  <div className={styles.paragraphSkeleton}></div>
-                  <div className={styles.paragraphSkeleton}></div>
-                </>
-              ) : (
-                project.description.split('\n').map((paragraph, i) => (
-                  <p key={i}>{paragraph}</p>
-                ))
-              )}
-            </div>
-          </ScrollAnimation>
-        </section>
-        
-        {/* Process Section */}
-        <section 
-          id="process" 
-          ref={sectionRefs.process}
-          className={`${styles.section} ${styles.processSection}`}
-        >
-          <ScrollAnimation>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Design Process</h2>
-              <div className={styles.sectionDivider}></div>
-            </div>
-            
-            <div className={styles.processCards}>
-              <div className={`${styles.processCard} ${styles.challengeCard}`}>
-                <div className={styles.processIconWrapper}>
-                  <FontAwesomeIcon icon={faLightbulb} className={styles.processIcon} />
-                </div>
-                <h3>The Challenge</h3>
-                <p>{project.details.challenge || "Identifying and addressing key user pain points while delivering a solution that meets business objectives."}</p>
-              </div>
-              
-              <div className={styles.processArrow}>
-                <FontAwesomeIcon icon={faChevronRight} />
-              </div>
-              
-              <div className={`${styles.processCard} ${styles.solutionCard}`}>
-                <div className={styles.processIconWrapper}>
-                  <FontAwesomeIcon icon={faPalette} className={styles.processIcon} />
-                </div>
-                <h3>The Solution</h3>
-                <p>{project.details.solution || "Creating an intuitive interface with carefully crafted user journeys and a cohesive visual language that communicates the brand's values."}</p>
-              </div>
-            </div>
-          </ScrollAnimation>
-        </section>
-        
-        {/* Features Section */}
-        {project.details.features && (
-          <section 
-            id="features" 
-            ref={sectionRefs.features}
-            className={styles.section}
-          >
-            <ScrollAnimation>
-              <div className={styles.sectionHeader}>
-                <h2 className={styles.sectionTitle}>Key Features</h2>
-                <div className={styles.sectionDivider}></div>
-              </div>
-              
-              <div className={styles.featuresList}>
-                {project.details.features.map((feature, index) => (
-                  <div key={index} className={styles.featureItem}>
-                    <div className={styles.featureNumber}>{index + 1}</div>
-                    <div className={styles.featureContent}>
-                      <h3>{feature.title}</h3>
-                      <p>{feature.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollAnimation>
-          </section>
         )}
-        
-        {/* Gallery Section */}
-        {project.gallery && project.gallery.length > 0 && (
-          <section 
-            id="gallery" 
-            ref={sectionRefs.gallery}
-            className={`${styles.section} ${styles.gallerySection}`}
-          >
-            <ScrollAnimation>
-              <div className={styles.sectionHeader}>
-                <h2 className={styles.sectionTitle}>Project Gallery</h2>
-                <div className={styles.sectionDivider}></div>
-              </div>
-              
-              <div className={styles.galleryGrid}>
-                {project.gallery.map((image, index) => (
-                  <div 
-                    key={index}
-                    className={styles.galleryItem}
-                    onClick={() => {
-                      setActiveImageIndex(index);
-                      setLightboxOpen(true);
-                    }}
-                  >
-                    <img 
-                      src={image.thumbnail || image.src} 
-                      alt={image.alt || `Project image ${index + 1}`} 
-                    />
-                    <div className={styles.galleryItemOverlay}>
-                      <FontAwesomeIcon icon={faExpand} />
-                      <span>View</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollAnimation>
-            
-            <AnimatePresence>
-              {lightboxOpen && (
-                <motion.div 
-                  className={styles.lightbox}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onClick={() => setLightboxOpen(false)}
-                >
-                  <div 
-                    className={styles.lightboxContent}
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <button 
-                      className={styles.lightboxClose}
-                      onClick={() => setLightboxOpen(false)}
-                    >
-                      <FontAwesomeIcon icon={faTimes} />
-                    </button>
-                    
-                    <div className={styles.lightboxImageContainer}>
-                      <motion.img 
-                        key={activeImageIndex}
-                        src={project.gallery[activeImageIndex].src} 
-                        alt={project.gallery[activeImageIndex].alt || `Project image ${activeImageIndex + 1}`}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    </div>
-                    
-                    <p className={styles.lightboxCaption}>
-                      {project.gallery[activeImageIndex].caption || `${activeImageIndex + 1} / ${project.gallery.length}`}
-                    </p>
-                    
-                    <button 
-                      className={`${styles.lightboxNav} ${styles.lightboxPrev}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigateGallery('prev');
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faChevronLeft} />
-                    </button>
-                    
-                    <button 
-                      className={`${styles.lightboxNav} ${styles.lightboxNext}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigateGallery('next');
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faChevronRight} />
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </section>
-        )}
-        
-        {/* Technologies Section */}
-        <section 
-          id="technologies" 
-          ref={sectionRefs.technologies}
-          className={styles.section}
-        >
-          <ScrollAnimation>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>Technologies</h2>
-              <div className={styles.sectionDivider}></div>
-            </div>
-            
-            <div className={styles.technologiesContent}>
-              <div className={styles.techList}>
-                {project.details.technologies.map((tech, index) => (
-                  <div key={tech} className={styles.techItem}>
-                    <span className={styles.techName}>{tech}</span>
-                  </div>
-                ))}
-              </div>
-              
-              <div className={styles.projectLinks}>
-                {project.codeLink && (
-                  <a 
-                    href={project.codeLink} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className={styles.projectLink}
-                  >
-                    <FontAwesomeIcon icon={faGithub} />
-                    <span>Source Code</span>
-                  </a>
-                )}
-                
-                {project.designLink && (
-                  <a 
-                    href={project.designLink} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className={styles.projectLink}
-                  >
-                    <FontAwesomeIcon icon={faFigma} />
-                    <span>Design in Figma</span>
-                  </a>
-                )}
-                
-                {project.projectLink && (
-                  <a 
-                    href={project.projectLink} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className={styles.projectLink}
-                  >
-                    <FontAwesomeIcon icon={faLink} />
-                    <span>Live Project</span>
-                  </a>
-                )}
-              </div>
-            </div>
-          </ScrollAnimation>
-        </section>
-      </div>
-      
-      {/* Next/Prev Projects Navigation */}
-      <div className={styles.projectNavigation}>
-        {prevNextProjects.prev && (
-          <Link 
-            to={`/work/${prevNextProjects.prev.id}`}
-            className={`${styles.projectNavItem} ${styles.prevProject}`}
-          >
-            <div className={styles.projectNavImage} style={{
-              backgroundImage: `url(${prevNextProjects.prev.backgroundImage})`
-            }}>
-              <div className={styles.projectNavOverlay}></div>
-            </div>
-            <div className={styles.projectNavContent}>
-              <span className={styles.projectNavLabel}>
-                <FontAwesomeIcon icon={faChevronLeft} />
-                Previous Project
-              </span>
-              <h4 className={styles.projectNavTitle}>{prevNextProjects.prev.title}</h4>
-            </div>
-          </Link>
-        )}
-        
-        {prevNextProjects.next && (
-          <Link 
-            to={`/work/${prevNextProjects.next.id}`}
-            className={`${styles.projectNavItem} ${styles.nextProject}`}
-          >
-            <div className={styles.projectNavImage} style={{
-              backgroundImage: `url(${prevNextProjects.next.backgroundImage})`
-            }}>
-              <div className={styles.projectNavOverlay}></div>
-            </div>
-            <div className={styles.projectNavContent}>
-              <span className={styles.projectNavLabel}>
-                Next Project
-                <FontAwesomeIcon icon={faChevronRight} />
-              </span>
-              <h4 className={styles.projectNavTitle}>{prevNextProjects.next.title}</h4>
-            </div>
-          </Link>
-        )}
-      </div>
-    </motion.div>
-  );
-}
-
-// Scroll animation component
-function ScrollAnimation({ children }) {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef();
-  
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(ref.current);
-        }
-      }, 
-      { threshold: 0.1 }
-    );
-    
-    observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-  
-  return (
-    <div 
-      ref={ref}
-      className={`${styles.scrollAnimation} ${isVisible ? styles.visible : ''}`}
-    >
-      {children}
+      </main>
     </div>
   );
-}
-
-// Helper function to format section names for display
-function formatSectionName(section) {
-  return section.charAt(0).toUpperCase() + section.slice(1);
-}
-
-// Helper function to get previous and next projects
-function getPrevNextProjects(projects, currentId) {
-  const currentIndex = projects.findIndex(p => p.id === currentId);
-  
-  return {
-    prev: currentIndex > 0 ? projects[currentIndex - 1] : null,
-    next: currentIndex < projects.length - 1 ? projects[currentIndex + 1] : null
-  };
 }
 
 export default ProjectDetail;

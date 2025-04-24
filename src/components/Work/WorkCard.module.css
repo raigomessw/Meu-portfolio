@@ -1,4 +1,4 @@
-/* WorkCard.module.css */
+/* Otimizações base */
 .workCard {
   background: rgba(0, 0, 0, 0.6);
   border-radius: 16px;
@@ -6,77 +6,63 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   width: 100%;
   max-width: 580px;
   position: relative;
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
+  contain: layout; /* Isolar repaints */
 }
 
 .workCard:hover {
-  transform: translateY(-8px);
+  transform: translate3d(0, -8px, 0); /* Force GPU acceleration */
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.workCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(to right, var(--accent-light-senary), var(--accent-light-quaternary));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.workCard:hover::before {
-  opacity: 1;
 }
 
 .cardContent {
-  padding: 35px;
-  color: var(--text-light-secondary);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .cardTitle {
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  margin-bottom: 16px;
-  background: linear-gradient(to right, var(--text-light-secondary), var(--text-light-quaternary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #ffffff;
+  margin: 0;
+  transform: translateZ(0);
 }
 
 .cardDescription {
-  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
   line-height: 1.6;
-  color: var(--text-light-quaternary);
-  margin-bottom: 24px;
+  margin: 0;
 }
 
 .cardTags {
   display: flex;
   flex-wrap: wrap;
-  margin-bottom: 30px;
-  gap: 10px;
+  gap: 8px;
+  margin-bottom: 5px;
 }
 
 .tag {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--text-light-quaternary);
+  background: rgba(255, 255, 255, 0.1);
   padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.05);
+  transform: translateZ(0);
 }
 
 .tag:hover {
   background-color: rgba(255, 255, 255, 0.15);
-  color: var(--text-light-secondary);
+  color: var(--text-light-secondary, rgba(255, 255, 255, 0.85));
 }
 
 .buttonContainer {
@@ -94,114 +80,144 @@
   font-size: 1rem;
   display: flex;
   align-items: center;
-  text-align: center;
   gap: 10px;
   position: relative;
   overflow: hidden;
-  text-decoration: none;
+  transform: translateZ(0);
+  will-change: transform; /* Otimização para animações */
+  contain: content; /* Otimizar render */
 }
 
 .viewButton {
-  background-color: var(--accent-light-senary);
-  color: var(--bg-dark-primary);
+  background: linear-gradient(135deg, var(--accent-light-senary, #23a6d5), var(--accent-light-quinary, #e73c7e));
+  color: white;
   border: none;
-  border: 2px solid var(--accent-light-senary)
+  text-decoration: none;
 }
 
 .detailsButton {
-  background-color: transparent;
-  color: var(--text-light-secondary);
-  border: 2px solid var(--text-light-secondary);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.viewButton:hover {
-  background-color: var(--bg-dark-tertiary);
-  box-shadow: 0 0 15px rgba(182, 182, 182, 0.4);
-  transform: translateY(-3px);
+.viewButton::before, .detailsButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.7s ease;
 }
 
-.detailsButton:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-3px);
+.viewButton:hover, .detailsButton:hover {
+  transform: translate3d(0, -3px, 0);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.viewButton:hover::before, .detailsButton:hover::before {
+  left: 100%;
 }
 
 .buttonIcon {
   transition: transform 0.3s ease;
+  will-change: transform;
 }
 
-.viewButton:hover .buttonIcon,
-.detailsButton:hover .buttonIcon {
-  transform: translateX(5px);
+.viewButton:hover .buttonIcon, .detailsButton:hover .buttonIcon {
+  transform: translate3d(5px, 0, 0);
 }
 
-/* Modal styles */
+/* Modal Styles - Otimizados */
 .modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 20px;
   backdrop-filter: blur(5px);
-  animation: fadeIn 0.3s ease;
+  -webkit-backdrop-filter: blur(5px);
+  overscroll-behavior: contain; /* Previne scroll bounce */
+  will-change: opacity;
+  transition: opacity 0.3s ease;
+  transform: translateZ(0);
+  contain: strict; /* Isolar completamente - potencial grande melhoria */
 }
 
 .modal {
-  background: rgba(10, 10, 10, 0.95);
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
+  background: rgba(25, 25, 25, 0.95);
   border-radius: 16px;
-  overflow: hidden;
+  max-width: 800px;
+  width: 100%;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  transform: translateZ(0) scale(1);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  will-change: transform, opacity;
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.4s ease;
+}
+
+.modal.closing {
+  transform: translateZ(0) scale(0.95);
+  opacity: 0;
 }
 
 .closeButton {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background: transparent;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.2);
   border: none;
-  color: var(--text-light-quaternary);
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 40px;
-  height: 40px;
+  color: rgba(255, 255, 255, 0.7);
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
   border-radius: 50%;
+  z-index: 10;
+  transform: translateZ(0);
+  will-change: transform, background-color;
 }
 
 .closeButton:hover {
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
-  transform: rotate(90deg);
+  transform: rotate(90deg) translateZ(0);
 }
 
 .modalContent {
   padding: 40px;
-  color: var(--text-light-secondary);
+  color: var(--text-light-secondary, rgba(255, 255, 255, 0.85));
   overflow-y: auto;
   max-height: 80vh;
+  overscroll-behavior: contain; /* Previne scroll bounce */
+  will-change: transform;
+  transform: translateZ(0);
+  contain: content; /* Isolamento para melhorar performance */
 }
 
 .modalTitle {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 30px;
-  background: linear-gradient(to right, var(--text-light-secondary), var(--accent-light-senary));
+  background: linear-gradient(135deg, #ffffff, #a5b4fc);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  transform: translateZ(0);
 }
 
 .modalSection {
@@ -209,133 +225,121 @@
 }
 
 .modalSection h3 {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   margin-bottom: 15px;
-  color: var(--accent-light-senary);
+  color: var(--text-light-secondary, rgba(255, 255, 255, 0.85));
 }
 
 .modalSection p {
+  line-height: 1.7;
   margin-bottom: 15px;
-  line-height: 1.6;
-  color: var(--text-light-quaternary);
+  color: var(--text-light-quaternary, rgba(255, 255, 255, 0.7));
 }
 
 .modalTags {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-top: 15px;
 }
 
 .modalActions {
-  margin-top: 40px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  margin-top: 40px;
 }
 
 .modalButton {
-  background-color: var(--bg-dark-secondary);
-  color: var(--bg-dark-primary);
-  padding: 12px 30px;
+  padding: 14px 30px;
+  background-color: var(--accent-light-senary, #23a6d5);
+  color: white;
   border-radius: 8px;
-  font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
+  text-decoration: none;
   display: flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
+  transform: translateZ(0);
+  will-change: transform, box-shadow;
+  contain: strict; /* Rigoroso isolamento para melhor performance */
 }
 
 .modalButton:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px) translateZ(0);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  background-color: var(--bg-dark-secondary);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  background-color: var(--accent-light-senary-dark, #1c85a8);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+/* Otimização de animações para leitores de tela/preferências de redução de movimento */
+@media (prefers-reduced-motion: reduce) {
+  .workCard,
+  .workCard:hover,
+  .viewButton, 
+  .detailsButton,
+  .buttonIcon,
+  .modalOverlay,
+  .modal,
+  .closeButton,
+  .modalButton {
+    transition-duration: 0.001s !important;
+    animation-duration: 0.001s !important;
+    transition-delay: 0s !important;
   }
-  to {
-    opacity: 1;
+  
+  .modalOverlay {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .viewButton::before, 
+  .detailsButton::before {
+    display: none;
   }
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Otimizações para dispositivos de baixo desempenho */
+.reducedMotion {
+  transition-duration: 0.001s !important;
 }
 
-/* Responsive design */
+.reducedMotion * {
+  animation-duration: 0.001s !important;
+  transition-duration: 0.001s !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Evitar animações durante scroll */
+body.is-scrolling .workCard,
+body.is-scrolling .viewButton,
+body.is-scrolling .detailsButton,
+body.is-scrolling .buttonIcon,
+body.is-scrolling .tag {
+  transition-duration: 0.001s !important;
+  animation-play-state: paused !important;
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
-  .cardContent {
-    padding: 25px;
+  .buttonContainer {
+    flex-direction: column;
   }
   
-  .cardTitle {
-    font-size: 1.8rem;
-  }
-  
-  .cardDescription {
-    font-size: 1rem;
-    max-width: 100%;
-  }
-  
-  .viewButton, .detailsButton {
-    padding: 10px 18px;
-    font-size: 0.9rem;
-    
+  .viewButton, 
+  .detailsButton {
+    width: 100%;
+    justify-content: center;
   }
   
   .modalContent {
-    padding: 30px;
+    padding: 30px 20px;
   }
   
   .modalTitle {
     font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  .buttonContainer {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .viewButton, .detailsButton {
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .cardContent {
-    padding: 20px;
-  }
-  
-  .cardTitle {
-    font-size: 1.5rem;
-  }
-  
-  .modalContent {
-    padding: 20px;
-  }
-  
-  .modalTitle {
-    font-size: 1.6rem;
-  }
-  
-  .closeButton {
-    top: 10px;
-    right: 10px;
   }
 }

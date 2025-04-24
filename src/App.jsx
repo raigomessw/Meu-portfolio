@@ -11,24 +11,33 @@ import MarketResearch from './components/Services/MarketResearch';
 import UserResearch from './components/Services/UserResearch';
 import MVPPrototyping from './components/Services/MVPPrototyping';
 import DesignValidation from './components/Services/DesignValidation';
+import { setupPassiveListeners, detectDeviceCapability } from './utils/performance';
+import './Index.css'; // Certifique-se de que este arquivo existe
 
-
-// Scroll handler component for router
+// Componente otimizado para gerenciar scroll
 function ScrollToSection() {
   const location = useLocation();
   
   useEffect(() => {
-    // If the path is /work, scroll to work section
     if (location.pathname === '/work') {
-      const workSection = document.getElementById('work');
-      if (workSection) {
-        setTimeout(() => {
-          workSection.scrollIntoView({ behavior: 'smooth' });
-        }, 100); // Small delay to ensure component is mounted
-      }
+      // Usar requestAnimationFrame para garantir performance
+      requestAnimationFrame(() => {
+        const workSection = document.getElementById('work');
+        if (workSection) {
+          // Sroll apenas após o componente ter renderizado completamente
+          setTimeout(() => {
+            workSection.scrollIntoView({ 
+              behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+            });
+          }, 100);
+        }
+      });
     } else {
-      // For other routes, scroll to top
-      window.scrollTo(0, 0);
+      // Usar { behavior: 'instant' } para evitar animações desnecessárias
+      window.scrollTo({
+        top: 0,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'instant'
+      });
     }
   }, [location]);
   
@@ -36,6 +45,75 @@ function ScrollToSection() {
 }
 
 function App() {
+  // Configurações de performance global
+  useEffect(() => {
+    // 1. Configurar listeners passivos para melhorar performance de eventos
+    const cleanupPassiveListeners = setupPassiveListeners();
+    
+    // 2. Detectar preferências de redução de movimento e capacidades do dispositivo
+    const deviceCaps = detectDeviceCapability();
+    if (deviceCaps.shouldUseReducedEffects) {
+      document.documentElement.classList.add('reduced-motion');
+    }
+    
+    // 3. Otimizar carregamento de imagens
+    const lazyloadImages = () => {
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              const src = img.getAttribute('data-src');
+              if (src) {
+                img.src = src;
+                img.removeAttribute('data-src');
+              }
+              imageObserver.unobserve(img);
+            }
+          });
+        });
+
+        document.querySelectorAll('img[data-src]').forEach(img => {
+          imageObserver.observe(img);
+        });
+      }
+    };
+    
+    // 4. Limpar timers e animações quando a página não está visível
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        document.body.classList.add('page-hidden');
+      } else {
+        document.body.classList.remove('page-hidden');
+        // Reiniciar lazy loading quando a página volta a ser visível
+        lazyloadImages();
+      }
+    });
+    
+    // 5. Desativar animações durante scroll - melhora significativamente a performance
+    let scrollTimer;
+    const handleScroll = () => {
+      document.body.classList.add('is-scrolling');
+      
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        document.body.classList.remove('is-scrolling');
+      }, 150);
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Iniciar otimização de imagens
+    lazyloadImages();
+    
+    // Cleanup
+    return () => {
+      cleanupPassiveListeners();
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimer);
+    };
+  }, []);
+  
   return (
     <BrowserRouter>
       <Navbar />
@@ -47,9 +125,9 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} /> 
         <Route path="/services/market-research" element={<MarketResearch />} />
-  <Route path="/services/user-research" element={<UserResearch />} />
-  <Route path="/services/mvp-prototyping" element={<MVPPrototyping />} />
-  <Route path="/services/design-validation" element={<DesignValidation />} />
+        <Route path="/services/user-research" element={<UserResearch />} />
+        <Route path="/services/mvp-prototyping" element={<MVPPrototyping />} />
+        <Route path="/services/design-validation" element={<DesignValidation />} />
       </Routes>
       <Footer />
     </BrowserRouter>
