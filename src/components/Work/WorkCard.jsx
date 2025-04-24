@@ -1,16 +1,29 @@
 import React, { useState, memo, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import styles from './WorkCard.module.css';
 
-function WorkCard({ title, description, tags, projectLink, projectDetails }) {
+function WorkCard({ id, title, description, tags, projectLink, projectDetails }) {
+  // Adicionamos o id como parâmetro
   const [modalOpen, setModalOpen] = useState(false);
   const cardRef = useRef(null);
   const modalContentRef = useRef(null);
+  const navigate = useNavigate();
   
-  // Previne múltiplas aberturas de modal
+  // Navegar para página de detalhes do projeto
+  const viewProjectDetails = (e) => {
+    e.preventDefault();
+    navigate(`/work/${id}`);
+  };
+
+  // Função para abrir modal para compatibilidade com código existente
   const openModal = (e) => {
     e.preventDefault();
+    
+    // Você pode optar por manter o modal ou redirecionar diretamente
+    // Para redirecionar, descomente a linha abaixo e remova o restante da função
+    // return viewProjectDetails(e);
     
     // Usar requestAnimationFrame para garantir smooth rendering
     requestAnimationFrame(() => {
@@ -62,39 +75,46 @@ function WorkCard({ title, description, tags, projectLink, projectDetails }) {
 
   return (
     <>
-      <div className={cardClassName} ref={cardRef}>
-        <div className={styles.cardContent}>
-          <h3 className={styles.cardTitle}>{title}</h3>
-          <p className={styles.cardDescription}>{description}</p>
-          <div className={styles.cardTags}>
-            {tags && tags.map((tag, index) => (
-              <span key={index} className={styles.tag}>
-                {tag}
-              </span>
-            ))}
-          </div>
-          <div className={styles.buttonContainer}>
-            <a 
-              href={projectLink} 
-              className={styles.viewButton}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Visit project ${title}`}
-            >
-              Visit project
-              <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
-            </a>
-            <button 
-              className={styles.detailsButton}
-              onClick={openModal}
-              aria-label={`View project details ${title}`}
-            >
-              View Details
-            </button>
+      {/* Envolver o card em um Link para navegar para detalhes */}
+      <Link to={`/work/${id}`} className={styles.cardLink}>
+        <div className={cardClassName} ref={cardRef}>
+          <div className={styles.cardContent}>
+            <h3 className={styles.cardTitle}>{title}</h3>
+            <p className={styles.cardDescription}>{description}</p>
+            <div className={styles.cardTags}>
+              {tags && tags.map((tag, index) => (
+                <span key={index} className={styles.tag}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div className={styles.buttonContainer}>
+              {projectLink && (
+                <a 
+                  href={projectLink} 
+                  className={styles.viewButton}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Visit project ${title}`}
+                  onClick={e => e.stopPropagation()} // Evitar navegação para detalhes quando clicado
+                >
+                  Visit project
+                  <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
+                </a>
+              )}
+              <button 
+                className={styles.detailsButton}
+                onClick={viewProjectDetails} // Alterado para navegar para página de detalhes
+                aria-label={`View project details ${title}`}
+              >
+                View Details
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
 
+      {/* Modal mantido por retrocompatibilidade (opcional) */}
       {modalOpen && (
         <div 
           className={styles.modalOverlay} 
@@ -152,15 +172,26 @@ function WorkCard({ title, description, tags, projectLink, projectDetails }) {
               )}
               
               <div className={styles.modalActions}>
-                <a 
-                  href={projectLink} 
+                <Link 
+                  to={`/work/${id}`} 
                   className={styles.modalButton}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  onClick={closeModal}
                 >
-                  Visit Project
+                  Ver Detalhes Completos
                   <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
-                </a>
+                </Link>
+                
+                {projectLink && (
+                  <a 
+                    href={projectLink} 
+                    className={styles.modalButton}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Visit Project
+                    <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -174,6 +205,7 @@ function WorkCard({ title, description, tags, projectLink, projectDetails }) {
 export default memo(WorkCard, (prevProps, nextProps) => {
   // Comparação personalizada para melhorar performance
   return (
+    prevProps.id === nextProps.id &&
     prevProps.title === nextProps.title &&
     prevProps.description === nextProps.description &&
     JSON.stringify(prevProps.tags) === JSON.stringify(nextProps.tags) &&

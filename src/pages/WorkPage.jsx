@@ -1,49 +1,68 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
-import { useWorkProjects } from '../components/Work/WorkProjectContext';
-import WorkGridView from '../components/Work/WorkGridView';
 import styles from './WorkPage.module.css';
+import WorkGridView from '../components/Work/WorkGridView';
+import { projects } from '../components/Work/WorkProjectContext';
 
 function WorkPage() {
-  const { allProjects } = useWorkProjects();
+  const navigate = useNavigate();
   const [visibleProjects, setVisibleProjects] = useState([]);
   const [activeFilter, setActiveFilter] = useState('All');
+  const [allTags, setAllTags] = useState(['All']);
   const [isLoading, setIsLoading] = useState(true);
   const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
-  const navigate = useNavigate();
-
+  
   // Extrair todas as tags únicas dos projetos
-  const allTags = ['All', ...new Set(allProjects.flatMap(project => project.tags))];
-
   useEffect(() => {
-    // Simular carregamento inicial
-    setTimeout(() => {
-      setIsLoading(false);
-      setVisibleProjects(allProjects);
-    }, 800);
-  }, [allProjects]);
-
-  // Filtrar projetos por tag
-  const filterProjects = (tag) => {
-    setActiveFilter(tag);
+    const tags = new Set(['All']);
+    projects.forEach(project => {
+      project.tags.forEach(tag => tags.add(tag));
+    });
+    setAllTags(Array.from(tags));
+  }, []);
+  
+  // Carregar projetos com um pequeno delay para animação
+  useEffect(() => {
     setIsLoading(true);
     
-    setTimeout(() => {
-      if (tag === 'All') {
-        setVisibleProjects(allProjects);
-      } else {
-        setVisibleProjects(allProjects.filter(project => project.tags.includes(tag)));
-      }
+    const timer = setTimeout(() => {
+      filterProjects(activeFilter);
       setIsLoading(false);
-    }, 400);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [activeFilter]);
+  
+  // Função para filtrar projetos
+  const filterProjects = (tag) => {
+    setActiveFilter(tag);
+    
+    if (tag === 'All') {
+      setVisibleProjects(projects);
+    } else {
+      const filtered = projects.filter(project => 
+        project.tags.includes(tag)
+      );
+      setVisibleProjects(filtered);
+    }
   };
-
-  // Handler para visualizar detalhes do projeto
-  const handleViewDetails = (project) => {
-    navigate(`/work/${project.id}`);
-  };
+  
+  // Fechar filtros mobile quando clica fora
+  const filtersRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filtersRef.current && !filtersRef.current.contains(event.target)) {
+        setMobileFiltersVisible(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [filtersRef]);
 
   return (
     <section className={styles.workContainer}>
@@ -72,6 +91,7 @@ function WorkPage() {
         </div>
         
         <div 
+          ref={filtersRef}
           id="project-filters"
           className={`${styles.filters} ${mobileFiltersVisible ? styles.filtersVisible : ''}`}
         >
@@ -91,10 +111,7 @@ function WorkPage() {
             <span className={styles.loader}></span>
           </div>
         ) : (
-          <WorkGridView 
-            projects={visibleProjects} 
-            onViewDetails={handleViewDetails}
-          />
+          <WorkGridView projects={visibleProjects} />
         )}
       </div>
     </section>
