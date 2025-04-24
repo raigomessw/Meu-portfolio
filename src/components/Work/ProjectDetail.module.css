@@ -66,6 +66,7 @@
   filter: drop-shadow(0 0 10px rgba(35, 166, 213, 0.3));
 }
 
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -463,6 +464,7 @@
 }
 
 .liveLink:hover::before {
+  color: #000;
   opacity: 1;
 }
 
@@ -481,6 +483,7 @@
 
 .liveLink:hover {
   box-shadow: 0 8px 25px rgba(35, 166, 213, 0.4);
+  color: var(--color-text-0);
 }
 
 .codeLink:hover {
@@ -496,6 +499,37 @@
 .projectLink:hover svg {
   transform: scale(1.2);
 }
+
+.designLink {
+  background: linear-gradient(135deg, #FF5F6D, #FFC371);
+  color: var(--color-text-0);
+  box-shadow: 0 5px 15px rgba(255, 95, 109, 0.3);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.designLink::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #FFC371, #FF5F6D);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s var(--transition-smooth);
+}
+
+.designLink:hover::before {
+  opacity: 1;
+}
+
+.designLink:hover {
+  color: var(--hover-shadow);
+  box-shadow: 0 8px 25px rgba(255, 95, 109, 0.4);
+} 
 
 /* Galeria Premium */
 .projectGallery {

@@ -23,6 +23,8 @@ const IconClose = () => <span className={styles.icon}>✕</span>;
 const IconArrowLeft = () => <span className={styles.icon}>←</span>;
 const IconArrowRight = () => <span className={styles.icon}>→</span>;
 const IconExpand = () => <span className={styles.icon}>⤢</span>;
+const IconFigma = () => <span className={styles.icon}>🎨</span>;
+
 
 // URL de fallback local para a pasta public
 const FALLBACK_IMAGE = "/work/placeholder.jpg";
@@ -343,20 +345,20 @@ function ProjectDetail() {
           className={styles.projectOverview}
           id="overview"
         >
-          <h2>Visão Geral</h2>
+          <h2>Overview</h2>
           <p>{project.description}</p>
           <p>{project.extendedDescription}</p>
           
           {project.challenges && (
             <>
-              <h3>Desafios</h3>
+              <h3>Challenges</h3>
               <p>{project.challenges}</p>
             </>
           )}
           
           {project.solution && (
             <>
-              <h3>Solução</h3>
+              <h3>Solution</h3>
               <p>{project.solution}</p>
             </>
           )}
@@ -368,7 +370,7 @@ function ProjectDetail() {
           className={styles.projectTech}
           id="tech"
         >
-          <h2>Tecnologias</h2>
+          <h2>Technologies</h2>
           <p>Tecnologias e ferramentas utilizadas neste projeto:</p>
           
           <div className={styles.techBadges}>
@@ -390,10 +392,19 @@ function ProjectDetail() {
                   rel="noopener noreferrer" 
                   className={`${styles.projectLink} ${styles.liveLink}`}
                 >
-                  <IconEye /> Ver Projeto
+                  <IconEye /> See Project
                 </a>
-              )}
-              
+              )}   
+                  {project.figmaUrl && (
+      <a 
+        href={project.figmaUrl} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className={`${styles.projectLink} ${styles.designLink}`}
+      >
+        <IconFigma /> Ver Design
+      </a>
+    )}       
               {project.githubUrl && (
                 <a 
                   href={project.githubUrl} 
@@ -401,7 +412,7 @@ function ProjectDetail() {
                   rel="noopener noreferrer" 
                   className={`${styles.projectLink} ${styles.codeLink}`}
                 >
-                  <IconGithub /> Ver Código
+                  <IconGithub /> See Code
                 </a>
               )}
             </div>
@@ -429,7 +440,7 @@ function ProjectDetail() {
                 >
                   <img 
                     src={image.url} 
-                    alt={image.caption || `${project.title} - Imagem ${index + 1}`} 
+                    alt={image.caption || `${project.title} - Image ${index + 1}`} 
                     onError={(e) => {
                       e.target.src = FALLBACK_IMAGE;
                       e.target.onerror = null;
@@ -437,7 +448,7 @@ function ProjectDetail() {
                   />
                   
                   <div className={styles.galleryCaption}>
-                    <h4>{image.title || `Imagem ${index + 1}`}</h4>
+                    <h4>{image.title || `Image ${index + 1}`}</h4>
                     {image.caption && <p>{image.caption}</p>}
                   </div>
                 </div>
