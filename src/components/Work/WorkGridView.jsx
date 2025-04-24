@@ -73,10 +73,10 @@ const WorkGridItem = memo(({ project, onViewDetails, index }) => {
             className={styles.viewButton}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`Ver projeto: ${project.title}`}
+            aria-label={`View Project: ${project.title}`}
             onClick={(e) => e.stopPropagation()}
           >
-            Ver Projeto <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
+            View Project <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
           </a>
           
           <button
@@ -85,9 +85,9 @@ const WorkGridItem = memo(({ project, onViewDetails, index }) => {
               onViewDetails(project);
             }}
             className={styles.detailsButton}
-            aria-label={`Ver detalhes de ${project.title}`}
+            aria-label={`View details of ${project.title}`}
           >
-            Detalhes <FontAwesomeIcon icon={faEye} className={styles.buttonIcon} />
+            Details <FontAwesomeIcon icon={faEye} className={styles.buttonIcon} />
           </button>
         </div>
       </div>

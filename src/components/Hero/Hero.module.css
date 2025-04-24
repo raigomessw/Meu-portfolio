@@ -326,9 +326,40 @@ body.is-scrolling .scrollIcon::before {
     width: 280px;
     height: 280px;
   }
+  
+  /* Aumentar espaço para navbar fixa */
+  .hero {
+    padding-top: 60px;
+  }
+  
+  .scrollDown {
+    bottom: 20px;
+  }
+  
+  /* Melhorar proporções */
+  .heroContent {
+    width: 95%;
+    gap: 30px;
+  }
 }
 
 @media (max-width: 480px) {
+  /* Ajustes para telas pequenas */
+  .hero {
+    padding-top: 80px;
+    min-height: 90vh; /* Menor altura para evitar scroll excessivo */
+  }
+  
+  .heroContent {
+    gap: 25px;
+    width: 92%;
+  }
+  
+  .heroDescription {
+    font-size: 1rem;
+    margin-bottom: 30px;
+  }
+  
   .heroCta {
     flex-direction: column;
     gap: 15px;
@@ -343,6 +374,162 @@ body.is-scrolling .scrollIcon::before {
   .imageWrapper {
     width: 230px;
     height: 230px;
+  }
+  
+  .greeting {
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+  }
+  
+  .name {
+    font-size: 2.2rem;
+  }
+  
+  .role {
+    font-size: 1.2rem;
+  }
+  
+  /* Melhorar facilidade de toque */
+  .scrollIcon {
+    width: 26px;
+    height: 40px;
+  }
+  
+  .scrollText {
+    font-size: 0.7rem;
+  }
+}
+
+/* Otimização MELHORADA para dispositivos muito pequenos como iPhone SE */
+@media (max-width: 375px) {
+  /* Ajustar container principal para melhor visibilidade */
+  .hero {
+    min-height: 90vh;
+    padding-top: 70px;
+  }
+  
+  .heroContent {
+    gap: 15px;
+    width: 90%;
+  }
+  
+  /* Ajustar tamanhos de título */
+  .greeting {
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+  }
+  
+  .name {
+    font-size: 1.9rem;
+    margin-bottom: 5px;
+  }
+  
+  .role {
+    font-size: 1.1rem;
+  }
+  
+  .heroDescription {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+    max-width: 100%;
+  }
+  
+  /* Reduzir espaçamento vertical */
+  .heroTitle {
+    margin-bottom: 15px;
+  }
+  
+  /* Otimizar botões para telas pequenas */
+  .primaryBtn,
+  .secondaryBtn {
+    width: 90%;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+  }
+  
+  /* Ajustar imagem do perfil */
+  .imageWrapper {
+    width: 190px;
+    height: 190px;
+  }
+  
+  /* Remover scroll indicator em telas muito pequenas para economizar espaço */
+  .scrollDown {
+    display: none;
+  }
+  
+  /* Ajustar imagens e fundos */
+  .particleOverlay {
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
+    opacity: 0.2; /* Menos visível em telas pequenas */
+  }
+  
+  /* Reduzir padding do hero container */
+  .heroImageContainer {
+    margin-bottom: 20px;
+  }
+}
+
+/* Especificações para dispositivos ainda menores */
+@media (max-width: 320px) {
+  .heroTitle {
+    font-size: 1.7rem !important;
+  }
+  
+  .greeting {
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+  }
+  
+  .role {
+    font-size: 1rem;
+  }
+  
+  .heroDescription {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 20px;
+  }
+  
+  .primaryBtn, 
+  .secondaryBtn {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .imageWrapper {
+    width: 160px;
+    height: 160px;
+  }
+  
+  /* Ajustar espaçamento vertical */
+  .hero {
+    padding-top: 65px;
+    min-height: 80vh;
+  }
+  
+  .heroContent {
+    gap: 12px;
+  }
+}
+
+/* Suporte para telas altas (iPhone Pro Max) */
+@media (min-height: 800px) and (max-width: 480px) {
+  .hero {
+    padding-top: 90px;
+  }
+  
+  .scrollDown {
+    bottom: 60px;
+    display: block; /* Mostrar novamente em telas altas */
+  }
+  
+  .imageWrapper {
+    width: 240px;
+    height: 240px;
   }
 }
 
@@ -366,5 +553,38 @@ body.is-scrolling .scrollIcon::before {
   
   .scrollIcon::before {
     animation: none;
+  }
+}
+
+/* Correções específicas para Safari iOS */
+@supports (-webkit-touch-callout: none) {
+  .hero {
+    min-height: -webkit-fill-available;
+  }
+  
+  /* Corrigir bug de background-clip em alguns dispositivos iOS */
+  .name {
+    -webkit-text-fill-color: transparent !important;
+  }
+}
+
+/* Suporte para modo de tela dividida em dispositivos móveis */
+@media (max-width: 480px) and (max-height: 600px) {
+  .hero {
+    min-height: 100vh;
+    padding-top: 50px;
+  }
+  
+  .heroContent {
+    gap: 15px;
+  }
+  
+  .imageWrapper {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .scrollDown {
+    display: none;
   }
 }

@@ -107,8 +107,8 @@
 }
 
 .tag {
-  background: rgba(var(--color-primary-rgb, 110, 7, 243), 0.3);
-  color: var(--color-primary-lighter, #b794ff);
+  background: rgba(var(--color-primary-rgb, 110, 7, 243), 0.5);
+  color: var( --color-text-1, #b794ff);
   padding: 0.3rem 0.8rem;
   border-radius: var(--border-radius-full, 50px);
   font-size: 0.8rem;
@@ -250,7 +250,6 @@
   
   .viewButton, 
   .detailsButton {
-    width: 100%;
     justify-content: center;
   }
   

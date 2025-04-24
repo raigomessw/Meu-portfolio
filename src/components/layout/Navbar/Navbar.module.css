@@ -278,7 +278,7 @@
 
 @media (max-width: 768px) {
   .navbar {
-    width: 95%;
+    width: 90%;
     padding: 0 15px;
     height: 70px;
   }
@@ -311,10 +311,12 @@
   }
 }
 
+
 /* Otimizações específicas para dispositivos pequenos */
-@media (max-width: 480px) {
+@media (max-width: 375px) {
   .navbar {
     height: 70px;
+    width: 85%;
     top: 15px;
   }
   
