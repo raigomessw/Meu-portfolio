@@ -176,6 +176,23 @@ body.page-hidden * {
   }
 }
 
+.btn-primary {
+  background-color: #23a6d5;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #1b89b0;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(35, 166, 213, 0.3);
+}
+
 /* 7. Otimizar imagens lazyloaded */
 img[data-src] {
   opacity: 0;
