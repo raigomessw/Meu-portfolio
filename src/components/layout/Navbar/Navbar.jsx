@@ -1,128 +1,141 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { throttle, detectDeviceCapability } from '../../../utils/performance';
 import styles from './Navbar.module.css';
 
-function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
+const Navbar = React.memo(function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+  const [isMobile, setIsMobile] = useState(false);
   const navRef = useRef(null);
-  const lastScrollY = useRef(0);
   const location = useLocation();
+  const lastScrollTop = useRef(0);
+  const ticking = useRef(false);
   
-  // Detectar capacidades do dispositivo
-  const deviceCaps = detectDeviceCapability();
-  
-  // Definir seção ativa com base na rota atual
+  // Detectar recursos do dispositivo com mais precisão
   useEffect(() => {
-    const path = location.pathname === '/' ? 'home' : location.pathname.substring(1);
-    setActiveSection(path);
-  }, [location]);
-  
-  // Definir estado do scroll
-  useEffect(() => {
-    const handleScroll = throttle(() => {
-      const currentScrollY = window.scrollY;
-      
-      // Decidir se mostrar/ocultar navbar baseado na direção do scroll
-      // e evitar mudanças de estado desnecessárias
-      const shouldScrollUp = lastScrollY.current > currentScrollY || currentScrollY < 100;
-      const shouldReflectScrolled = currentScrollY > 50;
-      
-      // Atualizar state de scroll apenas se mudou
-      if ((shouldReflectScrolled && !isScrolled) || (!shouldReflectScrolled && isScrolled)) {
-        requestAnimationFrame(() => {
-          setIsScrolled(shouldReflectScrolled);
-        });
-      }
-      
-      // Atualizar classes diretamente sem rerenderização
-      if (navRef.current) {
-        if (!shouldScrollUp) {
-          navRef.current.classList.add(styles.navbarHidden);
-        } else {
-          navRef.current.classList.remove(styles.navbarHidden);
-        }
-      }
-      
-      lastScrollY.current = currentScrollY;
-    }, 100); // Limitar a 10 execuções por segundo
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    // Executar uma vez para inicialização
-    handleScroll();
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
+    const checkDevice = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
     };
-  }, [isScrolled]);
-  
-  // Otimização: Identificar a seção atual durante scroll
-  useEffect(() => {
-    if (location.pathname !== '/') return;
     
-    const handleSectionDetection = throttle(() => {
-      // Obter todas as seções da página
-      const sections = ['home', 'about', 'services', 'work', 'contact'];
-      
-      // Encontrar a seção mais próxima do topo da viewport
-      let currentSection = '';
-      let minDistance = Infinity;
-      
-      sections.forEach(section => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          const absDistance = Math.abs(rect.top);
-          
-          if (absDistance < minDistance) {
-            minDistance = absDistance;
-            currentSection = section;
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
+  
+  // Otimizar evento de scroll com RAF e throttling
+  const handleScroll = useCallback(() => {
+    if (!ticking.current) {
+      requestAnimationFrame(() => {
+        const scrollTop = window.scrollY;
+        setIsScrolled(scrollTop > 20);
+        
+        // Auto-esconder navbar em scroll down em mobile (DESATIVADO TEMPORARIAMENTE)
+        /* if (isMobile && scrollTop > 100) {
+          const isScrollDown = scrollTop > lastScrollTop.current;
+          if (navRef.current) {
+            navRef.current.style.transform = isScrollDown 
+              ? 'translate3d(-50%, -100px, 0)' 
+              : 'translate3d(-50%, 0, 0)';
           }
-        }
+        } */
+        
+        lastScrollTop.current = scrollTop;
+        ticking.current = false;
       });
       
-      // Só atualizar o state se a seção mudou
-      if (currentSection && currentSection !== activeSection) {
-        requestAnimationFrame(() => {
-          setActiveSection(currentSection);
-        });
-      }
-    }, 200);
-    
-    window.addEventListener('scroll', handleSectionDetection, { passive: true });
-    
-    return () => {
-      window.removeEventListener('scroll', handleSectionDetection);
-    };
-  }, [location.pathname, activeSection]);
-  
-  const toggleMobileMenu = () => {
-    if (!isMobileMenuOpen) {
-      // Bloquear scroll quando menu está aberto
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
+      ticking.current = true;
     }
-    
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  }, [isMobile]);
   
-  const closeMobileMenu = () => {
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
+  
+  // Atualizar seção ativa com base na URL
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === '/') setActiveSection('home');
+    else if (path.includes('/about')) setActiveSection('about');
+    else if (path.includes('/work')) setActiveSection('work');
+    else if (path.includes('/contact')) setActiveSection('contact');
+  }, [location]);
+  
+  // Melhorar toggle de menu com tratamento específico para dispositivos móveis
+  const toggleMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(prev => {
+      const newState = !prev;
+      document.body.style.overflow = newState ? 'hidden' : '';
+      
+      // Adicionar toque fora para fechar em dispositivos móveis
+      if (newState && isMobile) {
+        setTimeout(() => {
+          document.addEventListener('touchstart', handleOutsideClick);
+        }, 300);
+      }
+      
+      return newState;
+    });
+  }, [isMobile]);
+  
+  // Fechar menu ao tocar fora
+  const handleOutsideClick = useCallback((e) => {
+    if (navRef.current && !navRef.current.contains(e.target)) {
+      setIsMobileMenuOpen(false);
+      document.body.style.overflow = '';
+      document.removeEventListener('touchstart', handleOutsideClick);
+    }
+  }, []);
+  
+  // Fechar menu ao clicar em um link
+  const closeMobileMenu = useCallback(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = '';
       setIsMobileMenuOpen(false);
+      document.removeEventListener('touchstart', handleOutsideClick);
     }
-  };
+  }, [isMobileMenuOpen, handleOutsideClick]);
   
+  // Detectar orientação para ajustes de layout
+  useEffect(() => {
+    const handleOrientationChange = () => {
+      if (isMobileMenuOpen) {
+        closeMobileMenu();
+      }
+    };
+    
+    window.addEventListener('orientationchange', handleOrientationChange);
+    
+    return () => window.removeEventListener('orientationchange', handleOrientationChange);
+  }, [isMobileMenuOpen, closeMobileMenu]);
+  
+  // Detectar recursos do dispositivo
+  const deviceCaps = {
+    shouldUseReducedEffects: 
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches || 
+      (navigator.userAgent.indexOf('Mobile') !== -1 && navigator.hardwareConcurrency <= 4)
+  };
+
+  // Menu items com índices para animação
+  const menuItems = [
+    { id: 'home', label: 'Home', path: '/' },
+    { id: 'about', label: 'About', path: '/about' },
+    { id: 'work', label: 'Projects', path: '/work' },
+    { id: 'contact', label: 'Contact', path: '/contact' }
+  ];
+
   return (
     <nav 
       className={`${styles.navbar} 
         ${isScrolled ? styles.navbarScrolled : ''} 
         ${isMobileMenuOpen ? styles.menuOpen : ''}
-        ${deviceCaps.shouldUseReducedEffects ? styles.reducedMotion : ''}`}
+        ${deviceCaps.shouldUseReducedEffects ? styles.reducedMotion : ''}
+        ${isMobile ? styles.mobileNav : ''}`}
       ref={navRef}
       aria-label="Main navigation"
     >
@@ -134,67 +147,48 @@ function Navbar() {
           </Link>
         </div>
         
+        {/* NOVO BOTÃO HAMBURGER MAIS SIMPLES */}
         <button 
-          className={`${styles.mobileMenuBtn} ${isMobileMenuOpen ? styles.open : ''}`}
+          className={`${styles.mobileButton} ${isMobileMenuOpen ? styles.mobileMenuOpen : ''}`}
           onClick={toggleMobileMenu}
           aria-expanded={isMobileMenuOpen}
-          aria-label="Navigation menu"
-          aria-controls="navbar-menu"
+          aria-label="Menu de navegação"
+          style={{display: isMobile ? 'flex' : 'none'}}
         >
-          <span className={styles.menuBar}></span>
-          <span className={styles.menuBar}></span>
-          <span className={styles.menuBar}></span>
+          <div className={styles.hamburgerIcon}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </button>
         
         <div 
           className={`${styles.navMenu} ${isMobileMenuOpen ? styles.open : ''}`}
           id="navbar-menu"
+          role="menu"
         >
           <ul className={styles.navList}>
-            <li className={styles.navItem}>
-              <Link 
-                to="/" 
-                className={`${styles.navLink} ${activeSection === 'home' ? styles.active : ''}`}
-                onClick={closeMobileMenu}
+            {menuItems.map((item, index) => (
+              <li 
+                className={styles.navItem} 
+                key={item.id}
+                style={{"--item-index": index}}
               >
-                Home
-              </Link>
-            </li>
-            
-            <li className={styles.navItem}>
-              <Link 
-                to="/about" 
-                className={`${styles.navLink} ${activeSection === 'about' ? styles.active : ''}`}
-                onClick={closeMobileMenu}
-              >
-                About
-              </Link>
-            </li>
-            
-            <li className={styles.navItem}>
-              <Link 
-                to="/work" 
-                className={`${styles.navLink} ${activeSection === 'work' ? styles.active : ''}`}
-                onClick={closeMobileMenu}
-              >
-                Projects
-              </Link>
-            </li>
-            
-            <li className={styles.navItem}>
-              <Link 
-                to="/contact" 
-                className={`${styles.navLink} ${activeSection === 'contact' ? styles.active : ''}`}
-                onClick={closeMobileMenu}
-              >
-                Contact
-              </Link>
-            </li>
+                <Link 
+                  to={item.path} 
+                  className={`${styles.navLink} ${activeSection === item.id ? styles.active : ''}`}
+                  onClick={closeMobileMenu}
+                  role="menuitem"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
     </nav>
   );
-}
+});
 
 export default Navbar;
