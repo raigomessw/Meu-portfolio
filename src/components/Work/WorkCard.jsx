@@ -1,64 +1,142 @@
-// WorkCard.jsx
-import React, { useState, memo } from 'react';
-import styles from './WorkCard.module.css';
-import { faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, memo, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
+import styles from './WorkCard.module.css';
 
-function WorkCard({ title, description, tags, projectLink, projectDetails }) {
+function WorkCard({ id, title, description, tags, projectLink, projectDetails }) {
+  // Adicionamos o id como parâmetro
   const [modalOpen, setModalOpen] = useState(false);
+  const cardRef = useRef(null);
+  const modalContentRef = useRef(null);
+  const navigate = useNavigate();
+  
+  // Navegar para página de detalhes do projeto
+  const viewProjectDetails = (e) => {
+    e.preventDefault();
+    navigate(`/work/${id}`);
+  };
 
+  // Função para abrir modal para compatibilidade com código existente
   const openModal = (e) => {
     e.preventDefault();
-    setModalOpen(true);
+    
+    // Você pode optar por manter o modal ou redirecionar diretamente
+    // Para redirecionar, descomente a linha abaixo e remova o restante da função
+    // return viewProjectDetails(e);
+    
+    // Usar requestAnimationFrame para garantir smooth rendering
+    requestAnimationFrame(() => {
+      setModalOpen(true);
+      document.body.style.overflow = 'hidden'; // Bloquear scroll
+    });
   };
 
   const closeModal = () => {
-    setModalOpen(false);
+    // Animação de saída antes de remover modal
+    if (modalContentRef.current) {
+      modalContentRef.current.classList.add(styles.closing);
+      
+      setTimeout(() => {
+        setModalOpen(false);
+        document.body.style.overflow = ''; // Restaurar scroll
+      }, 300);
+    } else {
+      setModalOpen(false);
+      document.body.style.overflow = ''; // Restaurar scroll
+    }
   };
+  
+  // Handler para tecla ESC fechar modal
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && modalOpen) {
+        closeModal();
+      }
+    };
+    
+    if (modalOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [modalOpen]);
+  
+  // Detectar se device tem baixa performance
+  const isLowPerformanceDevice = 
+    typeof navigator !== 'undefined' && 
+    ((navigator.deviceMemory && navigator.deviceMemory < 4) || 
+    (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4));
+
+  // Classe CSS condicional para animações
+  const cardClassName = `${styles.workCard} ${isLowPerformanceDevice ? styles.reducedMotion : ''}`;
 
   return (
     <>
-      <div className={styles.workCard}>
-        <div className={styles.cardContent}>
-          <h3 className={styles.cardTitle}>{title}</h3>
-          <p className={styles.cardDescription}>{description}</p>
-          <div className={styles.cardTags}>
-            {tags && tags.map((tag, index) => (
-              <span key={index} className={styles.tag}>
-                {tag}
-              </span>
-            ))}
-          </div>
-          <div className={styles.buttonContainer}>
-            <a 
-              href={projectLink} 
-              className={styles.viewButton}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Visit project ${title}`}
-            >
-              Visit project
-              <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
-            </a>
-            <button 
-              className={styles.detailsButton}
-              onClick={openModal}
-              aria-label={`View project details ${title}`}
-            >
-              View Details
-            </button>
+      {/* Envolver o card em um Link para navegar para detalhes */}
+      <Link to={`/work/${id}`} className={styles.cardLink}>
+        <div className={cardClassName} ref={cardRef}>
+          <div className={styles.cardContent}>
+            <h3 className={styles.cardTitle}>{title}</h3>
+            <p className={styles.cardDescription}>{description}</p>
+            <div className={styles.cardTags}>
+              {tags && tags.map((tag, index) => (
+                <span key={index} className={styles.tag}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <div className={styles.buttonContainer}>
+              {projectLink && (
+                <a 
+                  href={projectLink} 
+                  className={styles.viewButton}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Visit project ${title}`}
+                  onClick={e => e.stopPropagation()} // Evitar navegação para detalhes quando clicado
+                >
+                  Visit project
+                  <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
+                </a>
+              )}
+              <button 
+                className={styles.detailsButton}
+                onClick={viewProjectDetails} // Alterado para navegar para página de detalhes
+                aria-label={`View project details ${title}`}
+              >
+                View Details
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
 
+      {/* Modal mantido por retrocompatibilidade (opcional) */}
       {modalOpen && (
-        <div className={styles.modalOverlay} onClick={closeModal}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.closeButton} onClick={closeModal}>
+        <div 
+          className={styles.modalOverlay} 
+          onClick={closeModal}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={`modal-title-${title}`}
+        >
+          <div 
+            className={styles.modal} 
+            onClick={(e) => e.stopPropagation()}
+            ref={modalContentRef}
+          >
+            <button 
+              className={styles.closeButton} 
+              onClick={closeModal}
+              aria-label="Close modal"
+            >
               <FontAwesomeIcon icon={faTimes} />
             </button>
             <div className={styles.modalContent}>
-              <h2 className={styles.modalTitle}>{title}</h2>
+              <h2 id={`modal-title-${title}`} className={styles.modalTitle}>{title}</h2>
               
               <div className={styles.modalSection}>
                 <h3>About the Project</h3>
@@ -94,15 +172,26 @@ function WorkCard({ title, description, tags, projectLink, projectDetails }) {
               )}
               
               <div className={styles.modalActions}>
-                <a 
-                  href={projectLink} 
+                <Link 
+                  to={`/work/${id}`} 
                   className={styles.modalButton}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  onClick={closeModal}
                 >
-                  Visit Project
+                  Ver Detalhes Completos
                   <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
-                </a>
+                </Link>
+                
+                {projectLink && (
+                  <a 
+                    href={projectLink} 
+                    className={styles.modalButton}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Visit Project
+                    <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -112,12 +201,14 @@ function WorkCard({ title, description, tags, projectLink, projectDetails }) {
   );
 }
 
-// Usar memo para evitar re-renderizações desnecessárias
+// Memorizar o componente para evitar re-renderizações desnecessárias
 export default memo(WorkCard, (prevProps, nextProps) => {
   // Comparação personalizada para melhorar performance
   return (
+    prevProps.id === nextProps.id &&
     prevProps.title === nextProps.title &&
     prevProps.description === nextProps.description &&
-    JSON.stringify(prevProps.tags) === JSON.stringify(nextProps.tags)
+    JSON.stringify(prevProps.tags) === JSON.stringify(nextProps.tags) &&
+    prevProps.projectLink === nextProps.projectLink
   );
 });

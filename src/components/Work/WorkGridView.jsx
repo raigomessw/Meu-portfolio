@@ -1,13 +1,19 @@
 import React, { memo, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './WorkGridView.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faEye } from '@fortawesome/free-solid-svg-icons';
 import useIntersectionObserver from '../../Hooks/useIntersectionObserver';
 
-const WorkGridItem = memo(({ project, onViewDetails, index }) => {
+// Imagem de fallback
+const FALLBACK_IMAGE = "/work/placeholder.jpg";
+
+const WorkGridItem = memo(({ project, index, onKeyDown }) => {
   const [elementRef, isInView] = useIntersectionObserver({ threshold: 0.1 });
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const navigate = useNavigate();
   
   // Quando o elemento se torna visível, começar a carregar a imagem
   React.useEffect(() => {
@@ -15,8 +21,21 @@ const WorkGridItem = memo(({ project, onViewDetails, index }) => {
       const img = new Image();
       img.src = project.backgroundImage;
       img.onload = () => setIsImageLoaded(true);
+      img.onerror = () => {
+        console.error("Erro ao carregar imagem do card:", project.backgroundImage);
+        setImageError(true);
+        // Tente carregar mesmo assim para o caso de ser um erro momentâneo
+        setIsImageLoaded(true);
+      };
     }
   }, [isInView, isImageLoaded, project.backgroundImage]);
+  
+  // Função para navegar para página de detalhes
+  const viewProjectDetails = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/work/${project.id}`);
+  };
   
   const cardClasses = `
     ${styles.gridCard} 
@@ -25,8 +44,11 @@ const WorkGridItem = memo(({ project, onViewDetails, index }) => {
   
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
-      onViewDetails(project);
+      navigate(`/work/${project.id}`);
       e.preventDefault();
+    }
+    if (onKeyDown) {
+      onKeyDown(e);
     }
   };
   
@@ -35,7 +57,7 @@ const WorkGridItem = memo(({ project, onViewDetails, index }) => {
       ref={elementRef}
       className={cardClasses}
       style={{ 
-        backgroundImage: isImageLoaded ? `url(${project.backgroundImage})` : 'none',
+        backgroundImage: isImageLoaded ? `url(${imageError ? FALLBACK_IMAGE : project.backgroundImage})` : 'none',
         backgroundColor: 'rgba(30, 30, 30, 0.8)',
         animationDelay: `${index * 0.1}s`
       }}
@@ -46,6 +68,7 @@ const WorkGridItem = memo(({ project, onViewDetails, index }) => {
       onFocus={() => setIsHovered(true)}
       onBlur={() => setIsHovered(false)}
       onKeyDown={handleKeyPress}
+      onClick={viewProjectDetails}
     >
       <div 
         className={`${styles.cardOverlay} ${isHovered ? styles.hovered : ''}`} 
@@ -68,26 +91,25 @@ const WorkGridItem = memo(({ project, onViewDetails, index }) => {
         </p>
         
         <div className={styles.cardActions}>
-          <a 
-            href={project.projectLink}
-            className={styles.viewButton}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Ver projeto: ${project.title}`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            Ver Projeto <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
-          </a>
+          {project.liveUrl && (
+            <a 
+              href={project.liveUrl}
+              className={styles.viewButton}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View Project: ${project.title}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              View Project <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
+            </a>
+          )}
           
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onViewDetails(project);
-            }}
+            onClick={viewProjectDetails}
             className={styles.detailsButton}
-            aria-label={`Ver detalhes de ${project.title}`}
+            aria-label={`View details of ${project.title}`}
           >
-            Detalhes <FontAwesomeIcon icon={faEye} className={styles.buttonIcon} />
+            Details <FontAwesomeIcon icon={faEye} className={styles.buttonIcon} />
           </button>
         </div>
       </div>
@@ -101,7 +123,7 @@ const WorkGridItem = memo(({ project, onViewDetails, index }) => {
   );
 });
 
-function WorkGridView({ projects, onViewDetails }) {
+function WorkGridView({ projects }) {
   const containerClasses = styles.gridContainer;
 
   // Handlers para navegação por teclado
@@ -157,7 +179,6 @@ function WorkGridView({ projects, onViewDetails }) {
           <WorkGridItem 
             key={project.id} 
             project={project}
-            onViewDetails={onViewDetails}
             index={index}
             onKeyDown={(e) => handleKeyboardNavigation(e, index)}
           />

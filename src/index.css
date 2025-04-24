@@ -125,3 +125,63 @@ button {
 .navLink:hover {
   color: var(--color-primary-light);
 }
+
+/* Estilos de otimização global */
+
+/* 1. Melhorar performance de scroll */
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-y: none; /* Previne bouncing e inércia excessiva */
+}
+
+/* 2. Reduzir animações durante scroll */
+body.is-scrolling * {
+  --transition-duration: 0.001s !important;
+  animation-play-state: paused !important;
+  transition-duration: 0.001s !important;
+  animation-duration: 0.001s !important;
+}
+
+/* 3. Desabilitar efeitos quando página estiver em background */
+body.page-hidden * {
+  animation-play-state: paused !important;
+  transition: none !important;
+}
+
+/* 4. Garantir aceleração por hardware para elementos animados */
+.animate-element {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* 5. Melhorias para preferências de movimento reduzido */
+.reduced-motion * {
+  --transition-duration: 0.001s !important;
+  animation-duration: 0.001s !important;
+  transition-duration: 0.001s !important;
+}
+
+/* 6. Melhoria na renderização de fonte */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* 7. Otimizar imagens lazyloaded */
+img[data-src] {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+img[data-src][src] {
+  opacity: 1;
+}
