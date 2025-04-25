@@ -1,10 +1,17 @@
 [build]
   publish = "dist"
-  command = "ROLLUP_NATIVE=false npm ci && npm run build"
+  command = "npm ci && npm run build"
 
 [build.environment]
-  NODE_VERSION = "20.9.0"  # Versão estável e compatível
+  NODE_VERSION = "20.9.0"
   ROLLUP_NATIVE = "false"
+  # Desativar configuração automática de Python e Go
+  NETLIFY_USE_PYTHON = "false"
+  NETLIFY_USE_GO = "false"
+  # Desativar detecção automática de linguagens
+  NETLIFY_EXPERIMENTAL_BUILD_RUST_SOURCE = "false"
+  NETLIFY_EXPERIMENTAL_BUILD_GO_SOURCE = "false"
+
 
 # Configuração de cache explícita
 [[plugins]]
