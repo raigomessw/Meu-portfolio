@@ -151,6 +151,8 @@
   gap: 20px;
   will-change: transform;
   transform: translateZ(0);
+  position: relative; 
+  z-index: 2; /* Sempre acima do scrollDown */
 }
 
 .primaryBtn,
@@ -229,6 +231,7 @@
   text-align: center;
   opacity: 0.8;
   transition: opacity 0.3s ease;
+  z-index: 1; /* Valor base de z-index */
 }
 
 .scrollDown a {
@@ -347,9 +350,11 @@ body.is-scrolling .scrollIcon::before {
 
 @media (max-width: 480px) {
   /* Ajustes para telas pequenas */
-  .hero {
-    padding-top: 80px;
-    min-height: 90vh; /* Menor altura para evitar scroll excessivo */
+  .heroCta {
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 60px;
+    z-index: 5; /* Garantir que fique acima de tudo */
   }
   
   .heroContent {
@@ -365,11 +370,11 @@ body.is-scrolling .scrollIcon::before {
   .heroCta {
     flex-direction: column;
     gap: 15px;
+    margin-bottom: 60px; /* ADICIONADO: Espaço extra após os botões CTA */
   }
   
   .primaryBtn, 
   .secondaryBtn {
-    width: 100%;
     padding: 14px;
   }
   
@@ -399,6 +404,19 @@ body.is-scrolling .scrollIcon::before {
   
   .scrollText {
     font-size: 0.7rem;
+  }
+  
+  /* ADICIONADO: Reposicionar o botão scroll down */
+  .scrollDown {
+    display: none;
+    bottom: 80px; /* Aumentado para evitar sobreposição com os botões CTA */
+  }
+}
+
+/* ADICIONADO: Media query específica para a faixa problemática */
+@media (min-width: 376px) and (max-width: 480px) {
+  .scrollDown {
+    bottom: 120px; /* Valor ainda maior para esta faixa específica */
   }
 }
 
@@ -525,8 +543,9 @@ body.is-scrolling .scrollIcon::before {
   }
   
   .scrollDown {
-    bottom: 60px;
-    display: block; /* Mostrar novamente em telas altas */
+    display: block; /* Mostrar apenas em telas altas */
+    bottom: 20px; /* Valor baixo - no rodapé da página */
+    z-index: 1;
   }
   
   .imageWrapper {

@@ -54,10 +54,10 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(-45deg, 
-    rgb(17, 24, 39), /* Dark blue */
-    rgb(31, 41, 55), /* Slate blue */
-    rgb(79, 70, 229), /* Indigo */
-    rgb(139, 92, 246) /* Purple */
+    rgb(0, 15, 48), /* Dark blue */
+    rgb(15, 38, 71), /* Slate blue */
+    rgb(55, 21, 81), /* Indigo */
+    rgb(92, 70, 142) /* Purple */
   );
   background-size: 400% 400%;
   /* Fixed position instead of animation */

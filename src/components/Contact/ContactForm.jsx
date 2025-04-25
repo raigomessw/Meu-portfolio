@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faPaperPlane, 
@@ -23,28 +23,20 @@ function ContactForm({
   handleChange,
   handleBlur,
   handleSubmit,
-  formRef
+  formRef,
+  fileInputRef
 }) {
   const [focusedField, setFocusedField] = useState(null);
   const [formProgress, setFormProgress] = useState(0);
   const [fileSelected, setFileSelected] = useState(false);
   const [fileName, setFileName] = useState("");
   const requiredFields = ['name', 'email', 'confirmEmail', 'message'];
-  
-  // Calculate form progress - with added safety checks
-  useEffect(() => {
-    if (!formData) return; // Verificação de segurança
-    
-    const filledFields = requiredFields.filter(field => 
-      formData[field] && typeof formData[field] === 'string' && formData[field].trim() !== '');
-    const progress = (filledFields.length / requiredFields.length) * 100;
-    setFormProgress(progress);
-  }, [formData, requiredFields]);
 
+  // Funções de manipulação unificadas
   const handleFocus = (field) => {
     setFocusedField(field);
   };
-
+  
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -55,6 +47,16 @@ function ContactForm({
       setFileName("");
     }
   };
+  
+  // Calculate form progress - with added safety checks
+  useEffect(() => {
+    if (!formData) return; // Verificação de segurança
+    
+    const filledFields = requiredFields.filter(field => 
+      formData[field] && typeof formData[field] === 'string' && formData[field].trim() !== '');
+    const progress = (filledFields.length / requiredFields.length) * 100;
+    setFormProgress(progress);
+  }, [formData, requiredFields]);
 
   // Importante: verifique se handleChange está disponível
   const onChangeHandler = handleChange || ((e) => console.warn("onChange handler not provided"));
@@ -83,9 +85,24 @@ function ContactForm({
       <form 
         ref={formRef}
         onSubmit={handleSubmit} 
-        className={styles.form} 
+        className={styles.form}
+        name="contact"
+        method="POST" 
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        encType="multipart/form-data"
         noValidate
       >
+        {/* Campos Netlify necessários */}
+        <input type="hidden" name="form-name" value="contact" />
+        
+        {/* Campo honeypot para prevenção de spam */}
+        <p style={{ display: 'none' }}>
+          <label>
+            Don't fill this out if you're human: <input name="bot-field" />
+          </label>
+        </p>
+        
         <div className={styles.formGrid}>
           <div className={`${styles.formGroup} ${focusedField === 'name' ? styles.focused : ''}`}>
             <label htmlFor="name" className={styles.label}>
@@ -159,27 +176,27 @@ function ContactForm({
           </div>
           
           <div className={`${styles.formGroup} ${focusedField === 'subject' ? styles.focused : ''}`}>
-            <label htmlFor="subject" className={styles.label}>
+            <label className={styles.label}>
               <FontAwesomeIcon icon={faComment} className={styles.labelIcon} /> Subject
+              
+              {/* CustomSelect dentro da label não precisa de htmlFor/id */}
+              <CustomSelect
+                name="subject"
+                className={styles.select}
+                value={formData.subject || ''}
+                onChange={onChangeHandler}
+                onBlur={() => setFocusedField(null)}
+                onFocus={() => handleFocus('subject')}
+                placeholder="Select a subject"
+                options={[
+                  { value: 'Project Inquiry', label: 'Project Inquiry' },
+                  { value: 'Job Opportunity', label: 'Job Opportunity' },
+                  { value: 'Collaboration', label: 'Collaboration' },
+                  { value: 'Feedback', label: 'Feedback' },
+                  { value: 'Other', label: 'Other' }
+                ]}
+              />
             </label>
-            
-            {/* Usando o CustomSelect em vez do select nativo */}
-            <CustomSelect
-              name="subject"
-              className={styles.select}
-              value={formData.subject || ''}
-              onChange={onChangeHandler}
-              onBlur={() => setFocusedField(null)}
-              onFocus={() => handleFocus('subject')}
-              placeholder="Select a subject"
-              options={[
-                { value: 'Project Inquiry', label: 'Project Inquiry' },
-                { value: 'Job Opportunity', label: 'Job Opportunity' },
-                { value: 'Collaboration', label: 'Collaboration' },
-                { value: 'Feedback', label: 'Feedback' },
-                { value: 'Other', label: 'Other' }
-              ]}
-            />
           </div>
         </div>
         
@@ -210,7 +227,9 @@ function ContactForm({
           <label className={styles.fileUploadLabel}>
             <input 
               type="file" 
-              className={styles.fileInput} 
+              className={styles.fileInput}
+              name="attachment"
+              ref={fileInputRef}
               onChange={handleFileChange}
               accept=".pdf,.doc,.docx,.jpg,.png"
             />

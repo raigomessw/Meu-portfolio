@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import styles from './ProjectDetail.module.css';
 import { projects } from './WorkProjectContext';
 
-// Função throttle simples (se ainda não instalou lodash)
+// Simple throttle function (if lodash isn't installed)
 function throttle(func, wait) {
   let lastCall = 0;
   return function(...args) {
@@ -15,7 +15,7 @@ function throttle(func, wait) {
   };
 }
 
-// Componentes de ícone simples
+// Simple icon components
 const IconArrowBack = () => <span className={styles.icon}>←</span>;
 const IconEye = () => <span className={styles.icon}>👁️</span>;
 const IconGithub = () => <span className={styles.icon}>📂</span>;
@@ -26,7 +26,7 @@ const IconExpand = () => <span className={styles.icon}>⤢</span>;
 const IconFigma = () => <span className={styles.icon}>🎨</span>;
 
 
-// URL de fallback local para a pasta public
+// Local fallback URL for the public folder
 const FALLBACK_IMAGE = "/work/placeholder.jpg";
 
 function ProjectDetail() {
@@ -42,7 +42,7 @@ function ProjectDetail() {
   const [prevProject, setPrevProject] = useState(null);
   const [imageError, setImageError] = useState(false);
 
-  // Refs para elementos DOM
+  // Refs for DOM elements
   const headerRef = useRef(null);
   const contentRef = useRef(null);
   const galleryRef = useRef(null);
@@ -54,30 +54,30 @@ function ProjectDetail() {
     gallery: null
   });
 
-  // Função para voltar para a página de trabalhos
+  // Function to go back to projects page
   const goToProjects = useCallback(() => {
     navigate('/work');
   }, [navigate]);
 
-  // Função para scroll suave até o conteúdo
+  // Function for smooth scroll to content
   const scrollToContent = useCallback(() => {
     contentRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  // Função para abrir modal
+  // Function to open modal
   const openModal = useCallback((index) => {
     setCurrentImageIndex(index);
     setModalOpen(true);
     document.body.style.overflow = 'hidden';
   }, []);
 
-  // Função para fechar modal
+  // Function to close modal
   const closeModal = useCallback(() => {
     setModalOpen(false);
     document.body.style.overflow = '';
   }, []);
 
-  // Função para navegar entre imagens
+  // Function to navigate between images
   const navigateImages = useCallback((direction) => {
     if (!project || !project.images) return;
     
@@ -90,57 +90,57 @@ function ProjectDetail() {
     }
   }, [project]);
 
-  // Função para lidar com erro de carregamento da imagem
+  // Function to handle image loading error
   const handleImageError = useCallback((e) => {
-    console.error("Erro ao carregar a imagem de capa");
-    console.log("URL da imagem com problema:", e.target.src);
+    console.error("Error loading cover image");
+    console.log("Problematic image URL:", e.target.src);
     setImageError(true);
   }, []);
 
   useEffect(() => {
     if (project) {
-      console.log("DEBUG - Caminhos das imagens:");
+      console.log("DEBUG - Image paths:");
       console.log("coverImage:", project.coverImage);
       console.log("backgroundImage:", project.backgroundImage);
       
-      // Verificar se as URLs são válidas
+      // Verify if URLs are valid
       fetch(project.coverImage)
         .then(response => {
-          console.log(`Resposta da imagem de capa: ${response.status} ${response.ok ? '✅' : '❌'}`);
+          console.log(`Cover image response: ${response.status} ${response.ok ? '✅' : '❌'}`);
         })
-        .catch(error => console.error("Erro ao verificar coverImage:", error));
+        .catch(error => console.error("Error verifying coverImage:", error));
     }
   }, [project]);
 
-  // Buscar dados do projeto
+  // Fetch project data
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
     setImageError(false);
 
-    // Tentar encontrar o projeto pelo ID
+    // Try to find project by ID
     const foundProject = projects.find(p => p.id === projectId);
     
     if (foundProject) {
-      console.log("Projeto encontrado:", foundProject);
-      console.log("Caminho da imagem de capa:", foundProject.coverImage);
+      console.log("Project found:", foundProject);
+      console.log("Cover image path:", foundProject.coverImage);
       
-      // Verificar se a imagem existe
+      // Check if the image exists
       fetch(foundProject.coverImage)
         .then(response => {
           if (response.ok) {
-            console.log("✅ Imagem encontrada no servidor!");
+            console.log("✅ Image found on server!");
           } else {
-            console.error("❌ Imagem não encontrada no caminho:", foundProject.coverImage);
+            console.error("❌ Image not found at path:", foundProject.coverImage);
           }
         })
         .catch(error => {
-          console.error("❌ Erro ao verificar imagem:", error);
+          console.error("❌ Error verifying image:", error);
         });
       
       setProject(foundProject);
       
-      // Determinar projetos anterior e próximo
+      // Determine previous and next projects
       const currentIndex = projects.findIndex(p => p.id === projectId);
       
       if (currentIndex > 0) {
@@ -155,25 +155,25 @@ function ProjectDetail() {
         setNextProject(null);
       }
       
-      // Definir título da página
-      document.title = `${foundProject.title} | Meu Portfolio`;
+      // Set page title
+      document.title = `${foundProject.title} | My Portfolio`;
       
-      // Pequeno atraso para simular carregamento
+      // Small delay to simulate loading
       setTimeout(() => {
         setLoading(false);
       }, 400);
     } else {
-      console.error("Projeto não encontrado com ID:", projectId);
-      // Redirecionar para página de trabalhos
+      console.error("Project not found with ID:", projectId);
+      // Redirect to projects page
       navigate("/work");
     }
     
     return () => {
-      document.title = 'Meu Portfolio';
+      document.title = 'My Portfolio';
     };
   }, [projectId, navigate]);
 
-  // Configurar efeito parallax e eventos de scroll
+  // Set up parallax effect and scroll events
   useEffect(() => {
     if (loading || !project) return;
     
@@ -182,13 +182,13 @@ function ProjectDetail() {
       
       const scrollTop = window.scrollY;
       
-      // Efeito parallax simples
+      // Simple parallax effect
       if (parallaxLayersRef.current[0]) {
         const yPos = scrollTop * 0.3;
         parallaxLayersRef.current[0].style.transform = `translateY(${yPos}px)`;
       }
       
-      // Atualizar barra de progresso
+      // Update progress bar
       if (progressRef.current) {
         const docHeight = document.documentElement.scrollHeight;
         const winHeight = window.innerHeight;
@@ -199,7 +199,7 @@ function ProjectDetail() {
         setScrollProgress(progress);
       }
       
-      // Atualizar seção ativa
+      // Update active section
       let currentActive = 'overview';
       
       Object.entries(sectionsRef.current).forEach(([section, ref]) => {
@@ -214,10 +214,10 @@ function ProjectDetail() {
       setActiveSection(currentActive);
     }, 10);
 
-    // Aplicar listeners
+    // Apply listeners
     window.addEventListener('scroll', handleScroll);
     
-    // Iniciar com animação
+    // Start with animation
     handleScroll();
     
     return () => {
@@ -225,7 +225,7 @@ function ProjectDetail() {
     };
   }, [loading, project]);
 
-  // Adicionar classes "visible" com atraso para animar entrada
+  // Add "visible" classes with delay to animate entry
   useEffect(() => {
     if (loading || !project) return;
     
@@ -254,12 +254,12 @@ function ProjectDetail() {
     };
   }, [loading, project]);
 
-  // Componente de carregamento
+  // Loading component
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
         <div className={styles.loader}></div>
-        <p>Carregando projeto...</p>
+        <p>Loading project...</p>
       </div>
     );
   }
@@ -267,9 +267,9 @@ function ProjectDetail() {
   if (!project) {
     return (
       <div className={styles.loadingContainer}>
-        <h2>Projeto não encontrado</h2>
+        <h2>Project not found</h2>
         <button onClick={goToProjects} className={styles.backButton}>
-          <IconArrowBack /> Voltar para projetos
+          <IconArrowBack /> Back to projects
         </button>
       </div>
     );
@@ -280,43 +280,43 @@ function ProjectDetail() {
       <div className={styles.glassBg}></div>
       <div ref={progressRef} className={styles.progressBar}></div>
       
-      {/* Header com parallax */}
+      {/* Header with parallax */}
       <header 
-  ref={headerRef} 
-  className={styles.projectHeader}
->
-  <div 
-    ref={el => parallaxLayersRef.current[0] = el}
-    className={`${styles.parallaxLayer} ${styles.parallaxBg}`}
-    style={{ 
-      backgroundColor: '#222',
-      // Remova transform do estilo inline para evitar conflitos
-    }}
-  >
-    <img 
-      src={project.coverImage}
-      alt={project.title}
-      style={{
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        opacity: 1, // Aumente para 1 (era 0.95)
-        zIndex: 0  // Garanta que está abaixo do overlay
-      }}
-      onError={handleImageError}
-    />
-  </div>
-  
-  <div className={styles.headerOverlay}></div>
+        ref={headerRef} 
+        className={styles.projectHeader}
+      >
+        <div 
+          ref={el => parallaxLayersRef.current[0] = el}
+          className={`${styles.parallaxLayer} ${styles.parallaxBg}`}
+          style={{ 
+            backgroundColor: '#222',
+            // Remove inline transform style to avoid conflicts
+          }}
+        >
+          <img 
+            src={project.coverImage}
+            alt={project.title}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              opacity: 1, // Increase to 1 (was 0.95)
+              zIndex: 0  // Make sure it's below the overlay
+            }}
+            onError={handleImageError}
+          />
+        </div>
+        
+        <div className={styles.headerOverlay}></div>
         
         <div className={styles.headerOverlay}></div>
         
         <div className={styles.headerContent}>
           <button onClick={goToProjects} className={styles.backButton}>
-            <IconArrowBack /> Voltar
+            <IconArrowBack /> Back
           </button>
           
           <h1 className={styles.projectTitle}>{project.title}</h1>
@@ -337,9 +337,9 @@ function ProjectDetail() {
         </div>
       </header>
       
-      {/* Conteúdo principal */}
+      {/* Main content */}
       <main ref={contentRef} className={styles.projectContent}>
-        {/* Visão Geral */}
+        {/* Overview */}
         <section 
           ref={el => sectionsRef.current.overview = el}
           className={styles.projectOverview}
@@ -364,14 +364,14 @@ function ProjectDetail() {
           )}
         </section>
         
-        {/* Tecnologias */}
+        {/* Technologies */}
         <section 
           ref={el => sectionsRef.current.tech = el}
           className={styles.projectTech}
           id="tech"
         >
           <h2>Technologies</h2>
-          <p>Tecnologias e ferramentas utilizadas neste projeto:</p>
+          <p>Technologies and tools used in this project:</p>
           
           <div className={styles.techBadges}>
             {project.technologies.map((tech, index) => (
@@ -382,7 +382,7 @@ function ProjectDetail() {
             ))}
           </div>
           
-          {/* Links do Projeto */}
+          {/* Project Links */}
           {(project.liveUrl || project.githubUrl) && (
             <div className={styles.projectLinks}>
               {project.liveUrl && (
@@ -395,16 +395,16 @@ function ProjectDetail() {
                   <IconEye /> See Project
                 </a>
               )}   
-                  {project.figmaUrl && (
-      <a 
-        href={project.figmaUrl} 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        className={`${styles.projectLink} ${styles.designLink}`}
-      >
-        <IconFigma /> Ver Design
-      </a>
-    )}       
+              {project.figmaUrl && (
+                <a 
+                  href={project.figmaUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className={`${styles.projectLink} ${styles.designLink}`}
+                >
+                  <IconFigma /> See Design
+                </a>
+              )}       
               {project.githubUrl && (
                 <a 
                   href={project.githubUrl} 
@@ -419,7 +419,7 @@ function ProjectDetail() {
           )}
         </section>
         
-        {/* Galeria */}
+        {/* Gallery */}
         {project.images && project.images.length > 0 && (
           <section 
             ref={el => {
@@ -429,7 +429,7 @@ function ProjectDetail() {
             className={styles.projectGallery}
             id="gallery"
           >
-            <h2>Galeria</h2>
+            <h2>Gallery</h2>
             
             <div className={styles.galleryGrid}>
               {project.images.map((image, index) => (
@@ -457,7 +457,7 @@ function ProjectDetail() {
           </section>
         )}
         
-        {/* Navegação entre projetos */}
+        {/* Navigation between projects */}
         <nav className={styles.projectNav}>
           {prevProject && (
             <Link 
@@ -468,7 +468,7 @@ function ProjectDetail() {
                 <IconArrowLeft />
               </div>
               <div className={styles.projectNavInfo}>
-                <span className={styles.projectNavLabel}>Projeto Anterior</span>
+                <span className={styles.projectNavLabel}>Previous Project</span>
                 <div className={styles.projectNavTitle}>{prevProject.title}</div>
               </div>
             </Link>
@@ -480,7 +480,7 @@ function ProjectDetail() {
               className={`${styles.projectNavItem} ${styles.projectNavNext}`}
             >
               <div className={styles.projectNavInfo}>
-                <span className={styles.projectNavLabel}>Próximo Projeto</span>
+                <span className={styles.projectNavLabel}>Next Project</span>
                 <div className={styles.projectNavTitle}>{nextProject.title}</div>
               </div>
               <div className={styles.projectNavIcon}>
@@ -491,7 +491,7 @@ function ProjectDetail() {
         </nav>
       </main>
       
-      {/* Modal de imagem */}
+      {/* Image modal */}
       {modalOpen && (
         <div className={styles.imageModal}>
           <div className={styles.modalContent}>
@@ -508,7 +508,7 @@ function ProjectDetail() {
             
             <img
               src={project.images[currentImageIndex].url}
-              alt={project.images[currentImageIndex].caption || `${project.title} - Imagem ${currentImageIndex + 1}`}
+              alt={project.images[currentImageIndex].caption || `${project.title} - Image ${currentImageIndex + 1}`}
               className={styles.modalImage}
               onError={(e) => {
                 e.target.src = FALLBACK_IMAGE;
@@ -534,7 +534,7 @@ function ProjectDetail() {
         </div>
       )}
       
-      {/* Indicadores de seção */}
+      {/* Section indicators */}
       <div className={styles.sectionIndicators}>
         <div 
           onClick={() => document.getElementById('overview').scrollIntoView({ behavior: 'smooth' })}
