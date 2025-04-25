@@ -1,10 +1,16 @@
 [build]
   publish = "dist"
-  command = "npm install && ROLLUP_NATIVE=false npm run build"
+  command = "ROLLUP_NATIVE=false npm ci && npm run build"
 
 [build.environment]
-  NODE_VERSION = "20.9.0"  # Node mais estável
-  ROLLUP_NATIVE = "false" 
+  NODE_VERSION = "20.9.0"  # Versão estável e compatível
+  ROLLUP_NATIVE = "false"
+
+# Configuração de cache explícita
+[[plugins]]
+package = "@netlify/plugin-cachios"
+  [plugins.inputs]
+  paths = [ "node_modules" ]
 
 [[headers]]
   for = "/*"
