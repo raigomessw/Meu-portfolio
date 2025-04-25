@@ -11,6 +11,7 @@ import {
   faShield,
   faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
+import CustomSelect from './CustomSelect';
 import styles from './Contact.module.css';
 
 function ContactForm({ 
@@ -161,22 +162,24 @@ function ContactForm({
             <label htmlFor="subject" className={styles.label}>
               <FontAwesomeIcon icon={faComment} className={styles.labelIcon} /> Subject
             </label>
-            <select
-              id="subject"
+            
+            {/* Usando o CustomSelect em vez do select nativo */}
+            <CustomSelect
               name="subject"
+              className={styles.select}
               value={formData.subject || ''}
               onChange={onChangeHandler}
               onBlur={() => setFocusedField(null)}
               onFocus={() => handleFocus('subject')}
-              className={styles.input}
-            >
-              <option value="">Select a subject</option>
-              <option value="Project Inquiry">Project Inquiry</option>
-              <option value="Job Opportunity">Job Opportunity</option>
-              <option value="Collaboration">Collaboration</option>
-              <option value="Feedback">Feedback</option>
-              <option value="Other">Other</option>
-            </select>
+              placeholder="Select a subject"
+              options={[
+                { value: 'Project Inquiry', label: 'Project Inquiry' },
+                { value: 'Job Opportunity', label: 'Job Opportunity' },
+                { value: 'Collaboration', label: 'Collaboration' },
+                { value: 'Feedback', label: 'Feedback' },
+                { value: 'Other', label: 'Other' }
+              ]}
+            />
           </div>
         </div>
         

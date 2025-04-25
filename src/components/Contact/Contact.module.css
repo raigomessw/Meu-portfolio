@@ -55,9 +55,9 @@
   height: 100%;
   background: linear-gradient(-45deg, 
     rgb(17, 24, 39), /* Dark blue */
-    rgb(54, 87, 134), /* Slate blue */
-    rgb(9, 6, 69), /* Indigo */
-    rgb(32, 0, 105) /* Purple */
+    rgb(31, 41, 55), /* Slate blue */
+    rgb(79, 70, 229), /* Indigo */
+    rgb(139, 92, 246) /* Purple */
   );
   background-size: 400% 400%;
   /* Fixed position instead of animation */
@@ -490,7 +490,7 @@
               inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(15px);
-  overflow: hidden;
+  overflow: hidden; /* Importante para o dropdown */
   padding: 40px;
   opacity: 0;
   transform: translateY(30px);
@@ -502,10 +502,10 @@
 .contactForm::before {
   content: '';
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  height: 2px;
+  top: 0;
+  left: 0;
+  width: 100%; /* Importante: width 100% em vez de right: 0 */
+  height: 4px;
   background: linear-gradient(90deg, 
     transparent, 
     var(--primary-color), 
@@ -514,8 +514,22 @@
   );
   background-size: 300% 100%;
   animation: borderGlow 8s linear infinite;
-  z-index: 1;
-  border-radius: 24px 24px 0 0;
+  z-index: 1; /* Maior que 0 para garantir visibilidade */
+  border-radius: 24px 24px 0 0; 
+  transform: translateY(-1px);
+  height: 6px;
+}
+
+.contactForm::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--card-bg);
+  border-radius: 24px;
+  z-index: -1;
 }
 
 @keyframes borderGlow {
@@ -526,6 +540,12 @@
 .contactForm.visible {
   opacity: 1;
   transform: translateY(0);
+  z-index: 2;
+}
+
+.formContainer {
+  position: relative;
+  z-index: 2;
 }
 
 .formContainer h3 {
@@ -558,22 +578,31 @@
   display: flex;
   flex-direction: column;
   gap: 22px;
+  overflow: visible; /* Importante para o dropdown */
 }
 
 .formGroup {
   margin-bottom: 8px;
   position: relative;
+  z-index: 5;
+}
+
+.formGroup.focused {
+  z-index: 50; /* Valor alto para garantir que aparece sobre outros elementos */
 }
 
 .label {
   display: block;
   margin-bottom: 10px;
+  font-weight: 500;
+  color: var(--input-text);
   font-size: 0.95rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-  display: flex;
-  align-items: center;
-  transition: color 0.3s ease;
+  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.labelIcon {
+  margin-right: 8px;
+  color: var(--primary-color);
 }
 
 /* Enhanced input styling */
@@ -741,124 +770,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Improved responsiveness */
-@media (max-width: 992px) {
-  .contactContent {
-    grid-template-columns: 1fr;
-    gap: 35px;
-  }
-  
-  .contactInfo {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-  }
-  
-  .socialLinks {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 768px) {
-  .contactContainer {
-    padding-top: 80px;
-  }
-  
-  .contactHeader {
-    margin-bottom: 45px;
-  }
-  
-  .contactHeader h1 {
-    font-size: clamp(2rem, 5vw, 2.8rem);
-  }
-  
-  .contactForm {
-    padding: 35px;
-  }
-}
-
-@media (max-width: 480px) {
-  .contactInfo {
-    grid-template-columns: 1fr;
-  }
-  
-  .contactForm {
-    padding: 30px 25px;
-    border-radius: 20px;
-  }
-  
-  .input, 
-  .textarea {
-    padding: 15px;
-  }
-  
-  .submitButton {
-    padding: 14px;
-  }
-  
-  .preHeading {
-    padding: 6px 14px;
-    font-size: 0.9rem;
-  }
-}
-
-/* Performance optimizations */
-.contactContainer.reducedMotion * {
-  transition-duration: 0.001s !important;
-  animation-duration: 0.001s !important;
-  animation: none !important;
-}
-
-.contactContainer.reducedMotion .gradientBackground {
-  animation: none !important;
-  background-position: 0% 50% !important;
-}
-
-/* Prevent animations during scroll */
-body.is-scrolling .gradientBackground,
-body.is-scrolling .patternGrid,
-body.is-scrolling .particles::before,
-body.is-scrolling .particles::after {
-  animation-play-state: paused !important;
-}
-
-/* Improve rendering with GPU */
-.contactContainer:not(.reducedMotion) .infoCard,
-.contactContainer:not(.reducedMotion) .socialLinks,
-.contactContainer:not(.reducedMotion) .contactForm,
-.contactContainer:not(.reducedMotion) .contactHeader {
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  will-change: transform, opacity;
-}
-
-/* Optimize only during animations */
-.infoCard.visible,
-.socialLinks.visible,
-.contactForm.visible {
-  will-change: auto !important;
-}
-
-/* Improvements for weaker devices */
-@media (max-width: 768px) {
-  .gradientBackground {
-    background-size: 300% 300%; /* Reduce complexity */
-    animation-duration: 25s; /* Slower */
-  }
-  
-  .patternGrid {
-    background-size: 40px 40px, 30px 30px, 30px 30px;
-    opacity: 0.2;
-  }
-  
-  .particles::before,
-  .particles::after {
-    opacity: 0.5;
-  }
-}
-
 /* New classes for premium features */
-
 .formMessageBlock {
   margin-bottom: 20px;
   position: relative;
@@ -872,32 +784,13 @@ body.is-scrolling .particles::after {
   width: 100%;
 }
 
-/* Verifique se o grid está configurado corretamente */
+/* Configuração do grid com gap 50px adequado */
 .formGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 50px;
+  gap: 50px; /* Mantido 50px que funciona melhor para evitar sobreposição */
   margin-bottom: 20px;
   width: 100%;
-}
-
-@media (max-width: 768px) {
-  .formGrid {
-    grid-template-columns: 1fr;
-  }
-  
-  .formMessageBlock,
-  .formGroup {
-    margin-bottom: 15px;
-  }
-  
-  /* Força 100% de largura em elementos críticos no mobile */
-  .input,
-  .textarea,
-  select {
-    width: 100% !important;
-    box-sizing: border-box;
-  }
 }
 
 /* Enhanced progress bar */
@@ -955,19 +848,6 @@ body.is-scrolling .particles::after {
 .formGroup.focused select {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-}
-.label {
-  display: block;
-  margin-bottom: 10px;
-  font-weight: 500;
-  color: var(--input-text);
-  font-size: 0.95rem;
-  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.labelIcon {
-  margin-right: 8px;
-  color: var(--primary-color);
 }
 
 /* Enhanced file upload */
@@ -1040,4 +920,338 @@ body.is-scrolling .particles::after {
   color: var(--primary-color);
   font-size: 1rem;
   flex-shrink: 0;
+}
+
+/* Estilos para o select customizado */
+.customSelectContainer {
+  position: relative;
+  width: 100%;
+}
+
+.customSelect {
+  position: relative;
+  width: 100%;
+  padding: 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--input-text);
+  font-size: 1rem;
+  z-index: 30;  /* Valor alto para garantir que aparece sobre outros elementos */
+}
+
+.customSelect:hover {
+  border-color: var(--input-focus-border);
+}
+
+.customSelect.open {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.selectedOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.selectArrow {
+  transition: transform 0.3s ease;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.customSelect.open .selectArrow {
+  transform: rotate(180deg);
+}
+
+.optionsContainer {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid var(--input-border);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 31;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.option {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.option:hover {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.option.selected {
+  background: rgba(59, 130, 246, 0.3);
+  font-weight: 500;
+}
+
+/* Estilização da barra de rolagem para navegadores baseados em WebKit */
+.optionsContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.optionsContainer::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 10px;
+}
+
+.optionsContainer::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+}
+
+.optionsContainer::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-hover);
+}
+
+/* Improved responsiveness */
+@media (max-width: 992px) {
+  .contactContent {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+  
+  .contactInfo {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+  }
+  
+  .socialLinks {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .contactContainer {
+    padding-top: 80px;
+  }
+  
+  .contactHeader {
+    margin-bottom: 45px;
+  }
+  
+  .contactHeader h1 {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+  }
+  
+  .contactForm {
+    padding: 35px;
+  }
+  
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 30px; /* Gap menor para telas menores, mas ainda suficiente para evitar sobreposição */
+  }
+  
+  .formMessageBlock,
+  .formGroup {
+    margin-bottom: 15px;
+  }
+  
+  /* Força 100% de largura em elementos críticos no mobile */
+  .input,
+  .textarea,
+  select,
+  .customSelect {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 480px) {
+  .contactInfo {
+    grid-template-columns: 1fr;
+  }
+  
+  .contactForm {
+    padding: 30px 25px;
+    border-radius: 20px;
+  }
+  
+  .input, 
+  .textarea,
+  .customSelect {
+    padding: 15px;
+  }
+  
+  .submitButton {
+    padding: 14px;
+  }
+  
+  .preHeading {
+    padding: 6px 14px;
+    font-size: 0.9rem;
+  }
+  
+  /* Ajustes específicos para telas menores */
+  .formGrid {
+    gap: 25px; /* Ainda um pouco menor, mas sem ficar muito junto */
+  }
+  
+  .progressContainer {
+    margin-bottom: 25px;
+  }
+}
+
+/* Otimizações específicas para telas muito pequenas (375px) */
+@media (max-width: 375px) {
+  .contactContainer {
+    padding-top: 60px;
+  }
+  
+  .contactForm {
+    padding: 20px 15px;
+    border-radius: 14px;
+  }
+  
+  .formContainer h3 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+  
+  /* Ajustes em espaçamentos */
+  .input, 
+  .textarea,
+  .customSelect {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+  
+  .label {
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+  
+  .labelIcon {
+    margin-right: 5px;
+  }
+  
+  .formGrid {
+    gap: 20px; /* Reduzido para telas muito pequenas, sem sobreposição */
+  }
+  
+  /* Correção específica para o CustomSelect */
+  .selectedOption {
+    min-height: 20px; /* Garantir altura mínima */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Ajuste adicional para telas extremamente pequenas */
+@media (max-width: 320px) {
+  .contactContent {
+    padding: 0 10px;
+  }
+  
+  .contactForm {
+    padding: 15px 12px;
+  }
+  
+  .formGrid {
+    gap: 18px; /* Valor final para telas 320px */
+    grid-template-columns: 1fr; /* Garantir uma coluna só */
+  }
+  
+  /* Reduzir ainda mais espaçamentos */
+  .submitButton {
+    margin-top: 10px;
+  }
+  
+  .formGroup {
+    margin-bottom: 10px;
+  }
+  
+  .formMessageBlock {
+    margin-bottom: 12px;
+  }
+  
+  /* Ajuste no tamanho dos ícones */
+  .socialLink {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+  
+  /* Ajuste para componentes específicos */
+  .fileUploadButton {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    max-width: 200px;
+  }
+  
+  .formContainer h3 {
+    font-size: 1.2rem;
+  }
+  
+  /* Correção específica para o dropdown */
+  .customSelect {
+    height: auto;
+    min-height: 45px;
+  }
+  
+  .input, 
+  .textarea {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Performance optimizations */
+.contactContainer.reducedMotion * {
+  transition-duration: 0.001s !important;
+  animation-duration: 0.001s !important;
+  animation: none !important;
+}
+
+.contactContainer.reducedMotion .gradientBackground {
+  animation: none !important;
+  background-position: 0% 50% !important;
+}
+
+/* Prevent animations during scroll */
+body.is-scrolling .gradientBackground,
+body.is-scrolling .patternGrid,
+body.is-scrolling .particles::before,
+body.is-scrolling .particles::after {
+  animation-play-state: paused !important;
+}
+
+/* Improve rendering with GPU */
+.contactContainer:not(.reducedMotion) .infoCard,
+.contactContainer:not(.reducedMotion) .socialLinks,
+.contactContainer:not(.reducedMotion) .contactForm,
+.contactContainer:not(.reducedMotion) .contactHeader {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+/* Optimize only during animations */
+.infoCard.visible,
+.socialLinks.visible,
+.contactForm.visible {
+  will-change: auto !important;
 }
