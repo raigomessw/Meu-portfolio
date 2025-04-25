@@ -1,4 +1,4 @@
-/* === VERSÃO PREMIUM DEFINITIVA === */
+/* === VERSÃO PREMIUM COM OTIMIZAÇÃO TOTAL PARA MOBILE === */
 
 /* Fontes e variáveis */
 :root {
@@ -7,6 +7,7 @@
   --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   --hover-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
   --accent-glow: 0 0 15px rgba(35, 166, 213, 0.4);
+  --nav-height: 60px; /* Altura estimada da navbar */
 }
 
 /* Estilos Base */
@@ -66,7 +67,6 @@
   filter: drop-shadow(0 0 10px rgba(35, 166, 213, 0.3));
 }
 
-
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -82,6 +82,8 @@
   color: white;
   padding: 2rem;
   overflow: hidden;
+  /* Espaçamento para navbar */
+  padding-top: calc(var(--nav-height) + 2rem);
 }
 
 .parallaxLayer {
@@ -109,9 +111,9 @@
   height: 100%;
   background: linear-gradient(
     to bottom,
-    rgba(18, 18, 18, 0.5) 0%,    /* Reduzido de 0.8 para 0.4 */
-    rgba(18, 18, 18, 0.353) 50%,   /* Reduzido de 0.5 para 0.2 */
-    rgba(18, 18, 18, 0.614) 100%   /* Reduzido de 0.8 para 0.4 */
+    rgba(18, 18, 18, 0.5) 0%,
+    rgba(18, 18, 18, 0.353) 50%,
+    rgba(18, 18, 18, 0.614) 100%
   );
   z-index: 1;
 }
@@ -169,30 +171,32 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Botão Voltar - Reposicionado para evitar sobreposição com NavBar */
 .backButton {
-  position: absolute;
-  top: -120px;
-  left: 0;
+  position: fixed; /* Mudado para fixed para garantir posição consistente */
+  top: 10px; /* Posicionado bem abaixo da navbar */
+  left: 1px;
   display: flex;
   align-items: center;
   color: white;
-  font-size: 1rem;
+  font-size: 0.95rem;
   cursor: pointer;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: 50px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.6); /* Background mais escuro para melhor contraste */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  transition: all 0.4s var(--transition-smooth);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 1500; /* Z-index muito alto para garantir que fique acima de tudo */
 }
 
 .backButton:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.7);
   transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .backButton svg {
@@ -210,6 +214,7 @@
   font-weight: 700;
   margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
+  margin-top: 60px; /* Espaço para o botão voltar */
   background: linear-gradient(120deg, #ffffff, #e0e0e0);
   -webkit-background-clip: text;
   background-clip: text;
@@ -222,6 +227,9 @@
   flex-direction: column;
   align-items: center;
   gap: 1.2rem;
+  position: relative;
+  z-index: 3; 
+  margin-bottom: 60px; /* Espaço para o indicador de scroll */
 }
 
 .projectDate {
@@ -236,6 +244,8 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.8rem;
+  position: relative;
+  z-index: 10; /* Valor alto para garantir visibilidade */
 }
 
 .tag {
@@ -257,10 +267,10 @@
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Indicador de scroll elegante */
+/* Indicador de Scroll - Reposicionado para evitar sobreposições */
 .scrollIndicator {
   position: absolute;
-  bottom: 40px;
+  bottom: 25px;
   left: 50%;
   transform: translateX(-50%);
   width: 48px;
@@ -271,7 +281,7 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  z-index: 5;
+  z-index: 5; /* Valor alto suficiente, mas abaixo das tags */
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.1);
   animation: pulse 2s infinite;
@@ -315,6 +325,8 @@
   padding: 4rem 1.5rem;
   opacity: 1;
   animation: contentFade 0.8s ease-out;
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes contentFade {
@@ -373,7 +385,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Badges de Tecnologia Premium */
+/* Badges de Tecnologia */
 .techBadges {
   display: flex;
   flex-wrap: wrap;
@@ -464,7 +476,6 @@
 }
 
 .liveLink:hover::before {
-  color: #000;
   opacity: 1;
 }
 
@@ -483,7 +494,6 @@
 
 .liveLink:hover {
   box-shadow: 0 8px 25px rgba(35, 166, 213, 0.4);
-  color: var(--color-text-0);
 }
 
 .codeLink:hover {
@@ -502,7 +512,7 @@
 
 .designLink {
   background: linear-gradient(135deg, #FF5F6D, #FFC371);
-  color: var(--color-text-0);
+  color: white;
   box-shadow: 0 5px 15px rgba(255, 95, 109, 0.3);
   position: relative;
   z-index: 1;
@@ -527,9 +537,8 @@
 }
 
 .designLink:hover {
-  color: var(--hover-shadow);
   box-shadow: 0 8px 25px rgba(255, 95, 109, 0.4);
-} 
+}
 
 /* Galeria Premium */
 .projectGallery {
@@ -696,203 +705,40 @@
   transform: rotate(90deg);
 }
 
-/* Navegação entre Projetos Premium */
-.projectNav {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 6rem;
-  margin-bottom: 4rem;
-  position: relative;
-  gap: 20px;
+/* RESPONSIVIDADE - FOCO ESPECIAL EM TELAS PEQUENAS */
+
+/* Tablets & Desktop Pequenos */
+@media (max-width: 992px) {
+  .projectTitle {
+    font-size: 3.5rem;
+  }
+  
+  .galleryGrid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
 }
 
-.projectNavDivider {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 1px;
-  height: 100px;
-  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
-}
-
-.projectNavItem {
-  flex: 1;
-  padding: 2rem;
-  border-radius: 16px;
-  background: rgba(30, 30, 30, 0.4);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition: all 0.4s var(--transition-smooth);
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  color: var(--text-primary, #f0f0f0);
-  overflow: hidden;
-  position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
-
-.projectNavItem::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(35, 166, 213, 0.08), rgba(35, 166, 213, 0));
-  opacity: 0;
-  transition: opacity 0.4s var(--transition-smooth);
-}
-
-.projectNavItem:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.projectNavItem:hover::before {
-  opacity: 1;
-}
-
-.projectNavPrev {
-  margin-right: 0.5rem;
-  justify-content: flex-start;
-}
-
-.projectNavNext {
-  margin-left: 0.5rem;
-  justify-content: flex-end;
-  text-align: right;
-}
-
-.projectNavIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(35, 166, 213, 0.2), rgba(35, 166, 213, 0.1));
-  font-size: 1.2rem;
-  flex-shrink: 0;
-  transition: all 0.4s var(--transition-smooth);
-  border: 1px solid rgba(35, 166, 213, 0.15);
-}
-
-.projectNavPrev .projectNavIcon {
-  margin-right: 1.2rem;
-}
-
-.projectNavNext .projectNavIcon {
-  margin-left: 1.2rem;
-}
-
-.projectNavInfo {
-  flex: 1;
-}
-
-.projectNavLabel {
-  display: block;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 0.6rem;
-  opacity: 0.7;
-  font-weight: 500;
-}
-
-.projectNavTitle {
-  font-size: 1.2rem;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: color 0.3s ease;
-}
-
-.projectNavItem:hover .projectNavIcon {
-  background: linear-gradient(135deg, var(--accent-color, #23a6d5), rgba(89, 104, 226, 0.8));
-  color: #fff;
-  transform: scale(1.1);
-  box-shadow: var(--accent-glow);
-}
-
-.projectNavItem:hover .projectNavTitle {
-  color: var(--accent-color, #23a6d5);
-}
-
-/* Indicadores de seção para projetos */
-.sectionIndicators {
-  position: fixed;
-  right: 30px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  z-index: 100;
-}
-
-.sectionDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  cursor: pointer;
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.sectionDot::before {
-  content: attr(data-title);
-  position: absolute;
-  right: 25px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.8);
-  color: white;
-  padding: 5px 12px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-}
-
-.sectionDot:hover::before {
-  opacity: 1;
-  visibility: visible;
-}
-
-.sectionDot.active {
-  background: var(--accent-color, #23a6d5);
-  transform: scale(1.3);
-  box-shadow: var(--accent-glow);
-}
-
-/* Responsividade Premium */
+/* Tablets */
 @media (max-width: 768px) {
   .projectHeader {
+    padding-top: calc(var(--nav-height) + 1.5rem);
     min-height: 55vh;
-    padding: 1.5rem;
   }
   
   .projectTitle {
     font-size: 3rem;
+    margin-top: 40px;
   }
   
   .backButton {
-    top: -90px;
+    top: calc(var(--nav-height) + 15px);
     font-size: 0.95rem;
+    padding: 8px 15px;
+    top: 40px;
   }
   
   .projectContent {
-    padding: 2.5rem 1.5rem;
+    padding: 3rem 1.5rem;
   }
   
   .projectContent h2 {
@@ -902,33 +748,18 @@
   .projectContent p {
     font-size: 1.05rem;
   }
-  
-  .galleryGrid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 15px;
-  }
-  
-  .projectNavItem {
-    padding: 1.5rem;
-  }
-  
-  .projectNavIcon {
-    width: 42px;
-    height: 42px;
-  }
-  
-  .sectionIndicators {
-    right: 15px;
-  }
 }
 
+/* Mobile - Médio */
 @media (max-width: 576px) {
   .projectHeader {
-    min-height: 45vh;
+    padding-top: calc(var(--nav-height) + 1rem);
+    min-height: 50vh;
   }
   
   .projectTitle {
     font-size: 2.2rem;
+    margin-top: 30px;
   }
   
   .tag {
@@ -940,55 +771,45 @@
     grid-template-columns: 1fr;
   }
   
-  .projectNav {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .projectNavItem {
-    width: 100%;
-    margin: 0;
-  }
-  
-  .projectNavDivider {
-    display: none;
-  }
-  
-  .projectNavPrev {
-    padding-right: 1.5rem;
-  }
-  
-  .projectNavNext {
-    padding-left: 1.5rem;
-  }
-  
-  .techBadge {
-    padding: 0.7rem 1rem 0.7rem 2.8rem;
-    font-size: 0.9rem;
-  }
-  
-  .closeModal {
-    top: -50px;
+  .scrollIndicator {
     width: 40px;
     height: 40px;
-    font-size: 1.2rem;
-  }
-  
-  .sectionIndicators {
-    display: none;
-  }
-}
-
-/* Otimizações adicionais para mobile */
-@media (max-width: 480px) {
-  .projectTitle {
-    font-size: 1.8rem;
+    bottom: 20px;
   }
   
   .backButton {
-    top: -70px;
+    top: 20px;
+    left: 1px;
+    padding: 6px 14px;
+    font-size: 0.9rem;
+  }
+  
+  .projectMeta {
+    gap: 1rem;
+    margin-bottom: 50px;
+  }
+  
+  .projectDate {
+    font-size: 1rem;
+  }
+}
+
+/* Mobile - Pequeno */
+@media (max-width: 480px) {
+  .projectHeader {
+    padding-top: calc(var(--nav-height) + 0.5rem);
+    min-height: 45vh;
+  }
+  
+  .projectTitle {
+    margin-top: 70px; /* Espaço adicional acima do título */
+  }
+  
+  .backButton {
+    top: 40px;
+    left: 1px;
+    padding: 5px 12px;
     font-size: 0.85rem;
-    padding: 8px 16px;
   }
   
   .projectContent h2 {
@@ -1011,275 +832,199 @@
     font-size: 0.95rem;
   }
   
-  .galleryCaption {
-    padding: 20px 15px 15px;
+  .scrollIndicator {
+    width: 36px;
+    height: 36px;
+    bottom: 15px;
   }
   
-  .galleryCaption h4 {
-    font-size: 1rem;
+  .scrollIconArrow {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* ESPECÍFICO PARA DISPOSITIVOS MUITO PEQUENOS */
+@media (max-width: 375px) {
+  .backButton {
+    top: 40px;
+    left: 1px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    background: rgba(0, 0, 0, 0.8); /* Background mais escuro para melhor visibilidade */
   }
   
-  .galleryCaption p {
+  .backButton svg {
+    margin-right: 5px;
+    font-size: 0.8em;
+  }
+}
+
+/* TELAS MUITO PEQUENAS (iPhone SE, Galaxy S5, etc.) */
+@media (max-width: 360px) {
+  /* Vai reposicionar o botão voltar para ficar absolutamente seguro */
+  .backButton {
+    position: fixed;
+    top: 40px;
+    left: 1px;
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    z-index: 1000; /* Super alto para garantir visibilidade */
+  }
+  
+  .projectTitle {
+    font-size: 1.5rem;
+    margin-top: 50px; /* Espaçamento extra para garantir distância do botão voltar */
+  }
+  
+  .projectHeader {
+    min-height: 60vh;
+    padding-top: calc(var(--nav-height) + 1.5rem);
+  }
+  
+  .projectMeta {
+    gap: 0.7rem;
+    margin-bottom: 40px;
+  }
+  
+  .projectDate {
+    font-size: 0.9rem;
+  }
+  
+  .tag {
+    padding: 0.25rem 0.8rem;
+    font-size: 0.7rem;
+  }
+  
+  .projectTags {
+    margin-bottom: 30px;
+  }
+  
+  .scrollIndicator {
+    width: 32px;
+    height: 32px;
+    bottom: 10px;
+  }
+  
+  .techBadge {
+    padding: 0.5rem 0.8rem 0.5rem 2.5rem;
     font-size: 0.8rem;
   }
+  
+  .techBadgeIcon {
+    left: 10px;
+    width: 18px;
+    height: 18px;
+  }
 }
 
-/* Efeitos de transição de página */
-.pageTransition {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--bg-primary, #121212);
-  z-index: 9999;
-  transform: translateY(100%);
-  transition: transform 0.6s var(--transition-smooth);
+/* ESPECÍFICO PARA 320x695px - FOCO DO PROBLEMA */
+@media (max-width: 320px), (max-width: 375px) and (max-height: 700px) {
+  :root {
+    --nav-height: 70px; /* Altura estimada da navbar nestes dispositivos */
+  }
+  
+  .projectHeader {
+    min-height: auto;
+    padding-bottom: 3rem;
+    padding-top: calc(var(--nav-height) + 30px);
+  }
+  
+  .backButton {
+    top: 20px;
+    left: 1px;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    border-radius: 30px;
+  }
+  
+  .backButton svg {
+    margin-right: 5px;
+    font-size: 0.8em;
+  }
+  
+  .projectTitle {
+    margin-top: 80px; /* Ainda mais espaço para telas muito pequenas */
+  }
+  
+  .projectMeta {
+    margin-bottom: 30px;
+  }
+  
+  .projectTags {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0;
+    padding-bottom: 30px; /* Espaço para o scroll indicator */
+  }
+  
+  .tag {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.65rem;
+  }
+  
+  /* Esconder o scroll indicator em telas muito pequenas para evitar sobreposição */
+  .scrollIndicator {
+    width: 30px;
+    height: 30px;
+    bottom: 5px;
+    opacity: 0.8;
+  }
+  
+  /* Ajustes de conteúdo para maximizar espaço */
+  .projectContent {
+    padding: 2rem 1rem;
+  }
+  
+  .projectContent h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .projectContent h3 {
+    font-size: 1.2rem;
+    margin: 2rem 0 0.8rem;
+  }
+  
+  .techBadges {
+    gap: 0.7rem;
+    margin: 1.5rem 0;
+  }
 }
 
-.pageTransition.enter {
-  transform: translateY(0);
+/* SUPORTE A ORIENTAÇÃO PAISAGEM EM TELAS PEQUENAS */
+@media (max-height: 500px) and (orientation: landscape) {
+  .projectHeader {
+    min-height: 100vh;
+    padding-top: calc(var(--nav-height) + 0.5rem);
+  }
+  
+  .backButton {
+    top: calc(var(--nav-height) + 5px);
+  }
+  
+  .projectTitle {
+    font-size: 1.8rem;
+    margin-top: 50px;
+  }
+  
+  .scrollIndicator {
+    bottom: 15px;
+  }
+  
+  .projectMeta {
+    margin-bottom: 40px;
+  }
 }
 
-.pageTransition.exit {
-  transform: translateY(-100%);
-}
-
-/* Modal Premium para Imagens */
-.premiumModal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(5, 5, 5, 0.9);
-  z-index: 2000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 1;
-  transition: all 0.4s var(--transition-smooth);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-}
-
-.premiumModal.visible {
-  opacity: 1;
-}
-
-.modalWrapper {
-  position: relative;
-  width: 90%;
-  max-width: 1200px;
-  max-height: 90vh;
-}
-
-.modalSlider {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.modalImage {
-  max-width: 100%;
-  max-height: 80vh;
-  object-fit: contain;
-  border-radius: 8px;
-  opacity: 1;
-  transition: opacity 0.5s ease, transform 0.5s var(--transition-smooth);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-.modalImage.active {
-  opacity: 1;
-}
-
-.modalNavBtn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 50px;
-  height: 50px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.5rem;
-  cursor: pointer;
-  z-index: 10;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-}
-
-.modalNavBtn:hover {
-  background: rgba(255,255,255,0.2);
-  transform: translateY(-50%) scale(1.1);
-}
-
-.modalPrev {
-  left: 20px;
-}
-
-.modalNext {
-  right: 20px;
-}
-
-.modalClose {
-  position: absolute;
-  top: -60px;
-  right: 0;
-  width: 50px;
-  height: 50px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.3rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-}
-
-.modalFullscreen {
-  position: absolute;
-  top: -60px;
-  right: 60px;
-  width: 50px;
-  height: 50px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-}
-
-.modalClose:hover,
-.modalFullscreen:hover {
-  background: rgba(255,255,255,0.2);
-  transform: scale(1.1);
-}
-
-.modalClose:hover {
-  transform: rotate(90deg);
-}
-
-.modalCaption {
-  position: absolute;
-  bottom: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: white;
-  text-align: center;
-  width: 100%;
-  max-width: 700px;
-  font-size: 1rem;
-  opacity: 0.9;
-  padding: 0 20px;
-}
-
-.modalCounter {
-  position: absolute;
-  bottom: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: rgba(255,255,255,0.6);
-  font-size: 0.9rem;
-}
-
-/* Miniaturas modal */
-.modalThumbnails {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 20px;
-  position: absolute;
-  bottom: -100px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 600px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
-}
-
-.modalThumbnails::-webkit-scrollbar {
-  height: 4px;
-}
-
-.modalThumbnails::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.modalThumbnails::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
-}
-
-.modalThumb {
-  width: 70px;
-  height: 45px;
-  border-radius: 4px;
-  overflow: hidden;
-  cursor: pointer;
-  opacity: 0.6;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-  border: 2px solid transparent;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-}
-
-.modalThumb.active {
-  opacity: 1;
-  border-color: var(--accent-color, #23a6d5);
-  box-shadow: 0 3px 15px rgba(35, 166, 213, 0.3);
-}
-
-.modalThumb:hover {
-  opacity: 1;
-  transform: translateY(-2px);
-}
-
-.modalThumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Suporte a dispositivos de baixa potência */
-.mobilePlatform .parallaxBg {
-  transform: none !important;
-}
-
-.mobilePlatform .glassBg {
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-}
-
-/* Animações reduzidas */
+/* ANIMAÇÕES REDUZIDAS PARA ACESSIBILIDADE */
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
   ::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
   
@@ -1291,28 +1036,12 @@
   .imageModal,
   .modalContent,
   .galleryItem img,
-  .pageTransition {
+  .galleryCaption {
     transition: none !important;
     animation: none !important;
   }
-}
-
-/* Suporte para tela dividida */
-@media (max-height: 500px) and (orientation: landscape) {
-  .projectHeader {
-    min-height: 85vh;
-  }
-  
-  .backButton {
-    top: 20px;
-    left: 20px;
-  }
   
   .scrollIndicator {
-    bottom: 20px;
-  }
-  
-  .modalThumbnails {
-    display: none;
+    animation: none !important;
   }
 }

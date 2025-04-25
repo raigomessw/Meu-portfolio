@@ -1,3 +1,8 @@
+:root {
+  --transition-duration: 0.3s;
+  --accent-color: #23a6d5;
+}
+
 .navbar {
   width: 85%;
   max-width: 1400px;
@@ -169,7 +174,7 @@
   cursor: pointer;
   width: 40px;
   height: 40px;
-  z-index: 9999;
+  z-index: 1200; /* Aumentado para garantir que fique acima do menu */
   display: none;
   justify-content: center;
   align-items: center;
@@ -239,8 +244,9 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
-    background: rgba(17, 25, 40, 0.95);
+    height: 100vh; 
+    height: calc(var(--vh, 1vh) * 100); /* Solução para iOS */
+    background: rgba(17, 25, 40, 0.98); /* Maior opacidade para evitar transparência excessiva */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     display: flex;
@@ -251,16 +257,17 @@
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: scale(0.95);
+    transform: translateY(-20px); /* Alterado para translateY para animação mais suave */
     transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
+    overflow-y: auto; /* Permitir rolagem caso seja necessário */
   }
   
   .navMenu.open {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transform: scale(1);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s;
   }
   
   .navMenu.open .navList {
@@ -281,6 +288,7 @@
     width: 90%;
     padding: 0 15px;
     height: 70px;
+    border-radius: 14px; /* Reduzindo o border radius para telas menores */
   }
   
   .mobileNav {
@@ -309,15 +317,22 @@
     width: 100%;
     display: block;
   }
+  
+  /* Melhoria para o botão do menu hamburger em dispositivos móveis */
+  .mobileButton {
+    top: 15px; /* Ajustado para a nova altura da navbar */
+    right: 15px;
+  }
 }
-
 
 /* Otimizações específicas para dispositivos pequenos */
 @media (max-width: 375px) {
   .navbar {
-    height: 70px;
-    width: 85%;
-    top: 15px;
+    height: 60px; /* Reduzido para telas bem pequenas */
+    width: 95%; /* Aumentado para usar mais espaço */
+    top: 10px;
+    padding: 0 10px;
+    border-radius: 12px; /* Border radius ainda menor */
   }
   
   .logo a {
@@ -334,8 +349,56 @@
   
   /* Garantir visibilidade em telas pequenas */
   .mobileButton {
-    right: 15px;
-    top: 20px;
+    right: 10px;
+    top: 12px;
+  }
+  
+  /* Aumentar tamanho do toque para melhor acessibilidade */
+  .hamburgerIcon {
+    width: 26px;
+    height: 20px;
+  }
+  
+  .hamburgerIcon span:nth-child(2) {
+    top: 8px;
+  }
+  
+  .hamburgerIcon span:nth-child(3) {
+    top: 16px;
+  }
+}
+
+/* Específico para dispositivos muito pequenos */
+@media (max-width: 320px) {
+  .navbar {
+    width: 95%;
+    height: 55px;
+    padding: 0 8px;
+    top: 8px;
+  }
+  
+  .logo a {
+    font-size: 1.3rem;
+  }
+  
+  .logoAccent {
+    font-size: 1.6rem;
+  }
+  
+  .navLink {
+    font-size: 1.2rem;
+    padding: 12px 0;
+  }
+  
+  .navItem {
+    margin: 10px 0;
+  }
+  
+  .mobileButton {
+    top: 10px;
+    right: 8px;
+    width: 35px;
+    height: 35px;
   }
 }
 
@@ -359,7 +422,8 @@
 @media (max-height: 500px) and (orientation: landscape) {
   .navMenu {
     overflow-y: auto;
-    padding: 50px 0;
+    padding: 60px 0;
+    justify-content: flex-start;
   }
   
   .navItem {
@@ -368,7 +432,7 @@
   
   .navLink {
     font-size: 1.2rem;
-    padding: 12px 0;
+    padding: 10px 0;
   }
 }
 
@@ -378,9 +442,10 @@
   .navLink,
   .navLink::after,
   .resumeBtn,
-  .menuBar,
+  .hamburgerIcon span,
   .navMenu {
     transition-duration: 0.001s !important;
+    animation-duration: 0.001s !important;
   }
 }
 
@@ -402,6 +467,11 @@
 @supports (-webkit-touch-callout: none) {
   .navMenu {
     height: -webkit-fill-available;
+  }
+  
+  /* Respeitar a safe area na parte inferior */
+  .navMenu .navList {
+    padding-bottom: env(safe-area-inset-bottom);
   }
   
   .mobileButton {

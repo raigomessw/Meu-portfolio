@@ -1,12 +1,12 @@
 import React, { useState, memo, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faTimes, faExternalLinkAlt, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import styles from './WorkCard.module.css';
 
 function WorkCard({ id, title, description, tags, projectLink, projectDetails }) {
-  // Adicionamos o id como parâmetro
   const [modalOpen, setModalOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef(null);
   const modalContentRef = useRef(null);
   const navigate = useNavigate();
@@ -14,40 +14,38 @@ function WorkCard({ id, title, description, tags, projectLink, projectDetails })
   // Navegar para página de detalhes do projeto
   const viewProjectDetails = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     navigate(`/work/${id}`);
   };
 
-  // Função para abrir modal para compatibilidade com código existente
   const openModal = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     
     // Você pode optar por manter o modal ou redirecionar diretamente
     // Para redirecionar, descomente a linha abaixo e remova o restante da função
     // return viewProjectDetails(e);
     
-    // Usar requestAnimationFrame para garantir smooth rendering
     requestAnimationFrame(() => {
       setModalOpen(true);
-      document.body.style.overflow = 'hidden'; // Bloquear scroll
+      document.body.style.overflow = 'hidden';
     });
   };
 
   const closeModal = () => {
-    // Animação de saída antes de remover modal
     if (modalContentRef.current) {
       modalContentRef.current.classList.add(styles.closing);
       
       setTimeout(() => {
         setModalOpen(false);
-        document.body.style.overflow = ''; // Restaurar scroll
+        document.body.style.overflow = '';
       }, 300);
     } else {
       setModalOpen(false);
-      document.body.style.overflow = ''; // Restaurar scroll
+      document.body.style.overflow = '';
     }
   };
   
-  // Handler para tecla ESC fechar modal
   React.useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && modalOpen) {
@@ -64,57 +62,73 @@ function WorkCard({ id, title, description, tags, projectLink, projectDetails })
     };
   }, [modalOpen]);
   
-  // Detectar se device tem baixa performance
   const isLowPerformanceDevice = 
     typeof navigator !== 'undefined' && 
     ((navigator.deviceMemory && navigator.deviceMemory < 4) || 
     (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4));
 
-  // Classe CSS condicional para animações
-  const cardClassName = `${styles.workCard} ${isLowPerformanceDevice ? styles.reducedMotion : ''}`;
+  const cardClassName = `${styles.workCard} ${isLowPerformanceDevice ? styles.reducedMotion : ''} ${isHovered ? styles.hovered : ''}`;
+
+  const visitProject = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Não faz nada além de impedir a propagação do evento, já que o link <a> lidará com a navegação
+  };
 
   return (
     <>
-      {/* Envolver o card em um Link para navegar para detalhes */}
-      <Link to={`/work/${id}`} className={styles.cardLink}>
-        <div className={cardClassName} ref={cardRef}>
-          <div className={styles.cardContent}>
-            <h3 className={styles.cardTitle}>{title}</h3>
-            <p className={styles.cardDescription}>{description}</p>
-            <div className={styles.cardTags}>
-              {tags && tags.map((tag, index) => (
-                <span key={index} className={styles.tag}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <div className={styles.buttonContainer}>
-              {projectLink && (
-                <a 
-                  href={projectLink} 
-                  className={styles.viewButton}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Visit project ${title}`}
-                  onClick={e => e.stopPropagation()} // Evitar navegação para detalhes quando clicado
-                >
-                  Visit project
-                  <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
-                </a>
-              )}
-              <button 
-                className={styles.detailsButton}
-                onClick={viewProjectDetails} // Alterado para navegar para página de detalhes
-                aria-label={`View project details ${title}`}
+      <div 
+        className={cardClassName} 
+        ref={cardRef}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onClick={viewProjectDetails}
+      >
+        <div className={styles.cardContent}>
+          <h3 className={styles.cardTitle}>{title}</h3>
+          <p className={styles.cardDescription}>{description}</p>
+          <div className={styles.cardTags}>
+            {tags && tags.map((tag, index) => (
+              <span key={index} className={styles.tag}>
+                {tag}
+              </span>
+            ))}
+          </div>
+          
+          {/* Action Buttons Container - Sempre visível agora */}
+          <div className={styles.buttonContainer}>
+            <button 
+              className={`${styles.detailsButton} ${styles.primaryButton}`}
+              onClick={viewProjectDetails}
+              aria-label={`View details of ${title} project`}
+            >
+              <FontAwesomeIcon icon={faInfoCircle} className={styles.buttonIconLeft} />
+              Project Details
+            </button>
+            
+            {projectLink && (
+              <a 
+                href={projectLink} 
+                className={`${styles.viewButton} ${styles.secondaryButton}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Visit live ${title} project`}
+                onClick={visitProject}
               >
-                View Details
-              </button>
-            </div>
+                <FontAwesomeIcon icon={faExternalLinkAlt} className={styles.buttonIconLeft} />
+                Visit Live
+              </a>
+            )}
+          </div>
+          
+          {/* Badge de Interação */}
+          <div className={styles.interactionHint}>
+            <span>Click to view project</span>
           </div>
         </div>
-      </Link>
+      </div>
 
-      {/* Modal mantido por retrocompatibilidade (opcional) */}
+      {/* Modal - Mantido, mas com textos corrigidos para inglês */}
       {modalOpen && (
         <div 
           className={styles.modalOverlay} 
@@ -174,20 +188,22 @@ function WorkCard({ id, title, description, tags, projectLink, projectDetails })
               <div className={styles.modalActions}>
                 <Link 
                   to={`/work/${id}`} 
-                  className={styles.modalButton}
+                  className={`${styles.modalButton} ${styles.primaryModalButton}`}
                   onClick={closeModal}
                 >
-                  Ver Detalhes Completos
+                  <FontAwesomeIcon icon={faInfoCircle} className={styles.buttonIconLeft} />
+                  View Full Details
                   <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
                 </Link>
                 
                 {projectLink && (
                   <a 
                     href={projectLink} 
-                    className={styles.modalButton}
+                    className={`${styles.modalButton} ${styles.secondaryModalButton}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
+                    <FontAwesomeIcon icon={faExternalLinkAlt} className={styles.buttonIconLeft} />
                     Visit Project
                     <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
                   </a>
@@ -201,9 +217,7 @@ function WorkCard({ id, title, description, tags, projectLink, projectDetails })
   );
 }
 
-// Memorizar o componente para evitar re-renderizações desnecessárias
 export default memo(WorkCard, (prevProps, nextProps) => {
-  // Comparação personalizada para melhorar performance
   return (
     prevProps.id === nextProps.id &&
     prevProps.title === nextProps.title &&

@@ -25,22 +25,42 @@ const Navbar = React.memo(function Navbar() {
     return () => window.removeEventListener('resize', checkDevice);
   }, []);
   
+  // NOVA FUNÇÃO: Corrigir altura em dispositivos móveis, especialmente iOS
+  useEffect(() => {
+    const setVHVariable = () => {
+      // Define a altura da unidade vh para uso em CSS
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    // Definir valor inicial
+    setVHVariable();
+
+    // Atualizar em eventos de redimensionamento e orientação
+    window.addEventListener('resize', setVHVariable);
+    window.addEventListener('orientationchange', setVHVariable);
+    
+    // Solução específica para iOS: atualizar após renderização completa
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      setTimeout(setVHVariable, 100);
+      // Detectar mudanças de scroll que podem afetar a barra de URL no iOS
+      window.addEventListener('scroll', () => {
+        setTimeout(setVHVariable, 100);
+      });
+    }
+
+    return () => {
+      window.removeEventListener('resize', setVHVariable);
+      window.removeEventListener('orientationchange', setVHVariable);
+    };
+  }, []);
+  
   // Otimizar evento de scroll com RAF e throttling
   const handleScroll = useCallback(() => {
     if (!ticking.current) {
       requestAnimationFrame(() => {
         const scrollTop = window.scrollY;
         setIsScrolled(scrollTop > 20);
-        
-        // Auto-esconder navbar em scroll down em mobile (DESATIVADO TEMPORARIAMENTE)
-        /* if (isMobile && scrollTop > 100) {
-          const isScrollDown = scrollTop > lastScrollTop.current;
-          if (navRef.current) {
-            navRef.current.style.transform = isScrollDown 
-              ? 'translate3d(-50%, -100px, 0)' 
-              : 'translate3d(-50%, 0, 0)';
-          }
-        } */
         
         lastScrollTop.current = scrollTop;
         ticking.current = false;
@@ -66,36 +86,71 @@ const Navbar = React.memo(function Navbar() {
     else if (path.includes('/contact')) setActiveSection('contact');
   }, [location]);
   
-  // Melhorar toggle de menu com tratamento específico para dispositivos móveis
+  // MODIFICADO: Toggle de menu aprimorado para dispositivos móveis
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(prev => {
       const newState = !prev;
-      document.body.style.overflow = newState ? 'hidden' : '';
       
-      // Adicionar toque fora para fechar em dispositivos móveis
-      if (newState && isMobile) {
-        setTimeout(() => {
-          document.addEventListener('touchstart', handleOutsideClick);
-        }, 300);
+      // Bloquear scroll quando menu está aberto
+      if (newState) {
+        // Melhor método para impedir scroll em iOS
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${window.scrollY}px`;
+        document.body.style.width = '100%';
+        
+        // Adicionar toque fora para fechar em dispositivos móveis
+        if (isMobile) {
+          // Pequeno atraso para evitar fechamento imediato
+          setTimeout(() => {
+            document.addEventListener('touchstart', handleOutsideClick);
+          }, 300);
+        }
+      } else {
+        // Restaurar scroll quando menu é fechado
+        const scrollY = document.body.style.top;
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        
+        // Remover event listener
+        document.removeEventListener('touchstart', handleOutsideClick);
       }
       
       return newState;
     });
   }, [isMobile]);
   
-  // Fechar menu ao tocar fora
+  // MODIFICADO: Fechar menu ao tocar fora (corrigido para iOS)
   const handleOutsideClick = useCallback((e) => {
-    if (navRef.current && !navRef.current.contains(e.target)) {
+    // Verificar se o clique foi fora do menu e do botão hamburger
+    const isOutsideMenu = navRef.current && !navRef.current.contains(e.target);
+    const isHamburgerClick = e.target.closest(`.${styles.mobileButton}`);
+    
+    if (isOutsideMenu && !isHamburgerClick) {
       setIsMobileMenuOpen(false);
-      document.body.style.overflow = '';
+      
+      // Restaurar scroll
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      
       document.removeEventListener('touchstart', handleOutsideClick);
     }
   }, []);
   
-  // Fechar menu ao clicar em um link
+  // MODIFICADO: Fechar menu ao clicar em um link (corrigido para iOS)
   const closeMobileMenu = useCallback(() => {
     if (isMobileMenuOpen) {
-      document.body.style.overflow = '';
+      // Restaurar scroll
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      
       setIsMobileMenuOpen(false);
       document.removeEventListener('touchstart', handleOutsideClick);
     }
@@ -105,7 +160,8 @@ const Navbar = React.memo(function Navbar() {
   useEffect(() => {
     const handleOrientationChange = () => {
       if (isMobileMenuOpen) {
-        closeMobileMenu();
+        // Adicionar atraso para garantir transição completa
+        setTimeout(closeMobileMenu, 100);
       }
     };
     

@@ -47,6 +47,12 @@ function WorkSection() {
 
   return (
     <section id="trabalhos" ref={sectionRef} className={styles.workSection}>
+      {/* Elementos decorativos de fundo */}
+      <div className={styles.backgroundGlow}></div>
+      <div className={styles.decorCircleTop}></div>
+      <div className={styles.decorCircleBottom}></div>
+      <div className={styles.gridLines}></div>
+      
       <div className={styles.sectionHeader}>
         <h2>My Works</h2>
         <p>Here you can see some of the projects I've worked on.</p>
