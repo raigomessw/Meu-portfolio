@@ -379,8 +379,8 @@ body.is-scrolling .scrollIcon::before {
   }
   
   .imageWrapper {
-    width: 230px;
-    height: 230px;
+    width: 150px;
+    height: 150px;
   }
   
   .greeting {
@@ -471,8 +471,7 @@ body.is-scrolling .scrollIcon::before {
   
   /* Ajustar imagem do perfil */
   .imageWrapper {
-    width: 190px;
-    height: 190px;
+    display: none; /* Remover imagem do perfil */
   }
   
   /* Remover scroll indicator em telas muito pequenas para economizar espaço */
