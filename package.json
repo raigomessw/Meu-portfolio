@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "echo 'Starting build with Node' && node -v",
-    "build": "ROLLUP_NATIVE=false vite build",
+    "prebuild": "echo 'Node version:' && node -v",
+    "build": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview"
   },
