@@ -9,7 +9,12 @@ function BackgroundVideo({ children }) {
         autoPlay
         loop
         muted
+        playsInline // Importante para iOS
+        disablePictureInPicture // Previne modo PiP
+        disableRemotePlayback // Previne casting
         className={styles.backgroundVideo}
+        controlsList="nodownload nofullscreen noremoteplayback" // Remove controles
+        onContextMenu={(e) => e.preventDefault()} // Previne menu de contexto
       >
         <source src={gradientVideo} type="video/mp4" />
         Seu navegador não suporta vídeos.
