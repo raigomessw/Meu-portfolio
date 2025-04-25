@@ -1,6 +1,9 @@
 [build]
   publish = "dist"
   command = "npm run build"
+  
+[build.environment]
+  NODE_VERSION = "18"
 
 [[headers]]
   for = "/*"
@@ -64,10 +67,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-
-[build]
-  command = "npm run build"
-  publish = "dist"
-
-[build.environment]
-  NODE_VERSION = "18"
