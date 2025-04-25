@@ -73,14 +73,22 @@ const Navbar = () => {
 
   // ATUALIZADO: Toggle menu com lógica aprimorada
   const toggleMenu = () => {
-    // Garantir que o menu mobile tenha precedência sobre outros modais
-    if (!menuOpen) {
-      // Fechar outros modais que possam estar abertos
-      const modals = document.querySelectorAll('.modal-open');
-      modals.forEach(modal => modal.classList.remove('modal-open'));
-    }
+    // Alterna o estado do menu
+    const newMenuState = !menuOpen;
+    setMenuOpen(newMenuState);
     
-    setMenuOpen(!menuOpen);
+    // Manipulação direta do DOM para garantir funcionamento
+    if (newMenuState) {
+      document.body.classList.add('mobile-menu-open');
+      // Bloqueia rolagem
+      document.body.style.top = `-${window.scrollY}px`;
+    } else {
+      // Recupera a posição de rolagem antes de remover a classe
+      const scrollY = document.body.style.top;
+      document.body.classList.remove('mobile-menu-open');
+      document.body.style.top = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
   };
 
   // Determinar classes para a navbar
