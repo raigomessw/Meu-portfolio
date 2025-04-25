@@ -1,153 +1,106 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
 
-/**
- * Componente Navbar Premium com otimização de performance
- * @returns {JSX.Element} Componente Navbar responsivo
- */
 const Navbar = () => {
-  // Estados para controle do comportamento da navbar
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  
-  // Refs para melhor performance
-  const navbarRef = useRef(null);
-  const timeoutRef = useRef(null);
+  // CORREÇÃO: Definindo o estado menuOpen
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const location = useLocation();
+  const lastScrollY = useRef(0);
 
-  // Array com configurações corretas das rotas
-  const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
-    { name: 'Projects', path: '/work' }, // Corrigido para a rota correta
-    { name: 'Contact', path: '/contact' }
-  ];
-
-  // Detecção de preferência de redução de movimento
+  // Fechar o menu quando mudar de página
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.matchMedia) {
-      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-      setPrefersReducedMotion(mediaQuery.matches);
-      
-      const handleMotionPreferenceChange = () => {
-        setPrefersReducedMotion(mediaQuery.matches);
-      };
-      
-      if (mediaQuery.addEventListener) {
-        mediaQuery.addEventListener('change', handleMotionPreferenceChange);
-      } else {
-        mediaQuery.addListener(handleMotionPreferenceChange);
-      }
-      
-      return () => {
-        if (mediaQuery.removeEventListener) {
-          mediaQuery.removeEventListener('change', handleMotionPreferenceChange);
-        } else {
-          mediaQuery.removeListener(handleMotionPreferenceChange);
-        }
-      };
-    }
-  }, []);
+    setMenuOpen(false);
+  }, [location]);
 
-  // Otimização da função handleScroll com throttling
-  const handleScroll = useCallback(() => {
-    if (timeoutRef.current) return;
-    
-    timeoutRef.current = setTimeout(() => {
+  // Detectar rolagem para esconder/mostrar navbar
+  useEffect(() => {
+    const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      // Verifica se a página foi rolada para baixo
-      if (currentScrollY > 50) {
-        setIsScrolled(true);
+      // Determinar se a página foi rolada para baixo
+      if (currentScrollY > 100) {
+        setScrolled(true);
       } else {
-        setIsScrolled(false);
+        setScrolled(false);
       }
       
-      // Mostra/esconde a navbar com base na direção do scroll
-      if (currentScrollY > lastScrollY && currentScrollY > 300) {
-        setIsHidden(true);
-      } else {
-        setIsHidden(false);
+      // Esconder/mostrar navbar baseado na direção da rolagem
+      if (currentScrollY > lastScrollY.current + 10) {
+        setHidden(true);
+      } else if (currentScrollY < lastScrollY.current - 10) {
+        setHidden(false);
       }
       
-      setLastScrollY(currentScrollY);
-      timeoutRef.current = null;
-    }, 50); // 50ms throttle para suavizar a performance
-  }, [lastScrollY]);
-
-  // Configuração de event listeners otimizados
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    // Solução para altura do viewport em iOS
-    const setVH = () => {
-      document.documentElement.style.setProperty(
-        '--vh', 
-        `${window.innerHeight * 0.01}px`
-      );
+      lastScrollY.current = currentScrollY;
     };
     
-    setVH();
-    window.addEventListener('resize', setVH);
-    
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', setVH);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [handleScroll]);
-
-  // Função avançada para alternar o menu mobile
-  const toggleMobileMenu = useCallback(() => {
-    setMobileMenuOpen(prevState => {
-      const newState = !prevState;
-      
-      // Gestão de overflow para prevenir scroll quando menu está aberto
-      if (newState) {
-        document.body.classList.add('mobile-menu-open');
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.classList.remove('mobile-menu-open');
-        document.body.style.overflow = '';
-      }
-      
-      return newState;
-    });
   }, []);
 
-  // Fechar menu ao clicar em um link
-  const closeMobileMenu = useCallback(() => {
-    setMobileMenuOpen(false);
-    document.body.classList.remove('mobile-menu-open');
-    document.body.style.overflow = '';
-  }, []);
+  // NOVO: Função para definir altura real da viewport em dispositivos móveis
+  useEffect(() => {
+    const setVhVariable = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    
+    // Executar uma vez no carregamento
+    setVhVariable();
+    
+    // Adicionar listener de eventos para redimensionamento e mudanças de orientação
+    window.addEventListener('resize', setVhVariable);
+    window.addEventListener('orientationchange', setVhVariable);
+    
+    // Gerenciar classe no body para impedir rolagem quando menu estiver aberto
+    if (menuOpen) {
+      document.body.classList.add('mobile-menu-open');
+    } else {
+      document.body.classList.remove('mobile-menu-open');
+    }
+    
+    return () => {
+      window.removeEventListener('resize', setVhVariable);
+      window.removeEventListener('orientationchange', setVhVariable);
+      document.body.classList.remove('mobile-menu-open');
+    };
+  }, [menuOpen]);
 
-  // Classes dinâmicas com otimização de reflow
-  const navbarClasses = `${styles.navbar} 
-    ${isScrolled ? styles.navbarScrolled : ''} 
-    ${isHidden ? styles.navbarHidden : ''}
-    ${prefersReducedMotion ? styles.reducedMotion : ''}`;
+  // ATUALIZADO: Toggle menu com lógica aprimorada
+  const toggleMenu = () => {
+    // Garantir que o menu mobile tenha precedência sobre outros modais
+    if (!menuOpen) {
+      // Fechar outros modais que possam estar abertos
+      const modals = document.querySelectorAll('.modal-open');
+      modals.forEach(modal => modal.classList.remove('modal-open'));
+    }
+    
+    setMenuOpen(!menuOpen);
+  };
+
+  // Determinar classes para a navbar
+  const navbarClasses = `${styles.navbar} ${scrolled ? styles.navbarScrolled : ''} ${hidden ? styles.navbarHidden : ''}`;
 
   return (
-    <nav className={navbarClasses} ref={navbarRef}>
+    <nav className={navbarClasses}>
       <div className={styles.container}>
         <div className={styles.logo}>
-          <NavLink to="/" onClick={closeMobileMenu}>
+          <Link to="/">
             <span className={styles.logoText}>Rai</span>
             <span className={styles.logoAccent}>.</span>
-          </NavLink>
+          </Link>
         </div>
-
-        {/* Botão menu mobile com otimização touch */}
+        
         <button 
-          className={`${styles.mobileButton} ${mobileMenuOpen ? styles.mobileMenuOpen : ''}`}
-          onClick={toggleMobileMenu}
-          aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="navigation-menu"
+          className={`${styles.mobileButton} ${menuOpen ? styles.mobileMenuOpen : ''}`} 
+          onClick={toggleMenu}
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
         >
           <div className={styles.hamburgerIcon}>
             <span></span>
@@ -155,33 +108,28 @@ const Navbar = () => {
             <span></span>
           </div>
         </button>
-
-        {/* Menu de navegação com foco em acessibilidade */}
-        <div 
-          id="navigation-menu"
-          className={`${styles.navMenu} ${mobileMenuOpen ? styles.open : ''}`}
-          aria-hidden={!mobileMenuOpen}
-        >
+        
+        <div className={`${styles.navMenu} ${menuOpen ? styles.open : ''}`}>
           <ul className={styles.navList}>
-            {navItems.map((item, index) => (
+            {[
+              { path: '/', label: 'Home' },
+              { path: '/about', label: 'About' },
+              { path: '/work', label: 'Work' },
+              { path: '/contact', label: 'Contact' }
+            ].map((item, index) => (
               <li 
+                key={item.path} 
                 className={styles.navItem} 
-                key={item.name}
-                style={{ 
-                  '--item-index': index,
-                  '--total-items': navItems.length 
-                }}
+                style={{ '--item-index': index }}
               >
-                <NavLink
-                  to={item.path}
-                  className={({isActive}) => 
-                    isActive 
-                      ? `${styles.navLink} ${styles.active}` 
-                      : styles.navLink
+                <NavLink 
+                  to={item.path} 
+                  className={({ isActive }) => 
+                    isActive ? `${styles.navLink} ${styles.active}` : styles.navLink
                   }
-                  onClick={closeMobileMenu}
+                  onClick={() => setMenuOpen(false)}
                 >
-                  {item.name}
+                  {item.label}
                 </NavLink>
               </li>
             ))}
@@ -192,4 +140,4 @@ const Navbar = () => {
   );
 };
 
-export default React.memo(Navbar);
+export default Navbar;

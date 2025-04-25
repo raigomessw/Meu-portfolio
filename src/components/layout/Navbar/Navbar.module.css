@@ -251,22 +251,24 @@
     align-items: center;
   }
   
-  /* Menu mobile - Full screen com animação aprimorada */
+  /* CORREÇÃO: Menu mobile - Full screen com animação aprimorada */
   .navMenu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    height: calc(var(--vh, 1vh) * 100);
-    background: var(--menu-mobile-bg);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important; /* Usando vw em vez de % */
+    height: 100vh !important;
+    height: calc(var(--vh, 1vh) * 100) !important;
+    background-color: var(--menu-mobile-bg) !important;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
+    z-index: 9999 !important;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -275,18 +277,19 @@
       opacity 300ms ease, 
       transform 300ms ease, 
       visibility 0s 300ms;
+    overflow-y: auto !important; /* Permitir rolagem se necessário */
   }
   
-  /* Estado aberto do menu */
+  /* CORREÇÃO: Estado aberto do menu com !important para garantir visibilidade */
   .navMenu.open {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: translateY(0);
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
     transition: 
       opacity 300ms ease, 
       transform 300ms ease, 
-      visibility 0s 0s;
+      visibility 0s 0s !important;
   }
   
   /* Lista de navegação mobile */
@@ -295,7 +298,7 @@
   }
   
   .navMenu.open .navList {
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -410,28 +413,41 @@
   }
 }
 
-/* Correção específica para iOS */
+/* CORREÇÃO: Melhorias específicas para iOS */
 @supports (-webkit-touch-callout: none) {
   .navMenu {
-    height: -webkit-fill-available;
-    position: fixed;
-    overflow-y: scroll;
+    height: -webkit-fill-available !important;
+    min-height: -webkit-fill-available !important;
+    max-height: -webkit-fill-available !important;
+    position: fixed !important;
+    overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
   }
   
   body.mobile-menu-open {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+    position: fixed !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    touch-action: none !important;
   }
   
   .navMenu .navList {
-    padding-bottom: env(safe-area-inset-bottom, 20px);
+    padding-bottom: env(safe-area-inset-bottom, 40px) !important;
   }
   
   .mobileButton {
     margin-right: env(safe-area-inset-right, 0);
+  }
+}
+
+/* NOVO: Correção para dispositivos com tela notch */
+@supports (padding: max(0px)) {
+  .navMenu {
+    padding-left: max(15px, env(safe-area-inset-left)) !important;
+    padding-right: max(15px, env(safe-area-inset-right)) !important;
+    padding-top: max(15px, env(safe-area-inset-top)) !important;
+    padding-bottom: max(15px, env(safe-area-inset-bottom)) !important;
   }
 }
 
@@ -464,4 +480,18 @@
   .hamburgerIcon span {
     height: 2px;
   }
+}
+
+/* NOVO: Força de visibilidade e z-index */
+.mobileButton {
+  z-index: 100000 !important; /* Superior a todos os outros elementos */
+}
+
+.navMenu.open {
+  z-index: 99999 !important; /* Garantir posicionamento sobre todos os elementos, exceto o botão */
+}
+
+/* NOVO: Remover transição para um melhor desempenho quando aberto */
+.navMenu.open {
+  will-change: opacity, visibility;
 }

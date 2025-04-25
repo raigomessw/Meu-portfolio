@@ -30,7 +30,9 @@ function Contact() {
   const [submitStatus, setSubmitStatus] = useState(null);
   const [submitMessage, setSubmitMessage] = useState('');
   
+  // Adicionando referência para o input de arquivo
   const formRef = useRef(null);
+  const fileInputRef = useRef(null);
   const sectionRef = useRef(null);
   
   // Detectar quando seção está visível
@@ -103,7 +105,6 @@ function Contact() {
   // Gerenciar mudança nos inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Certifique-se de que esta função está atualizando o estado corretamente
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   
@@ -135,7 +136,7 @@ function Contact() {
     return Object.keys(errors).length === 0;
   };
   
-  // Lidar com envio do formulário
+  // Lidar com envio do formulário - MODIFICADO PARA NETLIFY
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -148,22 +149,40 @@ function Contact() {
     setIsSubmitting(true);
     
     try {
-      // Simular envio (substitua por seu código de envio real)
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Criar FormData a partir do formulário para envio ao Netlify
+      const formDataObj = new FormData(formRef.current);
       
-      // Sucesso
-      setSubmitStatus('success');
-      setSubmitMessage('Your message was sent successfully! I will contact you soon.');
+      // Garantir que o nome do formulário seja passado
+      formDataObj.append('form-name', 'contact');
       
-      // Limpar o formulário após envio bem-sucedido
-      setFormData({
-        name: '',
-        email: '',
-        confirmEmail: '',
-        subject: '',
-        message: ''
+      // Enviar para o endpoint do Netlify
+      const response = await fetch('/', {
+        method: 'POST',
+        body: formDataObj,
+        headers: { 'Accept': 'application/json' }
       });
       
+      if (response.ok) {
+        // Sucesso
+        setSubmitStatus('success');
+        setSubmitMessage('Your message was sent successfully! I will contact you soon.');
+        
+        // Limpar o formulário após envio bem-sucedido
+        setFormData({
+          name: '',
+          email: '',
+          confirmEmail: '',
+          subject: '',
+          message: ''
+        });
+        
+        // Limpar o campo de arquivo se houver
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      } else {
+        throw new Error(`Server responded with ${response.status}`);
+      }
     } catch (error) {
       // Erro
       setSubmitStatus('error');
@@ -199,7 +218,7 @@ function Contact() {
               <h3>Email</h3>
               <p>I respond within 24 hours on business days.</p>
               <a href="mailto:raigomessw@gmail.com" className={styles.infoLink}>
-              raigomessw@gmail.com
+                raigomessw@gmail.com
                 <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
               </a>
             </div>
@@ -251,18 +270,18 @@ function Contact() {
           
           <div className={`${styles.contactForm} ${isVisible ? styles.visible : ''}`}>
             <div className={styles.formContainer}>
-              
-              {/* Certifique-se de que todas as props necessárias estão sendo passadas */}
+              {/* Adicionando fileInputRef como prop */}
               <ContactForm 
                 formData={formData}
                 formErrors={formErrors}
                 isSubmitting={isSubmitting}
                 submitMessage={submitMessage}
                 submitStatus={submitStatus}
-                handleChange={handleChange}  // Certifique-se de que esta função está sendo passada
+                handleChange={handleChange}
                 handleBlur={handleBlur}
                 handleSubmit={handleSubmit}
                 formRef={formRef}
+                fileInputRef={fileInputRef}
               />
             </div>
           </div>

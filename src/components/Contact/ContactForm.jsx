@@ -58,6 +58,8 @@ function ContactForm({
     setFormProgress(progress);
   }, [formData, requiredFields]);
 
+  
+
   // Importante: verifique se handleChange está disponível
   const onChangeHandler = handleChange || ((e) => console.warn("onChange handler not provided"));
 

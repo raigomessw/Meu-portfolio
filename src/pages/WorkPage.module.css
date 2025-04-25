@@ -31,7 +31,8 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background: var(--gradient-bg);
+  background: var(--color-bg-1);
+  filter: blur(100px);
 }
 
 .noiseTexture {
