@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node -v",
+    "prebuild": "echo 'Starting build with Node' && node -v",
     "build": "ROLLUP_NATIVE=false vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@netlify/plugin-cachios": "^1.0.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
