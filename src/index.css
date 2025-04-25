@@ -189,6 +189,7 @@ body.page-hidden * {
 
 .btn-primary:hover {
   background-color: #1b89b0;
+  color: var(--color-text-2);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(35, 166, 213, 0.3);
 }

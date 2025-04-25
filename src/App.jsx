@@ -12,7 +12,7 @@ import UserResearch from './components/Services/UserResearch';
 import MVPPrototyping from './components/Services/MVPPrototyping';
 import DesignValidation from './components/Services/DesignValidation';
 import { setupPassiveListeners, detectDeviceCapability } from './utils/performance';
-import './index.css'; // Certifique-se de que este arquivo existe
+import './index.css'; 
 
 // Componente otimizado para gerenciar scroll
 function ScrollToSection() {

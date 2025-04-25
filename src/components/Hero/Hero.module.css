@@ -183,11 +183,13 @@
 
 .primaryBtn:hover,
 .secondaryBtn:hover {
+  color: var(--color-text-2);
   transform: translateY(-3px) translateZ(0);
 }
 
 .primaryBtn:hover {
   box-shadow: 0 8px 20px rgba(35, 166, 213, 0.5);
+  color: var(--color-text-2);
 }
 
 .secondaryBtn:hover {

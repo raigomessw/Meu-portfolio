@@ -1,172 +1,260 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faPaperPlane, 
+  faUser, 
+  faEnvelope, 
+  faCheckCircle,
+  faComment,
+  faCircleNotch,
+  faPaperclip,
+  faShield,
+  faExclamationCircle
+} from '@fortawesome/free-solid-svg-icons';
 import styles from './Contact.module.css';
 
 function ContactForm({ 
-  formData, 
-  formErrors, 
-  isSubmitting, 
-  submitMessage,
-  submitStatus,
+  formData = {}, 
+  formErrors = {}, 
+  isSubmitting = false, 
+  submitMessage = '',
+  submitStatus = null,
   handleChange,
   handleBlur,
   handleSubmit,
   formRef
 }) {
+  const [focusedField, setFocusedField] = useState(null);
+  const [formProgress, setFormProgress] = useState(0);
+  const [fileSelected, setFileSelected] = useState(false);
+  const [fileName, setFileName] = useState("");
+  const requiredFields = ['name', 'email', 'confirmEmail', 'message'];
+  
+  // Calculate form progress - with added safety checks
+  useEffect(() => {
+    if (!formData) return; // Verificação de segurança
+    
+    const filledFields = requiredFields.filter(field => 
+      formData[field] && typeof formData[field] === 'string' && formData[field].trim() !== '');
+    const progress = (filledFields.length / requiredFields.length) * 100;
+    setFormProgress(progress);
+  }, [formData, requiredFields]);
+
+  const handleFocus = (field) => {
+    setFocusedField(field);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileSelected(true);
+      setFileName(file.name);
+    } else {
+      setFileSelected(false);
+      setFileName("");
+    }
+  };
+
+  // Importante: verifique se handleChange está disponível
+  const onChangeHandler = handleChange || ((e) => console.warn("onChange handler not provided"));
+
   return (
-    <form 
-      ref={formRef}
-      onSubmit={handleSubmit} 
-      className={styles.form} 
-      noValidate
-    >
-      <div className={styles.formGroup}>
-        <label htmlFor="name" className={styles.label}>Name</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          aria-invalid={formErrors.name ? "true" : "false"}
-          aria-describedby={formErrors.name ? "name-error" : undefined}
-          className={formErrors.name ? `${styles.input} ${styles.inputError}` : styles.input}
-          placeholder="Your full name"
-          required
-        />
-        {formErrors.name && (
-          <span 
-            id="name-error" 
-            className={styles.errorMessage} 
-            aria-live="polite"
-          >
-            {formErrors.name}
-          </span>
-        )}
-      </div>
+    <div className={styles.formContainer}>
+      <h3>Send a Message</h3>
       
-      <div className={styles.formGroup}>
-        <label htmlFor="email" className={styles.label}>Email</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          aria-invalid={formErrors.email ? "true" : "false"}
-          aria-describedby={formErrors.email ? "email-error" : undefined}
-          className={formErrors.email ? `${styles.input} ${styles.inputError}` : styles.input}
-          placeholder="your.email@example.com"
-          required
-        />
-        {formErrors.email && (
-          <span 
-            id="email-error" 
-            className={styles.errorMessage} 
-            aria-live="polite"
-          >
-            {formErrors.email}
-          </span>
-        )}
-      </div>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor="confirmEmail" className={styles.label}>Confirm Email</label>
-        <input
-          type="email"
-          id="confirmEmail"
-          name="confirmEmail"
-          value={formData.confirmEmail}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          aria-invalid={formErrors.confirmEmail ? "true" : "false"}
-          aria-describedby={formErrors.confirmEmail ? "confirm-email-error" : undefined}
-          className={formErrors.confirmEmail ? `${styles.input} ${styles.inputError}` : styles.input}
-          placeholder="Confirm your email"
-          required
-        />
-        {formErrors.confirmEmail && (
-          <span 
-            id="confirm-email-error" 
-            className={styles.errorMessage} 
-            aria-live="polite"
-          >
-            {formErrors.confirmEmail}
-          </span>
-        )}
-      </div>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor="subject" className={styles.label}>Subject (Optional)</label>
-        <input
-          type="text"
-          id="subject"
-          name="subject"
-          value={formData.subject}
-          onChange={handleChange}
-          className={styles.input}
-          placeholder="What is this about?"
-        />
-      </div>
-      
-      <div className={styles.formGroup}>
-        <label htmlFor="message" className={styles.label}>Message</label>
-        <textarea
-          id="message"
-          name="message"
-          rows="5"
-          value={formData.message}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          aria-invalid={formErrors.message ? "true" : "false"}
-          aria-describedby={formErrors.message ? "message-error" : undefined}
-          className={formErrors.message ? `${styles.textarea} ${styles.inputError}` : styles.textarea}
-          placeholder="Write your message here..."
-          required
-        ></textarea>
-        {formErrors.message && (
-          <span 
-            id="message-error" 
-            className={styles.errorMessage} 
-            aria-live="polite"
-          >
-            {formErrors.message}
-          </span>
-        )}
-      </div>
-      
-      <button 
-        type="submit" 
-        className={styles.submitButton} 
-        disabled={isSubmitting}
-        aria-busy={isSubmitting}
-      >
-        {isSubmitting ? (
-          <>
-            <span className={styles.loader}></span>
-            <span>Sending...</span>
-          </>
-        ) : (
-          <>
-            Send Message
-            <FontAwesomeIcon icon={faPaperPlane} className={styles.submitIcon} />
-          </>
-        )}
-      </button>
-      
-      {submitMessage && (
+      <div className={styles.progressContainer}>
         <div 
-          className={`${styles.feedbackMessage} ${submitStatus === 'success' ? styles.successMessage : styles.errorMessage}`}
-          role="alert"
-          aria-live="assertive"
+          className={styles.progressBar} 
+          style={{ width: `${formProgress}%` }}
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow={formProgress}
+          role="progressbar"
         >
-          {submitMessage}
+          {formProgress === 100 && (
+            <span className={styles.progressComplete}>
+              <FontAwesomeIcon icon={faCheckCircle} /> Ready to send
+            </span>
+          )}
         </div>
-      )}
-    </form>
+      </div>
+
+      <form 
+        ref={formRef}
+        onSubmit={handleSubmit} 
+        className={styles.form} 
+        noValidate
+      >
+        <div className={styles.formGrid}>
+          <div className={`${styles.formGroup} ${focusedField === 'name' ? styles.focused : ''}`}>
+            <label htmlFor="name" className={styles.label}>
+              <FontAwesomeIcon icon={faUser} className={styles.labelIcon} /> Your Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name || ''}
+              onChange={onChangeHandler}
+              onBlur={handleBlur}
+              onFocus={() => handleFocus('name')}
+              className={formErrors.name ? `${styles.input} ${styles.inputError}` : styles.input}
+              placeholder="Enter your full name"
+              required
+            />
+            {formErrors.name && (
+              <span className={styles.errorMessage}>
+                <FontAwesomeIcon icon={faExclamationCircle} /> {formErrors.name}
+              </span>
+            )}
+          </div>
+          
+          <div className={`${styles.formGroup} ${focusedField === 'email' ? styles.focused : ''}`}>
+            <label htmlFor="email" className={styles.label}>
+              <FontAwesomeIcon icon={faEnvelope} className={styles.labelIcon} /> Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email || ''}
+              onChange={onChangeHandler}
+              onBlur={handleBlur}
+              onFocus={() => handleFocus('email')}
+              className={formErrors.email ? `${styles.input} ${styles.inputError}` : styles.input}
+              placeholder="youremail@example.com"
+              required
+            />
+            {formErrors.email && (
+              <span className={styles.errorMessage}>
+                <FontAwesomeIcon icon={faExclamationCircle} /> {formErrors.email}
+              </span>
+            )}
+          </div>
+        </div>
+        
+        <div className={styles.formGrid}>
+          <div className={`${styles.formGroup} ${focusedField === 'confirmEmail' ? styles.focused : ''}`}>
+            <label htmlFor="confirmEmail" className={styles.label}>
+              <FontAwesomeIcon icon={faCheckCircle} className={styles.labelIcon} /> Confirm Email
+            </label>
+            <input
+              type="email"
+              id="confirmEmail"
+              name="confirmEmail"
+              value={formData.confirmEmail || ''}
+              onChange={onChangeHandler}
+              onBlur={handleBlur}
+              onFocus={() => handleFocus('confirmEmail')}
+              className={formErrors.confirmEmail ? `${styles.input} ${styles.inputError}` : styles.input}
+              placeholder="Confirm your email"
+              required
+            />
+            {formErrors.confirmEmail && (
+              <span className={styles.errorMessage}>
+                <FontAwesomeIcon icon={faExclamationCircle} /> {formErrors.confirmEmail}
+              </span>
+            )}
+          </div>
+          
+          <div className={`${styles.formGroup} ${focusedField === 'subject' ? styles.focused : ''}`}>
+            <label htmlFor="subject" className={styles.label}>
+              <FontAwesomeIcon icon={faComment} className={styles.labelIcon} /> Subject
+            </label>
+            <select
+              id="subject"
+              name="subject"
+              value={formData.subject || ''}
+              onChange={onChangeHandler}
+              onBlur={() => setFocusedField(null)}
+              onFocus={() => handleFocus('subject')}
+              className={styles.input}
+            >
+              <option value="">Select a subject</option>
+              <option value="Project Inquiry">Project Inquiry</option>
+              <option value="Job Opportunity">Job Opportunity</option>
+              <option value="Collaboration">Collaboration</option>
+              <option value="Feedback">Feedback</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        
+        <div className={`${styles.formMessageBlock} ${focusedField === 'message' ? styles.focused : ''}`}>
+          <label htmlFor="message" className={styles.label}>
+            <FontAwesomeIcon icon={faComment} className={styles.labelIcon} /> Your Message
+          </label>
+          <textarea
+            id="message"
+            name="message"
+            rows="5"
+            value={formData.message || ''}
+            onChange={onChangeHandler}
+            onBlur={handleBlur}
+            onFocus={() => handleFocus('message')}
+            className={formErrors.message ? `${styles.textarea} ${styles.inputError}` : styles.textarea}
+            placeholder="Type your message here..."
+            required
+          ></textarea>
+          {formErrors.message && (
+            <span className={styles.errorMessage}>
+              <FontAwesomeIcon icon={faExclamationCircle} /> {formErrors.message}
+            </span>
+          )}
+        </div>
+        
+        <div className={styles.fileUploadContainer}>
+          <label className={styles.fileUploadLabel}>
+            <input 
+              type="file" 
+              className={styles.fileInput} 
+              onChange={handleFileChange}
+              accept=".pdf,.doc,.docx,.jpg,.png"
+            />
+            <span className={styles.fileUploadButton}>
+              <FontAwesomeIcon icon={faPaperclip} /> 
+              {fileSelected ? fileName : "Attach File (Optional)"}
+            </span>
+            <span className={styles.fileUploadText}>Maximum: 5MB</span>
+          </label>
+        </div>
+        
+        <div className={styles.privacyNote}>
+          <FontAwesomeIcon icon={faShield} />
+          <span>Your information is secure and will never be shared.</span>
+        </div>
+        
+        <button 
+          type="submit" 
+          className={styles.submitButton} 
+          disabled={isSubmitting || formProgress < 100}
+        >
+          {isSubmitting ? (
+            <>
+              <div className={styles.loader}></div>
+              <span>Sending...</span>
+            </>
+          ) : (
+            <>
+              <span>Send Message</span>
+              <FontAwesomeIcon icon={faPaperPlane} className={styles.submitIcon} />
+            </>
+          )}
+        </button>
+        
+        {submitMessage && (
+          <div 
+            className={`${styles.feedbackMessage} ${submitStatus === 'success' ? styles.successMessage : styles.errorMessage}`}
+          >
+            {submitStatus === 'success' ? (
+              <FontAwesomeIcon icon={faCheckCircle} />
+            ) : (
+              <FontAwesomeIcon icon={faExclamationCircle} />
+            )} {submitMessage}
+          </div>
+        )}
+      </form>
+    </div>
   );
 }
 
