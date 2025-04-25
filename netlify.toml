@@ -7,9 +7,3 @@
   ROLLUP_NATIVE = "false"
   VITE_CJS_IGNORE_WARNING = "true"
   NPM_FLAGS = "--no-optional --legacy-peer-deps"
-
-# Redirecionamento para SPA
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
