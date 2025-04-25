@@ -1,9 +1,10 @@
+
 [build]
   publish = "dist"
   command = "npm ci && npm run build"
 
 [build.environment]
-  NODE_VERSION = "18.18.0"  # Usando Node LTS mais estável
+  NODE_VERSION = "18.18.0"
   ROLLUP_NATIVE = "false"
   VITE_CJS_IGNORE_WARNING = "true"
   NPM_FLAGS = "--no-optional --legacy-peer-deps"
