@@ -1,9 +1,10 @@
 [build]
   publish = "dist"
-  command = "npm run build"
+  command = "yarn install --ignore-engines && npm run build"
+
   
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "20.0.0" 
 
 [[headers]]
   for = "/*"
