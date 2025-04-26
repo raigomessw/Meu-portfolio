@@ -1,7 +1,7 @@
 import React from 'react';
 import About from '../components/About/About'; // Correção aqui
 
-import Footer from '../components/layout/Footer/Footer'; // Assuming you have a CSS module for styling
+import Footer from '../components/Footer/Footer'; // Assuming you have a CSS module for styling
 
 function AboutPage() {
   return (
