@@ -2,23 +2,69 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { throttle, detectDeviceCapability } from '../../utils/performance';
 import BackgroundVideo from '../common/BackgroundVideo';
- // Importe a imagem do perfil
-
+ 
 import styles from './Hero.module.css';
-// Importe seus ícones conforme necessário
 
 function Hero() {
   const [isVisible, setIsVisible] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(true);
   const heroRef = useRef(null);
   const contentRef = useRef(null);
   const headingRef = useRef(null);
   const descriptionRef = useRef(null);
   const buttonRef = useRef(null);
   const imageRef = useRef(null);
+  const scrollDownRef = useRef(null);
   
   // Detectar dispositivos de baixa performance
   const deviceCaps = detectDeviceCapability();
   const ProfileImage = new URL('../common/Image/profile.jpeg', import.meta.url).href;
+  
+  // Função para verificar se deve mostrar o botão de scroll
+  const checkScrollButtonVisibility = () => {
+    // Esconder botão em dispositivos móveis de tamanho pequeno a médio
+    const isMobileView = window.innerWidth <= 480;
+    
+    // Sempre mostramos em telas grandes
+    if (!isMobileView) {
+      setShowScrollButton(true);
+      return;
+    }
+
+    // Em telas pequenas, verificamos a altura da tela
+    const isExtraTall = window.innerHeight > 800;
+    
+    // Só mostramos em telas específicas e após verificar que não há sobreposição
+    setShowScrollButton(isExtraTall && window.scrollY < 50);
+  };
+  
+  // Efeito para monitorar scroll e ocultar o botão quando necessário
+  useEffect(() => {
+    // Verificar inicialmente
+    checkScrollButtonVisibility();
+    
+    // Throttled scroll handler
+    const handleScroll = throttle(() => {
+      if (window.scrollY > 50) {
+        setShowScrollButton(false);
+      } else {
+        checkScrollButtonVisibility();
+      }
+    }, 100);
+    
+    // Resize handler para reconferir quando o tamanho da tela mudar
+    const handleResize = throttle(() => {
+      checkScrollButtonVisibility();
+    }, 200);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   
   useEffect(() => {
     // Otimização 1: Aplicar will-change apenas quando necessário
@@ -146,12 +192,22 @@ function Hero() {
         </div>
       </div>
       
-      <div className={styles.scrollDown}>
-        <a href="#about" aria-label="Scroll to the about section">
-          <span className={styles.scrollIcon}></span>
-          <span className={styles.scrollText}>Scroll down</span>
-        </a>
-      </div>
+      {/* Renderização condicional do botão de scroll */}
+      {showScrollButton && (
+        <div 
+          className={styles.scrollDown} 
+          ref={scrollDownRef} 
+          style={{ 
+            display: showScrollButton ? 'block' : 'none',
+            zIndex: 1 // Menor que os botões CTA
+          }}
+        >
+          <a href="#about" aria-label="Scroll to the about section">
+            <span className={styles.scrollIcon}></span>
+            <span className={styles.scrollText}>Scroll down</span>
+          </a>
+        </div>
+      )}
     </section>
   );
 }

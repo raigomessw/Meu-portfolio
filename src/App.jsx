@@ -3,8 +3,13 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+<<<<<<< HEAD
 import NavbarNew from './components/Navbar/NavBarNew';
 import Footer from './components/Footer/Footer';
+=======
+import Navbar from './components/layout/Navbar/Navbar';
+import Footer from './components/layout/Footer/Footer';
+>>>>>>> parent of edc05e7 (Test NabBar)
 import WorkPage from './pages/WorkPage';
 import ProjectDetail from './components/Work/ProjectDetail';
 import MarketResearch from './components/Services/MarketResearch';
@@ -116,7 +121,7 @@ function App() {
   
   return (
     <BrowserRouter>
-      <NavbarNew />
+      <Navbar />
       <ScrollToSection />
       <Routes>
         <Route path="/" element={<HomePage />} />

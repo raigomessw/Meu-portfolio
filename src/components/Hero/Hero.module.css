@@ -373,20 +373,9 @@ body.is-scrolling .scrollIcon::before {
     margin-bottom: 60px; /* ADICIONADO: Espaço extra após os botões CTA */
   }
   
-  :global(.mobile-menu-open) .hero {
-    visibility: hidden !important;
-    opacity: 0 !important;
-    transition: visibility 0.3s, opacity 0.3s;
-  }
-  
-  /* Estilo para os novos botões (que substituem os Links) */
   .primaryBtn, 
   .secondaryBtn {
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-    font-size: inherit;
-    text-align: center;
+    padding: 14px;
   }
   
   .imageWrapper {
