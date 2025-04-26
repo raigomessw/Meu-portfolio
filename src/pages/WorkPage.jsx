@@ -66,10 +66,33 @@ function WorkPage() {
 
   return (
     <section className={styles.workContainer}>
-      <div className={styles.backgroundWrapper}>
-        <div className={styles.darkGradient}></div>
-        <div className={styles.noiseTexture}></div>
-        <div className={styles.glowEffect}></div>
+       {/* Elementos de background */}
+       <div className={styles.pageBackground}></div>
+      <div className={styles.meshGrid}></div>
+      <div className={styles.colorFog}></div>
+      <div className={styles.topLight}></div>
+      
+      <div className={styles.nodesContainer}>
+        <div className={styles.node}></div>
+        <div className={styles.node}></div>
+        <div className={styles.node}></div>
+        <div className={styles.node}></div>
+        <div className={styles.node}></div>
+      </div>
+      
+      <div className={styles.starsContainer}>
+        <div className={styles.star}></div>
+        <div className={styles.star}></div>
+        <div className={styles.star}></div>
+        <div className={styles.star}></div>
+        <div className={styles.star}></div>
+        <div className={styles.star}></div>
+        <div className={styles.star}></div>
+        <div className={styles.star}></div>
+        <div className={styles.star}></div>
+        <div className={styles.star}></div>
+        <div className={styles.star}></div>
+        <div className={styles.star}></div>
       </div>
       
       <div className={styles.content}>
