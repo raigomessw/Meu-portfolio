@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
-import NavbarNew from './components/layout/Navbar/NavBarNew';
+import NavbarNew from './components/layout/Navbar/NavbarNew'; 
 import Footer from './components/layout/Footer/Footer';
 import WorkPage from './pages/WorkPage';
 import ProjectDetail from './components/Work/ProjectDetail';
