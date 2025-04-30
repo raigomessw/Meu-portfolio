@@ -1,0 +1,236 @@
+/* base.css - Estilos base e resets */
+
+/* Configuração base (reset) */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Configurações gerais do documento */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  background: var(--color-bg-0);
+  color: var(--color-text-1);
+  transition: background 0.3s var(--transition-ease), color 0.3s var(--transition-ease);
+}
+
+/* Fonte para código e elementos técnicos */
+code, kbd, samp, pre {
+  font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+/* Parágrafos e tipografia geral */
+p {
+  margin-bottom: var(--space-4);
+  max-width: 70ch;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-base) var(--transition-ease);
+}
+
+a:hover {
+  color: var(--color-primary-light);
+}
+
+/* Texto pequeno e secundário */
+small, .text-small {
+  font-size: var(--font-size-sm);
+}
+
+/* === CLASSES DE LAYOUT === */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+.content-wrapper {
+  max-width: var(--container-lg);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section {
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-16);
+}
+
+.section-lg {
+  padding-top: var(--space-24);
+  padding-bottom: var(--space-24);
+}
+
+/* Breakpoints para os containers */
+@media (min-width: 640px) {
+  .container {
+    max-width: var(--container-sm);
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: var(--container-md);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: var(--container-lg);
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: var(--container-xl);
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: var(--container-2xl);
+  }
+}
+
+/* === UTILITÁRIOS DE ACESSIBILIDADE === */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.focus-outline {
+  outline: none;
+  transition: box-shadow 0.2s ease;
+}
+
+.focus-outline:focus-visible {
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+  outline: none;
+}
+
+/* Desativar transição quando o usuário prefere redução de movimento */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    transition: none;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* === MELHORIAS DE SCROLLBARS === */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-dark) var(--color-bg-2);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--color-bg-2);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary-dark);
+  border-radius: 20px;
+  border: 2px solid var(--color-bg-2);
+}
+
+/* === ANIMAÇÕES REUTILIZÁVEIS === */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s var(--transition-curve) forwards;
+}
+
+.animate-fade-up {
+  animation: fadeInUp 0.8s var(--transition-curve) forwards;
+}
+
+.animate-fade-left {
+  animation: fadeInLeft 0.8s var(--transition-curve) forwards;
+}
+
+.animate-fade-right {
+  animation: fadeInRight 0.8s var(--transition-curve) forwards;
+}
+
+.animate-scale {
+  animation: scaleIn 0.5s var(--transition-curve) forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Delay staggered para listas */
+.stagger-item:nth-child(1) { animation-delay: 0s; }
+.stagger-item:nth-child(2) { animation-delay: 0.1s; }
+.stagger-item:nth-child(3) { animation-delay: 0.2s; }
+.stagger-item:nth-child(4) { animation-delay: 0.3s; }
+.stagger-item:nth-child(5) { animation-delay: 0.4s; }
+.stagger-item:nth-child(6) { animation-delay: 0.5s; }
+.stagger-item:nth-child(7) { animation-delay: 0.6s; }
+.stagger-item:nth-child(8) { animation-delay: 0.7s; }

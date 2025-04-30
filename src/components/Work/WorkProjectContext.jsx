@@ -154,7 +154,7 @@ const mackeUpinstitutePageImages = getProjectImages('mackeUpinstitute', {
 export const projects = [
   {
     id: "clojel",
-    title: "Clojel E-commerce",
+    title: "Clojel",
     description: "Um site de e-commerce com interface moderna e experiência de usuário otimizada.",
     tags: ['E-commerce', 'React', 'Node.js'],
     backgroundImage: clojelImages.backgroundImage,

@@ -1,0 +1,62 @@
+/* typography.css - Tipografia e estilos relacionados */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', sans-serif;
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-0);
+  margin-bottom: var(--space-4);
+}
+
+h1 {
+  font-size: var(--font-size-5xl);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+h2 {
+  font-size: var(--font-size-4xl);
+}
+
+h3 {
+  font-size: var(--font-size-3xl);
+}
+
+h4 {
+  font-size: var(--font-size-2xl);
+}
+
+h5 {
+  font-size: var(--font-size-xl);
+}
+
+h6 {
+  font-size: var(--font-size-lg);
+}
+
+/* Parágrafos e tipografia geral */
+p {
+  margin-bottom: var(--space-4);
+  max-width: 70ch;
+}
+
+/* Fonte para código e elementos técnicos */
+code, kbd, samp, pre {
+  font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+/* Links */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-base) var(--transition-ease);
+}
+
+a:hover {
+  color: var(--color-primary-light);
+}
+
+/* Texto pequeno e secundário */
+small, .text-small {
+  font-size: var(--font-size-sm);
+}
