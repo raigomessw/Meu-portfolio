@@ -1,9 +1,18 @@
 .workSection {
-  padding: 5rem 0;
-  background-color: #121212;
+  padding: var(--space-24) 0 var(--space-20);
   position: relative;
   overflow: hidden;
-  isolation: isolate; /* Cria um novo contexto de empilhamento */
+  isolation: isolate;
+  /* Usando variáveis do tema para as cores de fundo */
+  background-color: var(--dark-color-bg-1);
+  color: var(--dark-color-text-1);
+  transition: background-color var(--transition-slow), color var(--transition-slow);
+}
+
+/* Tema claro */
+:global([data-theme="light"]) .workSection {
+  background-color: var(--light-color-bg-0);
+  color: var(--light-color-text-1);
 }
 
 /* Linha superior refinada */
@@ -36,7 +45,14 @@
   pointer-events: none;
 }
 
-/* Gradiente de fundo dinâmico */
+/* Tema claro - ajuste da grade pontilhada */
+:global([data-theme="light"]) .workSection::after {
+  background-image: 
+    radial-gradient(rgba(110, 7, 243, 0.05) 1px, transparent 1px),
+    radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+}
+
+/* Gradiente de fundo dinâmico com animação sutil */
 .backgroundGlow {
   position: absolute;
   top: -50%;
@@ -54,6 +70,29 @@
   pointer-events: none;
   opacity: 0.7;
   filter: blur(60px);
+  animation: pulseGlow 8s infinite alternate ease-in-out;
+}
+
+/* Tema claro - ajuste do brilho de fundo */
+:global([data-theme="light"]) .backgroundGlow {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(110, 7, 243, 0.1) 0%,
+    rgba(76, 0, 169, 0.03) 40%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  opacity: 0.5;
+}
+
+@keyframes pulseGlow {
+  0% {
+    opacity: 0.6;
+    transform: rotate(-10deg) scale(1);
+  }
+  100% {
+    opacity: 0.8;
+    transform: rotate(-8deg) scale(1.05);
+  }
 }
 
 /* Círculo decorativo superior */
@@ -69,6 +108,7 @@
   opacity: 0.6;
   filter: blur(40px);
   pointer-events: none;
+  animation: floatCircle 15s infinite alternate ease-in-out;
 }
 
 /* Círculo decorativo inferior */
@@ -84,6 +124,16 @@
   opacity: 0.5;
   filter: blur(70px);
   pointer-events: none;
+  animation: floatCircle 12s infinite alternate-reverse ease-in-out;
+}
+
+@keyframes floatCircle {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    transform: translateY(30px) scale(1.1);
+  }
 }
 
 /* Linhas de grade sutil com animação suave */
@@ -101,68 +151,192 @@
   pointer-events: none;
 }
 
-/* Mantenha seu código existente a partir daqui */
+:global([data-theme="light"]) .gridLines {
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+}
+
+/* Cabeçalho da seção com acento decorativo */
 .sectionHeader {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
   position: relative;
-  z-index: 3; /* Ajuste para ficar acima dos novos backgrounds */
+  z-index: 3;
 }
 
 .sectionHeader h2 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  background: linear-gradient(180deg, #ffffff 0%, #6e07f3 100%);
+  font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-5xl));
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-4);
+  background: linear-gradient(180deg, #ffffff 20%, #6e07f3 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: inline-block;
 }
 
-.sectionHeader p {
-  color: #a0a0a0;
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin: 0 auto;
+:global([data-theme="light"]) .sectionHeader h2 {
+  background: linear-gradient(180deg, var(--dark-color-bg-1) 20%, #6e07f3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Ajuste para o container de projetos - garantindo que fique acima do fundo */
+.sectionHeader p {
+  color: var(--dark-color-text-3);
+  font-size: clamp(var(--font-size-base), 3vw, var(--font-size-lg));
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
+}
+
+:global([data-theme="light"]) .sectionHeader p {
+  color: var(--light-color-text-2);
+}
+
+/* Novo acento decorativo sob o título */
+.headerAccent {
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #6e07f3, #8a45f5);
+  margin: 0 auto;
+  border-radius: var(--radius-md);
+  position: relative;
+}
+
+.headerAccent::before {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 4px;
+  background: rgba(110, 7, 243, 0.3);
+  left: -25px;
+  border-radius: var(--radius-md);
+}
+
+.headerAccent::after {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 4px;
+  background: rgba(110, 7, 243, 0.3);
+  right: -25px;
+  border-radius: var(--radius-md);
+}
+
+/* Container para os projetos com grid responsivo */
 .projectsPreview {
   position: relative;
   z-index: 3;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
+  gap: clamp(var(--space-6), 4vw, var(--space-10));
+  max-width: var(--container-xl);
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 clamp(var(--space-4), 3vw, var(--space-8));
+  width: 100%;
 }
 
-/* Card de projeto com animações aprimoradas */
+/* ===== CARDS PREMIUM APRIMORADOS ===== */
+
+/* Projeto card wrapper com efeito 3D premium */
+.projectCardWrapper {
+  width: 100%;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+/* Card de projeto com animações e efeitos visuais premium */
 .projectCard {
   position: relative;
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  background-color: #1a1a1a;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  background-color: rgba(26, 26, 26, 0.7);
+  box-shadow: 0 15px 40px -15px rgba(0, 0, 0, 0.3), 
+              0 30px 70px -20px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
   text-decoration: none;
   display: flex;
   flex-direction: column;
-  height: 380px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  height: clamp(380px, 60vw, 420px);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   opacity: 0;
   transform: translateY(30px);
+  will-change: transform, box-shadow;
+  isolation: isolate;
+  transform-style: preserve-3d;
+}
+
+:global([data-theme="light"]) .projectCard {
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 15px 40px -15px rgba(110, 7, 243, 0.12), 
+              0 30px 70px -20px rgba(110, 7, 243, 0.2),
+              0 0 0 1px rgba(110, 7, 243, 0.05) inset;
+}
+
+/* Borda premium com gradiente */
+.projectCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-xl);
+  padding: 1px;
+  background: linear-gradient(135deg,
+    rgba(110, 7, 243, 0.5),
+    rgba(138, 69, 245, 0.3),
+    rgba(110, 7, 243, 0.5));
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 1;
 }
 
 .projectCard.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) translateZ(0);
 }
 
 .projectCard:hover {
-  transform: translateY(-15px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transform: translateY(-15px) translateZ(10px) rotateX(2deg);
+  box-shadow: 0 25px 50px -12px rgba(110, 7, 243, 0.25), 
+              0 30px 60px -20px rgba(0, 0, 0, 0.3),
+              0 0 0 1px rgba(110, 7, 243, 0.2) inset;
+}
+
+.projectCard:hover::before {
+  opacity: 1;
+  animation: borderRotate 8s linear infinite;
+}
+
+@keyframes borderRotate {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
+
+/* Efeito de brilho que segue o cursor */
+.projectCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+    rgba(110, 7, 243, 0.15) 0%, 
+    rgba(110, 7, 243, 0) 60%
+  );
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.projectCard:hover::after {
+  opacity: 1;
 }
 
 .projectCard:hover .cardHoverEffect {
@@ -171,189 +345,437 @@
 }
 
 .projectCard:hover .cardImage img {
-  transform: scale(1.1);
+  transform: scale(1.08);
+  filter: brightness(1.1);
 }
 
 .projectCard:hover .cardOverlay {
-  background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(110, 7, 243, 0.8) 100%);
+  background: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 0.2) 0%, 
+    rgba(110, 7, 243, 0.85) 100%);
+  opacity: 0.9;
 }
 
+/* Imagem do card com efeitos refinados */
 .cardImage {
   height: 60%;
   width: 100%;
   position: relative;
   overflow: hidden;
+  transform: translateZ(20px);
 }
 
 .cardImage img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.7s ease;
+  transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1), 
+              filter 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+  transform-origin: center;
 }
 
+/* Reflexo na imagem */
+.cardImage::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 40%, 
+    rgba(255, 255, 255, 0.1) 60%, 
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.projectCard:hover .cardImage::after {
+  opacity: 1;
+  transform: translateY(-10px);
+}
+
+/* Overlay do card com gradiente premium */
 .cardOverlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
-  transition: all 0.5s ease;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
+  transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+  opacity: 0.8;
+  transform: translateZ(5px);
 }
 
+/* Categoria com badge premium */
+.projectCategory {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+  color: #d4b8ff;
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 0.7rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-full);
+  background: rgba(110, 7, 243, 0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(110, 7, 243, 0.3);
+  transform: translateY(-5px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0.1s;
+}
+
+:global([data-theme="light"]) .projectCategory {
+  background: rgba(110, 7, 243, 0.1);
+  color: #6e07f3;
+  border: 1px solid rgba(110, 7, 243, 0.2);
+}
+
+.projectCard.visible .projectCategory {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Conteúdo do card com tipografia refinada */
 .cardContent {
-  padding: 1.5rem;
+  padding: var(--space-6);
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   position: relative;
   z-index: 2;
+  transform: translateZ(30px);
 }
 
 .cardContent h3 {
-  color: #ffffff;
-  font-size: 1.3rem;
+  color: var(--dark-color-text-0);
+  font-size: clamp(var(--font-size-lg), 3vw, var(--font-size-xl));
   margin: 0 0 0.7rem 0;
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-bold);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+  display: inline-block;
+}
+
+:global([data-theme="light"]) .cardContent h3 {
+  color: var(--light-color-text-0);
+}
+
+.projectCard:hover .cardContent h3 {
+  transform: translateY(-3px);
+  color: #6e07f3;
+}
+
+/* Sublinhado animado para o título */
+.cardContent h3::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #6e07f3, #8a45f5);
+  transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+.projectCard:hover .cardContent h3::after {
+  width: 100%;
 }
 
 .cardContent p {
-  color: #a0a0a0;
-  font-size: 0.9rem;
-  margin: 0 0 1rem 0;
+  color: var(--dark-color-text-2);
+  font-size: clamp(var(--font-size-sm), 2vw, var(--font-size-base));
+  margin: 0 0 1.2rem 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  line-height: var(--line-height-relaxed);
+  transition: all 0.4s ease;
 }
 
+:global([data-theme="light"]) .cardContent p {
+  color: var(--light-color-text-2);
+}
+
+.projectCard:hover .cardContent p {
+  color: var(--dark-color-text-1);
+}
+
+:global([data-theme="light"]) .projectCard:hover .cardContent p {
+  color: var(--light-color-text-1);
+}
+
+/* Tags com design aprimorado */
 .cardMeta {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
+  flex-wrap: wrap;
+  gap: var(--space-3);
 }
 
 .cardTags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .tag {
-  background: rgba(110, 7, 243, 0.2);
+  background: rgba(110, 7, 243, 0.15);
   color: #d4b8ff;
-  padding: 0.2rem 0.6rem;
-  border-radius: 50px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  border: 1px solid transparent;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-.cardYear {
+:global([data-theme="light"]) .tag {
+  background: rgba(110, 7, 243, 0.08);
   color: #6e07f3;
-  font-size: 0.85rem;
-  font-weight: 500;
 }
 
+.projectCard:hover .tag {
+  background: rgba(110, 7, 243, 0.25);
+  transform: translateY(-2px);
+  border-color: rgba(110, 7, 243, 0.3);
+  box-shadow: 0 2px 6px rgba(110, 7, 243, 0.2);
+}
+
+:global([data-theme="light"]) .projectCard:hover .tag {
+  background: rgba(110, 7, 243, 0.12);
+}
+
+/* Ano com badge aprimorado */
+.cardYear {
+  color: #d4b8ff;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  background: rgba(110, 7, 243, 0.2);
+  padding: 0.25rem 0.8rem;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  border: 1px solid rgba(110, 7, 243, 0.3);
+}
+
+:global([data-theme="light"]) .cardYear {
+  background: rgba(110, 7, 243, 0.1);
+  color: #6e07f3;
+  border: 1px solid rgba(110, 7, 243, 0.2);
+}
+
+.projectCard:hover .cardYear {
+  transform: translateY(-2px);
+  background: rgba(110, 7, 243, 0.3);
+  box-shadow: 0 2px 8px rgba(110, 7, 243, 0.3);
+}
+
+:global([data-theme="light"]) .projectCard:hover .cardYear {
+  background: rgba(110, 7, 243, 0.15);
+}
+
+/* Botão de ação rápida aprimorado */
 .cardQuickAction {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  z-index: 3;
+  z-index: 5;
   opacity: 0;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
+  transform: translateY(-10px) translateZ(40px);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .projectCard:hover .cardQuickAction {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) translateZ(40px);
 }
 
 .quickViewButton {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   color: #fff;
   border: none;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .quickViewButton:hover {
   background: #6e07f3;
-  transform: scale(1.1);
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 5px 15px rgba(110, 7, 243, 0.4);
 }
 
+/* Barra de ação no hover com efeito de glassmorphism */
 .cardHoverEffect {
   position: absolute;
   left: 0;
   bottom: 0;
   width: 100%;
-  padding: 1rem 1.5rem;
-  background: linear-gradient(to top, rgba(110, 7, 243, 0.9), rgba(110, 7, 243, 0.7));
+  padding: 1.2rem 1.5rem;
+  background: rgba(110, 7, 243, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: white;
-  transform: translateY(100%);
+  transform: translateY(100%) translateZ(20px);
   opacity: 0;
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
   z-index: 5;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .exploreText {
-  font-weight: 500;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+  font-size: var(--font-size-xs);
 }
 
 .arrowIcon {
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .projectCard:hover .arrowIcon {
   transform: translateX(5px);
+  animation: arrowPulse 1.5s infinite alternate cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+@keyframes arrowPulse {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  60% {
+    transform: translateX(5px);
+  }
+}
+
+/* Botão "Ver todos os projetos" aprimorado */
 .viewAllContainer {
   display: flex;
   justify-content: center;
-  margin-top: 3rem;
+  margin-top: var(--space-16);
+  position: relative;
+  z-index: 5;
 }
 
 .viewAllButton {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  background: rgba(110, 7, 243, 0.1);
-  color: #6e07f3;
+  background: rgba(110, 7, 243, 0.08);
+  color: var(--dark-color-text-0);
   border: 1px solid rgba(110, 7, 243, 0.3);
-  padding: 0.8rem 1.8rem;
-  border-radius: 50px;
-  font-weight: 500;
+  padding: 0.9rem 2rem;
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-semibold);
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: all 0.4s var(--transition-curve);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+:global([data-theme="light"]) .viewAllButton {
+  color: var(--light-color-text-0);
+}
+
+.viewAllButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(110, 7, 243, 0.3), rgba(110, 7, 243, 0.1));
+  opacity: 0;
+  transition: opacity 0.4s var(--transition-ease);
 }
 
 .viewAllButton:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(110, 7, 243, 0.25);
+  border-color: rgba(110, 7, 243, 0.5);
+}
+
+.viewAllButton:hover::before {
+  opacity: 1;
+}
+
+/* Círculo para o ícone do botão */
+.iconCircle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transition: all 0.3s var(--transition-ease);
+}
+
+:global([data-theme="light"]) .iconCircle {
+  background: rgba(110, 7, 243, 0.1);
+}
+
+.viewAllButton:hover .iconCircle {
+  transform: translateY(3px);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+:global([data-theme="light"]) .viewAllButton:hover .iconCircle {
   background: rgba(110, 7, 243, 0.2);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(110, 7, 243, 0.15);
 }
 
-.viewAllButton:hover svg {
-  transform: translateX(5px);
+.buttonIcon {
+  transition: transform 0.3s var(--transition-ease);
 }
 
-.viewAllButton svg {
-  transition: transform 0.3s ease;
+.viewAllButton:hover .buttonIcon {
+  animation: bounce 1s infinite;
 }
 
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+/* Estilos de carregamento */
 .loadingContainer {
   display: flex;
   justify-content: center;
@@ -364,28 +786,116 @@
 .loadingSpinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(110, 7, 243, 0.2);
+  border: 3px solid rgba(110, 7, 243, 0.1);
   border-radius: 50%;
   border-top-color: #6e07f3;
-  animation: spin 1s linear infinite;
+  animation: spin 1s cubic-bezier(0.76, 0.16, 0.24, 0.84) infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-/* Responsividade */
+/* Responsividade aprimorada */
+@media (max-width: 1200px) {
+  .projectsPreview {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-8);
+  }
+  
+  .projectCard {
+    height: clamp(360px, 50vw, 400px);
+  }
+}
+
+@media (max-width: 992px) {
+  .workSection {
+    padding: var(--space-20) 0;
+  }
+  
+  .sectionHeader {
+    margin-bottom: var(--space-12);
+  }
+  
+  .projectCard {
+    height: 360px;
+  }
+}
+
 @media (max-width: 768px) {
   .sectionHeader h2 {
-    font-size: 2rem;
+    font-size: var(--font-size-2xl);
+  }
+  
+  .sectionHeader p {
+    font-size: var(--font-size-base);
+    max-width: 90%;
+  }
+  
+  .projectsPreview {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-6);
+    padding: 0 var(--space-4);
+  }
+  
+  .cardContent {
+    padding: var(--space-5);
+  }
+  
+  .cardContent h3 {
+    font-size: var(--font-size-lg);
+  }
+}
+
+@media (max-width: 576px) {
+  .workSection {
+    padding: var(--space-16) 0;
+  }
+  
+  .headerAccent::before,
+  .headerAccent::after {
+    display: none;
   }
   
   .projectsPreview {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    max-width: 90%;
   }
   
   .projectCard {
-    height: 350px;
+    height: 340px;
+  }
+  
+  .viewAllButton {
+    padding: 0.8rem 1.5rem;
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Suporte a preferências de movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  .backgroundGlow,
+  .decorCircleTop,
+  .decorCircleBottom,
+  .viewAllButton:hover .buttonIcon,
+  .projectCard,
+  .projectCard:hover,
+  .cardContent h3,
+  .cardContent h3::after,
+  .projectCard::before,
+  .cardImage img,
+  .cardImage::after,
+  .tag,
+  .cardYear,
+  .cardQuickAction,
+  .cardHoverEffect,
+  .arrowIcon,
+  .projectCard:hover .arrowIcon {
+    transition: all 0.1s ease;
+    animation: none;
+  }
+  
+  .projectCard:hover {
+    transform: translateY(-5px);
   }
 }

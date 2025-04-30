@@ -11,59 +11,52 @@ const MarketResearch = () => {
         <path d="M160 80c0-26.5 21.5-48 48-48h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V80zM0 272c0-26.5 21.5-48 48-48H80c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V272zM368 96h32c26.5 0 48 21.5 48 48V432c0 26.5-21.5 48-48 48H368c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48z"/>
       </svg>
     ),
-    heroImage: "/images/services/market-research-hero.jpg",
     description: `Jag genomför omfattande marknadsundersökningar för att identifiera trender, luckor och 
                  möjligheter på marknaden. Denna forskning fungerar som grunden för att skapa digitala 
                  produkter som löser verkliga problem och möter genuina marknadsbehov.`,
     
     benefits: [
-      "Identifiera outnyttjade marknadsmöjligheter",
-      "Förstå konkurrenslandskapet",
-      "Validera produktidéer före utveckling",
-      "Upptäcka branschtrender och användarpreferenser",
-      "Fatta datainformerade affärsbeslut"
+      {
+        title: "Identifiera marknadsmöjligheter",
+        description: "Upptäck outnyttjade marknadssegment och möjligheter för din produkt eller tjänst"
+      },
+      {
+        title: "Konkurrensanalys",
+        description: "Förstå konkurrenternas styrkor och svagheter för att hitta din nisch"
+      },
+      {
+        title: "Validera produktidéer",
+        description: "Testa och validera dina produktkoncept med marknadsdata innan full utveckling"
+      },
+      {
+        title: "Insiktsdriven strategi",
+        description: "Basera dina affärsbeslut på solida marknadsinsikter istället för antaganden"
+      }
     ],
     
     process: [
-      {
-        title: "Målgruppsanalys",
-        description: "Definiera användarsegment och förstå deras behov, beteenden och preferenser."
-      },
-      {
-        title: "Konkurrentanalys",
-        description: "Utvärdera direkta och indirekta konkurrenter för att identifiera luckor och möjligheter."
-      },
-      {
-        title: "Trendforskning",
-        description: "Analysera nuvarande och framväxande trender som kan påverka din produkts framgång."
-      },
-      {
-        title: "Marknadsstorlek & Möjlighet",
-        description: "Bedöma marknadspotentialen och identifiera din produkts unika värdeförslag."
-      }
+      "Målgruppsanalys och segmentering för att förstå potentiella användare",
+      "Djupgående konkurrensanalys för att identifiera luckor och möjligheter",
+      "Trendforskning för att förutse marknadsutveckling",
+      "Datainsamling och analys för att validera antaganden"
     ],
     
-    caseStudies: [
-      {
-        title: "FinTech Marknadsstrategi",
-        company: "Bank Startup",
-        result: "Identifierade underserved segment värt 2 miljarder dollar i årlig intäktspotential",
-        image: "/images/case-studies/fintech-market-research.jpg",
-        link: "/case-studies/fintech-market-research"
-      },
-      {
-        title: "E-handel Konkurrensanalys",
-        company: "Online Detaljhandel",
-        result: "Upptäckte 3 viktiga differentieringsmöjligheter som konkurrenterna hade missat",
-        image: "/images/case-studies/ecommerce-analysis.jpg",
-        link: "/case-studies/ecommerce-analysis"
-      }
+    deliverables: [
+      "Omfattande marknadsanalysrapport",
+      "Konkurrenslandskapsöversikt",
+      "Identifiering av målgruppssegment och behov",
+      "Specifika rekommendationer baserade på marknadsinsikter",
+      "Presentation av marknadsdata och trender"
     ],
     
-    tools: ["SEMrush", "Google Analytics", "SurveyMonkey", "Statista", "Tableau", "SPSS"]
+    caseStudy: {
+      title: "FinTech Marknadsstrategi",
+      description: "Hjälpte en nystartat finansföretag att identifiera ett underserverat marknadssegment värt över 2 miljarder kronor i årlig intäktspotential. Genom grundlig marknadsanalys kunde vi identifiera specifika kundsmärtpunkter som konkurrenterna missade.",
+      outcome: "Klienten lanserade en riktad produktlinje som uppnådde produktmarknadsmatchning inom 6 månader och säkrade ytterligare finansiering på 40 miljoner kronor."
+    }
   };
 
-  return <ServiceDetailLayout service={serviceData} />;
+  return <ServiceDetailLayout serviceData={serviceData} />;
 };
 
 export default MarketResearch;

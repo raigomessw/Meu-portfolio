@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import { WorkProjectProvider } from './components/Work/WorkProjectContext';
-import { ThemeProvider } from './components/context/ThemeProvider'; // Importe o ThemeProvider
+import { ThemeProvider } from './components/context/ThemeProvider';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import Navbar from './components/layout/Navbar/Navbar';
@@ -14,6 +14,8 @@ import UserResearch from './components/Services/UserResearch';
 import MVPPrototyping from './components/Services/MVPPrototyping';
 import DesignValidation from './components/Services/DesignValidation';
 import { setupPassiveListeners, detectDeviceCapability } from './components/utils/performance';
+import PremiumEffects from './components/common/PremiumEffects';
+import ScrollToTop from './components/common/ScrollToTop';
 
 // Componente ScrollManager separado para usar dentro do BrowserRouter
 const ScrollManager = () => {
@@ -116,7 +118,9 @@ function App() {
     // ThemeProvider envolve toda a aplicação
     <ThemeProvider>
       <WorkProjectProvider>
-        <BrowserRouter>
+        <Router>
+          <ScrollToTop />
+          <PremiumEffects />
           <Navbar />
           <ScrollManager />
           <Routes>
@@ -131,7 +135,7 @@ function App() {
             <Route path="/services/design-validation" element={<DesignValidation />} />
           </Routes>
           <Footer />
-        </BrowserRouter>
+        </Router>
       </WorkProjectProvider>
     </ThemeProvider>
   );

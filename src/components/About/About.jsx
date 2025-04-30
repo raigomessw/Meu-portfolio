@@ -36,14 +36,14 @@ function AboutPage() {
   
   // Skills data - memoizado para evitar recriação
   const skills = [
-    { name: "Figma", icon: faFigma, level: 90, description: "Design system creation, prototyping, and UI design" },
-    { name: "React", icon: faReact, level: 90, description: "Component architecture, hooks, state management" },
-    { name: "JavaScript", icon: faJs, level: 85, description: "ES6+, async programming, DOM manipulation" },
-    { name: "HTML5", icon: faHtml5, level: 95, description: "Semantic markup, accessibility, web standards" },
-    { name: "CSS3", icon: faCss3Alt, level: 90, description: "Flexbox, Grid, animations, responsive design" },
-    { name: "Vue", icon: faVuejs, level: 80, description: "Vue components, Vue Router, Vuex" },
-    { name: "Framer", icon: faLayerGroup, level: 85, description: "Interactive prototyping, animation, and design" },
-    { name: "AI", icon: faBrain, level: 80, description: "AI tools integration, prompt engineering, generative design" },
+    { name: "Figma", icon: faFigma, level: 90, description: "Designsystemskapande, prototyper och UI-design" },
+    { name: "React", icon: faReact, level: 90, description: "Komponentarkitektur, hooks, tillståndshantering" },
+    { name: "JavaScript", icon: faJs, level: 85, description: "ES6+, asynkron programmering, DOM-manipulation" },
+    { name: "HTML5", icon: faHtml5, level: 95, description: "Semantisk markup, tillgänglighet, webbstandarder" },
+    { name: "CSS3", icon: faCss3Alt, level: 90, description: "Flexbox, Grid, animationer, responsiv design" },
+    { name: "Vue", icon: faVuejs, level: 80, description: "Vue-komponenter, Vue Router, Vuex" },
+    { name: "Framer", icon: faLayerGroup, level: 85, description: "Interaktiva prototyper, animation och design" },
+    { name: "AI", icon: faBrain, level: 80, description: "AI-verktygsintegration, prompt engineering, generativ design" },
   ];
 
   // Otimização 1: Carregamento eficiente de vídeo
@@ -214,11 +214,11 @@ function AboutPage() {
         {/* Seção de perfil */}
         <div className={styles.profileSection}>
           <div className={styles.profileImageContainer}>
-            <div className={styles.profileImage} aria-label="Profile picture">
+            <div className={styles.profileImage} aria-label="Profilbild">
               <img 
                 loading="lazy"
                 src={ProfileImage} 
-                alt="Profile" 
+                alt="Profil" 
                 width="300" 
                 height="300"
                 className={styles.profileImage}
@@ -233,7 +233,7 @@ function AboutPage() {
                 href="https://www.linkedin.com/in/rai-gomes-6487b2153/" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                aria-label="LinkedIn Profile"
+                aria-label="LinkedIn-profil"
               >
                 <FontAwesomeIcon icon={faLinkedin} />
               </a>
@@ -241,7 +241,7 @@ function AboutPage() {
                 href="https://github.com/raigomessw" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                aria-label="GitHub Profile"
+                aria-label="GitHub-profil"
               >
                 <FontAwesomeIcon icon={faGithub} />
               </a>
@@ -249,54 +249,54 @@ function AboutPage() {
                 href={ResumeEN} 
                 download 
                 className={styles.resumeLink} 
-                aria-label="Download Resume in English"
+                aria-label="Ladda ner CV på engelska"
               >
                 <FontAwesomeIcon icon={faDownload} />
-                <span className={styles.resumeText}>Resume-EN</span>
+                <span className={styles.resumeText}>CV-EN</span>
               </a>
               <a 
                 href={ResumeSW} 
                 download 
                 className={styles.resumeLink} 
-                aria-label="Download Resume in Swedish"
+                aria-label="Ladda ner CV på svenska"
               >
                 <FontAwesomeIcon icon={faDownload} />
-                <span className={styles.resumeText}>Resume-SW</span>
+                <span className={styles.resumeText}>CV-SV</span>
               </a>
             </div>
           </div>
           
           <div className={styles.profileInfo}>
-            <h1>About me</h1>
-            <h2>UI/UX Designer & Front-End Developer</h2>
+            <h1>Om mig</h1>
+            <h2>UI/UX-designer och Front-End-utvecklare</h2>
             
             {/* Descrição pessoal */}
-            <p>Technology has been my passion since my teenage years. After moving to Sweden, I transformed this enthusiasm into a career, beginning with programming courses that built my technical foundation.</p>
+            <p>Teknik har varit min passion sedan tonåren. Efter att ha flyttat till Sverige omvandlade jag denna entusiasm till en karriär, börjande med programmeringskurser som byggde min tekniska grund.</p>
 
-            <p>Throughout my journey into app development, I discovered another passion: UX/UI Design. I realized great applications need both flawless functionality and intuitive, appealing interfaces that delight users.</p>
+            <p>Under min resa inom apputveckling upptäckte jag en annan passion: UX/UI-design. Jag insåg att bra applikationer behöver både felfri funktionalitet och intuitiva, tilltalande gränssnitt som glädjer användare.</p>
 
-            <p>This realization guided me deeper into user experience and interface design, where I combine my technical background with a user-centered approach. Through workshops, practical projects, and continuous learning, I've strengthened my skills in UX research, wireframing, prototyping, usability testing, and frontend development.</p>
+            <p>Denna insikt vägledde mig djupare in i användarupplevelse och gränssnittsdesign, där jag kombinerar min tekniska bakgrund med ett användarcentrerat tillvägagångssätt. Genom workshops, praktiska projekt och kontinuerligt lärande har jag stärkt mina färdigheter inom UX-forskning, wireframing, prototypning, användbarhetstest och frontendutveckling.</p>
             
-            <p>Outside of work, I enjoy family time, socializing with friends, staying active at the gym, and gaming online. I'm constantly seeking opportunities to create functional, creative solutions that positively impact people's lives.</p>
+            <p>Utanför arbetet njuter jag av familjetid, umgänge med vänner, träning på gymmet och onlinespel. Jag söker ständigt möjligheter att skapa funktionella, kreativa lösningar som positivt påverkar människors liv.</p>
 
             <blockquote className={styles.quote}>
-              "I believe impactful digital experiences bridge connections and transform daily routines. At the crossroads of creativity and code, I focus on usability and accessibility, striving for designs so intuitive they become invisible, enabling users to achieve their objectives seamlessly."
+              "Jag tror att meningsfulla digitala upplevelser skapar förbindelser och förvandlar vardagsrutiner. I korsningen mellan kreativitet och kod fokuserar jag på användbarhet och tillgänglighet, och strävar efter design så intuitiv att den blir osynlig, vilket gör det möjligt för användare att uppnå sina mål sömlöst."
             </blockquote>
             
             {/* Estatísticas com animação */}
             <div className={styles.stats} ref={statsRef}>
               <div className={styles.statItem}>
                 <span className={styles.number}>5+</span>
-                <span className={styles.label}>Projects<br/>Completed</span>
+                <span className={styles.label}>Projekt<br/>Slutförda</span>
               </div>
               <div className={styles.statItem}>
                 <span className={styles.number}>3+</span>
-                <span className={styles.label}>Years of<br/>Experience</span>
+                <span className={styles.label}>År av<br/>Erfarenhet</span>
               </div>
               
               {/* CTA */}
               <div className={styles.ctaContainer}>
-                <a href="/contact" className={styles.ctaButton}>Get in Touch</a>
+                <a href="/contact" className={styles.ctaButton}>Kontakta mig</a>
               </div>
             </div>
           </div>
@@ -304,7 +304,7 @@ function AboutPage() {
         
         {/* Seção de habilidades */}
         <div className={styles.skillsSection} id="skills">
-          <h2>My Skills</h2>
+          <h2>Mina färdigheter</h2>
           <div className={styles.skillsContainer} ref={skillsRef}>
             {skills.map((skill, index) => (
               <div key={index} className={styles.skill}>
@@ -316,7 +316,7 @@ function AboutPage() {
                   <p className={styles.skillDescription}>{skill.description}</p>
                   <div 
                     className={styles.progressContainer} 
-                    aria-label={`${skill.name} skill level: ${skill.level}%`}
+                    aria-label={`${skill.name} färdighetsnivå: ${skill.level}%`}
                   >
                     <div 
                       className={styles.progressBar} 
@@ -332,19 +332,19 @@ function AboutPage() {
         
         {/* Seção de filosofia */}
         <div className={styles.philosophySection} ref={philosophyRef}>
-          <h2>My Design Philosophy</h2>
+          <h2>Min designfilosofi</h2>
           <div className={styles.philosophyItems}>
             <div className={styles.philosophyItem}>
-              <h3>User-Centered</h3>
-              <p>I create solutions that meet the real needs of people, based on research and empathy.</p>
+              <h3>Användarcentrerad</h3>
+              <p>Jag skapar lösningar som möter människors verkliga behov, baserat på forskning och empati.</p>
             </div>
             <div className={styles.philosophyItem}>
-              <h3>Functional Minimalism</h3>
-              <p>I believe in clean designs that remove the unnecessary and highlight the essential.</p>
+              <h3>Funktionell minimalism</h3>
+              <p>Jag tror på ren design som tar bort det onödiga och framhäver det väsentliga.</p>
             </div>
             <div className={styles.philosophyItem}>
-              <h3>Accessibility for All</h3>
-              <p>I am committed to creating digital experiences that are accessible to people of all abilities.</p>
+              <h3>Tillgänglighet för alla</h3>
+              <p>Jag är engagerad i att skapa digitala upplevelser som är tillgängliga för människor med alla förmågor.</p>
             </div>
           </div>
         </div>

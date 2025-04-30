@@ -65,7 +65,7 @@ function ContactForm({
 
   return (
     <div className={styles.formContainer}>
-      <h3>Send a Message</h3>
+      <h3>Skicka ett meddelande</h3>
       
       <div className={styles.progressContainer}>
         <div 
@@ -78,7 +78,7 @@ function ContactForm({
         >
           {formProgress === 100 && (
             <span className={styles.progressComplete}>
-              <FontAwesomeIcon icon={faCheckCircle} /> Ready to send
+              <FontAwesomeIcon icon={faCheckCircle} /> Redo att skicka
             </span>
           )}
         </div>
@@ -101,14 +101,14 @@ function ContactForm({
         {/* Campo honeypot para prevenção de spam */}
         <p style={{ display: 'none' }}>
           <label>
-            Don't fill this out if you're human: <input name="bot-field" />
+            Fyll inte i detta om du är människa: <input name="bot-field" />
           </label>
         </p>
         
         <div className={styles.formGrid}>
           <div className={`${styles.formGroup} ${focusedField === 'name' ? styles.focused : ''}`}>
             <label htmlFor="name" className={styles.label}>
-              <FontAwesomeIcon icon={faUser} className={styles.labelIcon} /> Your Name
+              <FontAwesomeIcon icon={faUser} className={styles.labelIcon} /> Ditt namn
             </label>
             <input
               type="text"
@@ -119,7 +119,7 @@ function ContactForm({
               onBlur={handleBlur}
               onFocus={() => handleFocus('name')}
               className={formErrors.name ? `${styles.input} ${styles.inputError}` : styles.input}
-              placeholder="Enter your full name"
+              placeholder="Ange ditt fullständiga namn"
               required
             />
             {formErrors.name && (
@@ -131,7 +131,7 @@ function ContactForm({
           
           <div className={`${styles.formGroup} ${focusedField === 'email' ? styles.focused : ''}`}>
             <label htmlFor="email" className={styles.label}>
-              <FontAwesomeIcon icon={faEnvelope} className={styles.labelIcon} /> Email
+              <FontAwesomeIcon icon={faEnvelope} className={styles.labelIcon} /> E-post
             </label>
             <input
               type="email"
@@ -142,7 +142,7 @@ function ContactForm({
               onBlur={handleBlur}
               onFocus={() => handleFocus('email')}
               className={formErrors.email ? `${styles.input} ${styles.inputError}` : styles.input}
-              placeholder="youremail@example.com"
+              placeholder="dinepost@exempel.com"
               required
             />
             {formErrors.email && (
@@ -156,7 +156,7 @@ function ContactForm({
         <div className={styles.formGrid}>
           <div className={`${styles.formGroup} ${focusedField === 'confirmEmail' ? styles.focused : ''}`}>
             <label htmlFor="confirmEmail" className={styles.label}>
-              <FontAwesomeIcon icon={faCheckCircle} className={styles.labelIcon} /> Confirm Email
+              <FontAwesomeIcon icon={faCheckCircle} className={styles.labelIcon} /> Bekräfta e-post
             </label>
             <input
               type="email"
@@ -167,7 +167,7 @@ function ContactForm({
               onBlur={handleBlur}
               onFocus={() => handleFocus('confirmEmail')}
               className={formErrors.confirmEmail ? `${styles.input} ${styles.inputError}` : styles.input}
-              placeholder="Confirm your email"
+              placeholder="Bekräfta din e-post"
               required
             />
             {formErrors.confirmEmail && (
@@ -179,7 +179,7 @@ function ContactForm({
           
           <div className={`${styles.formGroup} ${focusedField === 'subject' ? styles.focused : ''}`}>
             <label className={styles.label}>
-              <FontAwesomeIcon icon={faComment} className={styles.labelIcon} /> Subject
+              <FontAwesomeIcon icon={faComment} className={styles.labelIcon} /> Ämne
               
               {/* CustomSelect dentro da label não precisa de htmlFor/id */}
               <CustomSelect
@@ -189,13 +189,13 @@ function ContactForm({
                 onChange={onChangeHandler}
                 onBlur={() => setFocusedField(null)}
                 onFocus={() => handleFocus('subject')}
-                placeholder="Select a subject"
+                placeholder="Välj ett ämne"
                 options={[
-                  { value: 'Project Inquiry', label: 'Project Inquiry' },
-                  { value: 'Job Opportunity', label: 'Job Opportunity' },
-                  { value: 'Collaboration', label: 'Collaboration' },
+                  { value: 'Project Inquiry', label: 'Projektförfrågan' },
+                  { value: 'Job Opportunity', label: 'Jobbmöjlighet' },
+                  { value: 'Collaboration', label: 'Samarbete' },
                   { value: 'Feedback', label: 'Feedback' },
-                  { value: 'Other', label: 'Other' }
+                  { value: 'Other', label: 'Annat' }
                 ]}
               />
             </label>
@@ -204,7 +204,7 @@ function ContactForm({
         
         <div className={`${styles.formMessageBlock} ${focusedField === 'message' ? styles.focused : ''}`}>
           <label htmlFor="message" className={styles.label}>
-            <FontAwesomeIcon icon={faComment} className={styles.labelIcon} /> Your Message
+            <FontAwesomeIcon icon={faComment} className={styles.labelIcon} /> Ditt meddelande
           </label>
           <textarea
             id="message"
@@ -215,7 +215,7 @@ function ContactForm({
             onBlur={handleBlur}
             onFocus={() => handleFocus('message')}
             className={formErrors.message ? `${styles.textarea} ${styles.inputError}` : styles.textarea}
-            placeholder="Type your message here..."
+            placeholder="Skriv ditt meddelande här..."
             required
           ></textarea>
           {formErrors.message && (
@@ -237,7 +237,7 @@ function ContactForm({
             />
             <span className={styles.fileUploadButton}>
               <FontAwesomeIcon icon={faPaperclip} /> 
-              {fileSelected ? fileName : "Attach File (Optional)"}
+              {fileSelected ? fileName : "Bifoga fil (valfritt)"}
             </span>
             <span className={styles.fileUploadText}>Maximum: 5MB</span>
           </label>
@@ -245,7 +245,7 @@ function ContactForm({
         
         <div className={styles.privacyNote}>
           <FontAwesomeIcon icon={faShield} />
-          <span>Your information is secure and will never be shared.</span>
+          <span>Din information är säker och kommer aldrig att delas.</span>
         </div>
         
         <button 
@@ -256,11 +256,11 @@ function ContactForm({
           {isSubmitting ? (
             <>
               <div className={styles.loader}></div>
-              <span>Sending...</span>
+              <span>Skickar...</span>
             </>
           ) : (
             <>
-              <span>Send Message</span>
+              <span>Skicka meddelande</span>
               <FontAwesomeIcon icon={faPaperPlane} className={styles.submitIcon} />
             </>
           )}

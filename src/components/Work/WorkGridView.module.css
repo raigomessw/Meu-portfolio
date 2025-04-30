@@ -1,259 +1,772 @@
 /* ========== Container e Layout ========== */
+/* Container Grid Principal */
 .gridContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
+  gap: clamp(var(--space-6), 3vw, var(--space-10));
+  width: 100%;
   position: relative;
-  transition: var(--transition-slow);
+  perspective: 1200px;
+  margin: 0 auto;
+  max-width: var(--container-xl);
+  padding: var(--space-4);
+  will-change: opacity, transform;
+  animation: fadeIn 0.8s var(--transition-curve);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Organização visual para diferentes contagens de itens */
+.gridContainer:has(:nth-child(1):nth-last-child(1)) {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.gridContainer:has(:nth-child(1):nth-last-child(2)) {
+  grid-template-columns: repeat(2, minmax(300px, 1fr));
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Layout especial para 3 itens */
+.gridContainer:has(:nth-child(1):nth-last-child(3)) {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 1200px;
+  gap: var(--space-8);
 }
 
 /* ========== Card Styles ========== */
+/* Card do projeto na visualização grid - Versão Premium */
 .gridCard {
   position: relative;
-  height: 380px; /* Altura fixa para consistência */
-  border-radius: var(--border-radius-lg);
+  aspect-ratio: 5/6;
+  min-height: 420px;
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  background-size: cover;
   background-position: center;
-  box-shadow: var(--shadow-md, 0 5px 20px rgba(0, 0, 0, 0.2));
-  transition: var(--transition-slow);
-  cursor: pointer;
+  background-size: cover;
+  transform: translateY(30px);
   opacity: 0;
-  transform: translateY(40px);
-  border: 1px solid var(--color-border-1);
-  display: flex;
-  flex-direction: column; /* Organiza o conteúdo verticalmente */
-}
-
-.inView {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.gridCard:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--color-primary), var(--shadow-md, 0 5px 20px rgba(0, 0, 0, 0.2));
-  transform: translateY(-5px);
-}
-
-.gridCard:hover {
-  transform: translateY(-10px);
-  box-shadow: var(--shadow-lg, 0 10px 30px rgba(0, 0, 0, 0.3));
-}
-
-/* ========== Overlay e Backgrounds ========== */
-.cardOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, 
-    rgba(0, 0, 0, 0.2) 0%, 
-    rgba(0, 0, 0, 0.6) 50%,
-    rgba(0, 0, 0, 0.9) 100%);
-  opacity: 1;
-  transition: var(--transition-normal);
-  z-index: 1;
-}
-
-.cardOverlay.hovered {
-  background: linear-gradient(to bottom, 
-    rgba(0, 0, 0, 0.4) 0%, 
-    rgba(0, 0, 0, 0.7) 50%,
-    rgba(0, 0, 0, 0.95) 100%);
-}
-
-/* ========== Conteúdo do Card ========== */
-.cardContent {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 2rem;
+  box-shadow: 0 15px 40px -15px rgba(0, 0, 0, 0.3), 
+              0 30px 70px -20px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  cursor: pointer;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform, box-shadow, filter;
+  isolation: isolate;
+  transform-style: preserve-3d;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  z-index: 2;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-  max-height: 100%;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-/* ========== Elementos de Texto ========== */
+/* Brilho interno do card premium */
+.gridCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+    rgba(110, 7, 243, 0.15) 0%, 
+    rgba(110, 7, 243, 0) 60%
+  );
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* Borda com gradiente premium */
+.gridCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  background-position: center;
+  background-size: cover;
+  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 0;
+  will-change: transform;
+}
+
+/* Versão clara do card */
+:global([data-theme="light"]) .gridCard {
+  box-shadow: 0 15px 40px -15px rgba(110, 7, 243, 0.12), 
+              0 30px 70px -20px rgba(110, 7, 243, 0.2),
+              0 0 0 1px rgba(110, 7, 243, 0.05) inset;
+}
+
+/* Efeitos premium no hover */
+.gridCard:hover {
+  transform: translateY(-15px) scale(1.02) rotateX(2deg);
+  box-shadow: 0 25px 50px -12px rgba(110, 7, 243, 0.25), 
+              0 30px 60px -20px rgba(0, 0, 0, 0.3),
+              0 0 0 1px rgba(110, 7, 243, 0.2) inset;
+  z-index: 2;
+}
+
+.gridCard:hover::after {
+  opacity: 1;
+}
+
+.gridCard:hover::before {
+  transform: scale(1.08);
+}
+
+/* Bordas animadas em hover */
+.gridCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-xl);
+  padding: 1px;
+  background: linear-gradient(135deg,
+    rgba(110, 7, 243, 0.5),
+    rgba(138, 69, 245, 0.3),
+    rgba(110, 7, 243, 0.5));
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 1;
+}
+
+.gridCard:hover::before {
+  opacity: 1;
+  animation: borderRotate 8s linear infinite;
+}
+
+@keyframes borderRotate {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
+
+/* Quando o card fica visível na viewport - com animações premium */
+.gridCard.inView {
+  transform: translateY(0);
+  opacity: 1;
+  animation: cardRevealPremium 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes cardRevealPremium {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+    filter: blur(5px);
+  }
+  60% {
+    opacity: 0.8;
+  }
+  80% {
+    transform: translateY(-8px) scale(1.01);
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* Animação sequencial para os cards */
+.gridCard:nth-child(1).inView { animation-delay: 0.1s; }
+.gridCard:nth-child(2).inView { animation-delay: 0.2s; }
+.gridCard:nth-child(3).inView { animation-delay: 0.3s; }
+.gridCard:nth-child(4).inView { animation-delay: 0.4s; }
+.gridCard:nth-child(5).inView { animation-delay: 0.5s; }
+.gridCard:nth-child(6).inView { animation-delay: 0.6s; }
+
+/* ========== Overlay e Backgrounds ========== */
+/* Overlay com gradiente premium para melhor legibilidade */
+.cardOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(16, 16, 40, 0.95) 0%,
+    rgba(16, 16, 40, 0.8) 35%,
+    rgba(16, 16, 40, 0.5) 60%,
+    rgba(16, 16, 40, 0.2) 80%,
+    rgba(16, 16, 40, 0.1) 100%
+  );
+  z-index: 1;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  backdrop-filter: blur(0);
+}
+
+:global([data-theme="light"]) .cardOverlay {
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.85) 35%,
+    rgba(255, 255, 255, 0.6) 60%,
+    rgba(255, 255, 255, 0.3) 80%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  backdrop-filter: blur(0);
+}
+
+.gridCard:hover .cardOverlay {
+  background: linear-gradient(
+    to top,
+    rgba(110, 7, 243, 0.95) 0%,
+    rgba(110, 7, 243, 0.8) 35%,
+    rgba(110, 7, 243, 0.5) 60%,
+    rgba(110, 7, 243, 0.2) 85%,
+    rgba(110, 7, 243, 0.05) 100%
+  );
+  backdrop-filter: blur(5px);
+}
+
+/* Adicionando um gradient mais claro para o hover no light mode para melhor legibilidade */
+:global([data-theme="light"]) .gridCard:hover .cardOverlay {
+  background: linear-gradient(
+    to top,
+    rgba(246, 248, 255, 0.95) 0%,
+    rgba(230, 234, 255, 0.85) 35%,
+    rgba(222, 225, 255, 0.6) 60%,
+    rgba(210, 215, 255, 0.3) 80%,
+    rgba(200, 210, 255, 0.1) 100%
+  );
+  backdrop-filter: blur(5px);
+}
+
+.cardOverlay.hovered {
+  background: linear-gradient(
+    to top,
+    rgba(110, 7, 243, 0.95) 0%,
+    rgba(110, 7, 243, 0.8) 40%,
+    rgba(110, 7, 243, 0.5) 70%,
+    rgba(110, 7, 243, 0.3) 85%,
+    rgba(110, 7, 243, 0.1) 100%
+  );
+  backdrop-filter: blur(5px);
+}
+
+/* Adicionando uma versão mais clara para o light mode */
+:global([data-theme="light"]) .cardOverlay.hovered {
+  background: linear-gradient(
+    to top,
+    rgba(246, 248, 255, 0.95) 0%,
+    rgba(230, 234, 255, 0.85) 40%,
+    rgba(222, 225, 255, 0.6) 70%,
+    rgba(210, 215, 255, 0.3) 85%,
+    rgba(200, 210, 255, 0.1) 100%
+  );
+  backdrop-filter: blur(5px);
+}
+
+/* Reflexo na superfície do card */
+.gridCard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 40%, 
+    rgba(255, 255, 255, 0.1) 60%, 
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-100%) translateY(-100%) rotate(35deg);
+  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.gridCard:hover::after {
+  transform: translateX(0) translateY(0) rotate(35deg);
+}
+
+/* ========== Conteúdo do Card ========== */
+/* Conteúdo do card com efeito 3D premium */
+.cardContent {
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: var(--space-8) var(--space-6) var(--space-6);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transform: translateZ(30px);
+}
+
+.gridCard:hover .cardContent {
+  transform: translateY(-5px) translateZ(50px);
+}
+
 .cardTitle {
-  font-size: 1.5rem;
-  margin-bottom: 0.8rem;
-  color: var(--color-text-0);
-  transition: transform 0.4s ease;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  font-weight: 600;
+  font-size: clamp(var(--font-size-xl), 4vw, var(--font-size-2xl));
+  color: var(--dark-color-text-0);
+  margin-bottom: var(--space-4);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), color 0.3s ease;
+  position: relative;
+  display: inline-block;
+  width: auto;
+}
+
+:global([data-theme="light"]) .cardTitle {
+  color: var(--light-color-text-0);
 }
 
 .gridCard:hover .cardTitle {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
+  color: #fff;
 }
 
+:global([data-theme="light"]) .gridCard:hover .cardTitle {
+  color: #6e07f3;
+}
+
+/* Sublinhado animado para o título */
+.cardTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(to right, #fff 0%, rgba(255, 255, 255, 0.5) 100%);
+  transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+:global([data-theme="light"]) .cardTitle::after {
+  background: linear-gradient(to right, #6e07f3 0%, rgba(110, 7, 243, 0.5) 100%);
+}
+
+.gridCard:hover .cardTitle::after {
+  width: 100%;
+  opacity: 1;
+}
+
+/* Tags com efeito premium */
 .cardTags {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
   flex-wrap: wrap;
-  transition: transform 0.4s ease 0.05s;
-}
-
-.gridCard:hover .cardTags {
-  transform: translateY(-5px);
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .tag {
-  background: rgba(var(--color-primary-rgb, 110, 7, 243), 0.5);
-  color: var( --color-text-1, #b794ff);
-  padding: 0.3rem 0.8rem;
-  border-radius: var(--border-radius-full, 50px);
-  font-size: 0.8rem;
-  font-weight: 500;
-  white-space: nowrap; /* Evita quebra de linha nos tags */
+  background: rgba(144, 101, 246, 0.15);
+  color: #d4b8ff;
+  padding: 0.2rem 0.8rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  letter-spacing: var(--letter-spacing-tight);
+  transform: translateY(0);
+  border: 1px solid transparent;
 }
 
+:global([data-theme="light"]) .tag {
+  background: rgba(144, 101, 246, 0.1);
+  color: #6e07f3;
+  box-shadow: 0 2px 5px rgba(110, 7, 243, 0.1);
+}
+
+.gridCard:hover .tag {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px) scale(1.05);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+:global([data-theme="light"]) .gridCard:hover .tag {
+  background: rgba(110, 7, 243, 0.15);
+  color: #6e07f3;
+  border-color: rgba(110, 7, 243, 0.3);
+  box-shadow: 0 3px 8px rgba(110, 7, 243, 0.15);
+}
+
+/* Animação sequencial para as tags */
+.gridCard:hover .tag:nth-child(1) { transition-delay: 0.05s; }
+.gridCard:hover .tag:nth-child(2) { transition-delay: 0.1s; }
+.gridCard:hover .tag:nth-child(3) { transition-delay: 0.15s; }
+
 .cardDescription {
-  font-size: 0.95rem;
-  color: var(--color-text-2, #d0d0d0);
-  margin-bottom: 1.5rem;
-  transition: transform 0.4s ease 0.1s;
-  opacity: 0.8;
+  color: var(--dark-color-text-2);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-6);
+  max-width: 90%;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limita a 2 linhas */
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.7);
-  line-height: 1.5;
+  transition: opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1), transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  line-height: var(--line-height-normal);
+  transform: translateY(0);
+}
+
+:global([data-theme="light"]) .cardDescription {
+  color: var(--light-color-text-2);
 }
 
 .gridCard:hover .cardDescription {
-  transform: translateY(-5px);
+  opacity: 0.95;
+  transform: translateY(-2px);
+  color: rgba(255, 255, 255, 0.9);
 }
 
-/* ========== Botões e Ações ========== */
+:global([data-theme="light"]) .gridCard:hover .cardDescription {
+  color: rgba(66, 13, 135, 0.9);
+}
+
+/* Botões de ação com animação de entrada elegante */
 .cardActions {
   display: flex;
-  gap: 1rem;
-  transform: translateY(20px);
+  gap: var(--space-4);
   opacity: 0;
-  transition: all 0.4s ease 0.15s;
-  z-index: 10;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transition-delay: 0.1s;
 }
 
 .gridCard:hover .cardActions,
-.gridCard:focus-within .cardActions {
-  transform: translateY(0);
+.gridCard:focus .cardActions {
   opacity: 1;
-  pointer-events: auto;
+  transform: translateY(0);
 }
 
+/* ========== Botões e Ações ========== */
+/* Estilo dos botões premium */
 .viewButton,
 .detailsButton {
-  padding: 0.7rem 1.2rem;
-  border-radius: var(--border-radius-full, 50px);
-  font-weight: 500;
-  font-size: 0.9rem;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  transition: var(--transition-normal);
-  cursor: pointer;
-  position: relative;
-  z-index: 10;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  padding: var(--space-2) var(--space-6);
+  border-radius: var(--radius-full);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   white-space: nowrap;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  flex-shrink: 0; /* Evita que os botões encolham */
+  min-width: 100px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 }
 
+/* Efeito de brilho nos botões */
+.viewButton::before,
+.detailsButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: -1;
+}
+
+.viewButton:hover::before,
+.detailsButton:hover::before {
+  left: 100%;
+}
+
+/* Botão de visualização premium */
 .viewButton {
-  background: var(--color-primary, #6e07f3);
-  color: var(--color-text-0, #ffffff);
+  background: rgba(255, 255, 255, 0.95);
+  color: #6e07f3;
   border: none;
-  text-decoration: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+:global([data-theme="light"]) .viewButton {
+  background: rgba(110, 7, 243, 0.95);
+  color: white;
+  box-shadow: 0 5px 15px rgba(110, 7, 243, 0.2);
 }
 
 .viewButton:hover {
-  background: var(--color-primary-light, #9a5bff);
-  transform: translateY(-3px);
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
+:global([data-theme="light"]) .viewButton:hover {
+  box-shadow: 0 8px 20px rgba(110, 7, 243, 0.3);
+}
+
+/* Botão de detalhes premium */
 .detailsButton {
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--color-text-0, #ffffff);
-  border: 1px solid var(--color-border-2, rgba(255, 255, 255, 0.1));
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+:global([data-theme="light"]) .detailsButton {
+  color: #6e07f3;
+  border: 1px solid rgba(110, 7, 243, 0.6);
+  background: rgba(110, 7, 243, 0.05);
 }
 
 .detailsButton:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
+:global([data-theme="light"]) .detailsButton:hover {
+  background: rgba(110, 7, 243, 0.15);
+  border-color: rgba(110, 7, 243, 0.9);
+  box-shadow: 0 5px 15px rgba(110, 7, 243, 0.15);
+}
+
+/* Ícone com animação premium */
 .buttonIcon {
-  font-size: 0.8rem;
-  transition: transform 0.3s ease;
+  font-size: 0.75rem;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .viewButton:hover .buttonIcon,
 .detailsButton:hover .buttonIcon {
-  transform: translateX(3px);
+  transform: translateX(4px);
+  animation: iconPulsePremium 1s infinite alternate cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes iconPulsePremium {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  60% {
+    transform: translateX(5px);
+  }
 }
 
 /* ========== Placeholders e Loaders ========== */
+/* Placeholder de carregamento premium */
 .loadingPlaceholder {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--color-bg-2, rgba(30, 30, 30, 0.8));
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  inset: 0;
   z-index: 1;
+  background-color: var(--dark-color-bg-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+:global([data-theme="light"]) .loadingPlaceholder {
+  background-color: var(--light-color-bg-2);
+  box-shadow: 0 10px 30px rgba(110, 7, 243, 0.08);
 }
 
 .placeholderPulse {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, 
-    var(--color-bg-2, rgba(30, 30, 30, 0.8)) 0%, 
-    var(--color-bg-3, rgba(60, 60, 60, 0.8)) 50%, 
-    var(--color-bg-2, rgba(30, 30, 30, 0.8)) 100%);
+  background: linear-gradient(
+    90deg, 
+    var(--dark-color-bg-2) 0%, 
+    var(--dark-color-bg-3) 50%, 
+    var(--dark-color-bg-2) 100%
+  );
   background-size: 200% 100%;
-  animation: pulse 1.5s infinite;
+  animation: pulsePremium 1.5s infinite cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-@keyframes pulse {
+:global([data-theme="light"]) .placeholderPulse {
+  background: linear-gradient(
+    90deg, 
+    var(--light-color-bg-2) 0%, 
+    var(--light-color-bg-3) 50%, 
+    var(--light-color-bg-2) 100%
+  );
+}
+
+@keyframes pulsePremium {
+  0% { background-position: 0% 0; }
+  100% { background-position: -135% 0; }
+}
+
+/* Mensagem de sem resultados com estilo premium */
+.noResults {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--space-16) var(--space-8);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--dark-color-border-2);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  transform: translateY(20px);
+  opacity: 0;
+  animation: fadeInUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes fadeInUp {
   0% {
-    background-position: 0% 0%;
+    opacity: 0;
+    transform: translateY(20px);
   }
   100% {
-    background-position: -200% 0%;
+    opacity: 1;
+    transform: translateY(0);
   }
+}
+
+:global([data-theme="light"]) .noResults {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--light-color-border-2);
+  box-shadow: 0 20px 40px rgba(110, 7, 243, 0.05);
+}
+
+.noResults h3 {
+  font-size: var(--font-size-xl);
+  color: var(--dark-color-text-1);
+  margin-bottom: var(--space-4);
+  background: linear-gradient(135deg, #ffffff 30%, #a97dff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+:global([data-theme="light"]) .noResults h3 {
+  background: linear-gradient(135deg, #6e07f3 30%, #a97dff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.noResults p {
+  color: var(--dark-color-text-3);
+  font-size: var(--font-size-base);
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+:global([data-theme="light"]) .noResults p {
+  color: var(--light-color-text-3);
 }
 
 /* ========== Responsividade ========== */
+/* Responsividade */
+@media (max-width: 1200px) {
+  .gridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .gridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-8);
+  }
+  
+  .gridCard {
+    min-height: 400px;
+  }
+}
+
 @media (max-width: 768px) {
   .gridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--space-6);
+  }
+  
+  .gridCard {
+    min-height: 380px;
+  }
+  
+  .cardContent {
+    padding: var(--space-6) var(--space-4) var(--space-4);
+  }
+  
+  /* Layout especial para 3 itens em telas menores */
+  .gridContainer:has(:nth-child(1):nth-last-child(3)) {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 576px) {
+  .gridContainer {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    max-width: 400px;
+    margin: 0 auto;
   }
   
-  .cardActions {
-    flex-direction: column;
-    gap: 0.8rem;
+  .cardContent {
+    padding: var(--space-6) var(--space-4) var(--space-4);
+  }
+}
+
+/* Acessibilidade e preferência de movimento reduzido */
+.gridCard:focus {
+  outline: 2px solid rgba(144, 101, 246, 0.6);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gridCard,
+  .gridCard.inView,
+  .gridCard:hover,
+  .cardActions,
+  .gridCard:hover .cardTitle,
+  .cardTitle::after,
+  .viewButton::before,
+  .detailsButton::before,
+  .viewButton:hover .buttonIcon,
+  .detailsButton:hover .buttonIcon,
+  .gridCard::before,
+  .gridCard::after,
+  .gridCard:hover::before {
+    transition: none;
+    animation: none;
+    transform: none;
   }
   
-  .viewButton, 
-  .detailsButton {
-    justify-content: center;
+  .placeholderPulse {
+    animation: none;
   }
   
-  .cardTitle {
-    font-size: 1.3rem;
+  .noResults {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }

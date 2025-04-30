@@ -1,209 +1,158 @@
-import React, { memo, useState, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './WorkGridView.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faEye } from '@fortawesome/free-solid-svg-icons';
-import useIntersectionObserver from '../../Hooks/useIntersectionObserver';
-import { verifyImageOrFallback } from '../utils/imageHelpers';
+import useInView from '../../Hooks/useInView';
+import { useReducedMotion } from '../../Hooks/useReducedMotion';
+import { FiExternalLink, FiArrowRight } from 'react-icons/fi';
 
-// Imagem de fallback
-const FALLBACK_IMAGE = "/work/placeholder.jpg";
+const WorkGridView = ({ projects, onQuickView }) => {
+  const gridRef = useRef(null);
+  const prefersReducedMotion = useReducedMotion();
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const cardRefs = useRef([]);
 
-const WorkGridItem = memo(({ project, index, onKeyDown }) => {
-  const [elementRef, isInView] = useIntersectionObserver({ threshold: 0.1 });
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [imageError, setImageError] = useState(false);
-  const [imageUrl, setImageUrl] = useState(null);
-  const navigate = useNavigate();
-  
-  // Quando o elemento se torna visível, começar a carregar a imagem
+  // Configurar refs para todos os cards
   useEffect(() => {
-    if (isInView && !isImageLoaded) {
-      // Priorizar usar thumbnailImage se disponível, senão usar backgroundImage
-      const imageToLoad = project.thumbnailImage || project.backgroundImage;
-      
-      const img = new Image();
-      img.src = imageToLoad;
-      img.onload = () => {
-        setImageUrl(imageToLoad);
-        setIsImageLoaded(true);
-      };
-      img.onerror = async () => {
-        console.error("Erro ao carregar imagem do card:", imageToLoad);
-        // Usar função de fallback para verificação adicional
-        const fallbackImage = await verifyImageOrFallback(imageToLoad);
-        setImageUrl(fallbackImage);
-        setImageError(fallbackImage === FALLBACK_IMAGE);
-        setIsImageLoaded(true);
-      };
+    cardRefs.current = cardRefs.current.slice(0, projects.length);
+  }, [projects]);
+
+  // Versão atualizada utilizando o hook useInView corretamente
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      // Aplicar imediatamente para usuários que preferem movimento reduzido
+      cardRefs.current.forEach(ref => {
+        if (ref) ref.classList.add(styles.inView);
+      });
+      return;
     }
-  }, [isInView, isImageLoaded, project.thumbnailImage, project.backgroundImage]);
-  
-  // Função para navegar para página de detalhes
-  const viewProjectDetails = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+
+    const observers = cardRefs.current.map((ref, index) => {
+      if (!ref) return null;
+      
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              // Adiciona delay progressivo para criar efeito em cascata
+              setTimeout(() => {
+                ref.classList.add(styles.inView);
+              }, index * 120);
+              observer.unobserve(ref);
+            }
+          });
+        },
+        { threshold: 0.15, rootMargin: '0px 0px -100px 0px' }
+      );
+      
+      observer.observe(ref);
+      return observer;
+    });
     
-    // Usando o ID correto para navegar
-    console.log("Navegando para o projeto:", project.id);
-    navigate(`/work/${project.id}`);
+    // Limpeza
+    return () => {
+      observers.forEach(obs => obs?.disconnect());
+    };
+  }, [projects, prefersReducedMotion]);
+
+  // Tratamento de movimento do mouse para efeito 3D
+  const handleMouseMove = (e, index) => {
+    if (prefersReducedMotion) return;
+    
+    const card = cardRefs.current[index];
+    if (!card) return;
+    
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    
+    // Cálculos para efeito 3D suave
+    const tiltX = -((y - 0.5) * 10);
+    const tiltY = (x - 0.5) * 10;
+    
+    card.style.setProperty('--mouse-x', x);
+    card.style.setProperty('--mouse-y', y);
+    card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.02, 1.02, 1.02) translateZ(10px)`;
   };
   
-  const cardClasses = `
-    ${styles.gridCard} 
-    ${isInView ? styles.inView : ''} 
-  `;
-  
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      navigate(`/work/${project.id}`);
-      e.preventDefault();
-    }
-    if (onKeyDown) {
-      onKeyDown(e);
-    }
+  // Reset da transformação 3D quando o mouse deixa o card
+  const handleMouseLeave = (index) => {
+    const card = cardRefs.current[index];
+    if (!card) return;
+    
+    card.style.transform = '';
+    setHoveredCard(null);
   };
   
-  // Determinar qual imagem exibir
-  const displayImage = isImageLoaded 
-    ? (imageError ? FALLBACK_IMAGE : imageUrl) 
-    : null;
-  
-  return (
-    <div 
-      ref={elementRef}
-      className={cardClasses}
-      style={{ 
-        backgroundImage: displayImage ? `url(${displayImage})` : 'none',
-        backgroundColor: 'rgba(30, 30, 30, 0.8)',
-        animationDelay: `${index * 0.1}s`
-      }}
-      tabIndex={0}
-      aria-label={`Projeto: ${project.title}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onFocus={() => setIsHovered(true)}
-      onBlur={() => setIsHovered(false)}
-      onKeyDown={handleKeyPress}
-      onClick={viewProjectDetails}
-    >
-      <div 
-        className={`${styles.cardOverlay} ${isHovered ? styles.hovered : ''}`} 
-        aria-hidden="true"
-      ></div>
-      
-      <div className={styles.cardContent}>
-        <h3 id={`grid-project-${project.id}`} className={styles.cardTitle}>
-          {project.title}
-        </h3>
-        
-        <div className={styles.cardTags} aria-label="Tags do projeto">
-          {project.tags.map((tag, idx) => (
-            <span key={idx} className={styles.tag}>{tag}</span>
-          ))}
-        </div>
-        
-        <p className={styles.cardDescription}>
-          {project.description}
-        </p>
-        
-        <div className={styles.cardActions}>
-          {project.liveUrl && (
-            <a 
-              href={project.liveUrl}
-              className={styles.viewButton}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`View Project: ${project.title}`}
-              onClick={(e) => e.stopPropagation()}
-            >
-              View Project <FontAwesomeIcon icon={faArrowRight} className={styles.buttonIcon} />
-            </a>
-          )}
-          
-          <button
-            onClick={viewProjectDetails}
-            className={styles.detailsButton}
-            aria-label={`View details of ${project.title}`}
-          >
-            Details <FontAwesomeIcon icon={faEye} className={styles.buttonIcon} />
-          </button>
+  if (projects.length === 0) {
+    return (
+      <div className={styles.gridContainer} ref={gridRef}>
+        <div className={styles.noResults}>
+          <h3>Nenhum projeto encontrado</h3>
+          <p>Tente ajustar seus filtros ou critérios de busca para encontrar mais projetos.</p>
         </div>
       </div>
-      
-      {!isImageLoaded && (
-        <div className={styles.loadingPlaceholder} aria-hidden="true">
-          <div className={styles.placeholderPulse}></div>
-        </div>
-      )}
-    </div>
-  );
-});
-
-function WorkGridView({ projects }) {
-  const containerClasses = styles.gridContainer;
-
-  // Handlers para navegação por teclado
-  const handleKeyboardNavigation = useCallback((e, index) => {
-    const gridItems = document.querySelectorAll(`.${styles.gridCard}`);
-    
-    if (e.key === 'ArrowRight' && index < gridItems.length - 1) {
-      gridItems[index + 1].focus();
-      e.preventDefault();
-    } else if (e.key === 'ArrowLeft' && index > 0) {
-      gridItems[index - 1].focus();
-      e.preventDefault();
-    } else if (e.key === 'ArrowDown') {
-      const container = document.querySelector(`.${styles.gridContainer}`);
-      if (!container) return;
-      
-      const itemWidth = gridItems[0].getBoundingClientRect().width;
-      const containerWidth = container.getBoundingClientRect().width;
-      const itemsPerRow = Math.floor(containerWidth / itemWidth);
-      
-      if (index + itemsPerRow < gridItems.length) {
-        gridItems[index + itemsPerRow].focus();
-        e.preventDefault();
-      }
-    } else if (e.key === 'ArrowUp') {
-      const container = document.querySelector(`.${styles.gridContainer}`);
-      if (!container) return;
-      
-      const itemWidth = gridItems[0].getBoundingClientRect().width;
-      const containerWidth = container.getBoundingClientRect().width;
-      const itemsPerRow = Math.floor(containerWidth / itemWidth);
-      
-      if (index - itemsPerRow >= 0) {
-        gridItems[index - itemsPerRow].focus();
-        e.preventDefault();
-      }
-    }
-  }, []);
-
+    );
+  }
+  
   return (
-    <div 
-      className={containerClasses}
-      role="region"
-      aria-label="Project Visualization"
-    >
-      {projects.length === 0 ? (
-        <div className={styles.noResults} role="alert">
-          <h3>No projects found.</h3>
-          <p>Try changing the filters or check back later for new projects.</p>
+    <div className={styles.gridContainer} ref={gridRef}>
+      {projects.map((project, index) => (
+        <div
+          key={project.id || index}
+          className={styles.gridCard}
+          style={{ 
+            backgroundImage: `url(${project.thumbnailImage})`,
+            animationDelay: `${index * 0.1}s`
+          }}
+          ref={el => cardRefs.current[index] = el}
+          onMouseMove={(e) => handleMouseMove(e, index)}
+          onMouseEnter={() => setHoveredCard(index)}
+          onMouseLeave={() => handleMouseLeave(index)}
+        >
+          <div className={`${styles.cardOverlay} ${hoveredCard === index ? styles.hovered : ''}`}></div>
+
+          <div className={styles.cardContent}>
+            <div className={styles.cardTags}>
+              {project.technologies && project.technologies.slice(0, 3).map((tech, i) => (
+                <span key={i} className={styles.tag}>
+                  {tech}
+                </span>
+              ))}
+            </div>
+            
+            <h3 className={styles.cardTitle}>{project.title}</h3>
+            
+            <p className={styles.cardDescription}>
+              {project.description?.length > 100 
+                ? `${project.description.substring(0, 100)}...` 
+                : project.description}
+            </p>
+            
+            <div className={styles.cardActions}>
+              <Link 
+                to={`/work/${project.slug}`}
+                className={styles.viewButton}
+                aria-label={`Ver detalhes do projeto ${project.title}`}
+              >
+                Ver projeto <FiArrowRight className={styles.buttonIcon} />
+              </Link>
+              
+              <button
+                type="button"
+                className={styles.detailsButton}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onQuickView(project);
+                }}
+              >
+                Pré-visualizar <FiExternalLink className={styles.buttonIcon} />
+              </button>
+            </div>
+          </div>
         </div>
-      ) : (
-        projects.map((project, index) => (
-          <WorkGridItem 
-            key={project.id} 
-            project={project}
-            index={index}
-            onKeyDown={(e) => handleKeyboardNavigation(e, index)}
-          />
-        ))
-      )}
+      ))}
     </div>
   );
-}
+};
 
-export default memo(WorkGridView);
+export default WorkGridView;

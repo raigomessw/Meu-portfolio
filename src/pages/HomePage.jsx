@@ -1,21 +1,18 @@
 import React from 'react';
 import Hero from '../components/Hero/Hero';
 import Services from '../components/Services/Services';
-import WorkSection from '../components/Work/WorkSection'; 
-import SectionDivider from '../components/Services/SectionDivider';
-
-
-
-
-
+import WorkSection from '../components/Work/WorkSection';
+import styles from './Home.module.css';
+import { WorkProjectProvider } from '../components/Work/WorkProjectContext';
 
 function HomePage() {
   return (
-    <div>
+    <div className={styles.homePage}>
       <Hero />
-      <SectionDivider />
       <Services />
-      <WorkSection />
+      <WorkProjectProvider>
+        <WorkSection />
+      </WorkProjectProvider>
     </div>
   );
 }

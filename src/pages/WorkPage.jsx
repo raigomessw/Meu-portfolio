@@ -4,10 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import styles from './WorkPage.module.css';
 import WorkGridView from '../components/Work/WorkGridView';
-import { projects } from '../components/Work/WorkProjectContext';
+import { useWorkProjects, WorkProjectProvider } from '../components/Work/WorkProjectContext';
 
 function WorkPage() {
   const navigate = useNavigate();
+  const { allProjects, isLoading: contextLoading } = useWorkProjects();
   const [visibleProjects, setVisibleProjects] = useState([]);
   const [activeFilter, setActiveFilter] = useState('All');
   const [allTags, setAllTags] = useState(['All']);
@@ -16,12 +17,16 @@ function WorkPage() {
   
   // Extrair todas as tags únicas dos projetos
   useEffect(() => {
-    const tags = new Set(['All']);
-    projects.forEach(project => {
-      project.tags.forEach(tag => tags.add(tag));
-    });
-    setAllTags(Array.from(tags));
-  }, []);
+    if (allProjects && allProjects.length > 0) {
+      const tags = new Set(['All']);
+      allProjects.forEach(project => {
+        if (project.tags) {
+          project.tags.forEach(tag => tags.add(tag));
+        }
+      });
+      setAllTags(Array.from(tags));
+    }
+  }, [allProjects]);
   
   // Carregar projetos com um pequeno delay para animação
   useEffect(() => {
@@ -33,17 +38,17 @@ function WorkPage() {
     }, 500);
     
     return () => clearTimeout(timer);
-  }, [activeFilter]);
+  }, [activeFilter, allProjects]);
   
   // Função para filtrar projetos
   const filterProjects = (tag) => {
     setActiveFilter(tag);
     
     if (tag === 'All') {
-      setVisibleProjects(projects);
+      setVisibleProjects(allProjects);
     } else {
-      const filtered = projects.filter(project => 
-        project.tags.includes(tag)
+      const filtered = allProjects.filter(project => 
+        project.tags && project.tags.includes(tag)
       );
       setVisibleProjects(filtered);
     }
@@ -66,8 +71,8 @@ function WorkPage() {
 
   return (
     <section className={styles.workContainer}>
-       {/* Elementos de background */}
-       <div className={styles.pageBackground}></div>
+      {/* Elementos de background */}
+      <div className={styles.pageBackground}></div>
       <div className={styles.meshGrid}></div>
       <div className={styles.colorFog}></div>
       <div className={styles.topLight}></div>
@@ -129,7 +134,7 @@ function WorkPage() {
           ))}
         </div>
         
-        {isLoading ? (
+        {isLoading || contextLoading ? (
           <div className={styles.loaderContainer}>
             <span className={styles.loader}></span>
           </div>
@@ -141,4 +146,13 @@ function WorkPage() {
   );
 }
 
-export default WorkPage;
+// Encapsular o componente WorkPage no provider para ter acesso ao contexto
+function WorkPageWithProvider() {
+  return (
+    <WorkProjectProvider>
+      <WorkPage />
+    </WorkProjectProvider>
+  );
+}
+
+export default WorkPageWithProvider;

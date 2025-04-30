@@ -21,11 +21,11 @@ export const imageCategories = {
  * @returns {Object} Objeto com os caminhos das imagens
  */
 export const getProjectImages = (projectId, options = {}) => {
-  // Base URL para as imagens do projeto
-  const baseUrl = `/work/${projectId}/`;
+  // Base URL para as imagens do projeto - adiciona o prefixo correto
+  const baseUrl = `/public/work/${projectId}/`;
   
   // Imagem de fallback para casos de erro
-  const FALLBACK_IMAGE = "/work/placeholder.jpg";
+  const FALLBACK_IMAGE = "/public/work/placeholder.jpg";
   
   // Determinar se usamos png ou jpg para o background (tratando caso especial)
   const bgExtension = projectId === 'clojel' ? 'png' : 'jpg';
@@ -74,15 +74,48 @@ export const getProjectImages = (projectId, options = {}) => {
  * @returns {Promise<string>} URL válida ou fallback
  */
 export const verifyImageOrFallback = async (imageUrl) => {
-  const FALLBACK_IMAGE = "/work/placeholder.jpg";
+  const FALLBACK_IMAGE = "/public/work/placeholder.jpg";
   
   if (!imageUrl) return FALLBACK_IMAGE;
   
+  // Adicionar prefixo se ainda não estiver lá
+  let correctedUrl = imageUrl;
+  if (!imageUrl.startsWith('/public') && imageUrl.includes('/work/')) {
+    correctedUrl = `/public${imageUrl}`;
+  }
+  
   try {
-    const response = await fetch(imageUrl, { method: 'HEAD' });
-    return response.ok ? imageUrl : FALLBACK_IMAGE;
+    const response = await fetch(correctedUrl, { method: 'HEAD' });
+    if (response.ok) {
+      return correctedUrl;
+    }
+    
+    // Se falhar com o prefixo, tenta sem o prefixo
+    if (correctedUrl.startsWith('/public')) {
+      const withoutPrefix = correctedUrl.replace('/public', '');
+      const fallbackResponse = await fetch(withoutPrefix, { method: 'HEAD' });
+      if (fallbackResponse.ok) {
+        return withoutPrefix;
+      }
+    }
+    
+    return FALLBACK_IMAGE;
   } catch (error) {
-    console.error(`Erro verificando imagem ${imageUrl}:`, error);
+    console.error(`Erro verificando imagem ${correctedUrl}:`, error);
+    
+    // Tenta sem o prefixo como último recurso
+    if (correctedUrl.startsWith('/public')) {
+      try {
+        const withoutPrefix = correctedUrl.replace('/public', '');
+        const fallbackResponse = await fetch(withoutPrefix, { method: 'HEAD' });
+        if (fallbackResponse.ok) {
+          return withoutPrefix;
+        }
+      } catch (e) {
+        // Silenciosamente falha e retorna o fallback
+      }
+    }
+    
     return FALLBACK_IMAGE;
   }
 };
