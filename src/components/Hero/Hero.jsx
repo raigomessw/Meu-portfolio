@@ -1,215 +1,322 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { throttle, detectDeviceCapability } from '../../utils/performance';
-import BackgroundVideo from '../common/BackgroundVideo';
- 
+import { useTheme } from '../context/ThemeContext';
 import styles from './Hero.module.css';
+import profileImage from '../common/Image/profile.jpeg';
 
-function Hero() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [showScrollButton, setShowScrollButton] = useState(true);
+// Constantes para otimização
+const PARTICLE_COUNT = {
+  desktop: 15,
+  mobile: 8
+};
+
+const STATUS = {
+  AVAILABLE: 'available',
+  BUSY: 'busy',
+  LIMITED: 'limited'
+};
+
+const Hero = () => {
+  const [visible, setVisible] = useState(false);
+  const [isTypingComplete, setIsTypingComplete] = useState(false);
   const heroRef = useRef(null);
-  const contentRef = useRef(null);
-  const headingRef = useRef(null);
-  const descriptionRef = useRef(null);
-  const buttonRef = useRef(null);
-  const imageRef = useRef(null);
-  const scrollDownRef = useRef(null);
+  const { theme } = useTheme();
   
-  // Detectar dispositivos de baixa performance
-  const deviceCaps = detectDeviceCapability();
-  const ProfileImage = new URL('../common/Image/profile.jpeg', import.meta.url).href;
+  // Detectar largura da tela para determinar quantidade de partículas
+  const isSmallScreen = useMemo(() => {
+    return window.innerWidth <= 768;
+  }, []);
   
-  // Função para verificar se deve mostrar o botão de scroll
-  const checkScrollButtonVisibility = () => {
-    // Esconder botão em dispositivos móveis de tamanho pequeno a médio
-    const isMobileView = window.innerWidth <= 480;
+  // Determina estados baseados em métricas
+  const currentStatus = STATUS.AVAILABLE;
+  const experienceYears = new Date().getFullYear() - 2022;
+  
+  // Gera partículas com propriedades aleatórias
+  const particles = useMemo(() => {
+    const particleCount = isSmallScreen ? PARTICLE_COUNT.mobile : PARTICLE_COUNT.desktop;
     
-    // Sempre mostramos em telas grandes
-    if (!isMobileView) {
-      setShowScrollButton(true);
+    return Array.from({ length: particleCount }).map((_, index) => {
+      const size = Math.floor(Math.random() * 40) + 10; // 10px a 50px
+      const top = `${Math.random() * 100}%`;
+      const left = `${Math.random() * 100}%`;
+      const duration = Math.floor(Math.random() * 15) + 15; // 15s a 30s
+      const delay = Math.random() * 5; // 0s a 5s
+      
+      return { id: index, size, top, left, duration, delay };
+    });
+  }, [isSmallScreen]);
+  
+  // Define as tecnologias com cores correspondentes
+  const technologies = useMemo(() => [
+    { name: 'React', color: '#61DAFB', icon: '⚛️' },
+    { name: 'JavaScript',  color: '#F7DF1E', icon: '🟨' },
+    { name: 'UI/UX',  color: '#FF7EB6', icon: '🎨' },
+    { name: 'Node.js', color: '#68A063', icon: '🟩' },
+    { name: 'CSS', color: '#264DE4', icon: '🎨' },
+    { name: 'HTML', color: '#E34F26', icon: '📄' },
+    { name: 'Git', color: '#F05032', icon: '🗂️' },
+    { name: 'Figma', color: '#F24E1E', icon: '🎨' },
+    { name: 'Web Accessibility', color: '#000000', icon: '♿' },
+  ], []);
+  
+  // Lista de frases para efeito de digitação - Traduzidas para sueco
+  const phrases = useMemo(() => [
+    'bygger intuitiva gränssnitt',
+    'skapar minnesvärda upplevelser',
+    'omvandlar idéer till kod',
+    'utvecklar kreativa lösningar'
+  ], []);
+  
+  // Dados de estatísticas - Traduzidos para sueco
+  const stats = useMemo(() => [
+    { number: `${experienceYears}+`, label: 'Års erfarenhet' },
+    { number: '6+', label: 'Slutförda projekt' },
+  ], [experienceYears]);
+  
+  // Efeito de animação de entrada com IntersectionObserver
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    
+    if (heroRef.current) {
+      observer.observe(heroRef.current);
+    }
+    
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+  
+  // Efeito de digitação de texto
+  const [typedText, setTypedText] = useState('');
+  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
+  useEffect(() => {
+    // Verificar se o usuário prefere menos movimento
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (prefersReducedMotion) {
+      // Se preferir menos movimento, mostra o texto completo imediatamente
+      setTypedText(phrases[0]);
+      setIsTypingComplete(true);
       return;
     }
-
-    // Em telas pequenas, verificamos a altura da tela
-    const isExtraTall = window.innerHeight > 800;
     
-    // Só mostramos em telas específicas e após verificar que não há sobreposição
-    setShowScrollButton(isExtraTall && window.scrollY < 50);
-  };
-  
-  // Efeito para monitorar scroll e ocultar o botão quando necessário
-  useEffect(() => {
-    // Verificar inicialmente
-    checkScrollButtonVisibility();
+    const currentPhrase = phrases[currentPhraseIndex];
     
-    // Throttled scroll handler
-    const handleScroll = throttle(() => {
-      if (window.scrollY > 50) {
-        setShowScrollButton(false);
+    // Velocidade variável para digitação/exclusão
+    const typingSpeed = isDeleting ? 30 : 100;
+    
+    const timer = setTimeout(() => {
+      if (!isDeleting) {
+        setTypedText(currentPhrase.substring(0, typedText.length + 1));
+        
+        // Se completou a digitação
+        if (typedText.length === currentPhrase.length) {
+          // Pausa antes de começar a apagar
+          setTimeout(() => {
+            setIsDeleting(true);
+          }, 1500);
+        }
       } else {
-        checkScrollButtonVisibility();
+        setTypedText(currentPhrase.substring(0, typedText.length - 1));
+        
+        // Se terminou de apagar
+        if (typedText.length === 1) {
+          setIsDeleting(false);
+          // Avança para a próxima frase
+          setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
+        }
       }
-    }, 100);
+    }, typingSpeed);
     
-    // Resize handler para reconferir quando o tamanho da tela mudar
-    const handleResize = throttle(() => {
-      checkScrollButtonVisibility();
-    }, 200);
+    return () => clearTimeout(timer);
+  }, [typedText, currentPhraseIndex, isDeleting, phrases]);
+  
+  // Efeito para definir quando a animação de digitação termina
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsTypingComplete(true);
+    }, 6000);
     
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleResize, { passive: true });
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleResize);
-    };
+    return () => clearTimeout(timeout);
   }, []);
   
-  useEffect(() => {
-    // Otimização 1: Aplicar will-change apenas quando necessário
-    const applyHardwareAcceleration = () => {
-      const elementsToOptimize = [
-        headingRef.current,
-        descriptionRef.current,
-        buttonRef.current,
-        imageRef.current
-      ].filter(Boolean);
-      
-      elementsToOptimize.forEach(element => {
-        element.style.willChange = 'transform, opacity';
-        element.style.transform = 'translateZ(0)';
-        element.style.backfaceVisibility = 'hidden';
-      });
-    };
+  // Função otimizada para scroll suave
+  const scrollToWork = useCallback((e) => {
+    e.preventDefault();
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
-    // Otimização 2: Usar IntersectionObserver em vez de eventos de scroll
-    if ('IntersectionObserver' in window && heroRef.current) {
-      const observer = new IntersectionObserver(
-        entries => {
-          if (entries[0].isIntersecting) {
-            // Só executar as animações quando o elemento estiver visível
-            requestAnimationFrame(() => {
-              setIsVisible(true);
-              applyHardwareAcceleration();
-            });
-            observer.unobserve(heroRef.current);
-          }
-        },
-        { threshold: 0.1 }
-      );
-      
-      observer.observe(heroRef.current);
-      return () => observer.disconnect();
+    // Ajuste aqui para o ID correto da sua seção de serviços ou projetos
+    const targetSection = document.getElementById('services') || document.querySelector('.services');
+    
+    if (targetSection) {
+      targetSection.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start'
+      });
     } else {
-      // Fallback para browsers sem suporte
-      setIsVisible(true);
-      applyHardwareAcceleration();
+      // Fallback: rolar para uma posição aproximada se não encontrar a seção
+      window.scrollTo({
+        top: window.innerHeight,
+        behavior: prefersReducedMotion ? 'auto' : 'smooth'
+      });
     }
   }, []);
-  
-  // Otimização 3: Throttle para efeito parallax
-  useEffect(() => {
-    if (deviceCaps.shouldUseReducedEffects || !heroRef.current) return;
-    
-    const handleMouseMove = throttle((e) => {
-      requestAnimationFrame(() => {
-        if (!contentRef.current || !imageRef.current) return;
-        
-        const { clientX, clientY } = e;
-        const moveX = (clientX / window.innerWidth - 0.5) * 20;
-        const moveY = (clientY / window.innerHeight - 0.5) * 20;
-        
-        contentRef.current.style.transform = `translate3d(${moveX * -0.5}px, ${moveY * -0.5}px, 0)`;
-        imageRef.current.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
-      });
-    }, 30);
-    
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [deviceCaps.shouldUseReducedEffects]);
-  
+
   return (
     <section 
-      id="home" 
-      className={`${styles.hero} ${isVisible ? styles.visible : ''} ${deviceCaps.shouldUseReducedEffects ? styles.reducedMotion : ''}`} 
-      ref={heroRef}
+      ref={heroRef} 
+      className={`${styles.hero} ${visible ? styles.visible : ''}`}
+      id="hero"
+      aria-label="Huvudsektion"
     >
-      {/* Substituindo o background estático pelo vídeo */}
-      {!deviceCaps.shouldUseReducedEffects ? (
-        <BackgroundVideo>
-          {/* O conteúdo dentro do BackgroundVideo é gerenciado pelo overlay do componente */}
-          <div className={styles.blurOverlay}></div>
-        </BackgroundVideo>
-      ) : (
-        <div className={styles.heroBackground}>
-          {/* Fallback para dispositivos de baixa performance */}
-          <div className={styles.backgroundGradient}></div>
-          <div className={styles.particleOverlay}></div>
-        </div>
-      )}
+      {/* Background com gradiente animado */}
+      <div 
+        className={styles.heroBackground} 
+        aria-hidden="true"
+      ></div>
       
+      {/* Partículas decorativas */}
+      <div className={styles.heroParticles} aria-hidden="true">
+        {particles.map(particle => (
+          <div 
+            key={particle.id}
+            className={styles.particle}
+            style={{
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              top: particle.top,
+              left: particle.left,
+              '--duration': `${particle.duration}s`,
+              animationDelay: `${particle.delay}s`
+            }}
+          ></div>
+        ))}
+      </div>
+      
+      {/* Badge de disponibilidade  */}
+      <div className={styles.availabilityBadge}>
+        <span 
+          className={`${styles.statusDot} ${styles[currentStatus]}`}
+          aria-hidden="true"
+        ></span>
+        <span className={styles.statusText}>
+          {currentStatus === STATUS.AVAILABLE ? 'Tillgänglig för projekt' : 
+           currentStatus === STATUS.LIMITED ? 'Begränsad tillgänglighet' : 
+           'Upptagen till Juni/2025'}
+        </span>
+      </div>
+      
+      {/* Conteúdo principal */}
       <div className={styles.heroContent}>
-        <div className={styles.heroTextContainer} ref={contentRef}>
-          <h1 className={styles.heroTitle} ref={headingRef}>
-            <span className={styles.greeting}>Hello, I am</span>
-            <span className={styles.name}>Rai Gomes</span>
-            <span className={styles.role}>UI/UX Designer & Frontend Developer</span>
+        {/* Texto do Hero */}
+        <div className={styles.heroTextContainer}>
+          {/* Badge de experiência - Traduzido */}
+          <div className={styles.experienceBadge} aria-label={`${experienceYears}+ års erfarenhet av webbutveckling`}>
+            <span className={styles.badgeIcon} aria-hidden="true">⭐</span>
+            <span>{experienceYears}+ års erfarenhet</span>
+          </div>
+          
+          {/* Título principal - Traduzido */}
+          <h1 className={styles.heroTitle}>
+            <span className={styles.greeting}>Hej, jag är Rai</span>
+            <span className={styles.profession}>
+              En <span className={styles.highlight}>utvecklare</span> Web Developer & UI/UX-designer
+            </span>
           </h1>
           
-          <p className={styles.heroDescription} ref={descriptionRef}>
-          I develop intuitive and efficient interfaces that provide high-performance and user-focused web experiences.
+          {/* Subtítulo com efeito de digitação - Traduzido */}
+          <p className={styles.heroSubtitle}>
+            Specialiserad på {typedText}
+            <span 
+              className={styles.cursor} 
+              aria-hidden="true"
+              style={{ opacity: isDeleting ? 0.7 : 1 }}
+            ></span>
           </p>
           
-          <div className={styles.heroCta} ref={buttonRef}>
-            <Link to="/contact" className={styles.primaryBtn}>
-            Get in touch
+          {/* Tech Stack */}
+          <div className={styles.techStack} aria-label="Mina huvudteknologier">
+            {technologies.map((tech, index) => (
+              <div 
+                key={index}
+                className={styles.techBadge}
+                style={{ '--tech-color': tech.color }}
+                title={`${tech.name}: ${tech.years} års erfarenhet`}
+              >
+                <span className={styles.techIcon} aria-hidden="true">{tech.icon}</span>
+                <div className={styles.techDetails}>
+                  <span className={styles.techName}>{tech.name}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Botões de ação - Traduzidos */}
+          <div className={styles.heroActions}>
+            <Link to="/contact" className={styles.primaryButton}>
+              <span>Kontakta mig</span>
+              <span aria-hidden="true">→</span>
             </Link>
-            <Link to="/work" className={styles.secondaryBtn}>
-            View Projects
+            <Link to="/work" className={styles.secondaryButton}>
+              <span>Se projekt</span>
             </Link>
+          </div>
+          
+          {/* Estatísticas */}
+          <div className={styles.statsContainer} aria-label="Karriärstatistik">
+            {stats.map((stat, index) => (
+              <React.Fragment key={index}>
+                {index > 0 && <div className={styles.statDivider} aria-hidden="true"></div>}
+                <div className={styles.statItem}>
+                  <div className={styles.statNumber}>{stat.number}</div>
+                  <div className={styles.statLabel}>{stat.label}</div>
+                </div>
+              </React.Fragment>
+            ))}
           </div>
         </div>
         
+        {/* Imagem do Hero */}
         <div className={styles.heroImageContainer}>
-          <div className={styles.imageWrapper} ref={imageRef}>
-            {/* Use imagens WebP com fallback */}
-            <picture>
-              <img 
-                src={ProfileImage} 
-                alt="Rai Gomes" 
-                className={styles.heroImage}
-                width="450"
-                height="450"
-                loading="eager" 
-                decoding="async"
-              />
-            </picture>
+          <div className={styles.imageWrapper}>
+          <img 
+  src={profileImage}
+  alt="Foto av Rai Gomes" 
+  className={styles.heroImage}
+  loading="eager"
+  width="380" 
+  height="380"
+/>
+            <div className={styles.imageGlow} aria-hidden="true"></div>
+            <div className={styles.imageBorder} aria-hidden="true"></div>
           </div>
         </div>
       </div>
       
-      {/* Renderização condicional do botão de scroll */}
-      {showScrollButton && (
-        <div 
-          className={styles.scrollDown} 
-          ref={scrollDownRef} 
-          style={{ 
-            display: showScrollButton ? 'block' : 'none',
-            zIndex: 1 // Menor que os botões CTA
-          }}
-        >
-          <a href="#about" aria-label="Scroll to the about section">
-            <span className={styles.scrollIcon}></span>
-            <span className={styles.scrollText}>Scroll down</span>
-          </a>
-        </div>
-      )}
+      {/* Botão de rolagem para baixo */}
+<a 
+  href="#services" // Altere para o ID correto da sua seção
+  className={styles.heroScroll}
+  onClick={scrollToWork}
+  aria-label="Rulla till projektsektionen"
+>
+  <div className={styles.scrollIcon} aria-hidden="true">
+    <div className={styles.scrollDot}></div>
+  </div>
+  <span>Utforska</span>
+</a>
     </section>
   );
-}
+};
 
-export default Hero;
+export default React.memo(Hero); // Usando memo para evitar renderizações desnecessárias

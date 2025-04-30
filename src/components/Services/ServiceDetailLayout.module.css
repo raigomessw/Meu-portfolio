@@ -1,15 +1,66 @@
-/* ========== CONTAINER ========== */
+/* ========== CONTAINER COM FUNDO APRIMORADO ========== */
 .container {
   --accent-color: rgba(110, 7, 243, 1);
+  --accent-color-rgb: 110, 7, 243;
   --accent-color-soft: rgba(110, 7, 243, 0.15);
   --card-hover-transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   min-height: 100vh;
-  background-color: var(--color-bg-1, #121218);
-  color: var(--color-text-1, #f0f0f0);
+  position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 
-/* ========== HERO SECTION ========== */
+/* Versão para tema claro */
+html[data-theme="light"] .container {
+  background: linear-gradient(
+    180deg,
+    rgba(250, 252, 255, 0.8) 0%,
+    rgba(250, 250, 255, 1) 100%
+  );
+  color: var(--color-text-1);
+}
+
+/* Versão para tema escuro */
+html[data-theme="dark"] .container {
+  background: linear-gradient(
+    180deg,
+    rgba(15, 18, 25, 0.95) 0%,
+    rgba(18, 18, 24, 1) 100%
+  );
+  color: var(--color-text-1);
+}
+
+/* Elementos de fundo decorativos */
+.bgDecoration {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.6;
+  z-index: -1;
+  mix-blend-mode: soft-light;
+}
+
+.decoration1 {
+  top: 15%;
+  right: -10%;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, 
+    rgba(var(--accent-color-rgb), 0.4) 0%, 
+    rgba(var(--accent-color-rgb), 0) 70%);
+}
+
+.decoration2 {
+  bottom: 25%;
+  left: -5%;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, 
+    rgba(78, 205, 196, 0.3) 0%, 
+    rgba(78, 205, 196, 0) 70%);
+}
+
+/* ========== HERO SECTION APRIMORADA ========== */
 .hero {
   position: relative;
   height: 70vh;
@@ -19,19 +70,56 @@
   justify-content: center;
   margin-bottom: 4rem;
   overflow: hidden;
-  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+}
+
+/* Background dinâmico para o Hero */
+.heroBackground {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* Versão para tema claro */
+html[data-theme="light"] .heroBackground {
+  background: linear-gradient(135deg,
+    rgba(var(--accent-color-rgb), 0.7),
+    rgba(var(--accent-color-rgb), 0.4) 60%,
+    rgba(130, 180, 255, 0.5)
+  );
+}
+
+/* Versão para tema escuro */
+html[data-theme="dark"] .heroBackground {
+  background: linear-gradient(135deg,
+    rgba(var(--accent-color-rgb), 0.8),
+    rgba(var(--accent-color-rgb), 0.3) 60%,
+    rgba(20, 25, 40, 0.9)
+  );
 }
 
 .heroContent {
   position: relative;
   z-index: 2;
   text-align: center;
-  padding: 2.5rem;
+  padding: 3rem;
   max-width: 800px;
-  backdrop-filter: blur(10px);
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 20px;
+  border-radius: 24px;
   animation: fadeIn 1s ease-out forwards;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Versão para tema claro */
+html[data-theme="light"] .heroContent {
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Versão para tema escuro */
+html[data-theme="dark"] .heroContent {
+  backdrop-filter: blur(10px);
+  background: rgba(15, 18, 25, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 @keyframes fadeIn {
@@ -57,6 +145,43 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   transform: scale(1);
   transition: transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  background: var(--accent-color);
+  color: white;
+}
+
+/* Versão para tema claro */
+html[data-theme="light"] .iconWrapper {
+  box-shadow: 0 10px 25px rgba(var(--accent-color-rgb), 0.25);
+}
+
+/* Versão para tema escuro */
+html[data-theme="dark"] .iconWrapper {
+  box-shadow: 0 10px 25px rgba(var(--accent-color-rgb), 0.35);
+}
+
+.iconWrapper::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0)
+  );
+  transform: rotate(45deg);
+  transition: all 0.6s;
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-150%) rotate(45deg); }
+  100% { transform: translateX(150%) rotate(45deg); }
 }
 
 .container:hover .iconWrapper {
@@ -66,27 +191,50 @@
 .title {
   font-size: 3.5rem;
   margin-bottom: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+/* Versão para tema claro */
+html[data-theme="light"] .title {
+  background: linear-gradient(135deg, #333333 30%, var(--accent-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Versão para tema escuro */
+html[data-theme="dark"] .title {
   background: linear-gradient(135deg, #ffffff 30%, var(--accent-color) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
   text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .subtitle {
   font-size: 1.5rem;
-  color: var(--color-text-1, #f0f0f0);
   max-width: 600px;
   margin: 0 auto;
-  opacity: 0.9;
   line-height: 1.5;
   font-weight: 300;
 }
 
-/* ========== SECTIONS ========== */
+/* Versão para tema claro */
+html[data-theme="light"] .subtitle {
+  color: var(--color-text-2);
+  opacity: 0.95;
+}
+
+/* Versão para tema escuro */
+html[data-theme="dark"] .subtitle {
+  color: var(--color-text-1);
+  opacity: 0.9;
+}
+
+/* ========== SECTIONS APRIMORADAS ========== */
 .section {
   padding: 7rem 2rem;
   max-width: 1200px;
@@ -97,14 +245,32 @@
   scroll-margin-top: 100px; /* Melhora o scroll para links de âncora */
 }
 
-.section:nth-child(odd) {
+/* Tema claro - seções alternadas */
+html[data-theme="light"] .section:nth-child(odd) {
   background: linear-gradient(
     to right,
-    rgba(0, 0, 0, 0),
-    var(--accent-color-soft),
-    rgba(0, 0, 0, 0)
+    rgba(255, 255, 255, 0.2),
+    rgba(var(--accent-color-rgb), 0.06) 30%,
+    rgba(var(--accent-color-rgb), 0.06) 70%,
+    rgba(255, 255, 255, 0.2)
   );
   border-radius: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+/* Tema escuro - seções alternadas */
+html[data-theme="dark"] .section:nth-child(odd) {
+  background: linear-gradient(
+    to right,
+    rgba(30, 35, 45, 0.5),
+    rgba(var(--accent-color-rgb), 0.1) 30%,
+    rgba(var(--accent-color-rgb), 0.1) 70%,
+    rgba(30, 35, 45, 0.5)
+  );
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .container.inView .section {
@@ -122,12 +288,21 @@
   font-size: 2.2rem;
   margin-bottom: 2.5rem;
   font-weight: 700;
-  color: var(--color-text-0, #ffffff);
   position: relative;
   padding-bottom: 1rem;
   line-height: 1.3;
   text-align: left;
   display: inline-block;
+}
+
+/* Versão para tema claro */
+html[data-theme="light"] .sectionTitle {
+  color: var(--color-text-0, #1a1a1a);
+}
+
+/* Versão para tema escuro */
+html[data-theme="dark"] .sectionTitle {
+  color: var(--color-text-0, #ffffff);
 }
 
 .sectionTitle::after {
@@ -150,13 +325,23 @@
   font-size: 1.15rem;
   line-height: 1.8;
   margin-bottom: 3.5rem;
-  color: var(--color-text-1, #f0f0f0);
   text-align: left;
   max-width: 100%;
+}
+
+/* Versão para tema claro */
+html[data-theme="light"] .description {
+  color: var(--color-text-2, #444444);
+  opacity: 0.98;
+}
+
+/* Versão para tema escuro */
+html[data-theme="dark"] .description {
+  color: var(--color-text-1, #f0f0f0);
   opacity: 0.95;
 }
 
-/* ========== BENEFITS GRID ========== */
+/* ========== BENEFIT CARDS APRIMORADOS ========== */
 .benefitsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -167,24 +352,42 @@
 .benefitItem {
   display: flex;
   align-items: flex-start;
-  background: rgba(255, 255, 255, 0.03);
   padding: 1.75rem;
   border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   transition: all var(--card-hover-transition);
-  border: 1px solid rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(5px);
+}
+
+/* Tema claro - cards */
+html[data-theme="light"] .benefitItem {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+}
+
+/* Tema escuro - cards */
+html[data-theme="dark"] .benefitItem {
+  background: rgba(30, 35, 45, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .benefitItem:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.02)
-  );
-  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Tema claro - hover */
+html[data-theme="light"] .benefitItem:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(var(--accent-color-rgb), 0.3);
+}
+
+/* Tema escuro - hover */
+html[data-theme="dark"] .benefitItem:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  background: rgba(40, 45, 60, 0.6);
+  border-color: rgba(var(--accent-color-rgb), 0.3);
 }
 
 .benefitIcon {
@@ -202,6 +405,11 @@
   transition: all 0.3s ease;
 }
 
+/* Tema claro - ícone */
+html[data-theme="light"] .benefitIcon {
+  background: rgba(var(--accent-color-rgb), 0.1);
+}
+
 .benefitItem:hover .benefitIcon {
   background-color: var(--accent-color);
   color: white;
@@ -214,7 +422,12 @@
   font-size: 1rem;
 }
 
-/* ========== PROCESS LIST ========== */
+/* Tema claro - texto */
+html[data-theme="light"] .benefitItem p {
+  color: var(--color-text-2, #444);
+}
+
+/* ========== PROCESS LIST APRIMORADA ========== */
 .processList {
   display: flex;
   flex-direction: column;
@@ -228,13 +441,28 @@
   position: absolute;
   top: 20px;
   left: 20px;
-  width: 1px;
+  width: 2px;
   height: calc(100% - 60px);
+}
+
+/* Tema claro - timeline */
+html[data-theme="light"] .processList::before {
   background: linear-gradient(
     to bottom,
     var(--accent-color),
-    rgba(255, 255, 255, 0.1)
+    rgba(var(--accent-color-rgb), 0.1)
   );
+  box-shadow: 0 0 10px rgba(var(--accent-color-rgb), 0.3);
+}
+
+/* Tema escuro - timeline */
+html[data-theme="dark"] .processList::before {
+  background: linear-gradient(
+    to bottom,
+    var(--accent-color),
+    rgba(var(--accent-color-rgb), 0.1)
+  );
+  box-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.3);
 }
 
 .processStep {
@@ -242,11 +470,33 @@
   flex-direction: column;
   position: relative;
   padding-left: 70px;
-  transition: transform 0.3s ease;
+  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .processStep:hover {
   transform: translateX(10px);
+}
+
+/* Efeito de destaque ao passar o mouse */
+.processStep::after {
+  content: '';
+  position: absolute;
+  left: 50px;
+  top: 0;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--accent-color-rgb), 0.05),
+    transparent
+  );
+  transition: width 0.4s ease;
+  border-radius: 8px;
+  z-index: -1;
+}
+
+.processStep:hover::after {
+  width: 100%;
 }
 
 .stepNumber {
@@ -263,34 +513,52 @@
   justify-content: center;
   font-weight: 700;
   font-size: 1.2rem;
-  box-shadow: 0 5px 15px rgba(var(--accent-color), 0.3);
+  box-shadow: 0 5px 15px rgba(var(--accent-color-rgb), 0.3);
   transition: all 0.3s ease;
   z-index: 2;
 }
 
 .processStep:hover .stepNumber {
   transform: scale(1.1);
-  box-shadow: 0 8px 20px rgba(var(--accent-color), 0.4);
+  box-shadow: 0 8px 20px rgba(var(--accent-color-rgb), 0.4);
 }
 
 .stepTitle {
   font-size: 1.5rem;
   margin-bottom: 0.7rem;
   font-weight: 600;
-  color: var(--color-text-0, #ffffff);
   line-height: 1.4;
   margin-top: 0;
+}
+
+/* Versão para tema claro */
+html[data-theme="light"] .stepTitle {
+  color: var(--color-text-0, #1a1a1a);
+}
+
+/* Versão para tema escuro */
+html[data-theme="dark"] .stepTitle {
+  color: var(--color-text-0, #ffffff);
 }
 
 .stepDescription {
   font-size: 1.05rem;
   line-height: 1.7;
-  color: var(--color-text-1, #f0f0f0);
-  opacity: 0.9;
-  margin: 0;
 }
 
-/* ========== CASE STUDIES ========== */
+/* Versão para tema claro */
+html[data-theme="light"] .stepDescription {
+  color: var(--color-text-2, #444444);
+  opacity: 0.95;
+}
+
+/* Versão para tema escuro */
+html[data-theme="dark"] .stepDescription {
+  color: var(--color-text-1, #f0f0f0);
+  opacity: 0.9;
+}
+
+/* ========== CASE STUDIES APRIMORADOS========== */
 .caseStudiesGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -301,21 +569,41 @@
 .caseStudyCard {
   border-radius: 16px;
   overflow: hidden;
-  background-color: rgba(255, 255, 255, 0.02);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   text-decoration: none;
   display: flex;
   flex-direction: column;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.05);
   height: 100%;
+}
+
+/* Tema claro - cards */
+html[data-theme="light"] .caseStudyCard {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* Tema escuro - cards */
+html[data-theme="dark"] .caseStudyCard {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .caseStudyCard:hover {
   transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
   border-color: var(--accent-color);
+}
+
+/* Tema claro - hover */
+html[data-theme="light"] .caseStudyCard:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Tema escuro - hover */
+html[data-theme="dark"] .caseStudyCard:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 }
 
 .caseStudyCard:focus-visible {
@@ -369,9 +657,18 @@
   margin-bottom: 0.5rem;
   margin-top: 0;
   font-weight: 600;
-  color: var(--color-text-0, #ffffff);
   line-height: 1.4;
   transition: color 0.3s ease;
+}
+
+/* Tema claro - título */
+html[data-theme="light"] .caseStudyTitle {
+  color: var(--color-text-0, #1a1a1a);
+}
+
+/* Tema escuro - título */
+html[data-theme="dark"] .caseStudyTitle {
+  color: var(--color-text-0, #ffffff);
 }
 
 .caseStudyCard:hover .caseStudyTitle {
@@ -380,13 +677,21 @@
 
 .caseStudyCompany {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
   margin-bottom: 1rem;
   font-weight: 500;
 }
 
+/* Tema claro - empresa */
+html[data-theme="light"] .caseStudyCompany {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* Tema escuro - empresa */
+html[data-theme="dark"] .caseStudyCompany {
+  color: rgba(255, 255, 255, 0.7);
+}
+
 .caseStudyResult {
-  background-color: rgba(255, 255, 255, 0.05);
   padding: 0.75rem 1rem;
   border-radius: 8px;
   font-size: 0.95rem;
@@ -396,7 +701,19 @@
   border-left: 3px solid var(--accent-color);
 }
 
-/* ========== TOOLS LIST ========== */
+/* Tema claro - resultado */
+html[data-theme="light"] .caseStudyResult {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--color-text-2);
+}
+
+/* Tema escuro - resultado */
+html[data-theme="dark"] .caseStudyResult {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-1);
+}
+
+/* ========== TOOLS LIST APRIMORADAS ========== */
 .toolsList {
   display: flex;
   flex-wrap: wrap;
@@ -405,75 +722,140 @@
 }
 
 .toolTag {
-  background: rgba(255, 255, 255, 0.04);
   padding: 0.8rem 1.4rem;
   border-radius: 30px;
-  color: var(--color-text-0, #ffffff);
   font-size: 0.95rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   text-align: center;
   line-height: 1.2;
+}
+
+/* Tema claro - tags */
+html[data-theme="light"] .toolTag {
+  background: rgba(0, 0, 0, 0.03);
+  color: var(--color-text-1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Tema escuro - tags */
+html[data-theme="dark"] .toolTag {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-text-0);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .toolTag:hover {
-  background-color: var(--accent-color-soft);
   transform: translateY(-3px);
   border-color: var(--accent-color);
 }
 
-/* ========== CTA SECTION ========== */
+/* Tema claro - hover */
+html[data-theme="light"] .toolTag:hover {
+  background-color: rgba(var(--accent-color-rgb), 0.1);
+}
+
+/* Tema escuro - hover */
+html[data-theme="dark"] .toolTag:hover {
+  background-color: var(--accent-color-soft);
+}
+
+/* ========== CTA SECTION APRIMORADA ========== */
 .ctaSection {
-  background: linear-gradient(135deg, 
-    rgba(var(--accent-color-rgb, 110, 7, 243), 0.15), 
-    rgba(0, 0, 0, 0.5)
-  );
-  text-align: center;
   padding: 8rem 2rem;
   margin-bottom: 0;
   border-radius: 0;
   position: relative;
   overflow: hidden;
+  text-align: center;
+}
+
+/* Tema claro - CTA */
+html[data-theme="light"] .ctaSection {
+  background: linear-gradient(135deg, 
+    rgba(var(--accent-color-rgb), 0.08), 
+    rgba(255, 255, 255, 0.8),
+    rgba(var(--accent-color-rgb), 0.05)
+  );
+}
+
+/* Tema escuro - CTA */
+html[data-theme="dark"] .ctaSection {
+  background: linear-gradient(135deg, 
+    rgba(var(--accent-color-rgb), 0.15), 
+    rgba(15, 18, 25, 0.8),
+    rgba(var(--accent-color-rgb), 0.1)
+  );
+}
+
+/* Elementos decorativos */
+.ctaSection::before,
+.ctaSection::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0.3;
 }
 
 .ctaSection::before {
-  content: '';
-  position: absolute;
+  width: 300px;
+  height: 300px;
   top: -100px;
   left: -100px;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
   background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
-  opacity: 0.15;
-  filter: blur(40px);
+}
+
+.ctaSection::after {
+  width: 250px;
+  height: 250px;
+  bottom: -80px;
+  right: -80px;
+  background: radial-gradient(circle, rgba(78, 205, 196, 0.8) 0%, transparent 70%);
 }
 
 .ctaTitle {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
-  color: var(--color-text-0, #ffffff);
   line-height: 1.2;
   text-align: center;
+}
+
+/* Tema claro - título */
+html[data-theme="light"] .ctaTitle {
+  color: var(--color-text-0, #1a1a1a);
+}
+
+/* Tema escuro - título */
+html[data-theme="dark"] .ctaTitle {
+  color: var(--color-text-0, #ffffff);
 }
 
 .ctaText {
   font-size: 1.2rem;
   max-width: 700px;
   margin: 0 auto 3.5rem;
-  color: var(--color-text-1, #f0f0f0);
   line-height: 1.6;
   text-align: center;
 }
 
+/* Tema claro - texto */
+html[data-theme="light"] .ctaText {
+  color: var(--color-text-2, #444444);
+}
+
+/* Tema escuro - texto */
+html[data-theme="dark"] .ctaText {
+  color: var(--color-text-1, #f0f0f0);
+}
+
+/* Botão CTA aprimorado */
 .ctaButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 2.5rem;
-  background: var(--accent-color);
-  color: white;
+  padding: 1.2rem 2.8rem;
   border-radius: 50px;
   font-size: 1.1rem;
   font-weight: 600;
@@ -482,7 +864,20 @@
   gap: 0.8rem;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 5px 20px rgba(var(--accent-color-rgb, 110, 7, 243), 0.4);
+  z-index: 2;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+}
+
+/* Tema claro - botão */
+html[data-theme="light"] .ctaButton {
+  box-shadow: 0 5px 20px rgba(var(--accent-color-rgb), 0.3);
+}
+
+/* Tema escuro - botão */
+html[data-theme="dark"] .ctaButton {
+  box-shadow: 0 5px 20px rgba(var(--accent-color-rgb), 0.4);
 }
 
 .ctaButton::before {
@@ -504,7 +899,16 @@
 .ctaButton:hover {
   transform: translateY(-5px);
   color: #ffffff;
-  box-shadow: 0 8px 25px rgba(var(--accent-color-rgb, 110, 7, 243), 0.9);
+}
+
+/* Tema claro - hover */
+html[data-theme="light"] .ctaButton:hover {
+  box-shadow: 0 8px 25px rgba(var(--accent-color-rgb), 0.6);
+}
+
+/* Tema escuro - hover */
+html[data-theme="dark"] .ctaButton:hover {
+  box-shadow: 0 8px 25px rgba(var(--accent-color-rgb), 0.9);
 }
 
 .ctaButton:hover::before {
@@ -558,6 +962,11 @@
   .benefitItem {
     padding: 1.5rem;
   }
+  
+  .decoration1,
+  .decoration2 {
+    opacity: 0.4; /* Menos visíveis em telas menores */
+  }
 }
 
 /* Ajustes para telas muito pequenas */
@@ -583,25 +992,43 @@
   }
 }
 
-/* ========== TEMA ESCURO APRIMORADO ========== */
-@media (prefers-color-scheme: dark) {
-  .container {
-    --color-text-0: #ffffff;
-    --color-text-1: #f0f0f0;
-  }
-  
-  /* Outros ajustes específicos para tema escuro */
-  .benefitItem {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  }
-  
-  .caseStudyCard {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
-  }
-}
-
 /* ========== ACESSIBILIDADE ========== */
 :focus-visible {
   outline: 3px solid var(--accent-color);
   outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .container:hover .iconWrapper {
+    transform: none;
+  }
+  
+  .ctaButton:hover {
+    transform: none;
+  }
+  
+  .processStep:hover {
+    transform: none;
+  }
+  
+  .benefitItem:hover {
+    transform: none;
+  }
+  
+  .caseStudyCard:hover {
+    transform: none;
+  }
+  
+  .toolTag:hover {
+    transform: none;
+  }
 }

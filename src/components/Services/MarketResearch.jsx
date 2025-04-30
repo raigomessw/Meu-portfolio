@@ -3,8 +3,8 @@ import ServiceDetailLayout from './ServiceDetailLayout';
 
 const MarketResearch = () => {
   const serviceData = {
-    title: "Market Research",
-    subtitle: "Data-driven insights to guide strategic decisions",
+    title: "Marknadsundersökning",
+    subtitle: "Datadriven insikt för strategiska beslut",
     accent: "rgba(255, 107, 107, 1)",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" width="1em" height="1em">
@@ -12,49 +12,49 @@ const MarketResearch = () => {
       </svg>
     ),
     heroImage: "/images/services/market-research-hero.jpg",
-    description: `I conduct comprehensive market research to identify trends, gaps, and opportunities 
-                 in the market. This research serves as the foundation for creating digital products
-                 that solve real problems and meet genuine market needs.`,
+    description: `Jag genomför omfattande marknadsundersökningar för att identifiera trender, luckor och 
+                 möjligheter på marknaden. Denna forskning fungerar som grunden för att skapa digitala 
+                 produkter som löser verkliga problem och möter genuina marknadsbehov.`,
     
     benefits: [
-      "Identify untapped market opportunities",
-      "Understand competitive landscape",
-      "Validate product ideas before development",
-      "Discover industry trends and user preferences",
-      "Make data-informed business decisions"
+      "Identifiera outnyttjade marknadsmöjligheter",
+      "Förstå konkurrenslandskapet",
+      "Validera produktidéer före utveckling",
+      "Upptäcka branschtrender och användarpreferenser",
+      "Fatta datainformerade affärsbeslut"
     ],
     
     process: [
       {
-        title: "Target Audience Analysis",
-        description: "Defining user segments and understanding their needs, behaviors, and preferences."
+        title: "Målgruppsanalys",
+        description: "Definiera användarsegment och förstå deras behov, beteenden och preferenser."
       },
       {
-        title: "Competitor Analysis",
-        description: "Evaluating direct and indirect competitors to identify gaps and opportunities."
+        title: "Konkurrentanalys",
+        description: "Utvärdera direkta och indirekta konkurrenter för att identifiera luckor och möjligheter."
       },
       {
-        title: "Trend Research",
-        description: "Analyzing current and emerging trends that could impact your product's success."
+        title: "Trendforskning",
+        description: "Analysera nuvarande och framväxande trender som kan påverka din produkts framgång."
       },
       {
-        title: "Market Sizing & Opportunity",
-        description: "Assessing market potential and identifying your product's unique value proposition."
+        title: "Marknadsstorlek & Möjlighet",
+        description: "Bedöma marknadspotentialen och identifiera din produkts unika värdeförslag."
       }
     ],
     
     caseStudies: [
       {
-        title: "FinTech Market Entry Strategy",
-        company: "Banking Startup",
-        result: "Identified underserved segment worth $2B in annual revenue potential",
+        title: "FinTech Marknadsstrategi",
+        company: "Bank Startup",
+        result: "Identifierade underserved segment värt 2 miljarder dollar i årlig intäktspotential",
         image: "/images/case-studies/fintech-market-research.jpg",
         link: "/case-studies/fintech-market-research"
       },
       {
-        title: "E-commerce Competitive Analysis",
-        company: "Online Retailer",
-        result: "Discovered 3 key differentiation opportunities competitors had missed",
+        title: "E-handel Konkurrensanalys",
+        company: "Online Detaljhandel",
+        result: "Upptäckte 3 viktiga differentieringsmöjligheter som konkurrenterna hade missat",
         image: "/images/case-studies/ecommerce-analysis.jpg",
         link: "/case-studies/ecommerce-analysis"
       }

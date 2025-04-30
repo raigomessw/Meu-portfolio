@@ -5,8 +5,8 @@ import styles from './Services.module.css';
 function Services() {
   const services = [
     {
-      title: "Market Research",
-      description: "Understand market trends and competitor landscape",
+      title: "Marknadsundersökning",
+      description: "Förstå marknadstrender och konkurrenslandskapet",
       accent: "rgba(255, 107, 107, 1)",
       slug: "market-research",
       icon: (
@@ -16,9 +16,9 @@ function Services() {
       )
     },
     {
-      title: "User Research",
-      description: "Discover user needs, behaviors and pain points",
-      accent: "rgba(78, 205, 196, 1)",
+      title: "Användarundersökning",
+      description: "Upptäck användarbehov, beteenden och smärtpunkter",
+      accent: "rgb(3, 143, 194)",
       slug: "user-research",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" fill="currentColor" width="1em" height="1em">
@@ -28,7 +28,7 @@ function Services() {
     },
     {
       title: "MVP & Prototyping",
-      description: "Create interactive prototypes to test concepts",
+      description: "Skapa interaktiva prototyper för att testa koncept",
       accent: "rgba(255, 190, 11, 1)",
       slug: "mvp-prototyping",
       icon: (
@@ -38,8 +38,8 @@ function Services() {
       )
     },
     {
-      title: "Design Validation",
-      description: "Test designs and iterate based on user feedback",
+      title: "Designvalidering",
+      description: "Testa designer och iterera baserat på användarfeedback",
       accent: "rgba(131, 56, 236, 1)",
       slug: "design-validation",
       icon: (
@@ -58,7 +58,7 @@ function Services() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
-  // Observer para detectar quando a seção entra na viewport
+  // Observer för att upptäcka när sektionen kommer in i viewport
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -73,7 +73,7 @@ function Services() {
       observer.observe(containerRef.current);
     }
     
-    // Detecta se estamos em um dispositivo touch
+    // Upptäcker om vi är på en touchenhet
     const checkTouch = () => {
       setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
     };
@@ -87,7 +87,7 @@ function Services() {
     };
   }, []);
 
-  // Efeito para rastreamento de mouse
+  // Effekt för musspårning
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (activeCard !== null && cardRefs.current[activeCard]) {
@@ -108,7 +108,7 @@ function Services() {
     };
   }, [activeCard]);
 
-  // Funções de manipulação de interação
+  // Funktioner för interaktionshantering
   const handleCardHover = (index) => {
     setActiveCard(index);
   };
@@ -118,7 +118,7 @@ function Services() {
   };
 
   const handleKeyDown = (e, index) => {
-    // Ativar card com Enter ou Space
+    // Aktivera kort med Enter eller Space
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       setActiveCard(index);
@@ -130,13 +130,13 @@ function Services() {
       id="services" 
       className={`${styles.container} ${isInView ? styles.inView : ''}`}
       ref={containerRef}
-      aria-label="UX Design Services"
+      aria-label="UX-designtjänster"
     >
       <div className={styles.bgEffect}></div>
       
       <div className={styles.header}>
-        <h2 className={styles.title}>UX Design Services</h2>
-        <p className={styles.subtitle}>User-centered design for impactful digital products</p>
+        <h2 className={styles.title}>UX-designtjänster</h2>
+        <p className={styles.subtitle}>Användarcentrerad design för slagkraftiga digitala produkter</p>
       </div>
 
       <div className={styles.cardsContainer} ref={cardsContainerRef}>
@@ -152,7 +152,7 @@ function Services() {
             onMouseLeave={handleCardLeave}
             tabIndex="0"
             role="button"
-            aria-label={`Service: ${service.title}`}
+            aria-label={`Tjänst: ${service.title}`}
             onKeyDown={(e) => handleKeyDown(e, index)}
           >
             <div 
@@ -179,9 +179,9 @@ function Services() {
                   <Link 
                     to={`/services/${service.slug}`} 
                     className={styles.learnMoreBtn}
-                    aria-label={`Learn more about ${service.title}`}
+                    aria-label={`Läs mer om ${service.title}`}
                   >
-                    Learn more
+                    Läs mer
                     <svg className={styles.arrowIcon} width="20" height="20" viewBox="0 0 20 20">
                       <path d="M10 3L16 10L10 17L8.6 15.6L12.2 12H4V8H12.2L8.6 4.4L10 3Z" fill="currentColor" />
                     </svg>
@@ -189,23 +189,25 @@ function Services() {
                 </div>
               </div>
               
-              {/* Brilho que segue o cursor */}
+              {/* Glans som följer markören */}
               <div className={styles.cardShine}></div>
               
-              {/* Bordas com glow */}
+              {/* Kanter med glöd */}
               <div className={styles.cardBorder}></div>
             </div>
             
-            {/* Efeito de reflexo atualizado */}
+            {/* Uppdaterad reflektionseffekt */}
             <div className={styles.cardReflection} style={{ '--accent-color': service.accent }}></div>
           </div>
         ))}
       </div>
       
-      {/* Círculos de fundo animados */}
-      <div className={`${styles.bgCircle} ${styles.circle1}`}></div>
-      <div className={`${styles.bgCircle} ${styles.circle2}`}></div>
-      <div className={`${styles.bgCircle} ${styles.circle3}`}></div>
+      {/* Animerade bakgrundscirklar */}
+      <div className={styles.bgEffect} aria-hidden="true"></div>
+      
+      <div className={`${styles.bgCircle} ${styles.circle2}`} aria-hidden="true"></div>
+      <div className={`${styles.bgCircle} ${styles.circle3}`} aria-hidden="true"></div>
+      <div className={`${styles.bgCircle} ${styles.circle4}`} aria-hidden="true"></div>
     </section>
   );
 }

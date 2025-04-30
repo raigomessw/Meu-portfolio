@@ -30,7 +30,7 @@ const ServiceDetailLayout = ({ service }) => {
       className={`${styles.container} ${isInView ? styles.inView : ''}`}
       style={{ '--accent-color': service.accent }}
     >
-      {/* Hero Section */}
+      {/* Hero Sektion */}
       <div className={styles.hero}>
         <div className={styles.heroContent}>
           <div className={styles.iconWrapper} style={{ backgroundColor: service.accent }}>
@@ -46,10 +46,10 @@ const ServiceDetailLayout = ({ service }) => {
         <div className={styles.overlay} />
       </div>
       
-      {/* Description Section */}
+      {/* Beskrivning Sektion */}
       <section className={styles.section}>
         <div className={styles.sectionContent}>
-          <h2 className={styles.sectionTitle}>What I Offer</h2>
+          <h2 className={styles.sectionTitle}>Vad jag erbjuder</h2>
           <p className={styles.description}>{service.description}</p>
           
           <div className={styles.benefitsGrid}>
@@ -63,10 +63,10 @@ const ServiceDetailLayout = ({ service }) => {
         </div>
       </section>
       
-      {/* Process Section */}
+      {/* Process Sektion */}
       <section className={`${styles.section} ${styles.processSection}`}>
         <div className={styles.sectionContent}>
-          <h2 className={styles.sectionTitle}>My Process</h2>
+          <h2 className={styles.sectionTitle}>Min process</h2>
           <div className={styles.processList}>
             {service.process.map((step, index) => (
               <div key={index} className={styles.processStep}>
@@ -79,10 +79,10 @@ const ServiceDetailLayout = ({ service }) => {
         </div>
       </section>
       
-      {/* Case Studies Section */}
+      {/* Fallstudier Sektion */}
       <section className={styles.section}>
         <div className={styles.sectionContent}>
-          <h2 className={styles.sectionTitle}>Case Studies</h2>
+          <h2 className={styles.sectionTitle}>Fallstudier</h2>
           <div className={styles.caseStudiesGrid}>
             {service.caseStudies.map((study, index) => (
               <Link to={study.link} key={index} className={styles.caseStudyCard}>
@@ -101,10 +101,10 @@ const ServiceDetailLayout = ({ service }) => {
         </div>
       </section>
       
-      {/* Tools & Technologies Section */}
+      {/* Verktyg och teknologier Sektion */}
       <section className={styles.section}>
         <div className={styles.sectionContent}>
-          <h2 className={styles.sectionTitle}>Tools & Technologies</h2>
+          <h2 className={styles.sectionTitle}>Verktyg och teknologier</h2>
           <div className={styles.toolsList}>
             {service.tools.map((tool, index) => (
               <div key={index} className={styles.toolTag}>{tool}</div>
@@ -113,15 +113,15 @@ const ServiceDetailLayout = ({ service }) => {
         </div>
       </section>
       
-      {/* Contact CTA */}
+      {/* Kontakt CTA */}
       <section className={`${styles.section} ${styles.ctaSection}`}>
         <div className={styles.sectionContent}>
-          <h2 className={styles.ctaTitle}>Ready to transform your business?</h2>
+          <h2 className={styles.ctaTitle}>Redo att förvandla ditt företag?</h2>
           <p className={styles.ctaText}>
-            Let's discuss how our {service.title} services can help you achieve your goals.
+            Låt oss diskutera hur våra {service.title} tjänster kan hjälpa dig att nå dina mål.
           </p>
           <Link to="/contact" className={styles.ctaButton}>
-            Get in touch
+            Kontakta mig
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path d="M10 3L16 10L10 17L8.6 15.6L12.2 12H4V8H12.2L8.6 4.4L10 3Z" fill="currentColor" />
             </svg>

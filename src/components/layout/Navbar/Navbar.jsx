@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { useTheme } from '../../context/ThemeContext';
 import styles from './Navbar.module.css';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { theme, toggleTheme } = useTheme(); // Använder useTheme hook
   const location = useLocation();
 
-  // Fechar menu quando mudar de página
+  // Stäng menyn när sidan ändras
   useEffect(() => {
     setMenuOpen(false);
   }, [location]);
 
-  // Detectar rolagem
+  // Upptäck skrollning
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 60);
@@ -22,7 +24,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Tratamento para overflow do body
+  // Hantering av body overflow
   useEffect(() => {
     if (menuOpen) {
       document.body.classList.add('nav-menu-open');
@@ -39,24 +41,31 @@ const Navbar = () => {
     setMenuOpen(!menuOpen);
   };
 
-  // Links de navegação
+  // Bestämmer korrekt temaikon
+  const getThemeIcon = () => {
+    if (theme === 'auto') return '🔄';
+    else if (theme === 'light') return '🌙';
+    else return '☀️';
+  };
+
+  // Navigationslänkar
   const navLinks = [
-    { path: '/', label: 'Home' },
-    { path: '/about', label: 'About' },
-    { path: '/work', label: 'Work' },
-    { path: '/contact', label: 'Contact' }
+    { path: '/', label: 'Hem' },
+    { path: '/about', label: 'Om' },
+    { path: '/work', label: 'Arbeten' },
+    { path: '/contact', label: 'Kontakt' }
   ];
 
   return (
     <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
-        {/* Logo */}
-        <Link to="/" className={styles.logo} aria-label="Home">
+        {/* Logotyp */}
+        <Link to="/" className={styles.logo} aria-label="Hem">
           <span className={styles.logoText}>Rai</span>
           <span className={styles.logoDot}>.</span>
         </Link>
         
-        {/* Menu desktop */}
+        {/* Desktopmeny */}
         <nav className={styles.desktopNav}>
           <ul className={styles.navList}>
             {navLinks.map(link => (
@@ -72,22 +81,43 @@ const Navbar = () => {
               </li>
             ))}
           </ul>
+          
+          {/* Temaknapp på desktop */}
+          <button 
+            className={styles.themeToggle} 
+            onClick={toggleTheme}
+            aria-label={`Byt till ${theme === 'light' ? 'mörkt' : theme === 'dark' ? 'auto' : 'ljust'} läge`}
+            title={`Aktuellt tema: ${theme}`}
+          >
+            {getThemeIcon()}
+          </button>
         </nav>
         
-        {/* Botão mobile */}
-        <button 
-          className={`${styles.menuButton} ${menuOpen ? styles.active : ''}`}
-          onClick={toggleMenu}
-          aria-expanded={menuOpen}
-          aria-label="Menu de navegação"
-        >
-          <div className={styles.menuIcon}>
-            <span></span>
-            <span></span>
-          </div>
-        </button>
+        {/* Mobilkontroller */}
+        <div className={styles.mobileControls}>
+          {/* Temaknapp på mobil */}
+          <button 
+            className={styles.themeToggle} 
+            onClick={toggleTheme}
+            aria-label={`Byt till ${theme === 'light' ? 'mörkt' : theme === 'dark' ? 'auto' : 'ljust'} läge`}
+          >
+            {getThemeIcon()}
+          </button>
+          
+          <button 
+            className={`${styles.menuButton} ${menuOpen ? styles.active : ''}`}
+            onClick={toggleMenu}
+            aria-expanded={menuOpen}
+            aria-label="Navigeringsmeny"
+          >
+            <div className={styles.menuIcon}>
+              <span></span>
+              <span></span>
+            </div>
+          </button>
+        </div>
         
-        {/* Menu mobile */}
+        {/* Mobilmeny */}
         <div className={`${styles.mobileMenu} ${menuOpen ? styles.open : ''}`}>
           <div className={styles.mobileMenuContainer}>
             <ul className={styles.mobileNavList}>

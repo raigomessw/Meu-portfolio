@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { WorkProjectProvider } from './components/Work/WorkProjectContext';
-import './index.css';
+import './components/styles/index.css';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(

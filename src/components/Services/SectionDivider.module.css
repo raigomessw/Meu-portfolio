@@ -1,0 +1,256 @@
+/* ========== CONTAINER PRINCIPAL ========== */
+.sectionDivider {
+  position: relative;
+  height: 180px;
+  width: 100%;
+  margin-top: -180px;
+  z-index: 5;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ========== GRADIENTES DE FUNDO POR TEMA ========== */
+/* Versão do tema claro - gradiente mais rico */
+html[data-theme="light"] .sectionDivider {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(var(--color-bg-1-rgb), 0.2) 10%,
+    rgba(var(--color-bg-1-rgb), 0.6) 60%,
+    var(--color-bg-1) 100%
+  );
+}
+
+/* Versão do tema escuro - gradiente mais interessante */
+html[data-theme="dark"] .sectionDivider {
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 25, 40, 0),
+    rgba(var(--color-bg-1-rgb), 0.1) 10%,
+    rgba(var(--color-bg-1-rgb), 0.7) 60%,
+    var(--color-bg-1) 100%
+  );
+}
+
+/* ========== ONDAS DUPLAS ========== */
+.dividerWave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  fill: var(--color-bg-1);
+  opacity: 0.9;
+  filter: drop-shadow(0 -5px 5px rgba(var(--color-primary-rgb), 0.05));
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.dividerWaveSecondary {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  fill: var(--color-bg-1);
+  opacity: 0.9;
+  transform: scaleX(1.1) translateY(2px);
+  filter: drop-shadow(0 -5px 5px rgba(var(--color-primary-rgb), 0.05));
+  -webkit-filter: blur(50px);
+  transition: transform 0.3s ease-out;
+  -webkit-transform: translateZ(0) scaleX(1.1) translateY(2px);
+  will-change: transform;
+}
+
+/* Efeito de paralaxe sutil na onda secundária */
+.sectionDivider:hover .dividerWaveSecondary {
+  transform: scaleX(1.1) translateY(0);
+}
+
+/* Correções para Safari */
+@supports (-webkit-touch-callout: none) {
+  .dividerWave,
+  .dividerWaveSecondary {
+    height: auto;
+    min-height: 60px;
+  }
+}
+
+/* ========== ELEMENTO CONECTIVO CENTRAL ========== */
+.connectElement {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  filter: blur(20px);
+  animation: pulse 6s infinite ease-in-out;
+}
+
+/* Ajuste por tema para o elemento conectivo */
+html[data-theme="light"] .connectElement {
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--color-accent-rgb), 0.3) 0%,
+    rgba(var(--color-primary-rgb), 0.5) 60%,
+    transparent 100%
+  );
+  opacity: 0.12;
+}
+
+html[data-theme="dark"] .connectElement {
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--color-accent-rgb), 0.3) 0%,
+    rgba(var(--color-primary-rgb), 0.5) 60%,
+    transparent 100%
+  );
+  opacity: 0.18;
+}
+
+/* ========== ELEMENTOS BRILHANTES ========== */
+.sparkle {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(var(--color-accent-rgb), 0.6);
+  filter: blur(8px);
+  opacity: 0;
+  animation: floatIn 10s infinite ease-in-out;
+}
+
+.sparkle1 {
+  bottom: 90px;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.sparkle2 {
+  bottom: 50px;
+  left: 40%;
+  animation-delay: 2.5s;
+}
+
+.sparkle3 {
+  bottom: 70px;
+  left: 65%;
+  animation-delay: 5s;
+}
+
+.sparkle4 {
+  bottom: 40px;
+  left: 85%;
+  animation-delay: 7.5s;
+}
+
+/* ========== LINHAS DECORATIVAS ========== */
+.decorativeLine {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  height: 80px;
+}
+
+/* Ajuste por tema para as linhas decorativas */
+html[data-theme="light"] .decorativeLine {
+  opacity: 0.3;
+  background: linear-gradient(to top, transparent, rgba(var(--color-primary-rgb), 0.2), transparent);
+}
+
+html[data-theme="dark"] .decorativeLine {
+  opacity: 0.5;
+  background: linear-gradient(to top, transparent, rgba(var(--color-primary-rgb), 0.4), transparent);
+}
+
+/* Posicionamento das linhas */
+.line1 { left: 10%; height: 100px; }
+.line2 { left: 25%; height: 70px; }
+.line3 { left: 45%; height: 120px; }
+.line4 { left: 65%; height: 60px; }
+.line5 { left: 80%; height: 90px; }
+.line6 { left: 95%; height: 110px; }
+
+/* ========== PARTÍCULAS FLUTUANTES ========== */
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: rgba(var(--color-primary-rgb), 0.4);
+  pointer-events: none;
+  opacity: 0;
+  animation: particleFloat 15s infinite linear;
+}
+
+.particle1 { left: 15%; bottom: 30%; animation-delay: 0s; }
+.particle2 { left: 30%; bottom: 60%; animation-delay: 2s; }
+.particle3 { left: 60%; bottom: 40%; animation-delay: 5s; }
+.particle4 { left: 80%; bottom: 70%; animation-delay: 7s; }
+
+/* ========== ANIMAÇÕES OTIMIZADAS ========== */
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 0.15; 
+    transform: translateX(-50%) scale(1);
+    filter: blur(20px);
+  }
+  50% { 
+    opacity: 0.25; 
+    transform: translateX(-50%) scale(1.1); 
+    filter: blur(18px);
+  }
+}
+
+@keyframes floatIn {
+  0% { transform: translateY(0) scale(0.8); opacity: 0; }
+  30% { transform: translateY(-15px) scale(1); opacity: 0.2; }
+  70% { transform: translateY(-25px) scale(0.95); opacity: 0.15; }
+  100% { transform: translateY(-35px) scale(0.8); opacity: 0; }
+}
+
+@keyframes particleFloat {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% { transform: translateY(-70px) translateX(20px); opacity: 0; }
+}
+
+/* ========== RESPONSIVIDADE ========== */
+@media (max-width: 768px) {
+  .sectionDivider {
+    height: 120px;
+    margin-top: -120px;
+  }
+  
+  .connectElement {
+    width: 60px;
+    height: 60px;
+    bottom: 40px;
+  }
+  
+  .decorativeLine {
+    height: 60px;
+  }
+  
+  /* Reduzir elementos em dispositivos menores */
+  .line2, .line4, .line6, .sparkle3, .sparkle4, .particle3, .particle4 {
+    display: none;
+  }
+}
+
+/* ========== ACESSIBILIDADE ========== */
+@media (prefers-reduced-motion: reduce) {
+  .connectElement, .sparkle, .decorativeLine, .particle, .dividerWaveSecondary {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  .sectionDivider:hover .dividerWaveSecondary {
+    transform: none !important;
+  }
+}

@@ -136,6 +136,40 @@
   transform: scaleX(1);
 }
 
+/* ======== BOTÃO DE TEMA ======== */
+.themeToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 16px;
+  color: var(--text-color);
+  font-size: 1.1rem;
+}
+
+.themeToggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.themeToggle:active {
+  transform: scale(0.95);
+}
+
+/* ======== CONTROLES MOBILE ======== */
+.mobileControls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 /* ======== BOTÃO MENU MOBILE ======== */
 .menuButton {
   display: none;
@@ -308,6 +342,18 @@
   .logoDot {
     font-size: 2rem;
   }
+  
+  /* Ocultar botão de tema desktop em telas pequenas */
+  .desktopNav .themeToggle {
+    display: none;
+  }
+}
+
+@media (min-width: 993px) {
+  /* Ocultar botão de tema mobile em telas grandes */
+  .mobileControls {
+    display: none;
+  }
 }
 
 @media (max-width: 576px) {
@@ -326,6 +372,12 @@
   .mobileNavLink, .mobileNavLinkActive {
     padding: 0.8rem;
     font-size: 1.1rem;
+  }
+  
+  .themeToggle {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
   }
 }
 
@@ -361,6 +413,13 @@
     transition-duration: 0.01s !important;
     animation-duration: 0.01s !important;
   }
+}
+
+/* Acessibilidade - foco */
+.themeToggle:focus-visible,
+.menuButton:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 /* Estilo global - adicione no seu arquivo CSS global */

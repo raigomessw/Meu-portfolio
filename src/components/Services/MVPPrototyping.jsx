@@ -4,7 +4,7 @@ import ServiceDetailLayout from './ServiceDetailLayout';
 const MVPPrototyping = () => {
   const serviceData = {
     title: "MVP & Prototyping",
-    subtitle: "Bringing ideas to life through interactive prototypes",
+    subtitle: "Ge liv till idéer genom interaktiva prototyper",
     accent: "rgba(255, 190, 11, 1)",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" width="1em" height="1em">
@@ -12,49 +12,49 @@ const MVPPrototyping = () => {
       </svg>
     ),
     heroImage: "/images/services/mvp-prototyping-hero.jpg",
-    description: `I transform concepts into interactive prototypes that simulate the real product experience.
-                 This approach allows for early testing and validation, reducing development costs and ensuring
-                 the final product meets user expectations.`,
+    description: `Jag omvandlar koncept till interaktiva prototyper som simulerar den verkliga produktupplevelsen.
+                 Detta tillvägagångssätt möjliggör tidig testning och validering, minskar utvecklingskostnader och 
+                 säkerställer att slutprodukten möter användarnas förväntningar.`,
     
     benefits: [
-      "Visualize concepts before full development",
-      "Test and validate ideas with minimal investment",
-      "Identify usability issues early in the process",
-      "Facilitate stakeholder alignment and buy-in",
-      "Create a solid foundation for development"
+      "Visualisera koncept innan full utveckling",
+      "Testa och validera idéer med minimal investering",
+      "Identifiera användbarhetsproblem tidigt i processen",
+      "Underlätta intressenternas samordning och engagemang",
+      "Skapa en solid grund för utveckling"
     ],
     
     process: [
       {
-        title: "Concept Sketching",
-        description: "Translating ideas into initial visual concepts and user flows."
+        title: "Konceptskissning",
+        description: "Översätta idéer till initiala visuella koncept och användarflöden."
       },
       {
         title: "Wireframing",
-        description: "Creating structural blueprints that outline layouts and information hierarchy."
+        description: "Skapa strukturella ritningar som beskriver layouter och informationshierarki."
       },
       {
-        title: "Interactive Prototyping",
-        description: "Building clickable prototypes that simulate the user experience and functionality."
+        title: "Interaktiv Prototyping",
+        description: "Bygga klickbara prototyper som simulerar användarupplevelsen och funktionaliteten."
       },
       {
         title: "MVP Definition",
-        description: "Identifying the minimum feature set needed to deliver value and test key hypotheses."
+        description: "Identifiera den minsta funktionsuppsättningen som behövs för att leverera värde och testa viktiga hypoteser."
       }
     ],
     
     caseStudies: [
       {
-        title: "Banking App Prototype",
-        company: "Financial Services Firm",
-        result: "Prototype testing allowed us to refine UX before development, saving $180K",
+        title: "Bankapp Prototyp",
+        company: "Finansiella Tjänsteföretag",
+        result: "Prototyptest tillät oss att förfina UX innan utveckling, vilket sparade 180 000 dollar",
         image: "/images/case-studies/banking-prototype.jpg",
         link: "/case-studies/banking-prototype"
       },
       {
-        title: "E-commerce MVP",
+        title: "E-handel MVP",
         company: "Retail Startup",
-        result: "MVP launch attracted 5,000 users and secured additional $1.2M in funding",
+        result: "MVP-lansering lockade 5 000 användare och säkrade ytterligare 1,2 miljoner dollar i finansiering",
         image: "/images/case-studies/ecommerce-mvp.jpg",
         link: "/case-studies/ecommerce-mvp"
       }

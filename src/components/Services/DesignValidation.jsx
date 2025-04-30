@@ -3,8 +3,8 @@ import ServiceDetailLayout from './ServiceDetailLayout';
 
 const DesignValidation = () => {
   const serviceData = {
-    title: "Design Validation",
-    subtitle: "Testing and refining designs with real user feedback",
+    title: "Designvalidering",
+    subtitle: "Testa och förfina designer med verklig användarfeedback",
     accent: "rgba(131, 56, 236, 1)",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" width="1em" height="1em">
@@ -12,48 +12,48 @@ const DesignValidation = () => {
       </svg>
     ),
     heroImage: "/images/services/design-validation-hero.jpg",
-    description: `I use a variety of testing methodologies to validate and refine designs based on real user feedback.
-                 This iterative approach ensures the final product is intuitive, efficient, and delightful to use.`,
+    description: `Jag använder olika testmetoder för att validera och förfina designer baserat på verklig användarfeedback.
+                 Detta iterativa tillvägagångssätt säkerställer att slutprodukten är intuitiv, effektiv och trevlig att använda.`,
     
     benefits: [
-      "Ensure designs meet user expectations",
-      "Identify and resolve usability issues before launch",
-      "Gather quantitative metrics to support design decisions",
-      "Reduce risk of post-launch redesigns",
-      "Build confidence in the final product"
+      "Säkerställ att designer möter användarnas förväntningar",
+      "Identifiera och lös användbarhetsproblem före lansering",
+      "Samla kvantitativa mätvärden för att stödja designbeslut",
+      "Minska risken för omdesign efter lansering",
+      "Bygg förtroende för slutprodukten"
     ],
     
     process: [
       {
-        title: "Usability Testing",
-        description: "Observing real users complete tasks to identify friction points and areas for improvement."
+        title: "Användbarhetstestning",
+        description: "Observera verkliga användare som utför uppgifter för att identifiera friktionspunkter och förbättringsområden."
       },
       {
-        title: "A/B Testing",
-        description: "Comparing design variations to determine which performs better against key metrics."
+        title: "A/B-testning",
+        description: "Jämföra designvariationer för att avgöra vilka som presterar bättre mot viktiga mätvärden."
       },
       {
-        title: "User Feedback Sessions",
-        description: "Collecting qualitative feedback through moderated testing and interviews."
+        title: "Användarfeedbacksessioner",
+        description: "Samla kvalitativ feedback genom modererad testning och intervjuer."
       },
       {
-        title: "Iterative Refinement",
-        description: "Incorporating insights to continuously improve the design in successive iterations."
+        title: "Iterativ Förfining",
+        description: "Införliva insikter för att kontinuerligt förbättra designen i successiva iterationer."
       }
     ],
     
     caseStudies: [
       {
-        title: "Mobile App User Testing",
+        title: "Mobilapp Användartestning",
         company: "Tech Startup",
-        result: "Identified and resolved 12 critical usability issues before launch",
+        result: "Identifierade och löste 12 kritiska användbarhetsproblem före lansering",
         image: "/images/case-studies/mobile-testing.jpg",
         link: "/case-studies/mobile-testing"
       },
       {
-        title: "Checkout Flow Optimization",
-        company: "E-commerce Platform",
-        result: "A/B testing led to 27% increase in conversion rate",
+        title: "Kassamodul Optimering",
+        company: "E-handelsplattform",
+        result: "A/B-testning ledde till 27% ökning av konverteringsgraden",
         image: "/images/case-studies/checkout-optimization.jpg",
         link: "/case-studies/checkout-optimization"
       }

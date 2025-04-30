@@ -1,34 +1,75 @@
+/* Variáveis específicas do Hero */
+.hero {
+  --heading-h1: 80px;
+  --heading-h2: 60px;
+  --heading-h3: 48px;
+  --heading-h4: 24px;
+  --heading-h5: 20px;
+  --subtitle-l: 17px;
+  --subtitle-s: 15px;
+  --body-l: 17px;
+  --body-s: 15px;
+  --caption: 13px;
+  --button: 15px;
+  --font-semi-bold: 600;
+  --font-medium: 500;
+  --font-regular: 400;
+  --border-radius-lg: 24px;
+  --border-radius-md: 16px;
+  --border-radius-sm: 8px;
+  --border-radius-xs: 4px;
+  --space-xl: 48px;
+  --space-lg: 32px;
+  --space-md: 24px;
+  --space-sm: 16px;
+  --space-xs: 8px;
+
+  /* Cores que se adaptam ao tema atual */
+  --hero-text-main: var(--color-text-0);
+  --hero-text-secondary: var(--color-text-1);
+  --hero-text-muted: var(--color-text-2);
+  --hero-accent: var(--color-primary);
+  --hero-accent-secondary: var(--color-accent);
+  --hero-bg: var(--color-bg-0);
+  --hero-border: var(--color-border-0);
+  --hero-card-bg: var(--color-bg-1);
+}
+
+/* Variáveis de cor RGB para uso em transparências */
+:root {
+  --color-bg-1-rgb: 255, 255, 255; /* Claro por padrão */
+}
+
+html[data-theme="dark"] {
+  --color-bg-1-rgb: 20, 25, 40;
+}
+
+/* Estilos base do Hero - Otimizados */
 .hero {
   position: relative;
   min-height: 100vh;
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--text-light-primary, #ffffff);
+  color: var(--hero-text-main);
   overflow: hidden;
-  contain: layout paint style; /* Otimização de performance */
+  padding: var(--space-xl) var(--space-md);
   opacity: 0;
-  transform: translateY(30px) translateZ(0);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease; /* Reduzido de 0.8s */
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  content-visibility: auto; /* Otimização para carregamento inicial */
+  contain: layout style; /* Ajuda o navegador a otimizar */
 }
 
 .hero.visible {
   opacity: 1;
-  transform: translateY(0) translateZ(0);
+  transform: translateY(0);
 }
 
-/* Redução de movimento para dispositivos de baixa performance */
-.hero.reducedMotion {
-  transition-duration: 0.1s;
-}
-
-.hero.reducedMotion * {
-  animation-duration: 0.1s !important;
-  transition-duration: 0.1s !important;
-}
-
+/* Background com gradiente animado - Otimizado */
 .heroBackground {
   position: absolute;
   top: 0;
@@ -36,575 +77,851 @@
   width: 100%;
   height: 100%;
   z-index: -1;
-  will-change: transform;
-  transform: translateZ(0);
-  backface-visibility: hidden;
+  background-size: 300% 300%; /* Reduzido de 400% */
+  animation: gradientAnimation 25s ease infinite; /* Aumentado de 15s para melhor performance */
+  will-change: background-position; /* Otimiza a animação */
 }
 
-.backgroundGradient {
+/* Tema claro - Otimizado */
+html[data-theme="light"] .heroBackground {
+  background: linear-gradient(171deg, 
+    lab(97.16% -0.12 -1.68 / 0.8) 0%, 
+    rgba(99, 102, 241, 0.08) 25%, /* Reduzido de 0.1 */
+    rgba(236, 72, 153, 0.05) 50%, /* Reduzido de 0.08 */
+    rgba(245, 247, 250, 0.9) 100%);
+}
+
+/* Tema escuro - Otimizado */
+html[data-theme="dark"] .heroBackground {
+  background: linear-gradient(-45deg, 
+    rgba(6, 8, 13, 0.8) 0%, 
+    rgba(53, 55, 160, 0.15) 25%, /* Reduzido de 0.2 */
+    rgba(236, 72, 153, 0.10) 50%, /* Reduzido de 0.15 */
+    rgba(20, 25, 40, 0.9) 100%);
+}
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Partículas decorativas - Otimizadas */
+.heroParticles {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
-  opacity: 0.9;
+  overflow: hidden;
+  z-index: -1;
+  pointer-events: none; /* Evita eventos de mouse desnecessários */
 }
 
-.blurOverlay {
+.particle {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* Overlay escuro com 70% de opacidade */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  z-index: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: floatingAnimation var(--duration, 20s) ease-in-out infinite;
+  contain: layout style paint; /* Otimiza renderização */
+  will-change: transform; /* Indicador para o navegador otimizar */
 }
 
-.particleOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 50px 50px;
-  background-position: 0 0, 25px 25px;
-  animation: particleAnimation 20s infinite linear;
-  opacity: 0.3;
+html[data-theme="light"] .particle {
+  background-color: rgba(99, 102, 241, 0.15); /* Reduzido de 0.2 */
 }
 
-@keyframes particleAnimation {
-  0% {
-    transform: translate3d(0, 0, 0);
+html[data-theme="dark"] .particle {
+  background-color: rgba(129, 140, 248, 0.15); /* Reduzido de 0.2 */
+}
+
+.particle:nth-child(odd) {
+  background-color: rgba(236, 72, 153, 0.10); /* Reduzido de 0.15 */
+}
+
+@keyframes floatingAnimation {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(10px, 15px) rotate(5deg); }
+  50% { transform: translate(-5px, 20px) rotate(-5deg); }
+  75% { transform: translate(-10px, 5px) rotate(3deg); }
+}
+
+/* Badge de disponibilidade - Otimizada */
+.availabilityBadge {
+  position: relative; /* Alterado de relative para absolute */
+  top: var(--space-lg);
+  left: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: rgba(var(--color-bg-1-rgb), 0.1);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: 30px;
+  font-size: var(--caption);
+  z-index: 10;
+  border: 1px solid var(--hero-border);
+}
+
+@supports not (backdrop-filter: blur(6px)) {
+  .availabilityBadge {
+    /* Alternativa para navegadores sem suporte a backdrop-filter */
+    background: rgba(var(--color-bg-1-rgb), 0.85);
   }
-  100% {
-    transform: translate3d(-50px, -50px, 0);
-  }
 }
 
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.statusDot.available {
+  background-color: #4CAF50; /* verde */
+}
+
+.statusDot.busy {
+  background-color: #F44336; /* vermelho */
+}
+
+.statusDot.limited {
+  background-color: #FF9800; /* laranja */
+}
+
+.statusText {
+  color: var(--hero-text-secondary);
+  font-weight: var(--font-medium);
+}
+
+/* Conteúdo principal - Otimizado com ordem de animação */
 .heroContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   max-width: 1200px;
-  width: 90%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  width: 100%;
+  margin-top: var(--space-xl);
+  position: relative;
   z-index: 2;
-  contain: layout style;
 }
 
+/* Container de texto */
 .heroTextContainer {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  will-change: transform;
+  align-items: center;
+  text-align: center;
+  max-width: 900px;
+  margin-bottom: var(--space-xl);
 }
 
-.heroTitle {
+/* Badge de experiência - Com animação de entrada */
+.experienceBadge {
+  background: linear-gradient(90deg, 
+    rgba(var(--color-accent-rgb), 0.15),
+    rgba(var(--color-primary-rgb), 0.15));
+  color: var(--hero-text-secondary);
+  font-size: var(--subtitle-s);
+  font-weight: var(--font-medium);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: 30px;
+  margin-bottom: var(--space-md);
   display: flex;
-  flex-direction: column;
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  line-height: 1.2;
-  transform: translateZ(0);
-  will-change: transform, opacity;
-  margin-bottom: 24px;
+  align-items: center;
+  gap: var(--space-xs);
+  animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.badgeIcon {
+  color: #FFD700;
+  font-size: calc(var(--subtitle-s) + 2px);
+}
+
+/* Título principal - Com animações sequenciais */
+.heroTitle {
+  margin: 0 0 var(--space-md);
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+.titleLineWrapper {
+  overflow: hidden;
+  display: block;
 }
 
 .greeting {
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: var(--accent-light-senary, #23a6d5);
-  margin-bottom: 8px;
+  font-size: var(--heading-h3);
+  font-weight: var(--font-semi-bold);
+  margin-bottom: var(--space-sm);
+  display: block;
+  color: var(--hero-text-main);
+  animation: fadeInUp 0.6s ease-out 0.4s both;
 }
 
-.name {
-  font-weight: 800;
-  background: linear-gradient(135deg, #ffffff 0%, #aacfe2 100%);
+.profession {
+  font-size: var(--heading-h1);
+  font-weight: var(--font-semi-bold);
+  background: linear-gradient(135deg, 
+    var(--hero-text-main) 0%, 
+    var(--hero-accent) 50%, 
+    var(--hero-accent-secondary) 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 8px;
+  color: transparent;
+  display: block;
+  line-height: 1.4;
+  animation: fadeInUp 0.6s ease-out 0.6s both;
 }
 
-.role {
-  font-size: 1.8rem;
-  color: var(--text-light-secondary, rgba(255, 255, 255, 0.8));
+.highlight {
+  position: relative;
 }
 
-.heroDescription {
-  font-size: 1.1rem;
-  max-width: 500px;
-  margin-bottom: 40px;
+.highlight:after {
+  content: '';
+  position: absolute;
+  bottom: 0.05em;
+  left: -0.1em;
+  right: -0.1em;
+  height: 0.2em;
+  background-color: rgba(var(--color-primary-rgb), 0.2);
+  z-index: -1;
+  border-radius: 2px;
+}
+
+/* Subtítulo */
+.heroSubtitle {
+  font-size: var(--subtitle-l);
+  font-weight: var(--font-regular);
   line-height: 1.6;
-  color: var(--text-light-secondary, rgba(255, 255, 255, 0.8));
-  will-change: transform, opacity;
-  transform: translateZ(0);
+  color: var(--hero-text-secondary);
+  margin-bottom: var(--space-lg);
+  max-width: 800px;
+  animation: fadeInUp 0.6s ease-out 0.8s both;
 }
 
-.heroCta {
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  background-color: var(--hero-accent);
+  margin-left: 4px;
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+}
+
+@keyframes blink {
+  from, to { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tech Stack - Otimizado */
+.techStack {
   display: flex;
-  gap: 20px;
-  will-change: transform;
-  transform: translateZ(0);
-  position: relative; 
-  z-index: 2; /* Sempre acima do scrollDown */
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-xs);
+  margin: var(--space-sm) 0 var(--space-lg);
+  max-width: 850px;
+  animation: fadeInUp 0.6s ease-out 1s both;
 }
 
-.primaryBtn,
-.secondaryBtn {
+.techBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--border-radius-sm);
+  background: rgba(var(--color-bg-1-rgb), 0.05); /* Usa variáveis RGB */
+  backdrop-filter: blur(6px); /* Reduzido de 8px */
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease; /* Reduzido de 0.3s */
+  cursor: default;
+}
+
+.techBadge:hover, .techBadge.activeTech {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background: rgba(var(--color-bg-1-rgb), 0.1);
+  border-color: var(--tech-color);
+}
+
+.techIcon {
+  font-size: 1.2em;
+}
+
+.techDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.techName {
+  font-size: var(--caption);
+  font-weight: var(--font-medium);
+  color: var(--hero-text-main);
+}
+
+.techYears {
+  font-size: 11px;
+  color: var(--hero-text-muted);
+}
+
+/* Botões de ação - Otimizados */
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  justify-content: center;
+  animation: fadeInUp 0.6s ease-out 1.2s both;
+}
+
+.primaryButton, .secondaryButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 28px;
-  border-radius: 30px;
-  font-weight: 600;
-  font-size: 1rem;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--border-radius-sm);
+  font-weight: var(--font-medium);
+  font-size: var(--button);
+  transition: all 0.2s ease; /* Reduzido de 0.3s */
   text-decoration: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  transform: translateZ(0);
 }
 
-.primaryBtn {
-  background: linear-gradient(135deg, #23a6d5, #e73c7e);
+.primaryButton {
+  background: var(--hero-accent);
   color: white;
-  box-shadow: 0 4px 15px rgba(35, 166, 213, 0.4);
+  box-shadow: 0 4px 14px rgba(var(--color-primary-rgb), 0.3); /* Reduzido de 0.4 */
 }
 
-.secondaryBtn {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+.primaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(var(--color-primary-rgb), 0.4); /* Reduzido de 0.5 */
 }
 
-.primaryBtn:hover,
-.secondaryBtn:hover {
-  color: var(--color-text-2);
-  transform: translateY(-3px) translateZ(0);
+.secondaryButton {
+  background: transparent;
+  color: var(--hero-text-main);
+  border: 1px solid var(--hero-border);
 }
 
-.primaryBtn:hover {
-  box-shadow: 0 8px 20px rgba(35, 166, 213, 0.5);
-  color: var(--color-text-2);
+.secondaryButton:hover {
+  background: rgba(var(--color-bg-1-rgb), 0.05);
+  transform: translateY(-2px);
 }
 
-.secondaryBtn:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  background: rgba(255, 255, 255, 0.15);
-}
-
+/* Imagem do Hero - Otimizada */
 .heroImageContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  margin: var(--space-lg) 0;
+  animation: fadeInUp 0.6s ease-out 1.4s both;
 }
 
 .imageWrapper {
   position: relative;
-  width: 450px;
-  height: 450px;
-  will-change: transform;
-  transform: translateZ(0);
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+  border-radius: 28px;
+  overflow: hidden;
+  width: 300px;
+  height: 300px;
+  contain: paint; /* Otimiza a renderização */
 }
 
 .heroImage {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
-  border-radius: 20px;
-  transform: translateZ(0);
+  will-change: transform; /* Otimização para transformações */
+  transition: transform 0.3s ease;
 }
 
-.scrollDown {
+.imageWrapper:hover .heroImage {
+  transform: scale(1.03);
+}
+
+.imageGlow {
   position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
-  z-index: 1; /* Valor base de z-index */
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  border-radius: 40px;
+  background: radial-gradient(circle at center, 
+    rgba(var(--color-primary-rgb), 0.25) 0%, /* Reduzido de 0.3 */ 
+    transparent 70%);
+  filter: blur(25px); /* Reduzido de 30px */
+  opacity: 0.7; /* Reduzido de 0.8 */
+  z-index: -1;
 }
 
-.scrollDown a {
+.imageBorder {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  border: 2px solid rgba(var(--color-primary-rgb), 0.25); /* Reduzido de 0.3 */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); /* Reduzido de 0.1 */
+}
+
+/* Estatísticas - Otimizadas */
+.statsContainer {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--space-lg);
+  gap: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(var(--color-bg-1-rgb), 0.03); /* Usa variáveis RGB */
+  backdrop-filter: blur(6px); /* Reduzido de 10px */
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--hero-border);
+  animation: fadeInUp 0.6s ease-out 1.6s both;
+}
+
+@supports not (backdrop-filter: blur(6px)) {
+  .statsContainer {
+    /* Alternativa para navegadores sem suporte a backdrop-filter */
+    background: rgba(var(--color-bg-1-rgb), 0.8);
+  }
+}
+
+.statItem {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: white;
-  text-decoration: none;
+  text-align: center;
 }
 
+.statNumber {
+  font-size: var(--heading-h4);
+  font-weight: var(--font-semi-bold);
+  color: var(--hero-accent);
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  font-size: var(--caption);
+  color: var(--hero-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statDivider {
+  width: 1px;
+  height: 40px;
+  background-color: var(--hero-border);
+}
+
+/* Botão de scroll */
+/* Botão Utforska aprimorado */
+.heroScroll {
+  position: absolute;
+  bottom: 6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-text-1);
+  font-weight: 500;
+  transition: all 0.3s ease;
+  z-index: 10;
+  background: rgba(var(--color-bg-2-rgb), 0.3);
+  backdrop-filter: blur(8px);
+  padding: 12px 20px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.2);
+  font-size: 1rem;
+}
+
+.heroScroll:hover, .heroScroll:focus {
+  transform: translateX(-50%) translateY(-5px);
+  color: var(--color-primary);
+  background: rgba(var(--color-bg-2-rgb), 0.5);
+  border-color: rgba(var(--color-primary-rgb), 0.5);
+  box-shadow: 0 8px 20px rgba(var(--color-primary-rgb), 0.15);
+}
+
+/* Ícone de rolagem animado */
 .scrollIcon {
-  display: block;
   width: 30px;
   height: 50px;
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  border-radius: 20px;
+  border: 2px solid rgba(var(--color-primary-rgb), 0.6);
+  border-radius: 15px;
+  margin-bottom: 8px;
   position: relative;
-  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
-.scrollIcon::before {
-  content: '';
-  position: absolute;
-  top: 10px;
-  left: 50%;
+.heroScroll:hover .scrollIcon {
+  border-color: var(--color-primary);
+}
+
+.scrollDot {
   width: 6px;
   height: 6px;
-  background: white;
+  background: var(--color-primary);
   border-radius: 50%;
-  transform: translateX(-50%);
-  animation: scrollAnimation 1.5s infinite;
+  position: absolute;
+  top: 10px;
+  animation: scrollAnimation 2s infinite ease-in-out;
 }
 
-.scrollText {
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
+/* Animação de rolagem */
 @keyframes scrollAnimation {
   0% {
+    transform: translateY(0);
     opacity: 1;
-    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translateY(20px);
+    opacity: 0.2;
   }
   100% {
-    opacity: 0;
-    transform: translate(-50%, 20px);
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
-/* Reduzir trabalho do navegador durante scroll */
-body.is-scrolling .scrollIcon::before {
-  animation-play-state: paused;
+/* Efeito de brilho pulsante ao redor do botão */
+.heroScroll::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 34px;
+  background: linear-gradient(135deg, 
+    rgba(var(--color-primary-rgb), 0.5),
+    rgba(var(--color-primary-rgb), 0),
+    rgba(var(--color-accent-rgb), 0.3)
+  );
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: pulseEffect 3s infinite;
 }
 
-/* Responsividade otimizada */
-@media (max-width: 992px) {
-  .heroContent {
-    grid-template-columns: 1fr;
-    text-align: center;
+.heroScroll:hover::after {
+  opacity: 1;
+}
+
+@keyframes pulseEffect {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.7; }
+}
+
+/* Melhor visibilidade em dispositivos móveis */
+@media (max-width: 768px) {
+  .heroScroll {
+    bottom: 1.5rem;
+    padding: 10px 16px;
+    font-size: 0.9rem;
   }
   
-  .heroTextContainer {
-    order: 1;
+  .scrollIcon {
+    width: 24px;
+    height: 40px;
+  }
+}
+
+/* Suporte para preferências de movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  .scrollDot {
+    animation: none;
   }
   
-  .heroImageContainer {
-    order: 0;
-    margin-bottom: 40px;
+  .heroScroll::after {
+    animation: none;
   }
   
+  .heroScroll:hover, .heroScroll:focus {
+    transform: translateX(-50%); /* Sem movimento ao passar o mouse */
+  }
+}
+@keyframes scrollBounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(12px); }
+  60% { transform: translateY(6px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Otimização para dispositivos móveis */
+
+
+/* Otimização especial para telas muito pequenas (375px e menor) */
+@media (max-width: 375px) {
+  .hero {
+    padding: var(--space-lg) var(--space-sm) var(--space-sm);
+  }
+  
+  /* Ajustes de texto */
+  .greeting {
+    font-size: calc(var(--heading-h4) - 2px);
+    margin-bottom: 0.5rem;
+  }
+  
+  .profession {
+    font-size: calc(var(--heading-h3) - 4px);
+  }
+  
+  .heroSubtitle {
+    font-size: var(--body-s);
+    margin-bottom: var(--space-sm);
+  }
+  
+  /* Imagem menor para dispositivos muito pequenos */
   .imageWrapper {
-    width: 350px;
-    height: 350px;
+    width: 180px;
+    height: 180px;
+    border-radius: 16px;
   }
   
-  .heroDescription {
-    margin-left: auto;
-    margin-right: auto;
+  /* Ajustes no badge de experiência */
+  .experienceBadge {
+    font-size: 12px;
+    padding: 4px 10px;
   }
   
-  .heroCta {
-    justify-content: center;
+  /* Tech badges mais compactos */
+  .techStack {
+    gap: 4px;
+  }
+  
+  .techBadge {
+    padding: 4px 8px;
+  }
+  
+  .techName {
+    font-size: 10px;
+  }
+  
+  .techYears {
+    font-size: 9px;
+  }
+  
+  .techIcon {
+    font-size: 1em;
+  }
+  
+  /* Badge de disponibilidade ajustado para telas pequenas */
+  .availabilityBadge {
+    position: relative;
+    left: auto;
+    margin-bottom: var(--space-md);
+    align-self: center;
+    transform: scale(0.9);
+  }
+  
+  /* Botões menores */
+  .primaryButton, .secondaryButton {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 13px;
+  }
+  
+  /* Reduz ainda mais a quantidade de partículas */
+  .particle:nth-child(n+5) {
+    display: none;
+  }
+  
+  /* Scroll indicador menor */
+  .heroScroll {
+    transform: scale(0.8) translateX(-60%);
+    bottom: var(--space-sm);
   }
 }
 
 @media (max-width: 768px) {
-  .heroTitle {
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
-  }
-  
-  .role {
-    font-size: 1.3rem;
-  }
-  
-  .imageWrapper {
-    width: 280px;
-    height: 280px;
-  }
-  
-  /* Aumentar espaço para navbar fixa */
   .hero {
-    padding-top: 60px;
+    padding: var(--space-xl) var(--space-md) var(--space-md);
   }
   
-  .scrollDown {
-    bottom: 20px;
-  }
-  
-  /* Melhorar proporções */
-  .heroContent {
-    width: 95%;
-    gap: 30px;
-  }
-}
-
-@media (max-width: 480px) {
-  /* Ajustes para telas pequenas */
-  .heroCta {
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 60px;
-    z-index: 5; /* Garantir que fique acima de tudo */
-  }
-  
-  .heroContent {
-    gap: 25px;
-    width: 92%;
-  }
-  
-  .heroDescription {
-    font-size: 1rem;
-    margin-bottom: 30px;
-  }
-  
-  .heroCta {
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 60px; /* ADICIONADO: Espaço extra após os botões CTA */
-  }
-  
-  .primaryBtn, 
-  .secondaryBtn {
-    padding: 14px;
-  }
-  
-  .imageWrapper {
-    width: 150px;
-    height: 150px;
+  .profession {
+    font-size: calc(var(--heading-h2) - 10px);
   }
   
   .greeting {
-    font-size: 0.9rem;
-    letter-spacing: 2px;
+    font-size: calc(var(--heading-h4) + 4px);
   }
   
-  .name {
-    font-size: 2.2rem;
-  }
-  
-  .role {
-    font-size: 1.2rem;
-  }
-  
-  /* Melhorar facilidade de toque */
-  .scrollIcon {
-    width: 26px;
-    height: 40px;
-  }
-  
-  .scrollText {
-    font-size: 0.7rem;
-  }
-  
-  /* ADICIONADO: Reposicionar o botão scroll down */
-  .scrollDown {
-    display: none;
-    bottom: 80px; /* Aumentado para evitar sobreposição com os botões CTA */
-  }
-}
-
-/* ADICIONADO: Media query específica para a faixa problemática */
-@media (min-width: 376px) and (max-width: 480px) {
-  .scrollDown {
-    bottom: 120px; /* Valor ainda maior para esta faixa específica */
-  }
-}
-
-/* Otimização MELHORADA para dispositivos muito pequenos como iPhone SE */
-@media (max-width: 375px) {
-  /* Ajustar container principal para melhor visibilidade */
-  .hero {
-    min-height: 90vh;
-    padding-top: 70px;
-  }
-  
-  .heroContent {
-    gap: 15px;
-    width: 90%;
-  }
-  
-  /* Ajustar tamanhos de título */
-  .greeting {
-    font-size: 0.8rem;
-    margin-bottom: 5px;
-  }
-  
-  .name {
-    font-size: 1.9rem;
-    margin-bottom: 5px;
-  }
-  
-  .role {
-    font-size: 1.1rem;
-  }
-  
-  .heroDescription {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin-bottom: 25px;
-    max-width: 100%;
-  }
-  
-  /* Reduzir espaçamento vertical */
-  .heroTitle {
-    margin-bottom: 15px;
-  }
-  
-  /* Otimizar botões para telas pequenas */
-  .primaryBtn,
-  .secondaryBtn {
-    width: 90%;
-    padding: 12px 20px;
-    font-size: 0.95rem;
-    letter-spacing: 0.5px;
-  }
-  
-  /* Ajustar imagem do perfil */
-  .imageWrapper {
-    display: none; /* Remover imagem do perfil */
-  }
-  
-  /* Remover scroll indicator em telas muito pequenas para economizar espaço */
-  .scrollDown {
-    display: none;
-  }
-  
-  /* Ajustar imagens e fundos */
-  .particleOverlay {
-    background-size: 30px 30px;
-    background-position: 0 0, 15px 15px;
-    opacity: 0.2; /* Menos visível em telas pequenas */
-  }
-  
-  /* Reduzir padding do hero container */
-  .heroImageContainer {
-    margin-bottom: 20px;
-  }
-}
-
-/* Especificações para dispositivos ainda menores */
-@media (max-width: 320px) {
-  .heroTitle {
-    font-size: 1.7rem !important;
-  }
-  
-  .greeting {
-    font-size: 0.75rem;
-    letter-spacing: 1.5px;
-  }
-  
-  .role {
-    font-size: 1rem;
-  }
-  
-  .heroDescription {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    margin-bottom: 20px;
-  }
-  
-  .primaryBtn, 
-  .secondaryBtn {
-    padding: 10px 15px;
-    font-size: 0.9rem;
-  }
-  
-  .imageWrapper {
-    width: 160px;
-    height: 160px;
-  }
-  
-  /* Ajustar espaçamento vertical */
-  .hero {
-    padding-top: 65px;
-    min-height: 80vh;
-  }
-  
-  .heroContent {
-    gap: 12px;
-  }
-}
-
-/* Suporte para telas altas (iPhone Pro Max) */
-@media (min-height: 800px) and (max-width: 480px) {
-  .hero {
-    padding-top: 90px;
-  }
-  
-  .scrollDown {
-    display: block; /* Mostrar apenas em telas altas */
-    bottom: 20px; /* Valor baixo - no rodapé da página */
-    z-index: 1;
+  .heroSubtitle {
+    font-size: var(--body-l);
   }
   
   .imageWrapper {
     width: 240px;
     height: 240px;
+    border-radius: 20px;
+  }
+  
+  .statsContainer {
+    position: relative;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    width: 100%; /* Garante largura total */
+    margin-top: var(--space-xl); /* Espaçamento consistente */
+    box-sizing: border-box; /* Evita problemas de largura */
+  }
+
+  .availabilityBadge {
+    position: relative;
+    align-items: center;
+    left: auto;
+    justify-content: center;
+    gap: var(--space-xs);
+    background: rgba(var(--color-bg-1-rgb), 0.1); /* Usa variáveis RGB */
+    backdrop-filter: blur(6px); /* Reduzido de 10px */
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 30px;
+    font-size: var(--caption);
+    z-index: 10;
+    border: 1px solid var(--hero-border);
+  }
+
+  
+  
+  .statDivider {
+    width: 60px;
+    height: 1px;
+  }
+  
+  .primaryButton, .secondaryButton {
+    width: 100%;
+    padding: var(--space-md) var(--space-lg);
+  }
+  
+  /* Reduz o número de partículas em dispositivos móveis */
+  .particle:nth-child(n+8) {
+    display: none;
+  }
+  
+  /* Animação mais lenta em dispositivos menores */
+  .heroBackground {
+    animation-duration: 35s;
   }
 }
 
-/* Preferência por movimento reduzido */
-@media (prefers-reduced-motion: reduce) {
-  .hero,
-  .heroTitle,
-  .heroDescription,
-  .heroCta,
-  .heroImageContainer,
-  .primaryBtn,
-  .secondaryBtn,
-  .scrollIcon::before {
-    transition-duration: 0.001s !important;
-    animation-duration: 0.001s !important;
-  }
-  
-  .particleOverlay {
-    animation: none;
-  }
-  
-  .scrollIcon::before {
-    animation: none;
-  }
-}
-
-/* Correções específicas para Safari iOS */
-@supports (-webkit-touch-callout: none) {
-  .hero {
-    min-height: -webkit-fill-available;
-  }
-  
-  /* Corrigir bug de background-clip em alguns dispositivos iOS */
-  .name {
-    -webkit-text-fill-color: transparent !important;
-  }
-}
-
-/* Suporte para modo de tela dividida em dispositivos móveis */
-@media (max-width: 480px) and (max-height: 600px) {
-  .hero {
-    min-height: 100vh;
-    padding-top: 50px;
-  }
-  
+@media (min-width: 992px) {
   .heroContent {
-    gap: 15px;
+    flex-direction: row;
+    text-align: left;
+    gap: var(--space-xl);
+    align-items: center;
+  }
+  .availabilityBadge {
+    position: relative;
+    align-items: center;
+    left: auto;
+    justify-content: center;
+    gap: var(--space-xs);
+    background: rgba(var(--color-bg-1-rgb), 0.1); /* Usa variáveis RGB */
+    backdrop-filter: blur(6px); /* Reduzido de 10px */
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 30px;
+    font-size: var(--caption);
+    z-index: 10;
+    border: 1px solid var(--hero-border);
+  }
+  
+  .heroTextContainer {
+    align-items: flex-start;
+    text-align: left;
+    margin-bottom: 0;
+    flex: 3;
+  }
+  
+  .experienceBadge {
+    align-self: flex-start;
+  }
+  
+  .techStack {
+    justify-content: flex-start;
+  }
+  
+  .heroActions {
+    justify-content: flex-start;
+  }
+  
+  .heroImageContainer {
+    flex: 2;
+    margin-top: 0;
   }
   
   .imageWrapper {
-    width: 150px;
-    height: 150px;
+    width: 380px;
+    height: 380px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .profession {
+    font-size: var(--heading-h1);
+  }
+}
+
+/* Dark mode específico */
+html[data-theme="dark"] .imageWrapper {
+  box-shadow: 0 4px 30px rgba(var(--color-primary-rgb), 0.15);
+}
+
+/* Light mode específico */
+html[data-theme="light"] .imageWrapper {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Preferências para redução de movimento - Versão melhorada */
+@media (prefers-reduced-motion: reduce) {
+  .heroBackground,
+  .particle,
+  .scrollDot,
+  .cursor,
+  .experienceBadge,
+  .greeting,
+  .profession,
+  .heroSubtitle,
+  .techStack,
+  .heroActions,
+  .heroImageContainer,
+  .statsContainer {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
   
-  .scrollDown {
-    display: none;
+  .hero {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  
+  /* Simplifica o background para melhor performance */
+  .heroBackground {
+    background-size: 100% 100% !important;
   }
 }

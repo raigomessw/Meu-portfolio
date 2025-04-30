@@ -1,9 +1,10 @@
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './WorkGridView.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faEye } from '@fortawesome/free-solid-svg-icons';
 import useIntersectionObserver from '../../Hooks/useIntersectionObserver';
+import { verifyImageOrFallback } from '../utils/imageHelpers';
 
 // Imagem de fallback
 const FALLBACK_IMAGE = "/work/placeholder.jpg";
@@ -13,27 +14,39 @@ const WorkGridItem = memo(({ project, index, onKeyDown }) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
   const navigate = useNavigate();
   
   // Quando o elemento se torna visível, começar a carregar a imagem
-  React.useEffect(() => {
+  useEffect(() => {
     if (isInView && !isImageLoaded) {
+      // Priorizar usar thumbnailImage se disponível, senão usar backgroundImage
+      const imageToLoad = project.thumbnailImage || project.backgroundImage;
+      
       const img = new Image();
-      img.src = project.backgroundImage;
-      img.onload = () => setIsImageLoaded(true);
-      img.onerror = () => {
-        console.error("Erro ao carregar imagem do card:", project.backgroundImage);
-        setImageError(true);
-        // Tente carregar mesmo assim para o caso de ser um erro momentâneo
+      img.src = imageToLoad;
+      img.onload = () => {
+        setImageUrl(imageToLoad);
+        setIsImageLoaded(true);
+      };
+      img.onerror = async () => {
+        console.error("Erro ao carregar imagem do card:", imageToLoad);
+        // Usar função de fallback para verificação adicional
+        const fallbackImage = await verifyImageOrFallback(imageToLoad);
+        setImageUrl(fallbackImage);
+        setImageError(fallbackImage === FALLBACK_IMAGE);
         setIsImageLoaded(true);
       };
     }
-  }, [isInView, isImageLoaded, project.backgroundImage]);
+  }, [isInView, isImageLoaded, project.thumbnailImage, project.backgroundImage]);
   
   // Função para navegar para página de detalhes
   const viewProjectDetails = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // Usando o ID correto para navegar
+    console.log("Navegando para o projeto:", project.id);
     navigate(`/work/${project.id}`);
   };
   
@@ -52,12 +65,17 @@ const WorkGridItem = memo(({ project, index, onKeyDown }) => {
     }
   };
   
+  // Determinar qual imagem exibir
+  const displayImage = isImageLoaded 
+    ? (imageError ? FALLBACK_IMAGE : imageUrl) 
+    : null;
+  
   return (
     <div 
       ref={elementRef}
       className={cardClasses}
       style={{ 
-        backgroundImage: isImageLoaded ? `url(${imageError ? FALLBACK_IMAGE : project.backgroundImage})` : 'none',
+        backgroundImage: displayImage ? `url(${displayImage})` : 'none',
         backgroundColor: 'rgba(30, 30, 30, 0.8)',
         animationDelay: `${index * 0.1}s`
       }}

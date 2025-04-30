@@ -1,10 +1,10 @@
-/* ========== CONTAINER PRINCIPAL ========== */
+/* ========== CONTAINER PRINCIPAL COM BACKGROUND MELHORADO ========== */
 .container {
   position: relative;
   padding: 8rem 0 6rem;
   overflow: hidden;
-  background-color: var(--color-bg-1, #121218);
-  color: var(--color-text-1, #f0f0f0);
+  background-color: var(--color-bg-1);
+  color: var(--color-text-1);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -12,8 +12,10 @@
   justify-content: center;
   --mouse-x: 0.5;
   --mouse-y: 0.5;
+  isolation: isolate; /* Ajuda com o isolamento dos elementos de fundo */
 }
 
+/* Efeito interativo que segue o cursor - Aprimorado */
 .container::before {
   content: "";
   position: absolute;
@@ -24,30 +26,123 @@
   background: 
     radial-gradient(
       circle at calc(var(--mouse-x) * 100%) calc(var(--mouse-y) * 100%),
-      rgba(110, 7, 243, 0.1),
-      transparent 50%
+      rgba(var(--color-primary-rgb), 0.15),
+      transparent 60%
     );
   opacity: 0;
-  transition: opacity 1s ease;
+  transition: opacity 1s ease, transform 2s ease;
   pointer-events: none;
+  z-index: -1;
+  transform: scale(1.1);
 }
 
 .inView::before {
   opacity: 1;
+  transform: scale(1);
 }
 
-/* ========== EFEITOS DE FUNDO ========== */
+/* Grid de fundo - Específico por tema */
+.container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 40px 40px;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: -2;
+}
+
+/* Grid no tema claro */
+html[data-theme="light"] .container::after {
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+}
+
+/* Grid no tema escuro */
+html[data-theme="dark"] .container::after {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+/* ========== EFEITOS DE FUNDO MELHORADOS ========== */
+/* Gradiente de fundo aprimorado */
 .bgEffect {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(18, 18, 24, 0.8) 0%, rgba(26, 26, 35, 0.9) 100%);
-  opacity: 0.9;
-  z-index: -1;
+  z-index: -3;
 }
 
+/* Tema claro - gradiente mais rico e claro */
+html[data-theme="light"] .bgEffect {
+  background: radial-gradient(
+      ellipse at 80% 20%,
+      rgba(var(--color-accent-rgb), 0.08) 0%,
+      rgba(var(--color-accent-rgb), 0) 50%
+    ),
+    radial-gradient(
+      ellipse at 20% 80%,
+      rgba(var(--color-primary-rgb), 0.08) 0%,
+      rgba(var(--color-primary-rgb), 0) 60%
+    ),
+    linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.8) 0%, 
+      rgba(var(--color-bg-1-rgb), 0.95) 35%,
+      rgba(var(--color-bg-2-rgb), 0.9) 100%
+    );
+  opacity: 1;
+}
+
+/* Tema escuro - profundidade e cores mais ricas */
+html[data-theme="dark"] .bgEffect {
+  background: radial-gradient(
+      ellipse at 20% 20%,
+      rgba(var(--color-primary-rgb), 0.15) 0%,
+      rgba(var(--color-primary-rgb), 0) 60%
+    ),
+    radial-gradient(
+      ellipse at 80% 80%,
+      rgba(var(--color-accent-rgb), 0.12) 0%,
+      rgba(var(--color-accent-rgb), 0) 70%
+    ),
+    linear-gradient(135deg, 
+      rgba(12, 16, 25, 0.95) 0%, 
+      rgba(var(--color-bg-1-rgb), 0.97) 50%,
+      rgba(var(--color-bg-2-rgb), 0.9) 100%
+    );
+  opacity: 1;
+}
+
+/* Efeito de textura sutil */
+.bgTexture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.015;
+  z-index: -2;
+}
+
+/* Tema claro - textura mais sutil */
+html[data-theme="light"] .bgTexture {
+  opacity: 0.01;
+}
+
+/* Tema escuro - textura um pouco mais visível */
+html[data-theme="dark"] .bgTexture {
+  opacity: 0.01;
+}
+
+/* Círculos de fundo aprimorados */
 .bgCircle {
   position: absolute;
   border-radius: 50%;
@@ -55,39 +150,56 @@
   opacity: 0;
   z-index: -1;
   transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1);
-  transform: translate3d(0, 100px, 0);
+  transform: translate3d(0, 100px, 0) scale(0.8);
+  mix-blend-mode: normal;
+}
+
+/* Tema claro - círculos mais suaves */
+html[data-theme="light"] .bgCircle {
+  filter: blur(90px);
+}
+
+/* Tema escuro - círculos mais definidos */
+html[data-theme="dark"] .bgCircle {
+  filter: blur(70px);
 }
 
 .inView .bgCircle {
-  opacity: 0.3;
-  transform: translate3d(0, 0, 0);
+  opacity: 0.35;
+  transform: translate3d(0, 0, 0) scale(1);
 }
 
+/* Tema claro - opacidade mais baixa */
+html[data-theme="light"] .inView .bgCircle {
+  opacity: 0.25;
+}
+
+/* Tema escuro - opacidade mais alta */
+html[data-theme="dark"] .inView .bgCircle {
+  opacity: 0.4;
+}
+
+/* Reposicionamento e cores dos círculos */
 .circle1 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(110, 7, 243, 0.4) 0%, rgba(110, 7, 243, 0) 70%);
-  top: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, 
+    rgba(var(--color-primary-rgb), 0.3) 0%, 
+    rgba(var(--color-primary-rgb), 0) 70%);
+  top: -15%;
   right: -10%;
   transition-delay: 0.2s;
 }
 
 .circle2 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(78, 205, 196, 0.4) 0%, rgba(78, 205, 196, 0) 70%);
-  bottom: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, 
+    rgba(78, 205, 196, 0.25) 0%, 
+    rgba(78, 205, 196, 0) 70%);
+  bottom: -15%;
   left: -10%;
   transition-delay: 0.4s;
-}
-
-.circle3 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(255, 107, 107, 0.4) 0%, rgba(255, 107, 107, 0) 70%);
-  top: 40%;
-  left: 60%;
-  transition-delay: 0.6s;
 }
 
 /* ========== CABEÇALHO DA SEÇÃO ========== */
@@ -103,7 +215,7 @@
 .title {
   font-size: 3rem;
   margin-bottom: 1.5rem;
-  background: var(--gradient-text, linear-gradient(180deg, #ffffff 0%, #6e07f3 100%));
+  background: linear-gradient(180deg, var(--color-text-0) 0%, var(--color-primary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -114,7 +226,7 @@
 
 .subtitle {
   font-size: 1.25rem;
-  color: var(--color-text-2, #d0d0d0);
+  color: var(--color-text-2);
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
@@ -154,13 +266,13 @@
 }
 
 .cardWrapper:focus-visible .card {
-  box-shadow: 0 0 0 3px var(--accent-color, #6e07f3);
+  box-shadow: 0 0 0 3px var(--accent-color, var(--color-primary));
 }
 
 /* ========== CARD PRINCIPAL ========== */
 .card {
   position: relative;
-  background: rgba(30, 30, 42, 0.6);
+  background: rgba(var(--color-bg-2-rgb), 0.6);
   backdrop-filter: blur(12px);
   border-radius: 16px;
   padding: 2.5rem;
@@ -174,6 +286,15 @@
   flex-direction: column;
 }
 
+/* Valores específicos por tema */
+html[data-theme="light"] .card {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="dark"] .card {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
 .touchDevice {
   transform: none !important;
 }
@@ -182,7 +303,21 @@
   transform: scale(0.98) !important;
 }
 
-.card::before {
+/* Brilho interno diferente para cada tema */
+html[data-theme="light"] .card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
+  border-radius: 16px;
+  z-index: -1;
+}
+
+html[data-theme="dark"] .card::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -195,6 +330,7 @@
   z-index: -1;
 }
 
+/* Borda com gradiente adaptado ao tema */
 .card::after {
   content: '';
   position: absolute;
@@ -205,7 +341,7 @@
     to bottom right,
     rgba(255, 255, 255, 0.1),
     rgba(255, 255, 255, 0),
-    rgba(var(--accent-color, 110, 7, 243), 0.2),
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.2),
     rgba(255, 255, 255, 0.1)
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -231,20 +367,20 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: rgba(var(--accent-color, 110, 7, 243), 0.15);
+  background: rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
-  color: var(--accent-color, #6e07f3);
+  color: var(--accent-color, var(--color-primary));
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
 }
 
 .card:hover .cardIcon, .card.active .cardIcon {
-  background: rgba(var(--accent-color, 110, 7, 243), 0.25);
+  background: rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.25);
   transform: scale(1.05);
 }
 
@@ -256,19 +392,19 @@
 .cardTitle {
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  color: var(--color-text-0, #ffffff);
+  color: var(--color-text-0);
   font-weight: 700;
   transition: all 0.3s ease;
 }
 
 .card:hover .cardTitle, .card.active .cardTitle {
-  color: var(--accent-color, #6e07f3);
+  color: var(--accent-color, var(--color-primary));
 }
 
 .cardDescription {
   font-size: 1rem;
   line-height: 1.6;
-  color: var(--color-text-2, #d0d0d0);
+  color: var(--color-text-2);
   margin-bottom: 1.5rem;
   flex-grow: 1;
 }
@@ -284,7 +420,7 @@
   padding: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: var(--accent-color, #6e07f3);
+  color: var(--accent-color, var(--color-primary));
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -313,8 +449,8 @@
   left: -25%;
   background: radial-gradient(
     circle at 50% 50%,
-    rgba(var(--accent-color, 110, 7, 243), 0.8),
-    rgba(var(--accent-color, 110, 7, 243), 0.3) 20%,
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.8),
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.3) 20%,
     transparent 60%
   );
   opacity: 0;
@@ -325,9 +461,15 @@
   pointer-events: none;
 }
 
-.card:hover .cardGlow, .card.active .cardGlow {
+/* Ajuste de opacidade do brilho por tema */
+html[data-theme="light"] .card:hover .cardGlow, 
+html[data-theme="light"] .card.active .cardGlow {
+  opacity: 0.1; /* Menos opaco no tema claro */
+}
+
+html[data-theme="dark"] .card:hover .cardGlow, 
+html[data-theme="dark"] .card.active .cardGlow {
   opacity: 0.15;
-  transform: scale(0.8);
 }
 
 .cardShine {
@@ -348,6 +490,23 @@
   z-index: 1;
 }
 
+/* Ajustes de brilho para temas */
+html[data-theme="light"] .cardShine {
+  background: radial-gradient(
+    circle at var(--x-pos, 50%) var(--y-pos, 50%),
+    rgba(255, 255, 255, 0.3),
+    transparent 40%
+  );
+}
+
+html[data-theme="dark"] .cardShine {
+  background: radial-gradient(
+    circle at var(--x-pos, 50%) var(--y-pos, 50%),
+    rgba(255, 255, 255, 0.15),
+    transparent 40%
+  );
+}
+
 .card.activeShine .cardShine {
   opacity: 1;
 }
@@ -359,9 +518,9 @@
   padding: 1px;
   background: linear-gradient(
     135deg,
-    rgba(var(--accent-color, 110, 7, 243), 0.5),
-    rgba(var(--accent-color, 110, 7, 243), 0.2) 20%,
-    rgba(var(--accent-color, 110, 7, 243), 0) 50%
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.5),
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.2) 20%,
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0) 50%
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -370,7 +529,14 @@
   transition: all 0.5s ease;
 }
 
-.card:hover .cardBorder, .card.active .cardBorder {
+/* Ajustes de borda para temas */
+html[data-theme="light"] .card:hover .cardBorder, 
+html[data-theme="light"] .card.active .cardBorder {
+  opacity: 0.7;
+}
+
+html[data-theme="dark"] .card:hover .cardBorder, 
+html[data-theme="dark"] .card.active .cardBorder {
   opacity: 0.8;
 }
 
@@ -381,7 +547,7 @@
   margin-top: -10px;
   background: linear-gradient(
     to bottom,
-    rgba(var(--accent-color, 110, 7, 243), 0.15),
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.15),
     transparent
   );
   border-bottom-left-radius: 50%;
@@ -393,9 +559,19 @@
   z-index: 1;
 }
 
+/* Ajustes de reflexo por tema */
+html[data-theme="light"] .cardWrapper:hover .cardReflection, 
+html[data-theme="light"] .cardWrapper:focus-within .cardReflection {
+  opacity: 0.4; /* Menos visível no tema claro */
+}
+
+html[data-theme="dark"] .cardWrapper:hover .cardReflection, 
+html[data-theme="dark"] .cardWrapper:focus-within .cardReflection {
+  opacity: 0.5;
+}
+
 .cardWrapper:hover .cardReflection, 
 .cardWrapper:focus-within .cardReflection {
-  opacity: 0.5;
   transform: scaleX(0.95) translateY(0);
 }
 
@@ -438,5 +614,41 @@
 @media (min-width: 769px) and (max-width: 1200px) {
   .cardsContainer {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ========== SUPORTE A REDUÇÃO DE MOVIMENTO ========== */
+@media (prefers-reduced-motion: reduce) {
+  .container::before,
+  .bgCircle,
+  .cardWrapper,
+  .card,
+  .cardIcon,
+  .learnMoreBtn,
+  .arrowIcon,
+  .cardGlow,
+  .cardShine,
+  .cardBorder,
+  .cardReflection {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  .card:hover, .card.active {
+    transform: none !important;
+  }
+  
+  .inView .bgCircle {
+    transform: none !important;
+  }
+  
+  .inView::before {
+    opacity: 0.5;
+  }
+  
+  .cardWrapper.visible {
+    opacity: 1;
+    transform: none;
   }
 }

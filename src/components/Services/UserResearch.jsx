@@ -3,8 +3,8 @@ import ServiceDetailLayout from './ServiceDetailLayout';
 
 const UserResearch = () => {
   const serviceData = {
-    title: "User Research",
-    subtitle: "Understanding users to create meaningful experiences",
+    title: "Användarundersökning",
+    subtitle: "Förstå användare för att skapa meningsfulla upplevelser",
     accent: "rgba(78, 205, 196, 1)",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" fill="currentColor" width="1em" height="1em">
@@ -12,49 +12,49 @@ const UserResearch = () => {
       </svg>
     ),
     heroImage: "/images/services/user-research-hero.jpg",
-    description: `I employ a variety of user research methods to deeply understand your users' needs,
-                 behaviors, and pain points. This human-centered approach ensures we design products
-                 that truly resonate with your target audience.`,
+    description: `Jag använder en mängd olika användarforskningsmetoder för att djupt förstå dina användares behov,
+                 beteenden och smärtpunkter. Denna människocentrerade approach säkerställer att vi designar produkter
+                 som verkligen resonerar med din målgrupp.`,
     
     benefits: [
-      "Create products users genuinely want and need",
-      "Reduce costly design changes post-launch",
-      "Identify and solve user pain points",
-      "Understand user behaviors and mental models",
-      "Make design decisions based on evidence, not assumptions"
+      "Skapa produkter som användare verkligen vill ha och behöver",
+      "Minska kostsamma designändringar efter lansering",
+      "Identifiera och lösa användarnas smärtpunkter",
+      "Förstå användarbeteenden och mentala modeller",
+      "Ta designbeslut baserade på bevis, inte antaganden"
     ],
     
     process: [
       {
-        title: "User Interviews",
-        description: "In-depth conversations with users to understand their needs, motivations, and frustrations."
+        title: "Användarintervjuer",
+        description: "Djupgående samtal med användare för att förstå deras behov, motivationer och frustrationer."
       },
       {
-        title: "Usability Testing",
-        description: "Observing users interact with existing products to identify pain points and opportunities."
+        title: "Användbarhetstestning",
+        description: "Observera användare som interagerar med befintliga produkter för att identifiera smärtpunkter och möjligheter."
       },
       {
-        title: "Surveys & Questionnaires",
-        description: "Collecting quantitative and qualitative data at scale to validate hypotheses."
+        title: "Enkäter & Frågeformulär",
+        description: "Samla in kvantitativa och kvalitativa data i stor skala för att validera hypoteser."
       },
       {
-        title: "User Persona Creation",
-        description: "Developing representative user archetypes to guide design decisions and feature prioritization."
+        title: "Användarpersona-skapande",
+        description: "Utveckla representativa användartyper för att vägleda designbeslut och funktionsprioritering."
       }
     ],
     
     caseStudies: [
       {
-        title: "Healthcare App User Research",
-        company: "Medical Tech Startup",
-        result: "Identified 5 critical user needs previously overlooked by stakeholders",
+        title: "Hälsovårdsapp Användarforskning",
+        company: "Medicinsk Tech Startup",
+        result: "Identifierade 5 kritiska användarbehov som tidigare förbisetts av intressenter",
         image: "/images/case-studies/healthcare-user-research.jpg",
         link: "/case-studies/healthcare-user-research"
       },
       {
-        title: "E-learning Platform Research",
-        company: "Education Company",
-        result: "User insights led to 45% increase in course completion rates",
+        title: "E-lärande Plattform Undersökning",
+        company: "Utbildningsföretag",
+        result: "Användarinsikter ledde till 45% ökning av kursgenomförandegraden",
         image: "/images/case-studies/elearning-research.jpg",
         link: "/case-studies/elearning-research"
       }

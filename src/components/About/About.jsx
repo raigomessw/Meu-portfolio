@@ -12,7 +12,7 @@ import {
   faGithub 
 } from '@fortawesome/free-brands-svg-icons';
 import { faDownload, faBrain, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
-import { detectDeviceCapability, throttle } from '../../utils/performance';
+import { detectDeviceCapability, throttle } from '../utils/performance';
 
 // Usar import.meta.url para caminhos de arquivos estáticos
 const ProfileImage = new URL('../common/Image/profile.jpeg', import.meta.url).href;
