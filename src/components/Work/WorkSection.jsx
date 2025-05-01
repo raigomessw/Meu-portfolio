@@ -7,19 +7,19 @@ import { motion } from 'framer-motion';
 import styles from './WorkSection.module.css';
 
 function WorkSection() {
-  const { allProjects, isLoading } = useWorkProjects();
+  const { projetos, loading } = useWorkProjects();
   const [visibleProjects, setVisibleProjects] = useState([]);
   const sectionRef = useRef(null);
   
   // Mostrar apenas projetos em destaque na página inicial
-  const featuredProjects = allProjects
-    .filter(project => project.featured || project.highlight)
-    .slice(0, 3);
+  const featuredProjects = projetos
+    ? projetos.filter(project => project.featured || project.highlight).slice(0, 3)
+    : [];
   
   // Usar projetos recentes se não houver suficientes em destaque
   const projectsToShow = featuredProjects.length >= 3 
     ? featuredProjects 
-    : allProjects.slice(0, 3);
+    : projetos ? projetos.slice(0, 3) : [];
 
   // Configurações de animação
   const containerVariants = {
@@ -90,7 +90,7 @@ function WorkSection() {
         <div className={styles.headerAccent}></div>
       </motion.div>
       
-      {isLoading ? (
+      {loading ? (
         <div className={styles.loadingContainer}>
           <div className={styles.loadingSpinner}></div>
         </div>

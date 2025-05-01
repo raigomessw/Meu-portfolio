@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './WorkGridView.module.css';
 import useInView from '../../Hooks/useInView';
 import { useReducedMotion } from '../../Hooks/useReducedMotion';
@@ -10,6 +10,7 @@ const WorkGridView = ({ projects, onQuickView }) => {
   const prefersReducedMotion = useReducedMotion();
   const [hoveredCard, setHoveredCard] = useState(null);
   const cardRefs = useRef([]);
+  const navigate = useNavigate();
 
   // Configurar refs para todos os cards
   useEffect(() => {
@@ -83,6 +84,32 @@ const WorkGridView = ({ projects, onQuickView }) => {
     setHoveredCard(null);
   };
   
+  // Função para navegar para a página de detalhes do projeto
+  const handleViewProject = (e, project) => {
+    e.preventDefault();
+    // Usar project.id em vez de project.slug
+    navigate(`/work/${project.id}`);
+  };
+  
+  // Função para chamar a pré-visualização do projeto
+  const handleQuickView = (e, project) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onQuickView && typeof onQuickView === 'function') {
+      onQuickView(project);
+    }
+  };
+
+  // Função auxiliar para renderizar tecnologia com segurança
+  const renderTechName = (tech) => {
+    // Verifica se tech é um objeto com propriedade name
+    if (tech && typeof tech === 'object' && tech.name) {
+      return tech.name;
+    }
+    // Caso contrário, tenta converter para string
+    return String(tech || '');
+  };
+  
   if (projects.length === 0) {
     return (
       <div className={styles.gridContainer} ref={gridRef}>
@@ -108,6 +135,7 @@ const WorkGridView = ({ projects, onQuickView }) => {
           onMouseMove={(e) => handleMouseMove(e, index)}
           onMouseEnter={() => setHoveredCard(index)}
           onMouseLeave={() => handleMouseLeave(index)}
+          onClick={(e) => handleViewProject(e, project)}
         >
           <div className={`${styles.cardOverlay} ${hoveredCard === index ? styles.hovered : ''}`}></div>
 
@@ -115,7 +143,7 @@ const WorkGridView = ({ projects, onQuickView }) => {
             <div className={styles.cardTags}>
               {project.technologies && project.technologies.slice(0, 3).map((tech, i) => (
                 <span key={i} className={styles.tag}>
-                  {tech}
+                  {renderTechName(tech)}
                 </span>
               ))}
             </div>
@@ -129,21 +157,19 @@ const WorkGridView = ({ projects, onQuickView }) => {
             </p>
             
             <div className={styles.cardActions}>
-              <Link 
-                to={`/work/${project.slug}`}
+              <button 
                 className={styles.viewButton}
+                onClick={(e) => handleViewProject(e, project)}
                 aria-label={`Ver detalhes do projeto ${project.title}`}
               >
                 Ver projeto <FiArrowRight className={styles.buttonIcon} />
-              </Link>
+              </button>
               
               <button
                 type="button"
                 className={styles.detailsButton}
-                onClick={(e) => {
-                  e.preventDefault();
-                  onQuickView(project);
-                }}
+                onClick={(e) => handleQuickView(e, project)}
+                aria-label={`Pré-visualizar ${project.title}`}
               >
                 Pré-visualizar <FiExternalLink className={styles.buttonIcon} />
               </button>

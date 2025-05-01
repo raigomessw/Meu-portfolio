@@ -4,50 +4,79 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import styles from './WorkPage.module.css';
 import WorkGridView from '../components/Work/WorkGridView';
-import { useWorkProjects, WorkProjectProvider } from '../components/Work/WorkProjectContext';
+import { useWorkProjects } from '../components/Work/WorkProjectContext';
 
 function WorkPage() {
   const navigate = useNavigate();
-  const { allProjects, isLoading: contextLoading } = useWorkProjects();
+  // Desestruturando exatamente o que precisamos do contexto
+  const { 
+    projects, 
+    allProjects, 
+    projetos, 
+    isLoading: contextLoading, 
+    allTags: contextTags,
+    filterProjects: contextFilterProjects
+  } = useWorkProjects();
+  
+  // Usando projetos do contexto ou fazendo um fallback para um array vazio
+  const availableProjects = projects || projetos || allProjects || [];
   const [visibleProjects, setVisibleProjects] = useState([]);
   const [activeFilter, setActiveFilter] = useState('All');
   const [allTags, setAllTags] = useState(['All']);
   const [isLoading, setIsLoading] = useState(true);
   const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [quickViewOpen, setQuickViewOpen] = useState(false);
   
-  // Extrair todas as tags únicas dos projetos
   useEffect(() => {
-    if (allProjects && allProjects.length > 0) {
+    // Log para debug - verificar dados do contexto
+    console.log('WorkPage - Dados do contexto:', { 
+      projects: projects?.length || 0,
+      allProjects: allProjects?.length || 0,
+      projetos: projetos?.length || 0,
+      contextTags: contextTags?.length || 0
+    });
+    
+    // Se houver tags no contexto, usamos elas
+    if (contextTags && contextTags.length > 0) {
+      setAllTags(contextTags);
+    }
+    
+    // Se houver projetos disponíveis, atualizamos o estado
+    if (availableProjects.length > 0) {
+      setVisibleProjects(availableProjects);
+      setIsLoading(false);
+    }
+  }, [projects, allProjects, projetos, contextTags, availableProjects]);
+  
+  // Extrair todas as tags únicas apenas se necessário
+  useEffect(() => {
+    if (!contextTags && availableProjects.length > 0) {
       const tags = new Set(['All']);
-      allProjects.forEach(project => {
+      availableProjects.forEach(project => {
         if (project.tags) {
           project.tags.forEach(tag => tags.add(tag));
         }
       });
       setAllTags(Array.from(tags));
     }
-  }, [allProjects]);
+  }, [availableProjects, contextTags]);
   
-  // Carregar projetos com um pequeno delay para animação
-  useEffect(() => {
-    setIsLoading(true);
-    
-    const timer = setTimeout(() => {
-      filterProjects(activeFilter);
-      setIsLoading(false);
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, [activeFilter, allProjects]);
-  
-  // Função para filtrar projetos
+  // Filtrar projetos
   const filterProjects = (tag) => {
     setActiveFilter(tag);
     
+    // Se tivermos a função de filtro do contexto, a usamos
+    if (contextFilterProjects) {
+      contextFilterProjects(tag);
+      return;
+    }
+    
+    // Caso contrário, filtramos manualmente
     if (tag === 'All') {
-      setVisibleProjects(allProjects);
+      setVisibleProjects(availableProjects);
     } else {
-      const filtered = allProjects.filter(project => 
+      const filtered = availableProjects.filter(project => 
         project.tags && project.tags.includes(tag)
       );
       setVisibleProjects(filtered);
@@ -68,6 +97,17 @@ function WorkPage() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [filtersRef]);
+
+  // Função para manipular a visualização prévia
+  const handleQuickView = (project) => {
+    setSelectedProject(project);
+    setQuickViewOpen(true);
+    if (project && project.id) {
+      navigate(`/work/${project.id}`);
+    } else {
+      console.error('Projeto inválido ou sem ID:', project);
+    }
+  };
 
   return (
     <section className={styles.workContainer}>
@@ -138,21 +178,19 @@ function WorkPage() {
           <div className={styles.loaderContainer}>
             <span className={styles.loader}></span>
           </div>
+        ) : visibleProjects && visibleProjects.length > 0 ? (
+          <WorkGridView 
+            projects={visibleProjects} 
+            onQuickView={handleQuickView}
+          />
         ) : (
-          <WorkGridView projects={visibleProjects} />
+          <div className={styles.noProjects}>
+            <p>Nenhum projeto encontrado para o filtro selecionado.</p>
+          </div>
         )}
       </div>
     </section>
   );
 }
 
-// Encapsular o componente WorkPage no provider para ter acesso ao contexto
-function WorkPageWithProvider() {
-  return (
-    <WorkProjectProvider>
-      <WorkPage />
-    </WorkProjectProvider>
-  );
-}
-
-export default WorkPageWithProvider;
+export default WorkPage;

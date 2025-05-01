@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './WorkCard.module.css';
 import sectionStyles from './WorkSection.module.css';
 import { useInView } from '../../Hooks/useInView';
@@ -16,6 +16,7 @@ const WorkCard = ({
   const cardRef = useRef(null);
   const isInView = useInView(cardRef, { threshold: 0.1, triggerOnce: true });
   const prefersReducedMotion = useReducedMotion();
+  const navigate = useNavigate();
 
   // Mouse tracking para efeito 3D
   const handleMouseMove = (e) => {
@@ -49,19 +50,36 @@ const WorkCard = ({
     return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
   };
 
+  // Função para lidar com o clique no card
+  const handleCardClick = (e) => {
+    e.preventDefault();
+    // Usa project.id em vez de project.slug
+    navigate(`/work/${project.id}`);
+  };
+
+  // Função para lidar com o clique no botão de visualização rápida
+  const handleQuickViewClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation(); // Impede que o evento de clique se propague para o Link
+    if (onClick && typeof onClick === 'function') {
+      onClick(project);
+    }
+  };
+
   return (
     <div className={sectionStyles.projectCardWrapper}>
-      <Link
-        to={`/work/${project.slug}`}
+      <div
         ref={cardRef}
         className={`${sectionStyles.projectCard} ${featuredProject ? styles.featured : ''}`}
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={handleCardClick}
+        style={{ cursor: 'pointer' }}
         aria-label={`Ver detalhes do projeto ${project.title}`}
       >
         <div className={sectionStyles.cardImage}>
-          <img src={project.thumbnail} alt={project.title} />
+          <img src={project.thumbnailImage || project.thumbnail} alt={project.title} />
           <div className={sectionStyles.cardOverlay}></div>
           {featuredProject && (
             <div className={styles.featuredBadge}>
@@ -75,10 +93,7 @@ const WorkCard = ({
         <button 
           type="button"
           className={sectionStyles.cardQuickAction}
-          onClick={(e) => {
-            e.preventDefault();
-            onClick(project);
-          }}
+          onClick={handleQuickViewClick}
           aria-label="Visualização rápida"
         >
           <span className={sectionStyles.quickViewButton}>
@@ -101,6 +116,11 @@ const WorkCard = ({
                   {tech}
                 </span>
               ))}
+              {project.tags && project.tags.slice(0, 3).map((tag, i) => (
+                <span key={i} className={sectionStyles.tag}>
+                  {tag}
+                </span>
+              ))}
             </div>
             
             <span className={sectionStyles.cardYear}>
@@ -113,7 +133,7 @@ const WorkCard = ({
           <span className={sectionStyles.exploreText}>Explorar Projeto</span>
           <FiArrowRight className={sectionStyles.arrowIcon} />
         </div>
-      </Link>
+      </div>
     </div>
   );
 };
