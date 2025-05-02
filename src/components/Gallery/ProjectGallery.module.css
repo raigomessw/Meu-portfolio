@@ -1,87 +1,188 @@
 .galleryContainer {
   margin: 2rem 0;
   width: 100%;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.galleryContainer.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .imageGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
 }
 
 .imageItem {
   position: relative;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   aspect-ratio: 16/9;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Efeito de carregamento com atraso para os itens */
+.visible .imageItem {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .imageItem:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+  z-index: 2;
+}
+
+/* Container para gerenciar estados de loading */
+.imageWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+/* Placeholder e loading spinner */
+.imagePlaceholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0,0,0,0.03);
+  z-index: 1;
+}
+
+.loadingSpinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(0,0,0,0.1);
+  border-top: 3px solid var(--color-primary, #2563eb);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .thumbnail {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+}
+
+.thumbnail.loaded {
+  opacity: 1;
 }
 
 .imageItem:hover .thumbnail {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .imageOverlay {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-  padding: 1.5rem 1rem 1rem;
+  inset: 0;
+  background: linear-gradient(to top, 
+    rgba(0,0,0,0.85) 0%, 
+    rgba(0,0,0,0.5) 50%,
+    rgba(0,0,0,0) 100%);
+  padding: 1.5rem;
   color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.4s ease;
 }
 
 .imageItem:hover .imageOverlay {
   opacity: 1;
+}
+
+.zoomIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.5);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+}
+
+.imageItem:hover .zoomIcon {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.imageInfo {
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.1s, opacity 0.4s ease 0.1s;
+}
+
+.imageItem:hover .imageInfo {
   transform: translateY(0);
+  opacity: 1;
 }
 
 .imageOverlay h4 {
-  margin: 0 0 5px 0;
-  font-size: 1.1rem;
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .category {
   font-size: 0.85rem;
   background: rgba(255,255,255,0.2);
-  padding: 3px 8px;
-  border-radius: 4px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 4px 10px;
+  border-radius: 20px;
   margin-top: 8px;
   display: inline-block;
   text-transform: capitalize;
+  font-weight: 500;
 }
 
-/* Estilos para o lightbox */
+/* Estilos para o lightbox com navegação */
 .lightbox {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0,0,0,0.92);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  padding: 2rem;
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 @keyframes fadeIn {
@@ -91,93 +192,176 @@
 
 .lightboxContent {
   max-width: 90%;
-  max-height: 90vh;
+  max-height: 85vh;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+.lightboxImageContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Animações de navegação das imagens */
+.slide-left {
+  transform: translateX(-50px);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.slide-right {
+  transform: translateX(50px);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
 .lightboxImage {
   max-width: 100%;
-  max-height: 70vh;
+  max-height: 65vh;
   object-fit: contain;
-  border-radius: 4px;
-  box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+  border-radius: 8px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lightboxInfo {
-  background: rgba(20, 20, 20, 0.8);
-  padding: 1.2rem;
+  background: rgba(30, 30, 30, 0.7);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  padding: 1.5rem;
   color: white;
-  margin-top: 1rem;
-  border-radius: 8px;
+  margin-top: 1.5rem;
+  border-radius: 12px;
   width: 100%;
   max-width: 800px;
 }
 
 .lightboxInfo h3 {
   margin-top: 0;
-  margin-bottom: 0.5rem;
-  font-size: 1.5rem;
+  margin-bottom: 0.8rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #ffffff;
 }
 
 .lightboxInfo p {
-  margin-bottom: 0.8rem;
-  line-height: 1.5;
+  margin-bottom: 1rem;
+  line-height: 1.7;
   color: #e0e0e0;
+  font-size: 1.1rem;
 }
 
+/* Botão de fechar aprimorado */
 .closeButton {
   position: absolute;
-  top: -40px;
-  right: 0;
-  background: rgba(0,0,0,0.5);
+  top: -50px;
+  right: -10px;
+  background: rgba(0,0,0,0.2);
   border: none;
   color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s ease;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .closeButton:hover {
   background: rgba(255,255,255,0.2);
+  transform: scale(1.1);
+}
+
+/* Botões de navegação do lightbox */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: none;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.navButton:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.prevButton {
+  left: 20px;
+}
+
+.nextButton {
+  right: 20px;
 }
 
 .emptyGallery, .emptyMessage {
-  padding: 2.5rem;
+  padding: 3rem;
   text-align: center;
   color: #666;
-  background: #f5f5f5;
-  border-radius: 8px;
-  font-size: 1.1rem;
+  background: rgba(245, 245, 245, 0.4);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 12px;
+  font-size: 1.2rem;
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
 .imageTags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .tag {
   background: rgba(255,255,255,0.15);
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.8rem;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
   color: #f0f0f0;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Contador de imagens */
+.imageCounter {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.7);
+  margin-top: 10px;
+  text-align: right;
 }
 
 /* Responsividade */
+@media (max-width: 1200px) {
+  .imageGrid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .imageGrid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1rem;
   }
   
@@ -187,5 +371,63 @@
   
   .lightboxInfo {
     padding: 1rem;
+  }
+  
+  .navButton {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .prevButton {
+    left: 10px;
+  }
+  
+  .nextButton {
+    right: 10px;
+  }
+  
+  .closeButton {
+    top: -45px;
+    right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .imageGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .lightboxImage {
+    max-height: 50vh;
+  }
+  
+  .lightboxInfo h3 {
+    font-size: 1.3rem;
+  }
+  
+  .lightboxInfo p {
+    font-size: 1rem;
+  }
+  
+  .navButton {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+/* Melhorias de acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+  .galleryContainer,
+  .imageItem,
+  .thumbnail,
+  .imageOverlay,
+  .zoomIcon,
+  .imageInfo,
+  .lightboxImageContainer,
+  .closeButton,
+  .navButton {
+    transition-duration: 0.1ms !important;
+    animation-duration: 0.1ms !important;
   }
 }

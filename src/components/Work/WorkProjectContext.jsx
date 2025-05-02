@@ -12,6 +12,7 @@ export function WorkProjectProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isDataFetched, setIsDataFetched] = useState(false);
+  const [activeImageCategory, setActiveImageCategory] = useState(null);
 
   // Função para buscar projeto por ID com memoização para evitar re-renders desnecessários
   const getProjectById = useCallback((id) => {
@@ -31,6 +32,31 @@ export function WorkProjectProvider({ children }) {
       return null;
     }
   }, [projetos]);
+
+  // Nova função para obter o projeto anterior com base no ID atual
+  const getPrevProject = useCallback((currentId) => {
+    if (!projetos || projetos.length === 0) return null;
+    
+    const currentIndex = projetos.findIndex(p => p.id === currentId);
+    if (currentIndex <= 0) return null;
+    
+    return projetos[currentIndex - 1];
+  }, [projetos]);
+  
+  // Nova função para obter o próximo projeto com base no ID atual
+  const getNextProject = useCallback((currentId) => {
+    if (!projetos || projetos.length === 0) return null;
+    
+    const currentIndex = projetos.findIndex(p => p.id === currentId);
+    if (currentIndex === -1 || currentIndex >= projetos.length - 1) return null;
+    
+    return projetos[currentIndex + 1];
+  }, [projetos]);
+
+  // Função para filtrar imagens por categoria
+  const filterImagesByCategory = useCallback((category) => {
+    setActiveImageCategory(category);
+  }, []);
 
   // Efeito para carregar dados de projetos uma única vez e armazenar no estado local
   useEffect(() => {
@@ -287,7 +313,11 @@ export function WorkProjectProvider({ children }) {
       projetos, 
       loading, 
       error, 
-      getProjectById 
+      getProjectById,
+      getPrevProject,
+      getNextProject,
+      activeImageCategory,
+      filterImagesByCategory
     }}>
       {children}
     </WorkProjectContext.Provider>

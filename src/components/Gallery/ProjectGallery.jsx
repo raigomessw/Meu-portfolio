@@ -1,11 +1,70 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext, useRef } from 'react';
 import styles from './ProjectGallery.module.css';
 
 // Imagem de fallback
 const FALLBACK_IMAGE = "/work/placeholder.jpg";
 
-const ProjectGallery = ({ images, activeCategory }) => {
+// Componentes de ícones para melhorar UX
+const ZoomInIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"></circle>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    <line x1="11" y1="8" x2="11" y2="14"></line>
+    <line x1="8" y1="11" x2="14" y2="11"></line>
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+);
+
+const ArrowLeftIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="19" y1="12" x2="5" y2="12"></line>
+    <polyline points="12 19 5 12 12 5"></polyline>
+  </svg>
+);
+
+const ArrowRightIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="5" y1="12" x2="19" y2="12"></line>
+    <polyline points="12 5 19 12 12 19"></polyline>
+  </svg>
+);
+
+// Traduções
+const translations = {
+  en: {
+    noImages: "No images available for this project.",
+    noImagesInCategory: "No images found in category",
+    closeButton: "Close",
+    nextImage: "Next image",
+    prevImage: "Previous image",
+    imageOf: "Image",
+    of: "of"
+  },
+  sv: {
+    noImages: "Inga bilder tillgängliga för detta projekt.",
+    noImagesInCategory: "Inga bilder hittades i kategori",
+    closeButton: "Stäng",
+    nextImage: "Nästa bild",
+    prevImage: "Föregående bild",
+    imageOf: "Bild",
+    of: "av"
+  }
+};
+
+const ProjectGallery = ({ images, activeCategory, isVisible = true, language = 'sv' }) => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isLoaded, setIsLoaded] = useState({});
+  const [imageTransition, setImageTransition] = useState('');
+  const lightboxRef = useRef(null);
+  
+  const t = translations[language] || translations.sv;
   
   // Filtra imagens por categoria se necessário
   const filteredImages = useMemo(() => {
@@ -15,9 +74,19 @@ const ProjectGallery = ({ images, activeCategory }) => {
       : images;
   }, [images, activeCategory]);
   
+  // Gerencia o carregamento das imagens
+  const handleImageLoaded = (imageUrl) => {
+    setIsLoaded(prev => ({
+      ...prev,
+      [imageUrl]: true
+    }));
+  };
+  
   // Abre o lightbox
-  const openLightbox = (image) => {
+  const openLightbox = (image, index) => {
     setSelectedImage(image);
+    setSelectedIndex(index);
+    setImageTransition('');
     // Impedir scroll da página quando lightbox está aberto
     document.body.style.overflow = 'hidden';
   };
@@ -25,24 +94,82 @@ const ProjectGallery = ({ images, activeCategory }) => {
   // Fecha o lightbox
   const closeLightbox = () => {
     setSelectedImage(null);
+    setImageTransition('');
     // Restaurar scroll da página
     document.body.style.overflow = '';
   };
+  
+  // Navega para a próxima imagem
+  const nextImage = (e) => {
+    e.stopPropagation();
+    if (selectedIndex < filteredImages.length - 1) {
+      setImageTransition('slide-left');
+      setTimeout(() => {
+        setSelectedIndex(selectedIndex + 1);
+        setSelectedImage(filteredImages[selectedIndex + 1]);
+        setImageTransition('');
+      }, 300);
+    }
+  };
+  
+  // Navega para a imagem anterior
+  const prevImage = (e) => {
+    e.stopPropagation();
+    if (selectedIndex > 0) {
+      setImageTransition('slide-right');
+      setTimeout(() => {
+        setSelectedIndex(selectedIndex - 1);
+        setSelectedImage(filteredImages[selectedIndex - 1]);
+        setImageTransition('');
+      }, 300);
+    }
+  };
+  
+  // Gerencia teclas de navegação
+  React.useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!selectedImage) return;
+      
+      switch (e.key) {
+        case 'Escape':
+          closeLightbox();
+          break;
+        case 'ArrowRight':
+          if (selectedIndex < filteredImages.length - 1) {
+            nextImage(e);
+          }
+          break;
+        case 'ArrowLeft':
+          if (selectedIndex > 0) {
+            prevImage(e);
+          }
+          break;
+        default:
+          break;
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedImage, selectedIndex, filteredImages]);
   
   // Verificar se não temos imagens para mostrar
   if (!images || !Array.isArray(images) || images.length === 0) {
     return (
       <div className={styles.emptyGallery}>
-        <p>Nenhuma imagem disponível para este projeto.</p>
+        <p>{t.noImages}</p>
       </div>
     );
   }
 
+  // Classes para animação de entrada
+  const galleryClasses = `${styles.galleryContainer} ${isVisible ? styles.visible : ''}`;
+
   return (
-    <div className={styles.galleryContainer}>
+    <div className={galleryClasses}>
       {filteredImages.length === 0 ? (
         <p className={styles.emptyMessage}>
-          Nenhuma imagem encontrada {activeCategory ? `na categoria "${activeCategory}"` : ''}
+          {t.noImagesInCategory} "{activeCategory}"
         </p>
       ) : (
         <div className={styles.imageGrid}>
@@ -50,44 +177,73 @@ const ProjectGallery = ({ images, activeCategory }) => {
             <div 
               key={`${image.url}-${index}`}
               className={styles.imageItem}
-              onClick={() => openLightbox(image)}
+              style={{ 
+                animationDelay: `${index * 100}ms`,
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible ? 'translateY(0)' : 'translateY(20px)'
+              }}
+              onClick={() => openLightbox(image, index)}
             >
-              <img 
-                src={image.url || FALLBACK_IMAGE} 
-                alt={image.title || 'Project image'} 
-                className={styles.thumbnail}
-                onError={(e) => {
-                  e.target.src = FALLBACK_IMAGE;
-                  e.target.onerror = null; // Evita loop infinito
-                }}
-              />
-              <div className={styles.imageOverlay}>
-                <h4>{image.title}</h4>
-                {image.category && (
-                  <span className={styles.category}>{image.category}</span>
+              <div className={styles.imageWrapper}>
+                {!isLoaded[image.url] && (
+                  <div className={styles.imagePlaceholder}>
+                    <div className={styles.loadingSpinner}></div>
+                  </div>
                 )}
+                
+                <img 
+                  src={image.url || FALLBACK_IMAGE} 
+                  alt={image.title || 'Project image'} 
+                  className={`${styles.thumbnail} ${isLoaded[image.url] ? styles.loaded : ''}`}
+                  onLoad={() => handleImageLoaded(image.url)}
+                  onError={(e) => {
+                    e.target.src = FALLBACK_IMAGE;
+                    e.target.onerror = null; // Evita loop infinito
+                    handleImageLoaded(image.url);
+                  }}
+                />
+              </div>
+              
+              <div className={styles.imageOverlay}>
+                <div className={styles.zoomIcon}>
+                  <ZoomInIcon />
+                </div>
+                <div className={styles.imageInfo}>
+                  <h4>{image.title}</h4>
+                  {image.category && (
+                    <span className={styles.category}>{image.category}</span>
+                  )}
+                </div>
               </div>
             </div>
           ))}
         </div>
       )}
       
-      {/* Lightbox para imagem selecionada */}
+      {/* Lightbox para imagem selecionada com navegação e animações */}
       {selectedImage && (
-        <div className={styles.lightbox} onClick={closeLightbox}>
-          <button className={styles.closeButton} onClick={closeLightbox} aria-label="Fechar lightbox">
-            ×
+        <div className={styles.lightbox} onClick={closeLightbox} ref={lightboxRef}>
+          <button 
+            className={styles.closeButton} 
+            onClick={closeLightbox} 
+            aria-label={t.closeButton}
+          >
+            <CloseIcon />
           </button>
+          
           <div className={styles.lightboxContent} onClick={e => e.stopPropagation()}>
-            <img 
-              src={selectedImage.url || FALLBACK_IMAGE} 
-              alt={selectedImage.title || 'Project image'} 
-              className={styles.lightboxImage}
-              onError={(e) => {
-                e.target.src = FALLBACK_IMAGE;
-                e.target.onerror = null;
-              }}
-            />
+            <div className={`${styles.lightboxImageContainer} ${styles[imageTransition]}`}>
+              <img 
+                src={selectedImage.url || FALLBACK_IMAGE} 
+                alt={selectedImage.title || 'Project image'} 
+                className={styles.lightboxImage}
+                onError={(e) => {
+                  e.target.src = FALLBACK_IMAGE;
+                  e.target.onerror = null;
+                }}
+              />
+            </div>
+            
             <div className={styles.lightboxInfo}>
               {selectedImage.title && <h3>{selectedImage.title}</h3>}
               {selectedImage.caption && <p>{selectedImage.caption}</p>}
@@ -99,8 +255,33 @@ const ProjectGallery = ({ images, activeCategory }) => {
                   ))}
                 </div>
               )}
+              
+              <div className={styles.imageCounter}>
+                {t.imageOf} {selectedIndex + 1} {t.of} {filteredImages.length}
+              </div>
             </div>
           </div>
+          
+          {/* Botões de navegação do lightbox */}
+          {selectedIndex > 0 && (
+            <button 
+              className={`${styles.navButton} ${styles.prevButton}`}
+              onClick={prevImage}
+              aria-label={t.prevImage}
+            >
+              <ArrowLeftIcon />
+            </button>
+          )}
+          
+          {selectedIndex < filteredImages.length - 1 && (
+            <button 
+              className={`${styles.navButton} ${styles.nextButton}`}
+              onClick={nextImage}
+              aria-label={t.nextImage}
+            >
+              <ArrowRightIcon />
+            </button>
+          )}
         </div>
       )}
     </div>

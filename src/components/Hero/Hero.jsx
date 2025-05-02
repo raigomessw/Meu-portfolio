@@ -3,6 +3,13 @@ import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import styles from './Hero.module.css';
 import profileImage from '../common/Image/profile.jpeg';
+// Importando as funções de premiumPerformance
+import { 
+  detectDevicePerformance, 
+  throttle,
+  setupMouseTracking,
+  setupParallaxEffect
+} from '../utils/premiumPerformance';
 
 // Constantes para otimização
 const PARTICLE_COUNT = {
@@ -78,48 +85,53 @@ const Hero = () => {
   const parallaxRef = useRef(null);
   const { theme } = useTheme();
   
+  // Usando a detecção avançada de dispositivo do premiumPerformance
+  const deviceInfo = useMemo(() => {
+    // Só executa no client-side
+    if (typeof window !== 'undefined') {
+      return detectDevicePerformance();
+    }
+    return {
+      shouldReduceEffects: false,
+      isTouchDevice: false,
+      isLowEndDevice: false,
+      prefersReducedMotion: false,
+      isMobile: false
+    };
+  }, []);
+  
   // Detectar largura da tela para determinar quantidade de partículas
   const isSmallScreen = useMemo(() => {
-    return window.innerWidth <= 768;
-  }, []);
+    return window.innerWidth <= 768 || deviceInfo.isMobile;
+  }, [deviceInfo.isMobile]);
   
   // Determina estados baseados em métricas
   const currentStatus = STATUS.AVAILABLE;
   const experienceYears = new Date().getFullYear() - 2021;
 
-  // Efeito paralaxe 3D
+  // Efeito paralaxe 3D usando funções premium
   useEffect(() => {
-    // Verificar preferências de movimento reduzido
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
+    if (deviceInfo.prefersReducedMotion || deviceInfo.shouldReduceEffects) return;
     
-    const handleMouseMove = (e) => {
-      if (!parallaxRef.current) return;
-      
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
-      
-      // Normalizar posição do mouse (0-1)
-      const normalizedX = clientX / innerWidth;
-      const normalizedY = clientY / innerHeight;
-      
-      setMousePosition({ x: normalizedX, y: normalizedY });
-      
-      // Aplicar efeito de paralaxe
-      document.documentElement.style.setProperty('--mouse-x', normalizedX.toFixed(2));
-      document.documentElement.style.setProperty('--mouse-y', normalizedY.toFixed(2));
-    };
-    
-    window.addEventListener('mousemove', handleMouseMove);
+    // Configuração de mouse tracking para efeitos de parallax
+    const cleanupMouseTracking = setupMouseTracking(parallaxRef.current, {
+      throttleLimit: 50,
+      effectIntensity: 0.8,
+      updateProps: ['--mouse-x', '--mouse-y'],
+      perspective: true
+    });
     
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
+      if (cleanupMouseTracking) cleanupMouseTracking();
     };
-  }, []);
+  }, [deviceInfo.prefersReducedMotion, deviceInfo.shouldReduceEffects]);
   
   // Gera partículas com propriedades aleatórias
   const particles = useMemo(() => {
-    const particleCount = isSmallScreen ? PARTICLE_COUNT.mobile : PARTICLE_COUNT.desktop;
+    // Reduz o número de partículas em dispositivos de baixo desempenho
+    const particleCount = deviceInfo.shouldReduceEffects ? 
+      PARTICLE_COUNT.mobile / 2 : 
+      isSmallScreen ? PARTICLE_COUNT.mobile : PARTICLE_COUNT.desktop;
     
     return Array.from({ length: particleCount }).map((_, index) => {
       const size = Math.floor(Math.random() * 40) + 10; // 10px a 50px
@@ -132,7 +144,7 @@ const Hero = () => {
       
       return { id: index, size, top, left, duration, delay, opacity, blur };
     });
-  }, [isSmallScreen]);
+  }, [isSmallScreen, deviceInfo.shouldReduceEffects]);
   
   // Define as tecnologias com cores correspondentes
   const technologies = useMemo(() => [
@@ -162,8 +174,14 @@ const Hero = () => {
    
   ], [experienceYears]);
   
-  // Efeito de animação de entrada com IntersectionObserver
+  // Efeito de animação de entrada com IntersectionObserver otimizado
   useEffect(() => {
+    // Não usa IntersectionObserver se o usuário preferir movimento reduzido
+    if (deviceInfo.prefersReducedMotion) {
+      setVisible(true);
+      return;
+    }
+    
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -171,7 +189,7 @@ const Hero = () => {
           observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: '0px 0px 50px 0px' }
     );
     
     if (heroRef.current) {
@@ -181,18 +199,16 @@ const Hero = () => {
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [deviceInfo.prefersReducedMotion]);
   
-  // Efeito de digitação de texto
+  // Efeito de digitação de texto com otimização para preferência de movimento reduzido
   const [typedText, setTypedText] = useState('');
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   
   useEffect(() => {
-    // Verificar se o usuário prefere menos movimento
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
-    if (prefersReducedMotion) {
+    // Verificar se o usuário prefere menos movimento usando o deviceInfo
+    if (deviceInfo.prefersReducedMotion) {
       // Se preferir menos movimento, mostra o texto completo imediatamente
       setTypedText(phrases[0]);
       setIsTypingComplete(true);
@@ -228,7 +244,27 @@ const Hero = () => {
     }, typingSpeed);
     
     return () => clearTimeout(timer);
-  }, [typedText, currentPhraseIndex, isDeleting, phrases]);
+  }, [typedText, currentPhraseIndex, isDeleting, phrases, deviceInfo.prefersReducedMotion]);
+  
+  // Efeito para elementos decorativos parallax
+  useEffect(() => {
+    if (deviceInfo.prefersReducedMotion || deviceInfo.shouldReduceEffects) return;
+    
+    // Elementos decorativos que terão efeito de parallax
+    const decorElements = document.querySelectorAll(`.${styles.decorElement}`);
+    if (decorElements.length === 0) return;
+    
+    // Setup do efeito parallax usando a função premium
+    const cleanupParallax = setupParallaxEffect(Array.from(decorElements), {
+      throttleLimit: 50,
+      maxOffset: deviceInfo.isMobile ? 30 : 60,
+      smoothingFactor: 0.15
+    });
+    
+    return () => {
+      if (cleanupParallax) cleanupParallax();
+    };
+  }, [deviceInfo.prefersReducedMotion, deviceInfo.shouldReduceEffects, deviceInfo.isMobile]);
   
   // Efeito para definir quando a animação de digitação termina
   useEffect(() => {
@@ -239,32 +275,34 @@ const Hero = () => {
     return () => clearTimeout(timeout);
   }, []);
   
-  // Função para gerenciar o tech hover
-  const handleTechHover = (index) => {
+  // Função para gerenciar o tech hover (otimizada com throttle)
+  const handleTechHover = useCallback(throttle((index) => {
     setActiveTech(index);
-  };
+  }, 50), []);
   
   // Função otimizada para scroll suave
   const scrollToWork = useCallback((e) => {
     e.preventDefault();
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    // Usa a detecção de preferência de movimento do premium performance
+    const noSmoothScroll = deviceInfo.prefersReducedMotion;
     
     // Ajuste aqui para o ID correto da sua seção de serviços ou projetos
     const targetSection = document.getElementById('services') || document.querySelector('.services');
     
     if (targetSection) {
       targetSection.scrollIntoView({
-        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        behavior: noSmoothScroll ? 'auto' : 'smooth',
         block: 'start'
       });
     } else {
       // Fallback: rolar para uma posição aproximada se não encontrar a seção
       window.scrollTo({
         top: window.innerHeight,
-        behavior: prefersReducedMotion ? 'auto' : 'smooth'
+        behavior: noSmoothScroll ? 'auto' : 'smooth'
       });
     }
-  }, []);
+  }, [deviceInfo.prefersReducedMotion]);
 
   return (
     <section 
@@ -285,29 +323,35 @@ const Hero = () => {
         <div className={styles.gridLayer}></div>
       </div>
       
-      {/* Partículas decorativas melhoradas */}
-      <div className={styles.heroParticles} aria-hidden="true">
-        {particles.map(particle => (
-          <div 
-            key={particle.id}
-            className={styles.particle}
-            style={{
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              top: particle.top,
-              left: particle.left,
-              opacity: particle.opacity,
-              '--duration': `${particle.duration}s`,
-              '--blur': `${particle.blur}px`,
-              animationDelay: `${particle.delay}s`
-            }}
-          ></div>
-        ))}
-      </div>
+      {/* Partículas decorativas melhoradas - com condicionais para reduzir efeitos */}
+      {!deviceInfo.shouldReduceEffects && (
+        <div className={styles.heroParticles} aria-hidden="true">
+          {particles.map(particle => (
+            <div 
+              key={particle.id}
+              className={styles.particle}
+              style={{
+                width: `${particle.size}px`,
+                height: `${particle.size}px`,
+                top: particle.top,
+                left: particle.left,
+                opacity: particle.opacity,
+                '--duration': `${particle.duration}s`,
+                '--blur': `${particle.blur}px`,
+                animationDelay: `${particle.delay}s`
+              }}
+            ></div>
+          ))}
+        </div>
+      )}
       
-      {/* Brilhos (glows) para efeito visual avançado */}
-      <div className={`${styles.glowEffect} ${styles.glow1}`} aria-hidden="true"></div>
-      <div className={`${styles.glowEffect} ${styles.glow2}`} aria-hidden="true"></div>
+      {/* Brilhos (glows) para efeito visual avançado - condicional */}
+      {!deviceInfo.isLowEndDevice && (
+        <>
+          <div className={`${styles.glowEffect} ${styles.glow1}`} aria-hidden="true"></div>
+          <div className={`${styles.glowEffect} ${styles.glow2}`} aria-hidden="true"></div>
+        </>
+      )}
       
       {/* Badge de disponibilidade - Traduzido para sueco */}
       <div className={styles.availabilityBadge}>

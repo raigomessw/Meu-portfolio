@@ -1,10 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './WorkCard.module.css';
 import sectionStyles from './WorkSection.module.css';
 import { useInView } from '../../Hooks/useInView';
 import { useReducedMotion } from '../../Hooks/useReducedMotion';
 import { FiArrowRight, FiEye } from 'react-icons/fi';
+// Importando utilitários premium para melhor desempenho
+import { 
+  detectDevicePerformance, 
+  setupMouseTracking,
+  loadOptimizedImage
+} from '../utils/premiumPerformance';
 
 const WorkCard = ({ 
   project, 
@@ -13,36 +19,73 @@ const WorkCard = ({
   featuredProject = false
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [deviceInfo, setDeviceInfo] = useState(null);
   const cardRef = useRef(null);
+  const imageRef = useRef(null);
   const isInView = useInView(cardRef, { threshold: 0.1, triggerOnce: true });
   const prefersReducedMotion = useReducedMotion();
   const navigate = useNavigate();
 
-  // Mouse tracking para efeito 3D
-  const handleMouseMove = (e) => {
-    if (prefersReducedMotion) return;
+  // Detectar capacidades do dispositivo no mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setDeviceInfo(detectDevicePerformance());
+    }
+  }, []);
+
+  // Carregamento otimizado de imagem quando o componente entra na viewport
+  useEffect(() => {
+    if (!isInView) return;
     
-    const card = cardRef.current;
-    if (!card) return;
+    const loadImage = async () => {
+      try {
+        // Usar a função premium para carregar imagem com qualidade adequada
+        const quality = deviceInfo?.isLowEndDevice ? 'low' : 'medium';
+        
+        if (project.thumbnailImage || project.thumbnail) {
+          await loadOptimizedImage(project.thumbnailImage || project.thumbnail, quality);
+          setImageLoaded(true);
+        }
+      } catch (error) {
+        console.log('Erro ao carregar imagem otimizada:', error);
+        // Fallback para carregamento normal
+        setImageLoaded(true);
+      }
+    };
     
-    const rect = card.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
+    loadImage();
+  }, [isInView, project.thumbnailImage, project.thumbnail, deviceInfo]);
+
+  // Setup de efeitos 3D avançados com cleanup adequado
+  useEffect(() => {
+    if (!cardRef.current || prefersReducedMotion || (deviceInfo && deviceInfo.shouldReduceEffects)) return;
     
-    card.style.setProperty('--mouse-x', x);
-    card.style.setProperty('--mouse-y', y);
-  };
+    // Usa a função premium para setup de mouse tracking
+    const cleanupMouseTracking = setupMouseTracking(cardRef.current, {
+      throttleLimit: 50,
+      effectIntensity: featuredProject ? 1.2 : 0.8,
+      perspective: true
+    });
+    
+    return () => {
+      if (cleanupMouseTracking) cleanupMouseTracking();
+    };
+  }, [prefersReducedMotion, deviceInfo, featuredProject]);
 
   // Animação de entrada com delay progressivo
   useEffect(() => {
-    if (!cardRef.current) return;
-    if (isInView) {
-      const delay = prefersReducedMotion ? 0 : index * 100;
-      setTimeout(() => {
-        cardRef.current?.classList.add(sectionStyles.visible);
-      }, delay);
-    }
-  }, [isInView, index, prefersReducedMotion]);
+    if (!cardRef.current || !isInView) return;
+    
+    const noAnimations = prefersReducedMotion || (deviceInfo && deviceInfo.prefersReducedMotion);
+    const delay = noAnimations ? 0 : index * 100;
+    
+    const timeoutId = setTimeout(() => {
+      cardRef.current?.classList.add(sectionStyles.visible);
+    }, delay);
+    
+    return () => clearTimeout(timeoutId);
+  }, [isInView, index, prefersReducedMotion, deviceInfo]);
 
   // Função para cortar texto se for muito longo
   const truncateText = (text, maxLength) => {
@@ -51,35 +94,48 @@ const WorkCard = ({
   };
 
   // Função para lidar com o clique no card
-  const handleCardClick = (e) => {
+  const handleCardClick = useCallback((e) => {
     e.preventDefault();
-    // Usa project.id em vez de project.slug
     navigate(`/work/${project.id}`);
-  };
+  }, [navigate, project.id]);
 
   // Função para lidar com o clique no botão de visualização rápida
-  const handleQuickViewClick = (e) => {
+  const handleQuickViewClick = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation(); // Impede que o evento de clique se propague para o Link
     if (onClick && typeof onClick === 'function') {
       onClick(project);
     }
-  };
+  }, [onClick, project]);
 
   return (
     <div className={sectionStyles.projectCardWrapper}>
       <div
         ref={cardRef}
-        className={`${sectionStyles.projectCard} ${featuredProject ? styles.featured : ''}`}
-        onMouseMove={handleMouseMove}
+        className={`${sectionStyles.projectCard} ${featuredProject ? styles.featured : ''} premium-lazy`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleCardClick}
         style={{ cursor: 'pointer' }}
         aria-label={`Ver detalhes do projeto ${project.title}`}
+        data-premium-effect={featuredProject ? "enhanced" : "standard"}
       >
         <div className={sectionStyles.cardImage}>
-          <img src={project.thumbnailImage || project.thumbnail} alt={project.title} />
+          <div className={`${sectionStyles.imageContainer} ${imageLoaded ? sectionStyles.loaded : ''}`}>
+            {/* Div de placeholder enquanto a imagem carrega */}
+            <div className={sectionStyles.imagePlaceholder}>
+              <span className={sectionStyles.loadingText}>Carregando...</span>
+            </div>
+            
+            {/* Imagem com carregamento otimizado */}
+            <img 
+              ref={imageRef}
+              src={project.thumbnailImage || project.thumbnail} 
+              alt={project.title}
+              className={imageLoaded ? sectionStyles.visible : ''}
+              loading="lazy"
+            />
+          </div>
           <div className={sectionStyles.cardOverlay}></div>
           {featuredProject && (
             <div className={styles.featuredBadge}>
@@ -129,7 +185,7 @@ const WorkCard = ({
           </div>
         </div>
         
-        <div className={sectionStyles.cardHoverEffect}>
+        <div className={`${sectionStyles.cardHoverEffect} ${isHovered ? sectionStyles.active : ''}`}>
           <span className={sectionStyles.exploreText}>Explorar Projeto</span>
           <FiArrowRight className={sectionStyles.arrowIcon} />
         </div>
@@ -138,4 +194,4 @@ const WorkCard = ({
   );
 };
 
-export default WorkCard;
+export default React.memo(WorkCard);

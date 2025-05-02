@@ -1,7 +1,6 @@
-
-/* Sistema de Design - Variáveis Globais */
+/* Sistema de Design - Variáveis Globais (Design System - Globala Variabler) */
 :root {
-  /* Paleta de cores cuidadosamente calibrada para acessibilidade (contraste WCAG AAA) */
+  /* Paleta de cores cuidadosamente calibrada para acessibilidade (Färgpalett noggrant kalibrerad för tillgänglighet - WCAG AAA) */
   --color-primary: #2563eb;
   --color-primary-light: #3b82f6;
   --color-primary-dark: #1d4ed8;
@@ -16,7 +15,7 @@
   --color-warning: #d97706;
   --color-error: #dc2626;
   
-  /* Sistema de sombras com múltiplas camadas para profundidade natural */
+  /* Sistema de sombras com múltiplas camadas para profundidade natural (Skuggsystem med flera lager för naturligt djup) */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
@@ -24,7 +23,7 @@
   --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.05);
   --shadow-focus: 0 0 0 3px rgba(37, 99, 235, 0.4);
   
-  /* Sistema de espaçamento baseado em escala modular (8pt grid) */
+  /* Sistema de espaçamento baseado em escala modular (Avståndssystem baserat på modulär skala - 8pt grid) */
   --space-1: 0.25rem;  /* 4px */
   --space-2: 0.5rem;   /* 8px */
   --space-3: 0.75rem;  /* 12px */
@@ -68,14 +67,17 @@
   --radius-full: 9999px;
 }
 
-/* Estilos base com foco em performance e legibilidade */
+/* Estilos base com foco em performance e legibilidade (Grundstilar med fokus på prestanda och läsbarhet) */
 .projectDetail {
   width: 100%;
   margin: 0 auto;
   animation: fadeIn 600ms var(--transition-curve);
-  font-feature-settings: "ss01", "ss02", "cv01", "cv02"; /* Otimizações tipográficas */
+  font-feature-settings: "ss01", "ss02", "cv01", "cv02"; /* Otimizações tipográficas (Typografiska optimeringar) */
   scroll-behavior: smooth;
   scroll-padding-top: var(--space-16);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @keyframes fadeIn {
@@ -83,7 +85,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Header Hero com paralaxe suave */
+/* Header Hero com paralaxe suave (Rubrik-hjälte med mjuk parallax) */
 .projectHeader {
   height: 70vh;
   min-height: 450px;
@@ -93,7 +95,14 @@
   position: relative;
   color: white;
   margin-bottom: 0;
-  clip-path: polygon(0 0, 100% 0, 100% 94%, 0 100%); /* Ângulo dinâmico */
+  clip-path: polygon(0 0, 100% 0, 100% 94%, 0 100%); /* Ângulo dinâmico (Dynamisk vinkel) */
+}
+
+/* Melhorando a responsividade para dispositivos móveis onde parallax pode causar problemas */
+@supports (-webkit-touch-callout: none) {
+  .projectHeader {
+    background-attachment: scroll; /* Correção para iOS (Korrigering för iOS) */
+  }
 }
 
 .headerOverlay {
@@ -115,7 +124,7 @@
 .projectHeading {
   text-align: center;
   max-width: 900px;
-  transform: translateY(-5%); /* Ajuste posicional sutil */
+  transform: translateY(-5%); /* Ajuste posicional sutil (Subtil positionsjustering) */
   animation: fadeUp 800ms var(--transition-curve) 150ms both;
 }
 
@@ -129,7 +138,7 @@
   line-height: 1.1;
   margin-bottom: var(--space-6);
   font-weight: 700;
-  letter-spacing: -0.025em; /* Tracking refinado para títulos */
+  letter-spacing: -0.025em; /* Tracking refinado para títulos (Förfinat spårning för titlar) */
 }
 
 .projectHeading p {
@@ -142,7 +151,7 @@
   opacity: 0.9;
 }
 
-/* Sistema de tags com estilo distintivo */
+/* Sistema de tags com estilo distintivo (Taggsystem med distinktiv stil) */
 .projectTags {
   display: flex;
   flex-wrap: wrap;
@@ -160,7 +169,10 @@
   font-size: var(--font-size-sm);
   font-weight: 500;
   letter-spacing: 0.01em;
-  transition: all var(--transition-base) var(--transition-curve);
+  transition: all var(--transition-base) var(--transition-bounce);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 }
 
 .tag:hover {
@@ -169,12 +181,12 @@
   box-shadow: var(--shadow-md);
 }
 
-/* Conteúdo principal com layout sofisticado */
+/* Conteúdo principal com layout sofisticado (Huvudinnehåll med sofistikerad layout) */
 .projectContent {
   position: relative;
-  max-width: 1400px; /* Largura aumentada para conteúdo visual */
+  max-width: 1400px; /* Largura aumentada para conteúdo visual (Bredd ökad för visuellt innehåll) */
   margin: 0 auto;
-  padding: var(--space-16) var(--space-4);
+  padding: var(--space-16) calc(var(--container-padding) / 2);
   display: grid;
   grid-template-columns: 1fr min(700px, 100%) 1fr;
   grid-template-areas: 
@@ -189,7 +201,7 @@
   margin-bottom: var(--space-12);
 }
 
-/* Seção de informações */
+/* Seção de informações (Informationssektion) */
 .infoSection {
   margin-bottom: var(--space-12);
   position: relative;
@@ -204,7 +216,7 @@
   display: inline-block;
 }
 
-/* Decorador visual para títulos de seção */
+/* Decorador visual para títulos de seção (Visuell dekoratör för sektionsrubriker) */
 .infoSection h2::after {
   content: "";
   position: absolute;
@@ -223,10 +235,10 @@
   margin-bottom: var(--space-6);
 }
 
-/* Cards de informação com design refinado */
+/* Cards de informação com design refinado (Informationskort med förfinad design) */
 .infoGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: var(--space-6);
   margin: var(--space-8) 0;
 }
@@ -241,6 +253,9 @@
   position: relative;
   overflow: hidden;
   border: 1px solid var(--color-border);
+  height: 100%; /* Garantir altura igual para todos os cards */
+  display: flex;
+  flex-direction: column;
 }
 
 .infoCard:hover {
@@ -248,7 +263,7 @@
   box-shadow: var(--shadow-xl);
 }
 
-/* Elemento decorativo dos cards */
+/* Elemento decorativo dos cards (Dekorativt element för korten) */
 .infoCard::before {
   content: "";
   position: absolute;
@@ -271,9 +286,10 @@
   font-size: var(--font-size-base);
   line-height: 1.7;
   color: var(--color-text-light);
+  flex-grow: 1; /* Para alinhar rodapés dos cards */
 }
 
-/* Seção de tecnologias com layout em grade visualmente balanceado */
+/* Seção de tecnologias com layout em grade visualmente balanceado (Tekniksektion med visuellt balanserad layout) */
 .technologiesSection {
   margin-top: var(--space-12);
 }
@@ -287,7 +303,7 @@
 
 .techGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: var(--space-4);
   margin-top: var(--space-6);
 }
@@ -296,16 +312,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
   background: var(--color-background-alt);
   padding: var(--space-6);
   border-radius: var(--radius-lg);
   transition: all var(--transition-base) var(--transition-curve);
   border: 1px solid var(--color-border);
+  aspect-ratio: 1 / 1; /* Cards quadrados para melhor aparência visual */
 }
 
 .techCard:hover {
-  transform: translateY(-3px);
+  transform: translateY(-3px) scale(1.03);
   box-shadow: var(--shadow-md);
   background: white;
 }
@@ -313,6 +331,11 @@
 .techIcon {
   font-size: var(--font-size-3xl);
   margin-bottom: var(--space-2);
+  transition: transform var(--transition-base) var(--transition-curve);
+}
+
+.techCard:hover .techIcon {
+  transform: scale(1.2);
 }
 
 .techName {
@@ -321,7 +344,7 @@
   text-align: center;
 }
 
-/* Links do projeto com design acessível e feedback interativo */
+/* Links do projeto com design acessível e feedback interativo (Projektlänkar med tillgänglig design och interaktiv feedback) */
 .projectLinks {
   margin-top: var(--space-12);
 }
@@ -355,7 +378,7 @@
   z-index: 1;
 }
 
-/* Efeito de hover com animação de fundo */
+/* Efeito de hover com animação de fundo (Hover-effekt med bakgrundsanimation) */
 .linkButton::before {
   content: '';
   position: absolute;
@@ -398,13 +421,14 @@
   color: white;
 }
 
-/* Galeria em fullwidth para máximo impacto visual */
+/* Galeria em fullwidth para máximo impacto visual (Fullbredd-galleri för maximal visuell effekt) */
 .gallerySection {
   grid-area: gallery;
   margin: var(--space-16) 0;
   padding: var(--space-12) var(--space-4);
   background: var(--color-background-alt);
   position: relative;
+  overflow: hidden; /* Evitar overflow em telas menores */
 }
 
 .gallerySection::before {
@@ -426,7 +450,7 @@
   font-weight: 700;
 }
 
-/* Filtro por categoria com UI modernizado */
+/* Filtro por categoria com UI modernizado (Kategorifiltret med moderniserat UI) */
 .categoryFilter {
   display: flex;
   flex-wrap: wrap;
@@ -460,20 +484,58 @@
   font-weight: 600;
 }
 
-/* Navegação de projetos com design elegante */
+/* Navegação de projetos com design elegante (Projektnavigation med elegant design) */
 .projectNavigation {
   grid-area: navigation;
   margin-top: var(--space-12);
   padding-top: var(--space-8);
   border-top: 1px solid var(--color-border);
   text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
-.backToProjects {
+.prevProject, .nextProject {
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: 500;
+  transition: all var(--transition-base) var(--transition-curve);
+}
+
+.prevProject svg, .nextProject svg {
+  transition: transform var(--transition-base) var(--transition-curve);
+}
+
+.prevProject:hover svg {
+  transform: translateX(-4px);
+}
+
+.nextProject:hover svg {
+  transform: translateX(4px);
+}
+
+.prevProject:hover, .nextProject:hover {
+  background: var(--color-background-alt);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.backToProjects {
+  flex: 1 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
   padding: var(--space-4) var(--space-8);
+  margin: 0 var(--space-4);
   background: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -503,7 +565,7 @@
   transform: translateX(-4px);
 }
 
-/* Estado de carregamento com animações fluidas */
+/* Estado de carregamento com animações fluidas (Laddningstillstånd med flytande animeringar) */
 .loading {
   min-height: 70vh;
   display: flex;
@@ -552,7 +614,7 @@
   100% { opacity: 0.6; }
 }
 
-/* Página de projeto não encontrado */
+/* Página de projeto não encontrado (Projekt hittades inte-sida) */
 .notFound {
   min-height: 70vh;
   display: flex;
@@ -600,7 +662,7 @@
   background: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  font-family: 'SF Mono', 'Cascadia Code', Menlo, Monaco, Consolas, monospace;
+  font-family: var(--font-family-mono);
   font-size: var(--font-size-sm);
   color: var(--color-text-light);
   position: relative;
@@ -629,7 +691,82 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Sistema responsivo completo - Mobile First */
+/* Componente de galeria de imagens responsiva (Responsivt bildgallerikomponent) */
+.projectGallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+}
+
+.galleryItem {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-base) var(--transition-curve),
+              box-shadow var(--transition-base) var(--transition-curve);
+  aspect-ratio: 16 / 9;
+  cursor: pointer;
+}
+
+.galleryItem:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: var(--shadow-xl);
+  z-index: 1;
+}
+
+.galleryItem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-base) var(--transition-curve);
+}
+
+.galleryItem:hover img {
+  transform: scale(1.05);
+}
+
+.galleryOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 60%);
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-4);
+  opacity: 0;
+  transition: opacity var(--transition-base) var(--transition-curve);
+}
+
+.galleryItem:hover .galleryOverlay {
+  opacity: 1;
+}
+
+.galleryCaption {
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Traduções para sueco (Texttypografi för svenska översättningar) */
+.swedishLabels {
+  --label-overview: "Översikt";
+  --label-challenge: "Utmaning";
+  --label-solution: "Lösning";
+  --label-result: "Resultat";
+  --label-technologies: "Tekniker";
+  --label-gallery: "Galleri";
+  --label-links: "Länkar";
+  --label-live: "Live Demo";
+  --label-github: "Källkod";
+  --label-figma: "Design";
+  --label-back: "Tillbaka till projekt";
+  --label-loading: "Laddar...";
+  --label-not-found: "Projekt hittades inte";
+}
+
+/* Sistema responsivo completo - Mobile First (Responsivt system - Mobile First) */
 @media (max-width: 639px) {
   .projectHeading h1 {
     font-size: var(--font-size-3xl);
@@ -659,6 +796,24 @@
     width: 100%;
     justify-content: center;
   }
+
+  .projectNavigation {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  .prevProject, .nextProject, .backToProjects {
+    width: 100%;
+  }
+  
+  .galleryItem {
+    aspect-ratio: 4 / 3;
+  }
+  
+  .projectContent {
+    gap: var(--space-8);
+    padding-top: var(--space-8);
+  }
 }
 
 @media (min-width: 640px) and (max-width: 767px) {
@@ -669,12 +824,24 @@
   .projectHeader {
     height: 55vh;
   }
+  
+  .projectGallery {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .projectContent {
     padding-left: var(--space-6);
     padding-right: var(--space-6);
+  }
+  
+  /* Layout de duas colunas médio para tablets */
+  .infoSection {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: var(--space-8);
+    align-items: start;
   }
 }
 
@@ -684,7 +851,7 @@
     padding-right: var(--space-8);
   }
   
-  /* Layout de duas colunas para telas maiores */
+  /* Layout de duas colunas para telas maiores (Tvåkolumnslayout för större skärmar) */
   .infoSection {
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -701,9 +868,42 @@
   .infoSection p {
     grid-column: 2;
   }
+  
+  .projectGallery {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+  
+  /* Animações avançadas apenas para desktop (Avancerade animeringar endast för desktop) */
+  @media (pointer: fine) {
+    .galleryItem:hover {
+      transform: translateY(-5px) scale(1.05);
+    }
+    
+    .techCard:hover .techIcon {
+      animation: bounce 0.5s var(--transition-bounce);
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  }
 }
 
-/* Suporte para dark mode automático */
+@media (min-width: 1280px) {
+  .projectGallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* Efeito glass para telas grandes (Glaseffekt för stora skärmar) */
+  .infoCard {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+/* Suporte para dark mode automático (Stöd för automatiskt mörkt läge) */
 @media (prefers-color-scheme: dark) {
   :root {
     --color-text: #f1f5f9;
@@ -743,7 +943,7 @@
     border-top-color: var(--color-primary);
   }
   
-  /* Ajustar estilos específicos para modo escuro */
+  /* Ajustar estilos específicos para modo escuro (Justera specifika stilar för mörkt läge) */
   .categoryButton {
     border-color: #475569;
     color: #cbd5e1;
@@ -756,9 +956,15 @@
   .gallerySection {
     background: #1a2234;
   }
+  
+  @media (min-width: 1280px) {
+    .infoCard {
+      background: rgba(30, 41, 59, 0.8); /* Dark glass effect */
+    }
+  }
 }
 
-/* Melhorias de acessibilidade */
+/* Melhorias de acessibilidade (Tillgänglighetsförbättringar) */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -772,12 +978,56 @@
   .projectHeader {
     background-attachment: scroll;
   }
+  
+  .techCard:hover .techIcon {
+    transform: none;
+  }
 }
 
-/* Melhora da acessibilidade do teclado */
+/* Melhora da acessibilidade do teclado (Förbättrad tangentbordstillgänglighet) */
 .linkButton:focus-visible,
 .backToProjects:focus-visible,
-.categoryButton:focus-visible {
+.categoryButton:focus-visible,
+.galleryItem:focus-visible,
+.prevProject:focus-visible,
+.nextProject:focus-visible {
   outline: 3px solid var(--color-primary-light);
   outline-offset: 2px;
+}
+
+/* Evitar texto indesejado com quebra de linha (Undvik oönskade textradbrott) */
+.techName, 
+.linkButton,
+.backToProjects,
+.prevProject, 
+.nextProject {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* UI específica para impressão (Specifik UI för utskrift) */
+@media print {
+  .projectHeader {
+    height: auto;
+    min-height: auto;
+    clip-path: none;
+    background-attachment: scroll;
+  }
+  
+  .projectGallery {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  .galleryItem {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  
+  .linkButton, 
+  .backToProjects,
+  .categoryButton {
+    display: none;
+  }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import premiumPerformance from '../../utils/premiumPerformance';
+import premiumPerformance from '../utils/premiumPerformance';
 
 /**
  * Componente que gerencia efeitos premium do site
