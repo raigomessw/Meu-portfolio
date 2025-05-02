@@ -10,6 +10,14 @@
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
 }
 
+/* Versão modo claro para o footer */
+.footerLight {
+  background-color: rgba(250, 250, 255, 0.97);
+  color: var(--text-dark-tertiary, #555);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.07);
+}
+
 /* Efeitos de fundo aprimorados */
 .footer::before {
   content: '';
@@ -24,8 +32,80 @@
   z-index: 0;
   opacity: 0.8;
   animation: backgroundPulse 15s infinite alternate ease-in-out;
+  will-change: opacity, background-position;
 }
 
+/* Ajuste dos gradientes para o tema claro */
+.footerLight::before {
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(0, 120, 255, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(131, 56, 236, 0.02) 0%, transparent 70%);
+  opacity: 0.6;
+}
+
+/* Botão Voltar ao Topo */
+.scrollTopButton {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-light-quinary), var(--accent-light-senary));
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 
+              0 0 0 rgba(var(--accent-light-quinary-rgb, 124, 58, 237), 0.5);
+  overflow: hidden;
+}
+
+/* Versão modo claro para o botão voltar ao topo */
+.scrollTopButtonLight {
+  background: linear-gradient(135deg, var(--accent-dark-quinary, #6366f1), var(--accent-dark-senary, #8b5cf6));
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25), 
+              0 0 0 rgba(139, 92, 246, 0.3);
+}
+
+.scrollTopButton::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 80%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.scrollTopButton.visible {
+  opacity: 0.9;
+  transform: translateY(0) scale(1);
+}
+
+.scrollTopButton:hover {
+  opacity: 1;
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3),
+              0 0 20px rgba(var(--accent-light-quinary-rgb, 124, 58, 237), 0.4);
+}
+
+.scrollTopButton:hover::before {
+  opacity: 1;
+}
+
+.scrollTopButton:focus-visible {
+  outline: 3px solid var(--accent-light-quinary);
+  outline-offset: 4px;
+}
+
+/* Melhoria de desempenho - reduzir repinturas */
 @keyframes backgroundPulse {
   0% {
     opacity: 0.7;
@@ -67,7 +147,8 @@
   font-size: 1.8rem;
   font-weight: 800;
   margin-bottom: 8px;
-  background: linear-gradient(135deg, var(--accent-light-quinary), var(--accent-light-senary));
+  color: #c576f6; /* Fallback para navegadores que não suportam gradiente */
+  background: linear-gradient(135deg, var(--accent-light-quinary, #7c4dff), var(--accent-light-senary, #c576f6));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -75,6 +156,15 @@
   transform: translateZ(0);
   position: relative;
   display: inline-block;
+}
+
+/* Tema claro para o nome */
+.nameLight {
+  color: #8b5cf6; /* Fallback para navegadores que não suportam gradiente */
+  background: linear-gradient(135deg, var(--accent-dark-quinary, #6366f1), var(--accent-dark-senary, #8b5cf6));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .name::after {
@@ -89,6 +179,11 @@
   transition: width var(--footer-animation-timing);
 }
 
+/* Tema claro para o sublinhado do nome */
+.nameLight::after {
+  background: linear-gradient(90deg, var(--accent-dark-quinary, #6366f1), transparent);
+}
+
 .logoSection:hover .name::after {
   width: 100%;
 }
@@ -96,11 +191,32 @@
 .title {
   font-size: 1rem;
   color: var(--text-light-quaternary);
-  font-weight: 300;
+  font-weight: 500;
   letter-spacing: 0.03em;
   max-width: 300px;
   line-height: 1.5;
   margin-top: 12px;
+}
+
+/* Tema claro para o título */
+.titleLight {
+  color: var(--text-dark-quaternary, #555);
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: var(--text-light-quaternary);
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  max-width: 300px;
+  line-height: 1.5;
+  margin-top: 8px;
+  opacity: 0.8;
+}
+
+/* Tema claro para o subtítulo */
+.subtitleLight {
+  color: var(--text-dark-quaternary, #666);
 }
 
 /* Seção de navegação */
@@ -122,6 +238,11 @@
   padding-left: 14px;
 }
 
+/* Tema claro para o título da navegação */
+.navigationTitleLight {
+  color: var(--text-dark-secondary, #333);
+}
+
 .navigationTitle::before {
   content: '';
   position: absolute;
@@ -133,6 +254,12 @@
   border-radius: 50%;
   background-color: var(--accent-light-quinary);
   box-shadow: 0 0 10px var(--accent-light-quinary);
+}
+
+/* Tema claro para o marcador do título da navegação */
+.navigationTitleLight::before {
+  background-color: var(--accent-dark-quinary, #6366f1);
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
 }
 
 .footerNav {
@@ -153,6 +280,11 @@
   transform-origin: left;
 }
 
+/* Tema claro para os links do footer */
+.footerLinkLight {
+  color: var(--text-dark-tertiary, #555);
+}
+
 .footerLink::before {
   content: '→';
   position: absolute;
@@ -161,6 +293,11 @@
   transform: translateX(-8px);
   transition: all var(--footer-animation-timing);
   color: var(--accent-light-quinary);
+}
+
+/* Tema claro para o ícone de seta dos links */
+.footerLinkLight::before {
+  color: var(--accent-dark-quinary, #6366f1);
 }
 
 .footerLink::after {
@@ -174,9 +311,19 @@
   transition: width var(--footer-animation-timing);
 }
 
+/* Tema claro para o sublinhado dos links */
+.footerLinkLight::after {
+  background: linear-gradient(to right, var(--accent-dark-quinary, #6366f1), transparent);
+}
+
 .footerLink:hover {
   color: var(--text-light-primary);
   transform: translateX(8px);
+}
+
+/* Tema claro para o hover dos links */
+.footerLinkLight:hover {
+  color: var(--text-dark-primary, #111);
 }
 
 .footerLink:hover::before {
@@ -212,6 +359,11 @@
   color: var(--text-light-secondary);
 }
 
+/* Tema claro para o título da seção social */
+.socialTitleLight {
+  color: var(--text-dark-secondary, #333);
+}
+
 .socialIcon {
   display: flex;
   align-items: center;
@@ -226,6 +378,13 @@
   overflow: hidden;
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Tema claro para os ícones sociais */
+.socialIconLight {
+  background: rgba(0, 0, 0, 0.03);
+  color: var(--text-dark-quaternary, #666);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .socialIcon svg {
@@ -244,6 +403,11 @@
   opacity: 0;
   transition: opacity var(--footer-animation-timing);
   z-index: 1;
+}
+
+/* Tema claro para o gradiente dos ícones sociais */
+.socialIconLight::before {
+  background: linear-gradient(45deg, var(--accent-dark-quinary, #6366f1), var(--accent-dark-senary, #8b5cf6));
 }
 
 .socialIcon:hover {
@@ -280,6 +444,16 @@
   overflow: hidden;
 }
 
+/* Tema claro para o divisor */
+.dividerLight {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 0, 0, 0.07),
+    transparent
+  );
+}
+
 .divider::after {
   content: '';
   position: absolute;
@@ -294,6 +468,7 @@
     transparent
   );
   animation: shimmer 4s infinite;
+  will-change: left;
 }
 
 @keyframes shimmer {
@@ -321,9 +496,20 @@
   z-index: 1;
 }
 
+/* Tema claro para o texto de copyright e made */
+.copyrightLight, .madeLight {
+  color: var(--text-dark-quaternary, #666);
+}
+
 .footerBottom:hover .copyright,
 .footerBottom:hover .made {
   color: var(--text-light-tertiary);
+}
+
+/* Tema claro para o hover do texto de copyright e made */
+.footerBottom:hover .copyrightLight,
+.footerBottom:hover .madeLight {
+  color: var(--text-dark-tertiary, #444);
 }
 
 .heartIcon {
@@ -367,6 +553,13 @@
   .logoSection, .navigationSection {
     flex-basis: 45%;
   }
+  
+  .scrollTopButton {
+    bottom: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -393,6 +586,13 @@
   .name {
     font-size: 1.6rem;
   }
+  
+  .scrollTopButton {
+    bottom: 15px;
+    right: 15px;
+    width: 42px;
+    height: 42px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -412,6 +612,13 @@
     width: 38px;
     height: 38px;
   }
+  
+  .scrollTopButton {
+    bottom: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+  }
 }
 
 /* Acessibilidade - Modo de alto contraste */
@@ -421,12 +628,54 @@
     border-top: 1px solid #666;
   }
   
+  .footerLight {
+    background-color: #fff;
+    border-top: 1px solid #444;
+  }
+  
   .footerLink, .socialIcon {
     color: #fff;
   }
   
+  .footerLinkLight, .socialIconLight {
+    color: #000;
+  }
+  
   .divider {
     background: #666;
+  }
+  
+  .dividerLight {
+    background: #444;
+  }
+  
+  .scrollTopButton {
+    background-color: #fff;
+    color: #000;
+    border: 2px solid #000;
+  }
+  
+  .scrollTopButtonLight {
+    background-color: #000;
+    color: #fff;
+    border: 2px solid #fff;
+  }
+}
+
+/* Modo de movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  .footer::before,
+  .divider::after,
+  .scrollTopButton,
+  .footerLink,
+  .socialIcon,
+  .name::after {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .scrollTopButton:hover {
+    transform: none;
   }
 }
 
@@ -434,5 +683,11 @@
 @media (prefers-color-scheme: dark) {
   .footer::before {
     opacity: 0.5;
+  }
+  
+  /* Manter estilos escuros mesmo quando o tema do sistema é escuro mas o tema do site é claro */
+  .footerLight {
+    background-color: rgba(250, 250, 255, 0.97);
+    color: var(--text-dark-tertiary, #555);
   }
 }
