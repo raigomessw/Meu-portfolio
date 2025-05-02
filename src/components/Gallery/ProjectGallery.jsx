@@ -3,6 +3,7 @@ import styles from './ProjectGallery.module.css';
 
 // Imagem de fallback
 const FALLBACK_IMAGE = "/work/placeholder.jpg";
+const FALLBACK_VIDEO = "/work/placeholder-video.mp4";
 
 // Componentes de ícones para melhorar UX
 const ZoomInIcon = () => (
@@ -35,89 +36,149 @@ const ArrowRightIcon = () => (
   </svg>
 );
 
+const PlayIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+  </svg>
+);
+
+const PauseIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="6" y="4" width="4" height="16"></rect>
+    <rect x="14" y="4" width="4" height="16"></rect>
+  </svg>
+);
+
+const ExternalLinkIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+    <polyline points="15 3 21 3 21 9"></polyline>
+    <line x1="10" y1="14" x2="21" y2="3"></line>
+  </svg>
+);
+
 // Textos em sueco
 const texts = {
-  noImages: "Inga bilder tillgängliga för detta projekt.",
-  noImagesInCategory: "Inga bilder hittades i kategori",
+  noImages: "Inga mediafiler tillgängliga för detta projekt.",
+  noImagesInCategory: "Inga mediafiler hittades i kategori",
   closeButton: "Stäng",
-  nextImage: "Nästa bild",
-  prevImage: "Föregående bild",
+  nextImage: "Nästa",
+  prevImage: "Föregående",
   imageOf: "Bild",
+  videoOf: "Video",
   of: "av",
-  loading: "Laddar bild..."
+  loading: "Laddar...",
+  playVideo: "Spela video",
+  pauseVideo: "Pausa video",
+  openExternalLink: "Öppna extern länk",
+  viewDetails: "Visa detaljer",
+  expandMedia: "Expandera",
+  collapseMedia: "Minimera",
+  filter: "Filtrera",
+  all: "Alla",
+  image: "Bilder",
+  video: "Videor",
+  prototype: "Prototyper",
+  errorLoading: "Kunde inte ladda media"
 };
 
-const ProjectGallery = ({ images, activeCategory, isVisible = true }) => {
-  const [selectedImage, setSelectedImage] = useState(null);
+/**
+ * Componente de Galeria Premium que suporta imagens e vídeos
+ * 
+ * @param {Object} props 
+ * @param {Array} props.media - Array de objetos de mídia (imagens, vídeos, links externos)
+ * @param {string} props.activeCategory - Categoria ativa para filtrar
+ * @param {boolean} props.isVisible - Se o componente deve ser visível
+ */
+const ProjectGallery = ({ media, activeCategory, isVisible = true }) => {
+  const [selectedItem, setSelectedItem] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState({});
-  const [imageTransition, setImageTransition] = useState('');
+  const [mediaTransition, setMediaTransition] = useState('');
+  const [mediaTypeFilter, setMediaTypeFilter] = useState('all'); // 'all', 'image', 'video', 'prototype'
+  const [isPlaying, setIsPlaying] = useState(false);
+  
   const lightboxRef = useRef(null);
-  const imageCache = useRef(new Map()).current;
+  const videoRef = useRef(null);
+  const mediaCache = useRef(new Map()).current;
   
-  // Forçar visibilidade para true
+  // Forçar visibilidade para true por padrão
   const forceVisible = true;
-  
-  // Debug para mostrar as imagens recebidas - versão atualizada
+
+  // Logs para debug inicial
   useEffect(() => {
     console.log('ProjectGallery - dados recebidos:', { 
-      totalImages: images?.length || 0,
-      images: images || 'sem imagens',
+      totalItems: media?.length || 0,
+      media: media || 'sem mídia',
       activeCategory
     });
     
-    // Tentar pré-carregar as imagens diretamente
-    if (images && images.length > 0) {
-      images.forEach((image, index) => {
-        if (image && image.url) {
-          console.log(`Tentativa de carregar imagem ${index + 1}: ${image.url}`);
-          const img = new Image();
-          img.onload = () => console.log(`Imagem ${index + 1} carregada com sucesso: ${image.url}`);
-          img.onerror = () => console.error(`Falha ao carregar imagem ${index + 1}: ${image.url}`);
-          img.src = image.url;
+    // Tentar pré-carregar as imagens/vídeos
+    if (media && media.length > 0) {
+      media.forEach((item, index) => {
+        if (item && item.url) {
+          // Verifica se é imagem ou vídeo antes de pré-carregar
+          if (item.type === 'image') {
+            console.log(`Tentativa de pré-carregar imagem ${index + 1}: ${item.url}`);
+            const img = new Image();
+            img.onload = () => console.log(`Imagem ${index + 1} carregada com sucesso: ${item.url}`);
+            img.onerror = () => console.error(`Falha ao carregar imagem ${index + 1}: ${item.url}`);
+            img.src = item.url;
+          }
         } else {
-          console.error(`Imagem ${index + 1} tem URL inválida:`, image);
+          console.error(`Item ${index + 1} tem URL inválida:`, item);
         }
       });
     }
-  }, [images]);
+  }, [media]);
   
-  // Filtra imagens por categoria se necessário
-  const filteredImages = useMemo(() => {
-    if (!images || !Array.isArray(images)) return [];
+  // Filtra mídia por categoria e tipo
+  const filteredMedia = useMemo(() => {
+    if (!media || !Array.isArray(media)) return [];
     
-    if (!images.length) {
-      console.error('Array de imagens está vazio');
+    if (!media.length) {
+      console.error('Array de mídia está vazio');
+      return [];
     }
     
-    const filtered = activeCategory 
-      ? images.filter(img => img.category === activeCategory)
-      : images;
+    // Primeiro filtramos por categoria
+    let filtered = activeCategory 
+      ? media.filter(item => item.category === activeCategory)
+      : media;
     
-    console.log(`Imagens filtradas: ${filtered.length}`, filtered);
+    // Depois filtramos por tipo de mídia
+    if (mediaTypeFilter !== 'all') {
+      filtered = filtered.filter(item => item.type === mediaTypeFilter);
+    }
+    
+    console.log(`Mídia filtrada: ${filtered.length} itens`, filtered);
     return filtered;
-  }, [images, activeCategory]);
+  }, [media, activeCategory, mediaTypeFilter]);
   
-  // Gerencia o carregamento das imagens
-  const handleImageLoaded = (imageUrl) => {
-    console.log(`Bild laddad: ${imageUrl}`);
+  // Gerencia o carregamento de mídia
+  const handleMediaLoaded = (url) => {
+    console.log(`Mídia carregada: ${url}`);
     setIsLoaded(prev => ({
       ...prev,
-      [imageUrl]: true
+      [url]: true
     }));
   };
   
-  // Tratamento de erro de imagem
-  const handleImageError = (e, imageUrl) => {
-    console.error(`Fel vid bildladdning: ${imageUrl}`);
-    e.target.src = FALLBACK_IMAGE;
+  // Tratamento de erro de mídia
+  const handleMediaError = (e, item) => {
+    console.error(`Erro ao carregar mídia: ${item.url}`);
+    if (item.type === 'image') {
+      e.target.src = FALLBACK_IMAGE;
+    } else if (item.type === 'video') {
+      e.target.src = FALLBACK_VIDEO;
+    }
     e.target.onerror = null; // Evita loop infinito
-    handleImageLoaded(imageUrl);
+    handleMediaLoaded(item.url);
   };
   
-  // Verifica se a URL da imagem é válida e a corrige se necessário
-  const validateImageUrl = (url) => {
-    if (!url) return FALLBACK_IMAGE;
+  // Verifica se a URL da mídia é válida e a corrige se necessário
+  const validateUrl = (url, type = 'image') => {
+    if (!url) return type === 'image' ? FALLBACK_IMAGE : FALLBACK_VIDEO;
     
     // Se não começar com http ou /, consideramos como caminho relativo
     if (!url.startsWith('http') && !url.startsWith('/')) {
@@ -128,65 +189,111 @@ const ProjectGallery = ({ images, activeCategory, isVisible = true }) => {
   };
   
   // Abre o lightbox
-  const openLightbox = (image, index) => {
-    setSelectedImage(image);
+  const openLightbox = (item, index) => {
+    setSelectedItem(item);
     setSelectedIndex(index);
-    setImageTransition('');
+    setMediaTransition('');
+    setIsPlaying(false);
     // Impedir scroll da página quando lightbox está aberto
     document.body.style.overflow = 'hidden';
   };
   
   // Fecha o lightbox
   const closeLightbox = () => {
-    setSelectedImage(null);
-    setImageTransition('');
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+    setSelectedItem(null);
+    setMediaTransition('');
+    setIsPlaying(false);
     // Restaurar scroll da página
     document.body.style.overflow = '';
   };
   
-  // Navega para a próxima imagem
-  const nextImage = (e) => {
+  // Toggle play/pause para vídeos
+  const togglePlayPause = (e) => {
     e.stopPropagation();
-    if (selectedIndex < filteredImages.length - 1) {
-      setImageTransition('slide-left');
+    const video = videoRef.current;
+    
+    if (!video) return;
+    
+    if (video.paused) {
+      video.play();
+      setIsPlaying(true);
+    } else {
+      video.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  // Abre link externo para protótipos
+  const openExternalLink = (e, url) => {
+    e.stopPropagation();
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
+  
+  // Navega para a próxima mídia
+  const nextMedia = (e) => {
+    e.stopPropagation();
+    if (selectedIndex < filteredMedia.length - 1) {
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+      
+      setMediaTransition('slide-left');
+      setIsPlaying(false);
+      
       setTimeout(() => {
         setSelectedIndex(selectedIndex + 1);
-        setSelectedImage(filteredImages[selectedIndex + 1]);
-        setImageTransition('');
+        setSelectedItem(filteredMedia[selectedIndex + 1]);
+        setMediaTransition('');
       }, 300);
     }
   };
   
-  // Navega para a imagem anterior
-  const prevImage = (e) => {
+  // Navega para a mídia anterior
+  const prevMedia = (e) => {
     e.stopPropagation();
     if (selectedIndex > 0) {
-      setImageTransition('slide-right');
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+      
+      setMediaTransition('slide-right');
+      setIsPlaying(false);
+      
       setTimeout(() => {
         setSelectedIndex(selectedIndex - 1);
-        setSelectedImage(filteredImages[selectedIndex - 1]);
-        setImageTransition('');
+        setSelectedItem(filteredMedia[selectedIndex - 1]);
+        setMediaTransition('');
       }, 300);
     }
   };
   
   // Gerencia teclas de navegação
-  React.useEffect(() => {
+  useEffect(() => {
     const handleKeyDown = (e) => {
-      if (!selectedImage) return;
+      if (!selectedItem) return;
       
       switch (e.key) {
         case 'Escape':
           closeLightbox();
           break;
         case 'ArrowRight':
-          if (selectedIndex < filteredImages.length - 1) {
-            nextImage(e);
+          if (selectedIndex < filteredMedia.length - 1) {
+            nextMedia(e);
           }
           break;
         case 'ArrowLeft':
           if (selectedIndex > 0) {
-            prevImage(e);
+            prevMedia(e);
+          }
+          break;
+        case ' ': // Espaço
+          if (selectedItem?.type === 'video') {
+            togglePlayPause(e);
           }
           break;
         default:
@@ -196,10 +303,157 @@ const ProjectGallery = ({ images, activeCategory, isVisible = true }) => {
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedImage, selectedIndex, filteredImages]);
+  }, [selectedItem, selectedIndex, filteredMedia]);
+
+  // Renderiza o conteúdo apropriado baseado no tipo de mídia
+  const renderMediaContent = (item) => {
+    const url = validateUrl(item.url, item.type);
+    
+    switch (item.type) {
+      case 'video':
+        return (
+          <div className={styles.videoWrapper}>
+            <video 
+              className={styles.videoThumbnail}
+              src={url}
+              poster={item.thumbnail || ''}
+              muted
+              playsInline
+              loop
+              onLoadedData={() => handleMediaLoaded(url)}
+              onError={(e) => handleMediaError(e, item)}
+            />
+            <div className={styles.videoPlayIcon}>
+              <PlayIcon />
+            </div>
+          </div>
+        );
+        
+      case 'prototype':
+        return (
+          <div className={styles.prototypeWrapper}>
+            <img 
+              src={item.thumbnail || FALLBACK_IMAGE} 
+              alt={item.title || 'Prototypbild'}
+              className={styles.thumbnail}
+              onLoad={() => handleMediaLoaded(item.thumbnail || '')}
+              onError={(e) => handleMediaError(e, { ...item, url: item.thumbnail })}
+            />
+            <div className={styles.externalLinkIcon}>
+              <ExternalLinkIcon />
+              <span>{texts.openExternalLink}</span>
+            </div>
+          </div>
+        );
+        
+      case 'image':
+      default:
+        return (
+          <img 
+            src={url} 
+            alt={item.title || 'Projektbild'} 
+            className={`${styles.thumbnail} ${isLoaded[url] ? styles.loaded : ''}`}
+            onLoad={() => handleMediaLoaded(url)}
+            onError={(e) => handleMediaError(e, item)}
+          />
+        );
+    }
+  };
   
-  // Verificar se não temos imagens para mostrar
-  if (!images || !Array.isArray(images) || images.length === 0) {
+  // Renderiza o conteúdo do lightbox
+  const renderLightboxContent = () => {
+    if (!selectedItem) return null;
+    
+    const url = validateUrl(selectedItem.url, selectedItem.type);
+    
+    switch (selectedItem.type) {
+      case 'video':
+        return (
+          <div className={styles.videoLightbox}>
+            <video
+              ref={videoRef}
+              src={url}
+              className={styles.lightboxVideo}
+              controls={false}
+              onError={(e) => handleMediaError(e, selectedItem)}
+              playsInline
+              onEnded={() => setIsPlaying(false)}
+            />
+            <button 
+              className={styles.videoControl} 
+              onClick={togglePlayPause}
+              aria-label={isPlaying ? texts.pauseVideo : texts.playVideo}
+            >
+              {isPlaying ? <PauseIcon /> : <PlayIcon />}
+            </button>
+          </div>
+        );
+      
+      case 'prototype':
+        return (
+          <div className={styles.prototypeLightbox}>
+            <img 
+              src={selectedItem.thumbnail || FALLBACK_IMAGE}
+              alt={selectedItem.title || 'Prototypbild'}
+              className={styles.lightboxImage}
+              onError={(e) => handleMediaError(e, { ...selectedItem, url: selectedItem.thumbnail })}
+            />
+            <div className={styles.prototypeActions}>
+              <button 
+                className={styles.prototypeButton}
+                onClick={(e) => openExternalLink(e, selectedItem.url)}
+              >
+                <ExternalLinkIcon /> {texts.openExternalLink}
+              </button>
+            </div>
+          </div>
+        );
+      
+      case 'image':
+      default:
+        return (
+          <img 
+            src={url} 
+            alt={selectedItem.title || 'Projektbild'} 
+            className={styles.lightboxImage}
+            onError={(e) => handleMediaError(e, selectedItem)}
+          />
+        );
+    }
+  };
+  
+  // Filtros de tipos de mídia
+  const renderTypeFilters = () => (
+    <div className={styles.mediaTypeFilters}>
+      <button 
+        className={`${styles.filterButton} ${mediaTypeFilter === 'all' ? styles.active : ''}`}
+        onClick={() => setMediaTypeFilter('all')}
+      >
+        {texts.all}
+      </button>
+      <button 
+        className={`${styles.filterButton} ${mediaTypeFilter === 'image' ? styles.active : ''}`}
+        onClick={() => setMediaTypeFilter('image')}
+      >
+        {texts.image}
+      </button>
+      <button 
+        className={`${styles.filterButton} ${mediaTypeFilter === 'video' ? styles.active : ''}`}
+        onClick={() => setMediaTypeFilter('video')}
+      >
+        {texts.video}
+      </button>
+      <button 
+        className={`${styles.filterButton} ${mediaTypeFilter === 'prototype' ? styles.active : ''}`}
+        onClick={() => setMediaTypeFilter('prototype')}
+      >
+        {texts.prototype}
+      </button>
+    </div>
+  );
+  
+  // Verificar se não temos mídia para mostrar
+  if (!media || !Array.isArray(media) || media.length === 0) {
     return (
       <div className={styles.emptyGallery}>
         <p>{texts.noImages}</p>
@@ -212,51 +466,64 @@ const ProjectGallery = ({ images, activeCategory, isVisible = true }) => {
 
   return (
     <div className={galleryClasses} style={{opacity: 1, transform: 'translateY(0)'}}>
-      {filteredImages.length === 0 ? (
+      {/* Filtros por tipo de mídia */}
+      {renderTypeFilters()}
+      
+      {filteredMedia.length === 0 ? (
         <p className={styles.emptyMessage}>
           {texts.noImagesInCategory} "{activeCategory}"
         </p>
       ) : (
         <div className={styles.imageGrid}>
-          {filteredImages.map((image, index) => {
-            const imageUrl = validateImageUrl(image.url);
+          {filteredMedia.map((item, index) => {
+            const itemUrl = item.url || '';
+            const mediaType = item.type || 'image';
+            
             return (
               <div 
-                key={`${imageUrl}-${index}`}
-                className={styles.imageItem}
-                style={{ 
-                  opacity: 1,
-                  transform: 'translateY(0)'
-                }}
-                onClick={() => openLightbox(image, index)}
+                key={`${itemUrl}-${index}`}
+                className={`${styles.imageItem} ${styles[mediaType + 'Item'] || ''}`}
+                style={{ opacity: 1, transform: 'translateY(0)' }}
+                onClick={() => openLightbox(item, index)}
+                role="button"
+                aria-label={texts.viewDetails}
+                tabIndex={0}
               >
                 <div className={styles.imageWrapper}>
-                  {!isLoaded[imageUrl] && (
+                  {!isLoaded[itemUrl] && (
                     <div className={styles.imagePlaceholder}>
                       <div className={styles.loadingSpinner}></div>
                       <span>{texts.loading}</span>
                     </div>
                   )}
                   
-                  <img 
-                    src={imageUrl} 
-                    alt={image.title || 'Projektbild'} 
-                    className={`${styles.thumbnail} ${styles.loaded}`}
-                    onLoad={() => handleImageLoaded(imageUrl)}
-                    onError={(e) => handleImageError(e, imageUrl)}
-                    style={{opacity: 1}}
-                  />
+                  {renderMediaContent(item)}
                 </div>
                 
                 <div className={styles.imageOverlay} style={{opacity: 0.7}}>
                   <div className={styles.zoomIcon}>
-                    <ZoomInIcon />
+                    {mediaType === 'video' ? (
+                      <PlayIcon />
+                    ) : mediaType === 'prototype' ? (
+                      <ExternalLinkIcon />
+                    ) : (
+                      <ZoomInIcon />
+                    )}
                   </div>
                   <div className={styles.imageInfo} style={{opacity: 1, transform: 'translateY(0)'}}>
-                    <h4>{image.title}</h4>
-                    {image.category && (
-                      <span className={styles.category}>{image.category}</span>
-                    )}
+                    <h4>{item.title}</h4>
+                    <div className={styles.mediaInfoDetails}>
+                      {item.category && (
+                        <span className={styles.category}>{item.category}</span>
+                      )}
+                      {item.type && (
+                        <span className={`${styles.mediaType} ${styles[item.type]}`}>
+                          {item.type === 'video' ? texts.video : 
+                           item.type === 'prototype' ? texts.prototype : 
+                           texts.image}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -265,9 +532,16 @@ const ProjectGallery = ({ images, activeCategory, isVisible = true }) => {
         </div>
       )}
       
-      {/* Lightbox para imagem selecionada com navegação e animações */}
-      {selectedImage && (
-        <div className={styles.lightbox} onClick={closeLightbox} ref={lightboxRef}>
+      {/* Lightbox para mídia selecionada com navegação e animações */}
+      {selectedItem && (
+        <div 
+          className={styles.lightbox} 
+          onClick={closeLightbox} 
+          ref={lightboxRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={selectedItem.title || "Media lightbox"}
+        >
           <button 
             className={styles.closeButton} 
             onClick={closeLightbox} 
@@ -277,29 +551,24 @@ const ProjectGallery = ({ images, activeCategory, isVisible = true }) => {
           </button>
           
           <div className={styles.lightboxContent} onClick={e => e.stopPropagation()}>
-            <div className={`${styles.lightboxImageContainer} ${styles[imageTransition]}`}>
-              <img 
-                src={validateImageUrl(selectedImage.url)} 
-                alt={selectedImage.title || 'Projektbild'} 
-                className={styles.lightboxImage}
-                onError={(e) => handleImageError(e, selectedImage.url)}
-              />
+            <div className={`${styles.lightboxMediaContainer} ${styles[mediaTransition]}`}>
+              {renderLightboxContent()}
             </div>
             
             <div className={styles.lightboxInfo}>
-              {selectedImage.title && <h3>{selectedImage.title}</h3>}
-              {selectedImage.caption && <p>{selectedImage.caption}</p>}
+              {selectedItem.title && <h3>{selectedItem.title}</h3>}
+              {selectedItem.caption && <p>{selectedItem.caption}</p>}
               
-              {selectedImage.tags && selectedImage.tags.length > 0 && (
+              {selectedItem.tags && selectedItem.tags.length > 0 && (
                 <div className={styles.imageTags}>
-                  {selectedImage.tags.map((tag, idx) => (
+                  {selectedItem.tags.map((tag, idx) => (
                     <span key={idx} className={styles.tag}>{tag}</span>
                   ))}
                 </div>
               )}
               
               <div className={styles.imageCounter}>
-                {texts.imageOf} {selectedIndex + 1} {texts.of} {filteredImages.length}
+                {selectedItem.type === 'video' ? texts.videoOf : texts.imageOf} {selectedIndex + 1} {texts.of} {filteredMedia.length}
               </div>
             </div>
           </div>
@@ -308,17 +577,17 @@ const ProjectGallery = ({ images, activeCategory, isVisible = true }) => {
           {selectedIndex > 0 && (
             <button 
               className={`${styles.navButton} ${styles.prevButton}`}
-              onClick={prevImage}
+              onClick={prevMedia}
               aria-label={texts.prevImage}
             >
               <ArrowLeftIcon />
             </button>
           )}
           
-          {selectedIndex < filteredImages.length - 1 && (
+          {selectedIndex < filteredMedia.length - 1 && (
             <button 
               className={`${styles.navButton} ${styles.nextButton}`}
-              onClick={nextImage}
+              onClick={nextMedia}
               aria-label={texts.nextImage}
             >
               <ArrowRightIcon />

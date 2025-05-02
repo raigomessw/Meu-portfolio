@@ -13,6 +13,7 @@ export function WorkProjectProvider({ children }) {
   const [error, setError] = useState(null);
   const [isDataFetched, setIsDataFetched] = useState(false);
   const [activeImageCategory, setActiveImageCategory] = useState(null);
+  const [activeMediaTypeFilter, setActiveMediaTypeFilter] = useState('all'); // 'all', 'image', 'video', 'prototype'
 
   // Função para buscar projeto por ID com memoização para evitar re-renders desnecessários
   const getProjectById = useCallback((id) => {
@@ -57,6 +58,42 @@ export function WorkProjectProvider({ children }) {
   const filterImagesByCategory = useCallback((category) => {
     setActiveImageCategory(category);
   }, []);
+  
+  // Nova função para filtrar por tipo de mídia (imagem, vídeo, protótipo)
+  const filterByMediaType = useCallback((type) => {
+    setActiveMediaTypeFilter(type);
+  }, []);
+  
+  // Funçao para converter objetos de imagem antigos para o novo formato de mídia
+  const convertToMediaObject = (imageObjects, projectId) => {
+    if (!imageObjects || !Array.isArray(imageObjects)) return [];
+    
+    return imageObjects.map((img, index) => {
+      // Verifica se já está no formato correto
+      if (img.type) return img;
+      
+      // Detecta o tipo de arquivo baseado na URL
+      let type = 'image';
+      if (img.url.match(/\.(mp4|webm|mov)$/i)) {
+        type = 'video';
+      } else if (img.isPrototype || img.externalUrl || img.url.includes('figma') || img.url.includes('prototype')) {
+        type = 'prototype';
+      }
+      
+      // Retorna objeto no formato novo
+      return {
+        id: `${projectId}-media-${index}`,
+        url: img.url,
+        title: img.title || '',
+        caption: img.caption || '',
+        type: type,
+        thumbnail: img.thumbnail || img.url,
+        tags: img.tags || [],
+        category: img.category || 'design',
+        externalUrl: img.externalUrl || null
+      };
+    });
+  };
 
   // Efeito para carregar dados de projetos uma única vez e armazenar no estado local
   useEffect(() => {
@@ -95,21 +132,53 @@ export function WorkProjectProvider({ children }) {
               { name: "Prototyping", icon: "🧩" },
               { name: "User Testing", icon: "👥" }
             ],
-            images: [
+            media: [
               {
+                id: "clojel-media-1",
+                type: "image",
                 url: '/work/clojel/gallery/background.png',
                 title: "App-gränssnitt",
                 caption: "Huvudskärmen för applikationen som visar användardashboarden",
+                tags: ["UI", "Dashboard"],
+                category: "interface"
               },
               {
+                id: "clojel-media-2",
+                type: "image",
                 url: '/work/clojel/gallery/characters.jpg',
                 title: "Meditationsflöde",
                 caption: "Skärmsekvens för guidad meditationsfunktion",
+                tags: ["UX", "Flöde"],
+                category: "interface"
               },
               {
+                id: "clojel-media-3",
+                type: "image",
                 url: '/work/clojel/gallery/leveldesign.jpg',
                 title: "Level Design",
                 caption: "Designprocess för applikationens olika nivåer",
+                tags: ["Process", "Design"],
+                category: "design"
+              },
+              {
+                id: "clojel-media-4",
+                type: "prototype",
+                url: "https://www.figma.com/proto/exemplo-clojel",
+                thumbnail: '/work/clojel/gallery/prototype-thumb.jpg',
+                title: "Interaktiv prototyp",
+                caption: "Testa applikationens huvudflöde i en interaktiv prototyp",
+                tags: ["Prototyp", "Interaktiv"],
+                category: "prototype" 
+              },
+              {
+                id: "clojel-media-5",
+                type: "video",
+                url: '/work/clojel/gallery/app-preview.mp4',
+                thumbnail: '/work/clojel/gallery/video-thumb.jpg',
+                title: "Applikationsdemonstration",
+                caption: "En kort video som visar huvudflödet i appen",
+                tags: ["Demo", "Video"],
+                category: "demo"
               }
             ],
             featured: true
@@ -136,21 +205,53 @@ export function WorkProjectProvider({ children }) {
               { name: "JavaScript", icon: "📝" },
               { name: "Responsive Design", icon: "📱" }
             ],
-            images: [
+            media: [
               {
+                id: "diana-media-1",
+                type: "image",
                 url: '/work/dianaLandingPage/gallery/homepage.jpg',
                 title: "Hemsida",
                 caption: "Inledande sektion med presentation av varumärket och dess värderingar",
+                tags: ["Hero", "Branding"],
+                category: "interface"
               },
               {
+                id: "diana-media-2",
+                type: "image",
                 url: '/work/dianaLandingPage/gallery/features.jpg',
                 title: "Hållbara produkter",
                 caption: "Presentation av kollektionen av miljövänliga produkter",
+                tags: ["Produkter", "Hållbarhet"],
+                category: "product"
               },
               {
+                id: "diana-media-3",
+                type: "image",
                 url: '/work/dianaLandingPage/gallery/mobile.jpg',
                 title: "Mobilanpassad design",
                 caption: "Responsiv design för mobila enheter",
+                tags: ["Mobil", "Responsiv"],
+                category: "interface"
+              },
+              {
+                id: "diana-media-4",
+                type: "video",
+                url: '/work/dianaLandingPage/gallery/scrolling-demo.mp4',
+                thumbnail: '/work/dianaLandingPage/gallery/video-thumb.jpg',
+                title: "Scrollningsinteraktion",
+                caption: "Demonstration av parallaxeffekter och animationer vid scrollning",
+                tags: ["Animation", "Interaktion"],
+                category: "interaction"
+              },
+              {
+                id: "diana-media-5",
+                type: "prototype",
+                url: "https://www.figma.com/proto/exemplo-diana",
+                thumbnail: '/work/dianaLandingPage/gallery/prototype-thumb.jpg',
+                title: "Clickable prototype",
+                caption: "Genomgång av webbplatsens hela flöde genom en interaktiv prototyp",
+                tags: ["Prototyp", "Flow"],
+                category: "prototype"
               }
             ],
             featured: true
@@ -177,21 +278,43 @@ export function WorkProjectProvider({ children }) {
               { name: "Chart.js", icon: "📊" },
               { name: "UX Research", icon: "🔍" }
             ],
-            images: [
+            media: [
               {
+                id: "student-media-1",
+                type: "image",
                 url: '/work/studantEkonomiApp/gallery/colors.jpg',
                 title: "Finansiell dashboard",
                 caption: "Översikt över studentens ekonomi med intuitiva diagram",
+                tags: ["Dashboard", "Dataviz"],
+                category: "interface"
               },
               {
+                id: "student-media-2",
+                type: "image",
                 url: '/work/studantEkonomiApp/gallery/components.jpg',
                 title: "Terminsbudget",
                 caption: "Planeringsverktyg för den akademiska terminen",
+                tags: ["Komponenter", "UI"],
+                category: "design"
               },
               {
+                id: "student-media-3",
+                type: "image",
                 url: '/work/studantEkonomiApp/gallery/documentation.jpg',
                 title: "Dokumentation",
                 caption: "Teknisk dokumentation och användarmanual",
+                tags: ["Dokumentation", "Process"],
+                category: "process"
+              },
+              {
+                id: "student-media-4",
+                type: "video",
+                url: '/work/studantEkonomiApp/gallery/usage-flow.mp4',
+                thumbnail: '/work/studantEkonomiApp/gallery/video-thumb.jpg',
+                title: "Användarflöde",
+                caption: "Demonstration av typiskt användarflöde från registrering till daglig användning",
+                tags: ["Användarflöde", "Demo"],
+                category: "demo"
               }
             ],
             featured: false
@@ -218,26 +341,53 @@ export function WorkProjectProvider({ children }) {
               { name: "MongoDB", icon: "🍃" },
               { name: "Socket.io", icon: "🔌" }
             ],
-            images: [
+            media: [
               {
+                id: "travel-media-1",
+                type: "image",
                 url: '/work/travelBuddy/gallery/homepage.jpg',
                 title: "Resplanerare",
                 caption: "Samarbetsverktyg för organisering av resrutter",
+                tags: ["Planering", "UI"],
+                category: "interface"
               },
               {
+                id: "travel-media-2",
+                type: "image",
                 url: '/work/travelBuddy/gallery/projects.jpg',
                 title: "Kostnadsdelning",
                 caption: "System för hantering av delade kostnader",
+                tags: ["Finans", "Verktyg"],
+                category: "feature"
               },
               {
-                url: '/work/travelBuddy/gallery/chatbot.jpg',
+                id: "travel-media-3",
+                type: "prototype",
+                url: "https://www.figma.com/proto/exemplo-travel",
+                thumbnail: '/work/travelBuddy/gallery/chatbot.jpg',
                 title: "AI Assistent",
                 caption: "Intelligent virtual assistent för resesupport",
+                tags: ["AI", "Support"],
+                category: "prototype"
               },
               {
+                id: "travel-media-4",
+                type: "video",
+                url: '/work/travelBuddy/gallery/collaboration-demo.mp4',
+                thumbnail: '/work/travelBuddy/gallery/video-thumb.jpg',
+                title: "Livekollaboration",
+                caption: "Demonstration av realtids-samarbete mellan flera användare",
+                tags: ["Samarbete", "Realtid"],
+                category: "feature"
+              },
+              {
+                id: "travel-media-5",
+                type: "image",
                 url: '/work/travelBuddy/gallery/mobile-view.jpg',
                 title: "Mobil Vy",
                 caption: "Mobilanpassad design för resenärer på språng",
+                tags: ["Mobil", "Responsiv"],
+                category: "interface"
               }
             ],
             featured: false
@@ -264,37 +414,84 @@ export function WorkProjectProvider({ children }) {
               { name: "Custom CSS", icon: "🎨" },
               { name: "JavaScript", icon: "📝" }
             ],
-            images: [
+            media: [
               {
+                id: "makeup-media-1",
+                type: "image",
                 url: '/work/mackeUpinstitute/gallery/homepage.jpg',
                 title: "Studentdashboard",
                 caption: "Anpassat gränssnitt med åtkomst till kurser och framsteg",
+                tags: ["Dashboard", "Utbildning"],
+                category: "interface"
               },
               {
-                url: '/work/mackeUpinstitute/gallery/courses.jpg',
+                id: "makeup-media-2",
+                type: "video",
+                url: '/work/mackeUpinstitute/gallery/tutorial-sample.mp4',
+                thumbnail: '/work/mackeUpinstitute/gallery/courses.jpg',
                 title: "Interaktiv lektion",
                 caption: "Exempel på lektion med video och interaktiva resurser",
+                tags: ["Tutorial", "Lärande"],
+                category: "content"
               },
               {
+                id: "makeup-media-3",
+                type: "image",
                 url: '/work/mackeUpinstitute/gallery/mobile.jpg',
                 title: "Mobil Upplevelse",
                 caption: "Optimerad design för användning på mobila enheter",
+                tags: ["Mobil", "Responsiv"],
+                category: "interface"
               },
               {
+                id: "makeup-media-4",
+                type: "image",
                 url: '/work/mackeUpinstitute/gallery/contact.jpg',
                 title: "Kontaktsida",
                 caption: "Kontaktformulär för studentförfrågningar",
+                tags: ["Kontakt", "UI"],
+                category: "interface"
+              },
+              {
+                id: "makeup-media-5",
+                type: "prototype",
+                url: "https://www.figma.com/proto/exemplo-makeup",
+                thumbnail: '/work/mackeUpinstitute/gallery/prototype-thumb.jpg',
+                title: "Kursdesign prototyp",
+                caption: "Interaktiv prototyp av kursflöde och användarupplevelse",
+                tags: ["Prototyp", "UX"],
+                category: "prototype"
               }
             ],
             featured: false
           }
         ];
         
-        console.log(`Carregados ${data.length} projetos`);
+        // Compatibilidade com o formato anterior
         data.forEach(project => {
-          console.log(`Projeto ${project.id} tem ${project.images.length} imagens:`);
-          project.images.forEach(img => console.log(`- ${img.url}`));
+          if (project.images && !project.media) {
+            project.media = convertToMediaObject(project.images, project.id);
+          }
+          
+          console.log(`Projeto ${project.id} tem ${project.media?.length || 0} tipos de mídia (imagens, vídeos, protótipos)`);
+          
+          if (project.media) {
+            const mediaTypes = {
+              image: 0,
+              video: 0,
+              prototype: 0
+            };
+            
+            project.media.forEach(item => {
+              if (mediaTypes[item.type] !== undefined) {
+                mediaTypes[item.type]++;
+              }
+            });
+            
+            console.log(`Distribuição: ${mediaTypes.image} imagens, ${mediaTypes.video} vídeos, ${mediaTypes.prototype} protótipos`);
+          }
         });
+        
         setProjetos(data);
         setIsDataFetched(true);
         setError(null);
@@ -309,6 +506,26 @@ export function WorkProjectProvider({ children }) {
     fetchProjects();
   }, [isDataFetched]); // Dependência de isDataFetched para evitar re-fetching desnecessário
 
+  // Obter mídia filtrada por tipo e categoria para um projeto
+  const getFilteredMedia = useCallback((projectId, mediaTypeFilter = activeMediaTypeFilter, category = activeImageCategory) => {
+    const project = getProjectById(projectId);
+    if (!project || !project.media) return [];
+    
+    let filtered = [...project.media];
+    
+    // Filtrar por categoria se especificado
+    if (category) {
+      filtered = filtered.filter(item => item.category === category);
+    }
+    
+    // Filtrar por tipo de mídia se não for 'all'
+    if (mediaTypeFilter !== 'all') {
+      filtered = filtered.filter(item => item.type === mediaTypeFilter);
+    }
+    
+    return filtered;
+  }, [getProjectById, activeMediaTypeFilter, activeImageCategory]);
+
   return (
     <WorkProjectContext.Provider value={{ 
       projetos, 
@@ -318,7 +535,11 @@ export function WorkProjectProvider({ children }) {
       getPrevProject,
       getNextProject,
       activeImageCategory,
-      filterImagesByCategory
+      filterImagesByCategory,
+      activeMediaTypeFilter,
+      filterByMediaType,
+      getFilteredMedia,
+      convertToMediaObject
     }}>
       {children}
     </WorkProjectContext.Provider>

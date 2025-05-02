@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { useWorkProjects } from './WorkProjectContext';
 import { useTheme } from '../../Hooks/useTheme';
@@ -52,10 +52,34 @@ const GridIcon = () => (
   </svg>
 );
 
+const VideoIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+  </svg>
+);
+
+const PrototypeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+    <line x1="8" y1="21" x2="16" y2="21"></line>
+    <line x1="12" y1="17" x2="12" y2="21"></line>
+  </svg>
+);
+
 function ProjectDetail() {
   const { projectId } = useParams();
   const location = useLocation();
-  const { getProjectById, filterImagesByCategory, activeImageCategory, getNextProject, getPrevProject } = useWorkProjects();
+  const { 
+    getProjectById, 
+    filterImagesByCategory, 
+    activeImageCategory,
+    filterByMediaType,
+    activeMediaTypeFilter, 
+    getNextProject, 
+    getPrevProject,
+    getFilteredMedia
+  } = useWorkProjects();
+  
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const { theme } = useTheme();
@@ -90,6 +114,40 @@ function ProjectDetail() {
       setLoading(false);
     }, 300);
   }, [projectId, getProjectById, location.pathname]);
+  
+  // Extrair categorias únicas para os filtros
+  const mediaCategories = useMemo(() => {
+    if (!project || !project.media) return [];
+    
+    const categories = new Set();
+    project.media.forEach(item => {
+      if (item.category) {
+        categories.add(item.category);
+      }
+    });
+    
+    return Array.from(categories);
+  }, [project]);
+  
+  // Contar o número de cada tipo de mídia
+  const mediaCounts = useMemo(() => {
+    if (!project || !project.media) return { total: 0, image: 0, video: 0, prototype: 0 };
+    
+    const counts = {
+      total: project.media.length,
+      image: 0,
+      video: 0,
+      prototype: 0
+    };
+    
+    project.media.forEach(item => {
+      if (counts[item.type] !== undefined) {
+        counts[item.type]++;
+      }
+    });
+    
+    return counts;
+  }, [project]);
   
   // Buscar projetos anterior e próximo
   const prevProject = project ? getPrevProject(project.id) : null;
@@ -224,46 +282,93 @@ function ProjectDetail() {
           )}
         </div>
         
-        {/* Galeria de imagens com animações */}
+        {/* Galeria premium com suporte para diferentes tipos de mídia */}
         <div className={styles.gallerySection} ref={gallerySectionRef}>
-          <h2>Projektgalleri</h2>
+          <h2>
+            Projektgalleri
+            {mediaCounts.total > 0 && (
+              <span className={styles.mediaCount}>
+                ({mediaCounts.total} media filer)
+              </span>
+            )}
+          </h2>
           
-          {/* Verificação de debug para as imagens */}
-          {console.log('DEBUG - Imagens para galeria:', project.images)}
-          
-          {/* Filtro por categoria */}
-          {project.imageCategories && project.imageCategories.length > 0 && (
-            <div className={`${styles.categoryFilter} ${galleryInView ? 'animate-fade-in' : ''}`}>
+          <div className={styles.galleryFiltersContainer}>
+            {/* Filtro por categorias */}
+            {mediaCategories.length > 0 && (
+              <div className={`${styles.categoryFilter} ${galleryInView ? 'animate-fade-in' : ''}`}>
+                <button 
+                  className={`${styles.categoryButton} ${!activeImageCategory ? styles.active : ''}`}
+                  onClick={() => filterImagesByCategory(null)}
+                >
+                  <GridIcon />
+                  Alla kategorier
+                </button>
+                
+                {mediaCategories.map((category, index) => (
+                  <button 
+                    key={index}
+                    className={`${styles.categoryButton} ${activeImageCategory === category ? styles.active : ''}`}
+                    onClick={() => filterImagesByCategory(category)}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            )}
+            
+            {/* Filtro por tipo de mídia */}
+            <div className={`${styles.mediaTypeFilter} ${galleryInView ? 'animate-fade-in' : ''}`}>
               <button 
-                className={`${styles.categoryButton} ${!activeImageCategory ? styles.active : ''}`}
-                onClick={() => filterImagesByCategory(null)}
+                className={`${styles.mediaTypeButton} ${activeMediaTypeFilter === 'all' ? styles.active : ''}`}
+                onClick={() => filterByMediaType('all')}
               >
                 <GridIcon />
-                Alla bilder
+                Alla ({mediaCounts.total})
               </button>
               
-              {project.imageCategories.map((category, index) => (
+              {mediaCounts.image > 0 && (
                 <button 
-                  key={index}
-                  className={`${styles.categoryButton} ${activeImageCategory === category ? styles.active : ''}`}
-                  onClick={() => filterImagesByCategory(category)}
+                  className={`${styles.mediaTypeButton} ${activeMediaTypeFilter === 'image' ? styles.active : ''}`}
+                  onClick={() => filterByMediaType('image')}
                 >
-                  {category}
+                  <GridIcon />
+                  Bilder ({mediaCounts.image})
                 </button>
-              ))}
+              )}
+              
+              {mediaCounts.video > 0 && (
+                <button 
+                  className={`${styles.mediaTypeButton} ${activeMediaTypeFilter === 'video' ? styles.active : ''}`}
+                  onClick={() => filterByMediaType('video')}
+                >
+                  <VideoIcon />
+                  Videor ({mediaCounts.video})
+                </button>
+              )}
+              
+              {mediaCounts.prototype > 0 && (
+                <button 
+                  className={`${styles.mediaTypeButton} ${activeMediaTypeFilter === 'prototype' ? styles.active : ''}`}
+                  onClick={() => filterByMediaType('prototype')}
+                >
+                  <PrototypeIcon />
+                  Prototyper ({mediaCounts.prototype})
+                </button>
+              )}
             </div>
-          )}
+          </div>
           
-          {/* Componente de galeria melhorado */}
-          {project.images && project.images.length > 0 ? (
+          {/* Componente de galeria premium */}
+          {project.media && project.media.length > 0 ? (
             <ProjectGallery 
-              images={project.images}
+              media={project.media}
               activeCategory={activeImageCategory}
               isVisible={true}
             />
           ) : (
             <div style={{padding: "20px", background: "#f8f8f8", borderRadius: "8px", textAlign: "center"}}>
-              <p>Inga bilder tillgängliga</p>
+              <p>Inga mediafiler tillgängliga</p>
             </div>
           )}
         </div>

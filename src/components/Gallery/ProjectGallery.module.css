@@ -1,3 +1,4 @@
+/* Estilos base da galeria */
 .galleryContainer {
   margin: 2rem 0;
   width: 100%;
@@ -11,12 +12,44 @@
   transform: translateY(0);
 }
 
+/* Configuração da grade de imagens/mídia */
 .imageGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
 }
 
+/* Filtros de tipos de mídia */
+.mediaTypeFilters {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filterButton {
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--color-text, #333);
+  font-weight: 500;
+}
+
+.filterButton:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.filterButton.active {
+  background: var(--color-primary, #2563eb);
+  color: white;
+}
+
+/* Estilo base para todos os itens da mídia */
 .imageItem {
   position: relative;
   border-radius: 12px;
@@ -57,10 +90,12 @@
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: rgba(0,0,0,0.03);
   z-index: 1;
+  gap: 10px;
 }
 
 .loadingSpinner {
@@ -77,6 +112,7 @@
   100% { transform: rotate(360deg); }
 }
 
+/* Thumbnails genéricos */
 .thumbnail {
   width: 100%;
   height: 100%;
@@ -93,6 +129,7 @@
   transform: scale(1.08);
 }
 
+/* Overlay genérico para todos os tipos */
 .imageOverlay {
   position: absolute;
   inset: 0;
@@ -155,6 +192,180 @@
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
+/* Estilos para vídeos */
+.videoWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.videoThumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.videoPlayIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.videoItem:hover .videoPlayIcon {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: rgba(0, 0, 0, 0.7);
+  opacity: 1;
+}
+
+.videoLightbox {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.lightboxVideo {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  background: #000;
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.videoControl {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 5;
+}
+
+.videoControl:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-50%) scale(1.1);
+}
+
+/* Estilos para protótipos */
+.prototypeWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.externalLinkIcon {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 15px;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.8rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.prototypeItem:hover .externalLinkIcon {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.prototypeLightbox {
+  position: relative;
+}
+
+.prototypeActions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.prototypeButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.prototypeButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+/* Indicadores de tipo de mídia */
+.mediaType {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-left: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.mediaInfoDetails {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.video {
+  background: rgba(255, 59, 48, 0.3);
+}
+
+.prototype {
+  background: rgba(0, 122, 255, 0.3);
+}
+
+.image {
+  background: rgba(52, 199, 89, 0.3);
+}
+
 .category {
   font-size: 0.85rem;
   background: rgba(255,255,255,0.2);
@@ -162,7 +373,6 @@
   -webkit-backdrop-filter: blur(4px);
   padding: 4px 10px;
   border-radius: 20px;
-  margin-top: 8px;
   display: inline-block;
   text-transform: capitalize;
   font-weight: 500;
@@ -199,7 +409,7 @@
   align-items: center;
 }
 
-.lightboxImageContainer {
+.lightboxMediaContainer {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -390,6 +600,15 @@
     top: -45px;
     right: 0;
   }
+  
+  .mediaTypeFilters {
+    gap: 0.5rem;
+  }
+  
+  .filterButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -398,7 +617,8 @@
     gap: 1rem;
   }
   
-  .lightboxImage {
+  .lightboxImage,
+  .lightboxVideo {
     max-height: 50vh;
   }
   
@@ -414,6 +634,11 @@
     width: 35px;
     height: 35px;
   }
+  
+  .videoControl {
+    width: 50px;
+    height: 50px;
+  }
 }
 
 /* Melhorias de acessibilidade */
@@ -424,7 +649,7 @@
   .imageOverlay,
   .zoomIcon,
   .imageInfo,
-  .lightboxImageContainer,
+  .lightboxMediaContainer,
   .closeButton,
   .navButton {
     transition-duration: 0.1ms !important;
