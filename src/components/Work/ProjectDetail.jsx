@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { useWorkProjects } from './WorkProjectContext';
 import { useTheme } from '../../Hooks/useTheme';
@@ -52,55 +52,12 @@ const GridIcon = () => (
   </svg>
 );
 
-// Objeto de traduções para sueco (Svenska översättningar)
-const translations = {
-  en: {
-    aboutProject: "About the Project",
-    challenges: "Challenges",
-    solution: "Solution",
-    technologiesUsed: "Technologies Used",
-    projectLinks: "Project Links",
-    viewSite: "View Site",
-    github: "GitHub",
-    figma: "Figma",
-    backToProjects: "Back to all projects",
-    projectGallery: "Project Gallery",
-    allImages: "All images",
-    loadingProject: "Loading project details...",
-    projectNotFound: "Project not found",
-    notFoundDescription: "The project you are looking for does not exist or has been removed.",
-    debugInfo: "Searched ID:",
-    prev: "Previous",
-    next: "Next"
-  },
-  sv: {
-    aboutProject: "Om projektet",
-    challenges: "Utmaningar",
-    solution: "Lösning",
-    technologiesUsed: "Använda teknologier",
-    projectLinks: "Projektlänkar",
-    viewSite: "Visa hemsida",
-    github: "GitHub",
-    figma: "Figma",
-    backToProjects: "Tillbaka till alla projekt",
-    projectGallery: "Projektgalleri",
-    allImages: "Alla bilder",
-    loadingProject: "Laddar projektdetaljer...",
-    projectNotFound: "Projektet hittades inte",
-    notFoundDescription: "Projektet du letar efter finns inte eller har tagits bort.",
-    debugInfo: "Sökt ID:",
-    prev: "Föregående",
-    next: "Nästa"
-  }
-};
-
 function ProjectDetail() {
   const { projectId } = useParams();
   const location = useLocation();
   const { getProjectById, filterImagesByCategory, activeImageCategory, getNextProject, getPrevProject } = useWorkProjects();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [language, setLanguage] = useState('sv'); // Definido como sueco por padrão
   const { theme } = useTheme();
   
   // Refs para animações de scroll
@@ -113,13 +70,6 @@ function ProjectDetail() {
   const galleryInView = useInView(gallerySectionRef, { threshold: 0.1 });
   const techInView = useInView(techSectionRef, { threshold: 0.2 });
 
-  // Toggle entre idiomas
-  const toggleLanguage = useCallback(() => {
-    setLanguage(lang => lang === 'en' ? 'sv' : 'en');
-  }, []);
-
-  const t = translations[language];
-  
   // Previne problema de scroll durante carregamento inicial
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -145,19 +95,16 @@ function ProjectDetail() {
   const prevProject = project ? getPrevProject(project.id) : null;
   const nextProject = project ? getNextProject(project.id) : null;
   
-  // Aplicar classe para traduções suecas no CSS
-  const containerClasses = `${styles.projectDetail} ${language === 'sv' ? styles.swedishLabels : ''}`;
-  
   // Lidar com projeto não encontrado
   if (!loading && !project) {
     return (
       <div className={styles.notFound}>
-        <h2>{t.projectNotFound}</h2>
-        <p>{t.notFoundDescription}</p>
-        <p className={styles.debugInfo}>{t.debugInfo} "{projectId}"</p>
+        <h2>Projektet hittades inte</h2>
+        <p>Projektet du letar efter finns inte eller har tagits bort.</p>
+        <p className={styles.debugInfo}>Sökt ID: "{projectId}"</p>
         <Link to="/work" className={styles.backLink}>
           <ArrowLeftIcon />
-          {t.backToProjects}
+          Tillbaka till alla projekt
         </Link>
       </div>
     );
@@ -168,13 +115,13 @@ function ProjectDetail() {
     return (
       <div className={styles.loading}>
         <div className={styles.loadingSpinner}></div>
-        <p>{t.loadingProject}</p>
+        <p>Laddar projektdetaljer...</p>
       </div>
     );
   }
   
   return (
-    <div className={containerClasses}>
+    <div className={styles.projectDetail}>
       {/* Header com imagem de capa e efeito parallax */}
       <div 
         className={styles.projectHeader}
@@ -189,24 +136,6 @@ function ProjectDetail() {
                 <span key={index} className={styles.tag}>{tag}</span>
               ))}
             </div>
-            
-            {/* Botão para alternar idioma */}
-            <button 
-              onClick={toggleLanguage} 
-              style={{
-                marginTop: '20px',
-                background: 'rgba(255,255,255,0.2)',
-                border: 'none',
-                color: 'white',
-                padding: '8px 16px',
-                borderRadius: '20px',
-                cursor: 'pointer',
-                backdropFilter: 'blur(4px)',
-                WebkitBackdropFilter: 'blur(4px)'
-              }}
-            >
-              {language === 'en' ? 'Visa på svenska' : 'Show in English'}
-            </button>
           </div>
         </div>
       </div>
@@ -215,24 +144,24 @@ function ProjectDetail() {
         {/* Seção de informações com animação ao aparecer */}
         <div className={styles.projectInfo} ref={aboutSectionRef}>
           <div className={`${styles.infoSection} ${aboutInView ? 'animate-fade-in' : ''}`}>
-            <h2>{t.aboutProject}</h2>
+            <h2>Om projektet</h2>
             <p>{project.extendedDescription}</p>
           </div>
           
           <div className={styles.infoGrid}>
             <div className={styles.infoCard}>
-              <h3>{t.challenges}</h3>
+              <h3>Utmaningar</h3>
               <p>{project.challenges}</p>
             </div>
             
             <div className={styles.infoCard}>
-              <h3>{t.solution}</h3>
+              <h3>Lösning</h3>
               <p>{project.solution}</p>
             </div>
           </div>
           
           <div className={styles.technologiesSection} ref={techSectionRef}>
-            <h3>{t.technologiesUsed}</h3>
+            <h3>Använda teknologier</h3>
             <div className={`${styles.techGrid} ${techInView ? 'animate-fade-in' : ''}`}>
               {project.technologies.map((tech, index) => (
                 <div 
@@ -250,7 +179,7 @@ function ProjectDetail() {
           {/* Links do projeto com ícones */}
           {(project.liveUrl || project.githubUrl || project.figmaUrl) && (
             <div className={styles.projectLinks}>
-              <h3>{t.projectLinks}</h3>
+              <h3>Projektlänkar</h3>
               <div className={styles.linksGrid}>
                 {project.liveUrl && (
                   <a 
@@ -258,10 +187,10 @@ function ProjectDetail() {
                     target="_blank" 
                     rel="noopener noreferrer"
                     className={`${styles.linkButton} ${styles.liveLink}`}
-                    aria-label={t.viewSite}
+                    aria-label="Visa hemsida"
                   >
                     <ExternalLinkIcon />
-                    {t.viewSite}
+                    Visa hemsida
                   </a>
                 )}
                 
@@ -271,10 +200,10 @@ function ProjectDetail() {
                     target="_blank" 
                     rel="noopener noreferrer"
                     className={`${styles.linkButton} ${styles.githubLink}`}
-                    aria-label={t.github}
+                    aria-label="GitHub"
                   >
                     <GithubIcon />
-                    {t.github}
+                    GitHub
                   </a>
                 )}
                 
@@ -284,10 +213,10 @@ function ProjectDetail() {
                     target="_blank" 
                     rel="noopener noreferrer"
                     className={`${styles.linkButton} ${styles.figmaLink}`}
-                    aria-label={t.figma}
+                    aria-label="Figma"
                   >
                     <FigmaIcon />
-                    {t.figma}
+                    Figma
                   </a>
                 )}
               </div>
@@ -297,7 +226,10 @@ function ProjectDetail() {
         
         {/* Galeria de imagens com animações */}
         <div className={styles.gallerySection} ref={gallerySectionRef}>
-          <h2>{t.projectGallery}</h2>
+          <h2>Projektgalleri</h2>
+          
+          {/* Verificação de debug para as imagens */}
+          {console.log('DEBUG - Imagens para galeria:', project.images)}
           
           {/* Filtro por categoria */}
           {project.imageCategories && project.imageCategories.length > 0 && (
@@ -307,7 +239,7 @@ function ProjectDetail() {
                 onClick={() => filterImagesByCategory(null)}
               >
                 <GridIcon />
-                {t.allImages}
+                Alla bilder
               </button>
               
               {project.imageCategories.map((category, index) => (
@@ -323,11 +255,17 @@ function ProjectDetail() {
           )}
           
           {/* Componente de galeria melhorado */}
-          <ProjectGallery 
-            images={project.images}
-            activeCategory={activeImageCategory}
-            isVisible={galleryInView}
-          />
+          {project.images && project.images.length > 0 ? (
+            <ProjectGallery 
+              images={project.images}
+              activeCategory={activeImageCategory}
+              isVisible={true}
+            />
+          ) : (
+            <div style={{padding: "20px", background: "#f8f8f8", borderRadius: "8px", textAlign: "center"}}>
+              <p>Inga bilder tillgängliga</p>
+            </div>
+          )}
         </div>
         
         {/* Navegação entre projetos */}
@@ -335,18 +273,18 @@ function ProjectDetail() {
           {prevProject && (
             <Link to={`/work/${prevProject.id}`} className={styles.prevProject}>
               <ArrowLeftIcon />
-              <span>{t.prev}</span>
+              <span>Föregående</span>
             </Link>
           )}
           
           <Link to="/work" className={styles.backToProjects}>
             <ArrowLeftIcon />
-            {t.backToProjects}
+            Tillbaka till alla projekt
           </Link>
           
           {nextProject && (
             <Link to={`/work/${nextProject.id}`} className={styles.nextProject}>
-              <span>{t.next}</span>
+              <span>Nästa</span>
               <ArrowRightIcon />
             </Link>
           )}

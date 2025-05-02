@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import styles from './ProjectGallery.module.css';
 
 // Imagem de fallback
@@ -35,51 +35,96 @@ const ArrowRightIcon = () => (
   </svg>
 );
 
-// Traduções
-const translations = {
-  en: {
-    noImages: "No images available for this project.",
-    noImagesInCategory: "No images found in category",
-    closeButton: "Close",
-    nextImage: "Next image",
-    prevImage: "Previous image",
-    imageOf: "Image",
-    of: "of"
-  },
-  sv: {
-    noImages: "Inga bilder tillgängliga för detta projekt.",
-    noImagesInCategory: "Inga bilder hittades i kategori",
-    closeButton: "Stäng",
-    nextImage: "Nästa bild",
-    prevImage: "Föregående bild",
-    imageOf: "Bild",
-    of: "av"
-  }
+// Textos em sueco
+const texts = {
+  noImages: "Inga bilder tillgängliga för detta projekt.",
+  noImagesInCategory: "Inga bilder hittades i kategori",
+  closeButton: "Stäng",
+  nextImage: "Nästa bild",
+  prevImage: "Föregående bild",
+  imageOf: "Bild",
+  of: "av",
+  loading: "Laddar bild..."
 };
 
-const ProjectGallery = ({ images, activeCategory, isVisible = true, language = 'sv' }) => {
+const ProjectGallery = ({ images, activeCategory, isVisible = true }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState({});
   const [imageTransition, setImageTransition] = useState('');
   const lightboxRef = useRef(null);
+  const imageCache = useRef(new Map()).current;
   
-  const t = translations[language] || translations.sv;
+  // Forçar visibilidade para true
+  const forceVisible = true;
+  
+  // Debug para mostrar as imagens recebidas - versão atualizada
+  useEffect(() => {
+    console.log('ProjectGallery - dados recebidos:', { 
+      totalImages: images?.length || 0,
+      images: images || 'sem imagens',
+      activeCategory
+    });
+    
+    // Tentar pré-carregar as imagens diretamente
+    if (images && images.length > 0) {
+      images.forEach((image, index) => {
+        if (image && image.url) {
+          console.log(`Tentativa de carregar imagem ${index + 1}: ${image.url}`);
+          const img = new Image();
+          img.onload = () => console.log(`Imagem ${index + 1} carregada com sucesso: ${image.url}`);
+          img.onerror = () => console.error(`Falha ao carregar imagem ${index + 1}: ${image.url}`);
+          img.src = image.url;
+        } else {
+          console.error(`Imagem ${index + 1} tem URL inválida:`, image);
+        }
+      });
+    }
+  }, [images]);
   
   // Filtra imagens por categoria se necessário
   const filteredImages = useMemo(() => {
     if (!images || !Array.isArray(images)) return [];
-    return activeCategory 
+    
+    if (!images.length) {
+      console.error('Array de imagens está vazio');
+    }
+    
+    const filtered = activeCategory 
       ? images.filter(img => img.category === activeCategory)
       : images;
+    
+    console.log(`Imagens filtradas: ${filtered.length}`, filtered);
+    return filtered;
   }, [images, activeCategory]);
   
   // Gerencia o carregamento das imagens
   const handleImageLoaded = (imageUrl) => {
+    console.log(`Bild laddad: ${imageUrl}`);
     setIsLoaded(prev => ({
       ...prev,
       [imageUrl]: true
     }));
+  };
+  
+  // Tratamento de erro de imagem
+  const handleImageError = (e, imageUrl) => {
+    console.error(`Fel vid bildladdning: ${imageUrl}`);
+    e.target.src = FALLBACK_IMAGE;
+    e.target.onerror = null; // Evita loop infinito
+    handleImageLoaded(imageUrl);
+  };
+  
+  // Verifica se a URL da imagem é válida e a corrige se necessário
+  const validateImageUrl = (url) => {
+    if (!url) return FALLBACK_IMAGE;
+    
+    // Se não começar com http ou /, consideramos como caminho relativo
+    if (!url.startsWith('http') && !url.startsWith('/')) {
+      return `/${url}`;
+    }
+    
+    return url;
   };
   
   // Abre o lightbox
@@ -157,66 +202,66 @@ const ProjectGallery = ({ images, activeCategory, isVisible = true, language = '
   if (!images || !Array.isArray(images) || images.length === 0) {
     return (
       <div className={styles.emptyGallery}>
-        <p>{t.noImages}</p>
+        <p>{texts.noImages}</p>
       </div>
     );
   }
 
-  // Classes para animação de entrada
-  const galleryClasses = `${styles.galleryContainer} ${isVisible ? styles.visible : ''}`;
+  // Classes para animação de entrada - forçar sempre visible
+  const galleryClasses = `${styles.galleryContainer} ${styles.visible}`;
 
   return (
-    <div className={galleryClasses}>
+    <div className={galleryClasses} style={{opacity: 1, transform: 'translateY(0)'}}>
       {filteredImages.length === 0 ? (
         <p className={styles.emptyMessage}>
-          {t.noImagesInCategory} "{activeCategory}"
+          {texts.noImagesInCategory} "{activeCategory}"
         </p>
       ) : (
         <div className={styles.imageGrid}>
-          {filteredImages.map((image, index) => (
-            <div 
-              key={`${image.url}-${index}`}
-              className={styles.imageItem}
-              style={{ 
-                animationDelay: `${index * 100}ms`,
-                opacity: isVisible ? 1 : 0,
-                transform: isVisible ? 'translateY(0)' : 'translateY(20px)'
-              }}
-              onClick={() => openLightbox(image, index)}
-            >
-              <div className={styles.imageWrapper}>
-                {!isLoaded[image.url] && (
-                  <div className={styles.imagePlaceholder}>
-                    <div className={styles.loadingSpinner}></div>
-                  </div>
-                )}
-                
-                <img 
-                  src={image.url || FALLBACK_IMAGE} 
-                  alt={image.title || 'Project image'} 
-                  className={`${styles.thumbnail} ${isLoaded[image.url] ? styles.loaded : ''}`}
-                  onLoad={() => handleImageLoaded(image.url)}
-                  onError={(e) => {
-                    e.target.src = FALLBACK_IMAGE;
-                    e.target.onerror = null; // Evita loop infinito
-                    handleImageLoaded(image.url);
-                  }}
-                />
-              </div>
-              
-              <div className={styles.imageOverlay}>
-                <div className={styles.zoomIcon}>
-                  <ZoomInIcon />
-                </div>
-                <div className={styles.imageInfo}>
-                  <h4>{image.title}</h4>
-                  {image.category && (
-                    <span className={styles.category}>{image.category}</span>
+          {filteredImages.map((image, index) => {
+            const imageUrl = validateImageUrl(image.url);
+            return (
+              <div 
+                key={`${imageUrl}-${index}`}
+                className={styles.imageItem}
+                style={{ 
+                  opacity: 1,
+                  transform: 'translateY(0)'
+                }}
+                onClick={() => openLightbox(image, index)}
+              >
+                <div className={styles.imageWrapper}>
+                  {!isLoaded[imageUrl] && (
+                    <div className={styles.imagePlaceholder}>
+                      <div className={styles.loadingSpinner}></div>
+                      <span>{texts.loading}</span>
+                    </div>
                   )}
+                  
+                  <img 
+                    src={imageUrl} 
+                    alt={image.title || 'Projektbild'} 
+                    className={`${styles.thumbnail} ${styles.loaded}`}
+                    onLoad={() => handleImageLoaded(imageUrl)}
+                    onError={(e) => handleImageError(e, imageUrl)}
+                    style={{opacity: 1}}
+                  />
+                </div>
+                
+                <div className={styles.imageOverlay} style={{opacity: 0.7}}>
+                  <div className={styles.zoomIcon}>
+                    <ZoomInIcon />
+                  </div>
+                  <div className={styles.imageInfo} style={{opacity: 1, transform: 'translateY(0)'}}>
+                    <h4>{image.title}</h4>
+                    {image.category && (
+                      <span className={styles.category}>{image.category}</span>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
       
@@ -226,7 +271,7 @@ const ProjectGallery = ({ images, activeCategory, isVisible = true, language = '
           <button 
             className={styles.closeButton} 
             onClick={closeLightbox} 
-            aria-label={t.closeButton}
+            aria-label={texts.closeButton}
           >
             <CloseIcon />
           </button>
@@ -234,13 +279,10 @@ const ProjectGallery = ({ images, activeCategory, isVisible = true, language = '
           <div className={styles.lightboxContent} onClick={e => e.stopPropagation()}>
             <div className={`${styles.lightboxImageContainer} ${styles[imageTransition]}`}>
               <img 
-                src={selectedImage.url || FALLBACK_IMAGE} 
-                alt={selectedImage.title || 'Project image'} 
+                src={validateImageUrl(selectedImage.url)} 
+                alt={selectedImage.title || 'Projektbild'} 
                 className={styles.lightboxImage}
-                onError={(e) => {
-                  e.target.src = FALLBACK_IMAGE;
-                  e.target.onerror = null;
-                }}
+                onError={(e) => handleImageError(e, selectedImage.url)}
               />
             </div>
             
@@ -257,7 +299,7 @@ const ProjectGallery = ({ images, activeCategory, isVisible = true, language = '
               )}
               
               <div className={styles.imageCounter}>
-                {t.imageOf} {selectedIndex + 1} {t.of} {filteredImages.length}
+                {texts.imageOf} {selectedIndex + 1} {texts.of} {filteredImages.length}
               </div>
             </div>
           </div>
@@ -267,7 +309,7 @@ const ProjectGallery = ({ images, activeCategory, isVisible = true, language = '
             <button 
               className={`${styles.navButton} ${styles.prevButton}`}
               onClick={prevImage}
-              aria-label={t.prevImage}
+              aria-label={texts.prevImage}
             >
               <ArrowLeftIcon />
             </button>
@@ -277,7 +319,7 @@ const ProjectGallery = ({ images, activeCategory, isVisible = true, language = '
             <button 
               className={`${styles.navButton} ${styles.nextButton}`}
               onClick={nextImage}
-              aria-label={t.nextImage}
+              aria-label={texts.nextImage}
             >
               <ArrowRightIcon />
             </button>

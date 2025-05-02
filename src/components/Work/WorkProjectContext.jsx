@@ -76,7 +76,6 @@ export function WorkProjectProvider({ children }) {
           {
             id: "clojel",
             title: "Clojel App Design",
-            titlePt: "Clojel App Design",
             description: "Omdesign av användarupplevelsen för en psykisk hälsoapp",
             tags: ['Mobil', 'Hälsa', 'UX Research'],
             backgroundImage: '/work/clojel/background.jpg',
@@ -101,7 +100,6 @@ export function WorkProjectProvider({ children }) {
                 url: '/work/clojel/gallery/background.png',
                 title: "App-gränssnitt",
                 caption: "Huvudskärmen för applikationen som visar användardashboarden",
-
               },
               {
                 url: '/work/clojel/gallery/characters.jpg',
@@ -173,7 +171,6 @@ export function WorkProjectProvider({ children }) {
             extendedDescription: "En intuitiv app för att hjälpa universitetsstudenter att hantera sina finanser, med fokus på användbarhet och utbildningsverktyg om ekonomisk förvaltning.",
             challenges: "Att skapa en finansiell lösning som tillgodoser studenters specifika behov, med begränsade budgetar och säsongsbetonade akademiska utgifter.",
             solution: "Vi utvecklade en app med automatisk utgiftskategorisering, räkningspåminnelser, besparingstips och tydlig visualisering av utgifter per termin.",
-            solutionPt: "Desenvolvemos um aplicativo com categorização automática de despesas, lembretes de contas, dicas de economia e visualização clara de gastos por semestre.",
             technologies: [
               { name: "React Native", icon: "⚛️" },
               { name: "Firebase", icon: "🔥" },
@@ -294,12 +291,16 @@ export function WorkProjectProvider({ children }) {
         ];
         
         console.log(`Carregados ${data.length} projetos`);
+        data.forEach(project => {
+          console.log(`Projeto ${project.id} tem ${project.images.length} imagens:`);
+          project.images.forEach(img => console.log(`- ${img.url}`));
+        });
         setProjetos(data);
         setIsDataFetched(true);
         setError(null);
       } catch (err) {
         console.error("Erro ao carregar projetos:", err);
-        setError("Não foi possível carregar os projetos. Por favor, tente novamente.");
+        setError("Det gick inte att ladda projekten. Var god försök igen.");
       } finally {
         setLoading(false);
       }
