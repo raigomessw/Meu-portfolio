@@ -94,8 +94,8 @@
   --light-color-border-3: rgba(110, 7, 243, 0.3);
   
   /* === DARK MODE (TEMA ESCURO) === */
-  --dark-color-bg-0: #2B2F53;      /* Fundo base escuro */
-  --dark-color-bg-1: #1D1C34;      /* Fundo principal */
+  --dark-color-bg-0: #0d0e19;      /* Fundo base escuro */
+  --dark-color-bg-1: #03012a;      /* Fundo principal */
   --dark-color-bg-2: #334155;      /* Componentes, cards */
   --dark-color-bg-3: #475569;      /* Componentes elevados */
   --dark-color-bg-4: #64748b;      /* Áreas destacadas */
