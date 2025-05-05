@@ -71,7 +71,7 @@ function WorkSection() {
   }, [projectsToShow]);
 
   return (
-    <section id="trabalhos" ref={sectionRef} className={styles.workSection}>
+    <section id="projekt" ref={sectionRef} className={styles.workSection}>
       {/* Elementos decorativos de fundo */}
       <div className={styles.backgroundGlow}></div>
       <div className={styles.decorCircleTop}></div>
@@ -85,8 +85,8 @@ function WorkSection() {
         transition={{ duration: 0.7 }}
         viewport={{ once: true }}
       >
-        <h2>Meus Projetos</h2>
-        <p>Conheça alguns dos trabalhos que desenvolvi recentemente.</p>
+        <h2>Mina Projekt</h2>
+        <p>Utforska några av mina senaste arbeten.</p>
         <div className={styles.headerAccent}></div>
       </motion.div>
       
@@ -117,7 +117,7 @@ function WorkSection() {
                   <div className={styles.cardOverlay}></div>
                   
                   <div className={styles.cardQuickAction}>
-                    <button className={styles.quickViewButton} aria-label="Ver detalhes rápidos">
+                    <button className={styles.quickViewButton} aria-label="Snabbvy">
                       <FontAwesomeIcon icon={faEye} />
                     </button>
                   </div>
@@ -140,7 +140,7 @@ function WorkSection() {
                 </div>
                 
                 <div className={styles.cardHoverEffect}>
-                  <span className={styles.exploreText}>Explorar projeto</span>
+                  <span className={styles.exploreText}>Utforska projekt</span>
                   <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
                 </div>
               </Link>
@@ -157,7 +157,7 @@ function WorkSection() {
         viewport={{ once: true }}
       >
         <Link to="/work" className={styles.viewAllButton}>
-          <span>Ver todos os projetos</span>
+          <span>Se alla projekt</span>
           <div className={styles.iconCircle}>
             <FontAwesomeIcon icon={faArrowDown} className={styles.buttonIcon} />
           </div>

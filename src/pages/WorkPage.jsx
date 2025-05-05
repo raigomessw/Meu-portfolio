@@ -21,8 +21,8 @@ function WorkPage() {
   // Usando projetos do contexto ou fazendo um fallback para um array vazio
   const availableProjects = projects || projetos || allProjects || [];
   const [visibleProjects, setVisibleProjects] = useState([]);
-  const [activeFilter, setActiveFilter] = useState('All');
-  const [allTags, setAllTags] = useState(['All']);
+  const [activeFilter, setActiveFilter] = useState('Alla');
+  const [allTags, setAllTags] = useState(['Alla']);
   const [isLoading, setIsLoading] = useState(true);
   const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -30,7 +30,7 @@ function WorkPage() {
   
   useEffect(() => {
     // Log para debug - verificar dados do contexto
-    console.log('WorkPage - Dados do contexto:', { 
+    console.log('WorkPage - Kontextdata:', { 
       projects: projects?.length || 0,
       allProjects: allProjects?.length || 0,
       projetos: projetos?.length || 0,
@@ -39,7 +39,9 @@ function WorkPage() {
     
     // Se houver tags no contexto, usamos elas
     if (contextTags && contextTags.length > 0) {
-      setAllTags(contextTags);
+      // Traduzir "All" para "Alla" se estiver presente
+      const translatedTags = contextTags.map(tag => tag === 'All' ? 'Alla' : tag);
+      setAllTags(translatedTags);
     }
     
     // Se houver projetos disponíveis, atualizamos o estado
@@ -52,7 +54,7 @@ function WorkPage() {
   // Extrair todas as tags únicas apenas se necessário
   useEffect(() => {
     if (!contextTags && availableProjects.length > 0) {
-      const tags = new Set(['All']);
+      const tags = new Set(['Alla']);
       availableProjects.forEach(project => {
         if (project.tags) {
           project.tags.forEach(tag => tags.add(tag));
@@ -68,12 +70,14 @@ function WorkPage() {
     
     // Se tivermos a função de filtro do contexto, a usamos
     if (contextFilterProjects) {
-      contextFilterProjects(tag);
+      // Converter de volta para "All" se for "Alla" antes de passar para o contexto
+      const originalTag = tag === 'Alla' ? 'All' : tag;
+      contextFilterProjects(originalTag);
       return;
     }
     
     // Caso contrário, filtramos manualmente
-    if (tag === 'All') {
+    if (tag === 'Alla') {
       setVisibleProjects(availableProjects);
     } else {
       const filtered = availableProjects.filter(project => 
@@ -105,7 +109,7 @@ function WorkPage() {
     if (project && project.id) {
       navigate(`/work/${project.id}`);
     } else {
-      console.error('Projeto inválido ou sem ID:', project);
+      console.error('Ogiltigt projekt eller projekt utan ID:', project);
     }
   };
 
@@ -142,8 +146,8 @@ function WorkPage() {
       
       <div className={styles.content}>
         <div className={styles.header}>
-          <h1>My Projects.</h1>
-          <p>Explore my design and development work.</p>
+          <h1>Mina Projekt.</h1>
+          <p>Utforska mitt design- och utvecklingsarbete.</p>
         </div>
         
         <div className={styles.controlsBar}>
@@ -154,7 +158,7 @@ function WorkPage() {
             aria-controls="project-filters"
           >
             <FontAwesomeIcon icon={faFilter} />
-            <span>Filtros</span>
+            <span>Filter</span>
           </button>
         </div>
         
@@ -185,7 +189,7 @@ function WorkPage() {
           />
         ) : (
           <div className={styles.noProjects}>
-            <p>Nenhum projeto encontrado para o filtro selecionado.</p>
+            <p>Inga projekt hittades för det valda filtret.</p>
           </div>
         )}
       </div>

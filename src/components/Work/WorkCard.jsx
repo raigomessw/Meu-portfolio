@@ -48,7 +48,7 @@ const WorkCard = ({
           setImageLoaded(true);
         }
       } catch (error) {
-        console.log('Erro ao carregar imagem otimizada:', error);
+        console.log('Fel vid inläsning av optimerad bild:', error);
         // Fallback para carregamento normal
         setImageLoaded(true);
       }
@@ -117,14 +117,14 @@ const WorkCard = ({
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleCardClick}
         style={{ cursor: 'pointer' }}
-        aria-label={`Ver detalhes do projeto ${project.title}`}
+        aria-label={`Se detaljer om projektet ${project.title}`}
         data-premium-effect={featuredProject ? "enhanced" : "standard"}
       >
         <div className={sectionStyles.cardImage}>
           <div className={`${sectionStyles.imageContainer} ${imageLoaded ? sectionStyles.loaded : ''}`}>
             {/* Div de placeholder enquanto a imagem carrega */}
             <div className={sectionStyles.imagePlaceholder}>
-              <span className={sectionStyles.loadingText}>Carregando...</span>
+              <span className={sectionStyles.loadingText}>Laddar...</span>
             </div>
             
             {/* Imagem com carregamento otimizado */}
@@ -140,7 +140,7 @@ const WorkCard = ({
           {featuredProject && (
             <div className={styles.featuredBadge}>
               <span className={styles.featuredStar}>★</span>
-              Destaque
+              Utmärkt
             </div>
           )}
           <div className={sectionStyles.thumbnailReflection}></div>
@@ -150,7 +150,7 @@ const WorkCard = ({
           type="button"
           className={sectionStyles.cardQuickAction}
           onClick={handleQuickViewClick}
-          aria-label="Visualização rápida"
+          aria-label="Snabbvy"
         >
           <span className={sectionStyles.quickViewButton}>
             <FiEye size={20} />
@@ -186,7 +186,7 @@ const WorkCard = ({
         </div>
         
         <div className={`${sectionStyles.cardHoverEffect} ${isHovered ? sectionStyles.active : ''}`}>
-          <span className={sectionStyles.exploreText}>Explorar Projeto</span>
+          <span className={sectionStyles.exploreText}>Utforska projekt</span>
           <FiArrowRight className={sectionStyles.arrowIcon} />
         </div>
       </div>

@@ -114,8 +114,8 @@ const WorkGridView = ({ projects, onQuickView }) => {
     return (
       <div className={styles.gridContainer} ref={gridRef}>
         <div className={styles.noResults}>
-          <h3>Nenhum projeto encontrado</h3>
-          <p>Tente ajustar seus filtros ou critérios de busca para encontrar mais projetos.</p>
+          <h3>Inga projekt hittades</h3>
+          <p>Försök att justera dina filter eller sökkriterier för att hitta fler projekt.</p>
         </div>
       </div>
     );
@@ -160,18 +160,18 @@ const WorkGridView = ({ projects, onQuickView }) => {
               <button 
                 className={styles.viewButton}
                 onClick={(e) => handleViewProject(e, project)}
-                aria-label={`Ver detalhes do projeto ${project.title}`}
+                aria-label={`Se detaljer om projektet ${project.title}`}
               >
-                Ver projeto <FiArrowRight className={styles.buttonIcon} />
+                Se projekt <FiArrowRight className={styles.buttonIcon} />
               </button>
               
               <button
                 type="button"
                 className={styles.detailsButton}
                 onClick={(e) => handleQuickView(e, project)}
-                aria-label={`Pré-visualizar ${project.title}`}
+                aria-label={`Förhandsgranska ${project.title}`}
               >
-                Pré-visualizar <FiExternalLink className={styles.buttonIcon} />
+                Förhandsgranska <FiExternalLink className={styles.buttonIcon} />
               </button>
             </div>
           </div>

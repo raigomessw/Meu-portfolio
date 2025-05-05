@@ -62,19 +62,21 @@
   --screen-2xl: 1536px;
   
   /* === CORES PRINCIPAIS === */
-  --color-primary: #2563eb;
-  --color-primary-light: #3b82f6;
-  --color-primary-dark: #1d4ed8;
+  --color-primary: #1857ea;
+  --color-primary-light: #cecece;
+  --color-primary-dark: #00227f;
   --color-primary-contrast: #ffffff;
-  --color-secondary: #6c27bc;
-  --color-accent: #23a6d5;
+  --color-secondary: #914edd;
+  --color-accent: #7608FD;
   --color-accent-alt: #e73c7e;
 
   /* Cores em formato RGB para uso em gradientes e transparências */
-  --color-primary-rgb: 99, 102, 241;      /* Indigo/azul */
+  --color-primary-rgb: rgb(29, 22, 22);      /* Black */
   --color-secondary-rgb: 14, 165, 233;    /* Azul celeste */
   --color-accent-rgb: 236, 72, 153;       /* Rosa */
   --color-accent-alt-rgb: 168, 85, 247;   /* Roxo */
+
+  
   
   /* === ADIÇÃO DE TEMA CLARO === */
   --light-color-bg-0: #E1E5EF;     /* Base mais clara */
@@ -95,7 +97,7 @@
   
   /* === DARK MODE (TEMA ESCURO) === */
   --dark-color-bg-0: #0d0e19;      /* Fundo base escuro */
-  --dark-color-bg-1: #03012a;      /* Fundo principal */
+  --dark-color-bg-1: #030120;      /* Fundo principal */
   --dark-color-bg-2: #334155;      /* Componentes, cards */
   --dark-color-bg-3: #475569;      /* Componentes elevados */
   --dark-color-bg-4: #64748b;      /* Áreas destacadas */

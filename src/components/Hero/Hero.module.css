@@ -124,7 +124,7 @@ html[data-theme="light"] .gradientLayer {
 html[data-theme="dark"] .gradientLayer {
   background: radial-gradient(
       circle at 30% 30%, 
-      rgba(236, 72, 153, 0.35) 0%, 
+      rgba(0, 0, 0, 0.35) 0%, 
       rgba(236, 72, 153, 0) 50%
     ),
     radial-gradient(
@@ -137,7 +137,7 @@ html[data-theme="dark"] .gradientLayer {
       rgba(56, 189, 248, 0.35) 0%, 
       rgba(56, 189, 248, 0) 50%
     ),
-    rgba(15, 23, 42, 0.9);
+    rgba(6, 14, 33, 0.9);
   filter: blur(70px);
 }
 
@@ -201,7 +201,7 @@ html[data-theme="light"] .gradientLayer {
 html[data-theme="dark"] .gradientLayer {
   background: radial-gradient(
       ellipse at calc(var(--mouse-x, 0.5) * 100%) calc(var(--mouse-y, 0.5) * 100%), 
-      rgba(var(--color-primary-rgb), 0.25), 
+      rgba(var(--color-primary-rgb), 0.15), 
       rgba(var(--color-primary-rgb), 0.01) 50%
     ),
     linear-gradient(-45deg, 
@@ -663,6 +663,7 @@ html[data-theme="dark"] .particle {
 
 .primaryButton:hover {
   transform: translateY(-3px);
+  color: white;
   box-shadow: 0 8px 25px rgba(var(--color-primary-rgb), 0.45);
 }
 
@@ -694,7 +695,7 @@ html[data-theme="dark"] .particle {
 }
 
 .secondaryButton {
-  background: rgba(var(--color-bg-1-rgb), 0.05);
+  background: rgba(var(--color-bg-1-rgb), 0.9);
   color: var(--hero-text-main);
   border: 1px solid var(--hero-border);
   backdrop-filter: blur(8px);
@@ -961,7 +962,7 @@ html[data-theme="dark"] .particle {
 .scrollIcon {
   width: 30px;
   height: 50px;
-  border: 2px solid rgba(var(--color-primary-rgb), 0.6);
+  border: 2px solid rgba(var(--color-accent-rgb), 0.6);
   border-radius: 15px;
   margin-bottom: 8px;
   position: relative;
