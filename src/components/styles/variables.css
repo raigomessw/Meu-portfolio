@@ -61,70 +61,89 @@
   --screen-xl: 1280px;
   --screen-2xl: 1536px;
   
-  /* === CORES PRINCIPAIS === */
-  --color-primary: #1857ea;
-  --color-primary-light: #cecece;
-  --color-primary-dark: #00227f;
-  --color-primary-contrast: #ffffff;
-  --color-secondary: #914edd;
-  --color-accent: #7608FD;
-  --color-accent-alt: #e73c7e;
+ /* === CORES PRINCIPAIS === */
+--color-primary: #0066cc;          /* Azul mais acessível */
+--color-primary-light: #4d94ff;    /* Versão mais clara para contraste em dark mode */
+--color-primary-dark: #004c99;     /* Versão mais escura para light mode */
+--color-primary-contrast: #ffffff; /* Branco para contraste com fundos coloridos */
+--color-secondary: #8344db;        /* Roxo mais balanceado */
+--color-tertiary: #2dd4bf;         /* Tom terciário para destaque */
+--color-accent: #7908fd;           /* Roxo vibrante para ênfase */
+--color-accent-alt: #e74694;       /* Rosa mais suave */
 
-  /* Cores em formato RGB para uso em gradientes e transparências */
-  --color-primary-rgb: rgb(29, 22, 22);      /* Black */
-  --color-secondary-rgb: 14, 165, 233;    /* Azul celeste */
-  --color-accent-rgb: 236, 72, 153;       /* Rosa */
-  --color-accent-alt-rgb: 168, 85, 247;   /* Roxo */
+/* Cores em formato RGB para uso em gradientes e transparências */
+--color-primary-rgb: 0, 102, 204;       /* Azul principal em RGB */
+--color-primary-light-rgb: 77, 148, 255; /* Azul claro em RGB */
+--color-primary-dark-rgb: 0, 76, 153;   /* Azul escuro em RGB */
+--color-secondary-rgb: 131, 68, 219;    /* Roxo em RGB */
+--color-tertiary-rgb: 45, 212, 191;     /* Turquesa em RGB */
+--color-accent-rgb: 121, 8, 253;        /* Roxo vibrante em RGB */
+--color-accent-alt-rgb: 231, 70, 148;   /* Rosa em RGB */
 
-  
-  
-  /* === ADIÇÃO DE TEMA CLARO === */
-  --light-color-bg-0: #E1E5EF;     /* Base mais clara */
-  --light-color-bg-1: #ABB8DE;     /* Fundo principal */
-  --light-color-bg-2: #f3f4f6;     /* Componentes, cards */
-  --light-color-bg-3: #e5e7eb;     /* Componentes elevados */
-  --light-color-bg-4: #d1d5db;     /* Áreas destacadas */
-  
-  --light-color-text-0: #111827;   /* Texto de maior ênfase */
-  --light-color-text-1: #1f2937;   /* Texto primário */
-  --light-color-text-2: #4b5563;   /* Texto secundário */
-  --light-color-text-3: #6b7280;   /* Texto terciário/descrição */
-  --light-color-text-4: #9ca3af;   /* Texto desabilitado */
-  
-  --light-color-border-1: rgba(0, 0, 0, 0.05);
-  --light-color-border-2: rgba(0, 0, 0, 0.1);
-  --light-color-border-3: rgba(110, 7, 243, 0.3);
-  
-  /* === DARK MODE (TEMA ESCURO) === */
-  --dark-color-bg-0: #0d0e19;      /* Fundo base escuro */
-  --dark-color-bg-1: #030120;      /* Fundo principal */
-  --dark-color-bg-2: #334155;      /* Componentes, cards */
-  --dark-color-bg-3: #475569;      /* Componentes elevados */
-  --dark-color-bg-4: #64748b;      /* Áreas destacadas */
-  
-  --dark-color-text-0: #f8fafc;    /* Texto de maior ênfase */
-  --dark-color-text-1: #f1f5f9;    /* Texto primário */
-  --dark-color-text-2: #e2e8f0;    /* Texto secundário */
-  --dark-color-text-3: #cbd5e1;    /* Texto terciário/descrição */
-  --dark-color-text-4: #94a3b8;    /* Texto desabilitado */
-  
-  --dark-color-border-1: rgba(255, 255, 255, 0.05);
-  --dark-color-border-2: rgba(255, 255, 255, 0.1);
-  --dark-color-border-3: rgba(110, 7, 243, 0.3);
-  
-  /* === SISTEMA DE SOMBRAS === */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-  --shadow-focus: 0 0 0 3px rgba(37, 99, 235, 0.4);
-  
-  --shadow-sm-dark: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md-dark: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
-  --shadow-lg-dark: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.2);
-  --shadow-xl-dark: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
-  
+/* Transparências para efeitos e sobreposições */
+--color-primary-translucent: rgba(0, 102, 204, 0.15);
+--color-secondary-translucent: rgba(131, 68, 219, 0.15);
+--color-tertiary-translucent: rgba(45, 212, 191, 0.15);
+
+/* === TEMA CLARO === */
+--light-color-bg-0: #f8fafc;      /* Base mais clara, menos saturada */
+--light-color-bg-1: #f1f5f9;      /* Fundo principal mais neutro */
+--light-color-bg-2: #f3f4f6;      /* Componentes, cards */
+--light-color-bg-3: #e5e7eb;      /* Componentes elevados */
+--light-color-bg-4: #d1d5db;      /* Áreas destacadas */
+
+--light-color-text-0: #111827;    /* Texto de maior ênfase */
+--light-color-text-1: #1f2937;    /* Texto primário */
+--light-color-text-2: #4b5563;    /* Texto secundário */
+--light-color-text-3: #6b7280;    /* Texto terciário/descrição */
+--light-color-text-4: #9ca3af;    /* Texto desabilitado */
+
+--light-color-border-1: rgba(0, 0, 0, 0.05);
+--light-color-border-2: rgba(0, 0, 0, 0.1);
+--light-color-border-3: rgba(0, 102, 204, 0.3); /* Borda colorida usando a cor primária */
+
+/* === TEMA ESCURO === */
+--dark-color-bg-0: #0f172a;       /* Fundo base escuro mais azulado */
+--dark-color-bg-1: #1e293b;       /* Fundo principal mais natural */
+--dark-color-bg-2: #334155;       /* Componentes, cards */
+--dark-color-bg-3: #475569;       /* Componentes elevados */
+--dark-color-bg-4: #64748b;       /* Áreas destacadas */
+
+--dark-color-text-0: #f8fafc;     /* Texto de maior ênfase */
+--dark-color-text-1: #f1f5f9;     /* Texto primário */
+--dark-color-text-2: #e2e8f0;     /* Texto secundário */
+--dark-color-text-3: #cbd5e1;     /* Texto terciário/descrição */
+--dark-color-text-4: #94a3b8;     /* Texto desabilitado */
+
+--dark-color-border-1: rgba(255, 255, 255, 0.05);
+--dark-color-border-2: rgba(255, 255, 255, 0.1);
+--dark-color-border-3: rgba(77, 148, 255, 0.3); /* Borda colorida usando a cor primária light */
+
+/* Cores de fundo para cartões e elementos elevados */
+--color-card: rgba(255, 255, 255, 0.8);
+--color-card-dark: rgba(30, 41, 59, 0.8);
+--color-glass: rgba(255, 255, 255, 0.7);
+--color-glass-dark: rgba(15, 23, 42, 0.7);
+--color-glass-border: rgba(255, 255, 255, 0.3);
+--color-glass-border-dark: rgba(255, 255, 255, 0.1);
+
+/* Background gradientes aprimorados */
+--color-background-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+--color-background-gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+--backdrop-blur: 8px;
+
+/* === SISTEMA DE SOMBRAS === */
+--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+--shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+--shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+--shadow-focus: 0 0 0 3px rgba(0, 102, 204, 0.3);
+
+--shadow-sm-dark: 0 1px 3px rgba(0, 0, 0, 0.3);
+--shadow-md-dark: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+--shadow-lg-dark: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+--shadow-xl-dark: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
   /* === BORDER RADIUS === */
   --radius-sm: 0.125rem;  /* 2px */
   --radius-md: 0.375rem;  /* 6px */

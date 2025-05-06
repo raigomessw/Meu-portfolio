@@ -1,32 +1,44 @@
-/* Variáveis específicas do Hero */
-.hero {
-  --heading-h1: 80px;
-  --heading-h2: 60px;
-  --heading-h3: 48px;
-  --heading-h4: 24px;
-  --heading-h5: 20px;
-  --subtitle-l: 17px;
-  --subtitle-s: 15px;
-  --body-l: 17px;
-  --body-s: 15px;
-  --caption: 13px;
-  --button: 15px;
+/* ========== VARIÁVEIS GLOBAIS ========== */
+:root {
+  /* Definições de fonte e tamanhos */
+  --heading-h1: clamp(42px, 5vw, 80px); /* Valores responsivos com clamp */
+  --heading-h2: clamp(36px, 4vw, 60px);
+  --heading-h3: clamp(30px, 3.5vw, 48px);
+  --heading-h4: clamp(20px, 2vw, 24px);
+  --heading-h5: clamp(18px, 1.8vw, 20px);
+  --subtitle-l: clamp(15px, 1.5vw, 17px);
+  --subtitle-s: clamp(14px, 1.3vw, 15px);
+  --body-l: clamp(15px, 1.5vw, 17px);
+  --body-s: clamp(14px, 1.3vw, 15px);
+  --caption: clamp(12px, 1.1vw, 13px);
+  --button: clamp(14px, 1.2vw, 15px);
+  
+  /* Espessuras de fonte */
   --font-semi-bold: 600;
   --font-medium: 500;
   --font-regular: 400;
-  --border-radius-lg: 24px;
-  --border-radius-md: 16px;
-  --border-radius-sm: 8px;
+  
+  /* Border radius */
+  --border-radius-lg: max(16px, min(24px, 2vw));
+  --border-radius-md: max(12px, min(16px, 1.5vw));
+  --border-radius-sm: max(6px, min(8px, 0.8vw));
   --border-radius-xs: 4px;
-  --space-xl: 48px;
-  --space-lg: 32px;
-  --space-md: 24px;
-  --space-sm: 16px;
-  --space-xs: 8px;
+  
+  /* Espaçamentos responsivos */
+  --space-xl: clamp(32px, 4vw, 48px);
+  --space-lg: clamp(24px, 3vw, 32px);
+  --space-md: clamp(16px, 2vw, 24px);
+  --space-sm: clamp(12px, 1.5vw, 16px);
+  --space-xs: clamp(6px, 0.7vw, 8px);
+  
+  /* Animações */
   --hero-animation-duration: 0.7s;
   --hero-animation-stagger: 0.15s;
   --hero-animation-curve: cubic-bezier(0.16, 1, 0.3, 1);
+}
 
+/* Variáveis específicas do Hero */
+.hero {
   /* Cores que se adaptam ao tema atual */
   --hero-text-main: var(--color-text-0);
   --hero-text-secondary: var(--color-text-1);
@@ -42,6 +54,8 @@
 :root {
   --color-bg-1-rgb: 255, 255, 255; /* Claro por padrão */
   --color-bg-2-rgb: 245, 247, 250;
+  --color-primary-rgb: 99, 102, 241;
+  --color-accent-rgb: 236, 72, 153;
 }
 
 html[data-theme="dark"] {
@@ -61,7 +75,7 @@ html[data-theme="dark"] {
   color: var(--hero-text-main);
   overflow: hidden;
   padding: var(--space-xl) var(--space-md);
-  padding-top: calc(var(--space-xl) * 2); /* Espaço adicional para o NavBar */
+  padding-top: max(80px, 15vh); /* Espaço responsivo para o NavBar */
   opacity: 0;
   transform: translateY(30px);
   transition: opacity var(--hero-animation-duration) var(--hero-animation-curve), 
@@ -85,6 +99,8 @@ html[data-theme="dark"] {
   height: 100%;
   z-index: -1;
   overflow: hidden;
+  will-change: transform; /* Melhora desempenho de animação */
+  translate: 0 0; /* Forçar GPU rendering */
 }
 
 /* Camada de gradiente principal com blobs e blur */
@@ -95,8 +111,9 @@ html[data-theme="dark"] {
   height: 140%;
   background-size: 150% 150%;
   will-change: background-position, transform;
-  transform: translateZ(0);
+  transform: translateZ(0); /* Otimização para GPU */
   animation: gradientAnimation 25s ease infinite;
+  backface-visibility: hidden; /* Evita problemas de renderização */
 }
 
 /* Tema claro - Blobs gradiente */
@@ -160,18 +177,19 @@ html[data-theme="dark"] .gradientLayer {
   }
 }
 
-/* Camada de ruído para textura premium */
+/* Camada de ruído para textura premium - Otimizada para performance */
 .noiseLayer {
   position: absolute;
   inset: 0;
   z-index: 1;
   opacity: 0.025;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   mix-blend-mode: overlay;
+  background-size: 200px; /* Tamanho menor para melhor performance */
 }
 
-/* Grade sutil */
+/* Grade sutil - Otimizada */
 .gridLayer {
   position: absolute;
   inset: 0;
@@ -181,72 +199,15 @@ html[data-theme="dark"] .gradientLayer {
   background-image: 
     linear-gradient(to right, var(--hero-text-main) 1px, transparent 1px),
     linear-gradient(to bottom, var(--hero-text-main) 1px, transparent 1px);
-}
-
-/* Tema claro - Gradiente mais suave e elegante */
-html[data-theme="light"] .gradientLayer {
-  background: radial-gradient(
-      ellipse at calc(var(--mouse-x, 0.5) * 100%) calc(var(--mouse-y, 0.5) * 100%), 
-      rgba(99, 102, 241, 0.15), 
-      rgba(99, 102, 241, 0.01) 50%
-    ),
-    linear-gradient(171deg, 
-      lab(97.16% -0.12 -1.68 / 0.8) 0%, 
-      rgba(99, 102, 241, 0.05) 25%, 
-      rgba(236, 72, 153, 0.03) 50%,
-      rgba(245, 247, 250, 0.9) 100%);
-}
-
-/* Tema escuro - Gradiente mais dramático e rico */
-html[data-theme="dark"] .gradientLayer {
-  background: radial-gradient(
-      ellipse at calc(var(--mouse-x, 0.5) * 100%) calc(var(--mouse-y, 0.5) * 100%), 
-      rgba(var(--color-primary-rgb), 0.15), 
-      rgba(var(--color-primary-rgb), 0.01) 50%
-    ),
-    linear-gradient(-45deg, 
-      rgba(6, 8, 13, 0.8) 0%, 
-      rgba(53, 55, 160, 0.12) 25%, 
-      rgba(236, 72, 153, 0.08) 50%, 
-      rgba(20, 25, 40, 0.9) 100%);
-}
-
-/* Camada de ruído para textura premium */
-.noiseLayer {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  opacity: 0.035;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
-}
-
-/* Grade sutil que reage ao mouse */
-.gridLayer {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  opacity: 0.03;
-  background-size: 50px 50px;
-  background-image: 
-    linear-gradient(to right, var(--hero-text-main) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--hero-text-main) 1px, transparent 1px);
   transform: 
     perspective(1000px) 
     rotateX(calc((var(--mouse-y, 0.5) - 0.5) * 5deg))
     rotateY(calc((var(--mouse-x, 0.5) - 0.5) * -5deg));
   transform-origin: center;
-  transition: transform 0.1s ease;
+  transition: transform 0.2s ease;
 }
 
-@keyframes gradientAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* ========== EFEITOS DE BRILHO PREMIUM ========== */
+/* ========== EFEITOS DE BRILHO PREMIUM - OTIMIZADOS ========== */
 .glowEffect {
   position: absolute;
   border-radius: 100%;
@@ -262,8 +223,8 @@ html[data-theme="dark"] .gradientLayer {
 .glow1 {
   top: 15%;
   left: 25%;
-  width: 40vw;
-  height: 40vw;
+  width: min(40vw, 600px); /* Limite de tamanho para telas grandes */
+  height: min(40vw, 600px);
   background: radial-gradient(circle, 
     rgba(var(--color-primary-rgb), 0.3) 0%, 
     rgba(var(--color-primary-rgb), 0) 60%);
@@ -273,8 +234,8 @@ html[data-theme="dark"] .gradientLayer {
 .glow2 {
   bottom: 20%;
   right: 20%;
-  width: 35vw;
-  height: 35vw;
+  width: min(35vw, 500px); /* Limite de tamanho para telas grandes */
+  height: min(35vw, 500px);
   background: radial-gradient(circle, 
     rgba(var(--color-accent-rgb), 0.25) 0%, 
     rgba(var(--color-accent-rgb), 0) 60%);
@@ -290,7 +251,7 @@ html[data-theme="dark"] .gradientLayer {
   }
 }
 
-/* ========== PARTÍCULAS PREMIUM ========== */
+/* ========== PARTÍCULAS PREMIUM - OTIMIZADAS ========== */
 .heroParticles {
   position: absolute;
   top: 0;
@@ -341,7 +302,7 @@ html[data-theme="dark"] .particle {
   75% { transform: translate(-10px, 5px) rotate(3deg); }
 }
 
-/* ========== BADGE DE DISPONIBILIDADE ========== */
+/* ========== BADGE DE DISPONIBILIDADE - RESPONSIVO ========== */
 .availabilityBadge {
   position: absolute;
   top: 80px; /* Posição absoluta com espaço para a NavBar */
@@ -414,7 +375,7 @@ html[data-theme="dark"] .particle {
   white-space: nowrap;
 }
 
-/* ========== CONTEÚDO PRINCIPAL ========== */
+/* ========== CONTEÚDO PRINCIPAL - LAYOUT FLEXÍVEL ========== */
 .heroContent {
   display: flex;
   flex-direction: column;
@@ -427,17 +388,18 @@ html[data-theme="dark"] .particle {
   z-index: 2;
 }
 
-/* Container de texto */
+/* Container de texto - Responsivo */
 .heroTextContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  max-width: 900px;
+  max-width: min(900px, 90vw); /* Limite para telas ultralargas */
   margin-bottom: var(--space-xl);
+  width: 100%;
 }
 
-/* ========== BADGE DE EXPERIÊNCIA ========== */
+/* ========== BADGE DE EXPERIÊNCIA - RESPONSIVO ========== */
 .experienceBadge {
   background: linear-gradient(90deg, 
     rgba(var(--color-accent-rgb), 0.15),
@@ -471,7 +433,7 @@ html[data-theme="dark"] .particle {
   font-size: calc(var(--subtitle-s) + 2px);
 }
 
-/* ========== TÍTULO PRINCIPAL ========== */
+/* ========== TÍTULO PRINCIPAL - RESPONSIVO ========== */
 .heroTitle {
   margin: 0 0 var(--space-md);
   line-height: 1.2;
@@ -505,16 +467,18 @@ html[data-theme="dark"] .particle {
   opacity: 0;
   transform: translateY(30px);
   animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 2) forwards;
+  word-break: break-word; /* Evita overflow em telas pequenas */
+  hyphens: auto; /* Permite hifenização em telas pequenas */
 }
 
-/* ========== SUBTÍTULO COM EFEITO DE DIGITAÇÃO ========== */
+/* ========== SUBTÍTULO - RESPONSIVO ========== */
 .heroSubtitle {
   font-size: var(--subtitle-l);
   font-weight: var(--font-regular);
   line-height: 1.6;
   color: var(--hero-text-secondary);
   margin-bottom: var(--space-lg);
-  max-width: 800px;
+  max-width: min(800px, 90vw); /* Limite para telas ultralargas */
   opacity: 0;
   transform: translateY(30px);
   animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 3) forwards;
@@ -524,8 +488,8 @@ html[data-theme="dark"] .particle {
   color: var(--hero-accent);
   font-weight: var(--font-medium);
   position: relative;
-  white-space: nowrap;
-  display: inline-block;
+  white-space: normal; /* Alterado para permitir quebra em telas pequenas */
+  display: inline;
 }
 
 .cursor {
@@ -543,14 +507,14 @@ html[data-theme="dark"] .particle {
   50% { opacity: 0; }
 }
 
-/* ========== TECH STACK PREMIUM ========== */
+/* ========== TECH STACK - RESPONSIVO ========== */
 .techStack {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--space-sm);
   margin: var(--space-sm) 0 var(--space-lg);
-  max-width: 850px;
+  max-width: min(850px, 95vw); /* Limite para telas ultralargas */
   opacity: 0;
   transform: translateY(30px);
   animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 4) forwards;
@@ -627,7 +591,7 @@ html[data-theme="dark"] .particle {
   opacity: 0.15;
 }
 
-/* ========== BOTÕES PREMIUM ========== */
+/* ========== BOTÕES - RESPONSIVOS ========== */
 .heroActions {
   display: flex;
   flex-wrap: wrap;
@@ -637,6 +601,7 @@ html[data-theme="dark"] .particle {
   opacity: 0;
   transform: translateY(30px);
   animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 5) forwards;
+  width: 100%; /* Garante que os botões usem o espaço disponível */
 }
 
 .primaryButton, .secondaryButton {
@@ -653,6 +618,7 @@ html[data-theme="dark"] .particle {
   position: relative;
   overflow: hidden;
   z-index: 1;
+  white-space: nowrap; /* Evita quebras de texto nos botões */
 }
 
 .primaryButton {
@@ -724,7 +690,7 @@ html[data-theme="dark"] .particle {
   transform: translateX(4px);
 }
 
-/* ========== IMAGEM DO HERO COM EFEITO 3D ========== */
+/* ========== IMAGEM DO HERO - RESPONSIVA ========== */
 .heroImageContainer {
   margin: var(--space-lg) 0;
   position: relative;
@@ -739,8 +705,8 @@ html[data-theme="dark"] .particle {
   position: relative;
   border-radius: 30px;
   overflow: hidden;
-  width: 300px;
-  height: 300px;
+  width: min(300px, 85vw); /* Responsivo para todos os tamanhos */
+  height: min(300px, 85vw);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
   transform-style: preserve-3d;
   transition: transform 0.6s var(--hero-animation-curve);
@@ -812,7 +778,7 @@ html[data-theme="dark"] .particle {
   letter-spacing: 1px;
 }
 
-/* Elementos decorativos em torno da foto */
+/* Elementos decorativos responsivos */
 .decorElement {
   position: absolute;
   border-radius: 50%;
@@ -825,8 +791,8 @@ html[data-theme="dark"] .particle {
 .decor1 {
   top: -20px;
   right: -20px;
-  width: 60px;
-  height: 60px;
+  width: min(60px, 15vw);
+  height: min(60px, 15vw);
   background: rgba(var(--color-primary-rgb), 0.3);
   animation: floatDecor 8s infinite alternate ease-in-out;
 }
@@ -834,8 +800,8 @@ html[data-theme="dark"] .particle {
 .decor2 {
   bottom: 40px;
   left: -30px;
-  width: 40px;
-  height: 40px;
+  width: min(40px, 10vw);
+  height: min(40px, 10vw);
   background: rgba(var(--color-accent-rgb), 0.3);
   animation: floatDecor 12s infinite alternate-reverse ease-in-out;
 }
@@ -843,8 +809,8 @@ html[data-theme="dark"] .particle {
 .decor3 {
   bottom: -15px;
   right: 40px;
-  width: 30px;
-  height: 30px;
+  width: min(30px, 8vw);
+  height: min(30px, 8vw);
   background: rgba(99, 102, 241, 0.3);
   animation: floatDecor 9s infinite alternate ease-in-out;
   animation-delay: 2s;
@@ -855,7 +821,7 @@ html[data-theme="dark"] .particle {
   50% { transform: translateZ(-20px) translate(10px, -10px); }
 }
 
-/* ========== ESTATÍSTICAS PREMIUM ========== */
+/* ========== ESTATÍSTICAS - RESPONSIVAS ========== */
 .statsContainer {
   display: flex;
   position: relative;
@@ -873,6 +839,7 @@ html[data-theme="dark"] .particle {
   opacity: 0;
   transform: translateY(30px);
   animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 7) forwards;
+  width: min(100%, 600px); /* Limita largura e garante responsividade */
 }
 
 @supports not (backdrop-filter: blur(10px)) {
@@ -888,6 +855,7 @@ html[data-theme="dark"] .particle {
   align-items: center;
   text-align: center;
   transition: transform 0.3s var(--hero-animation-curve);
+  flex: 1;
 }
 
 .statItem:hover {
@@ -897,22 +865,22 @@ html[data-theme="dark"] .particle {
 .statNumber {
   font-size: var(--heading-h4);
   font-weight: var(--font-semi-bold);
-  color: var(--hero-accent);
   margin-bottom: 4px;
-  background: linear-gradient(135deg, 
-    var(--hero-accent) 0%, 
-    var(--hero-accent-secondary) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  /* Substitui o gradiente por uma cor sólida para melhor visibilidade */
+  background: unset;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--hero-accent); /* Cor sólida mais visível */
+  text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.3); /* Adiciona glow suave */
 }
 
 .statLabel {
   font-size: var(--caption);
-  color: var(--hero-text-secondary);
+  color: rgba(255, 255, 255, 0.85); /* Cor mais clara para melhor visibilidade */
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-weight: var(--font-medium);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Sombra para melhorar legibilidade */
 }
 
 .statDivider {
@@ -924,11 +892,13 @@ html[data-theme="dark"] .particle {
     rgba(var(--color-bg-1-rgb), 0.1));
 }
 
-/* ========== BOTÃO DE SCROLL PREMIUM ========== */
+/* ========== BOTÃO DE SCROLL - RESPONSIVO ========== */
 .heroScroll {
-  position: relative;
-  bottom: 6rem;
+  position: fixed; /* Alterado para fixed para garantir posição consistente */
+  left: 50%;
+  bottom: 35px; /* Ajustado para dar mais espaço na parte inferior */
   transform: translateX(-50%);
+  margin: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -936,26 +906,24 @@ html[data-theme="dark"] .particle {
   color: var(--color-text-1);
   font-weight: 500;
   transition: all 0.4s var(--hero-animation-curve);
-  z-index: 10;
-  background: rgba(var(--color-bg-1-rgb), 0.07);
+  z-index: 100; /* Aumentado para garantir que fique sempre visível */
+  background: rgba(var(--color-bg-1-rgb), 0.2);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   padding: 12px 20px;
   border-radius: 30px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(var(--color-primary-rgb), 0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.3);
   font-size: 1rem;
   opacity: 0;
-  transform: translate(-50%, 30px);
   animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 8) forwards;
 }
 
 .heroScroll:hover, .heroScroll:focus {
   transform: translateX(-50%) translateY(-5px);
   color: var(--color-primary);
-  background: rgba(var(--color-bg-1-rgb), 0.1);
-  border-color: rgba(var(--color-primary-rgb), 0.3);
-  box-shadow: 0 12px 30px rgba(var(--color-primary-rgb), 0.15);
+  background: rgba(var(--color-bg-1-rgb), 0.25);
+  border-color: rgba(var(--color-primary-rgb), 0.6);
 }
 
 /* Ícone de rolagem animado */
@@ -1052,237 +1020,283 @@ html[data-theme="dark"] .particle {
   }
 }
 
-/* ========== RESPONSIVIDADE APRIMORADA ========== */
+/* ========== RESPONSIVIDADE MELHORADA ========== */
 
 /* Telas muito pequenas (375px e menor) */
 @media (max-width: 375px) {
   .hero {
     padding: var(--space-lg) var(--space-sm) var(--space-md);
-    padding-top: calc(var(--space-xl) * 1.5); /* Espaço para NavBar em telas muito pequenas */
+    padding-top: max(70px, 15vh); /* Espaço para NavBar em telas muito pequenas */
+    min-height: 100svh; /* Use svh quando disponível */
   }
   
   /* Container principal */
   .heroContent {
-    margin-top: 30px; /* Reduz o espaçamento superior */
+    margin-top: clamp(10px, 3vh, 30px);
   }
   
-  /* Ajustes de texto */
-  .greeting {
-    font-size: calc(var(--heading-h4) - 2px);
-    margin-bottom: 0.5rem;
-  }
-  
-  .profession {
-    font-size: calc(var(--heading-h3) - 3px);
-  }
-
-  .heroTitle {
-    margin: 0 0 var(--space-md);
-    line-height: 1.2;
-    display: block;
-    width: 100%;
-  }
-  
-  .heroSubtitle {
-    font-size: var(--body-s);
-    margin-bottom: var(--space-sm);
-  }
-  
-  /* Imagem menor para dispositivos muito pequenos */
-  .heroImageContainer {
-    margin: var(--space-sm) 0;
-  }
-  
-  .imageWrapper {
-    width: 180px;
-    height: 180px;
-    border-radius: 20px;
-  }
-  
-  /* Ajustes no badge de experiência */
-  .experienceBadge {
-    font-size: 12px;
-    padding: 4px 10px;
-  }
-  
-  /* Tech badges mais compactos */
+  /* Tech badges ainda mais compactos */
   .techStack {
-    gap: 6px;
+    gap: 5px; /* Reduz ainda mais o espaçamento */
+    margin-top: var(--space-xs);
+    margin-bottom: var(--space-md);
+    justify-content: center;
   }
   
   .techBadge {
-    padding: 6px 10px;
-  }
-  
-  .techName {
-    font-size: 10px;
-  }
-  
-  .techYears {
-    font-size: 9px;
+    padding: 5px 8px;
+    border-radius: var(--border-radius-sm);
   }
   
   .techSvgIcon {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
   
-  /* Badge de disponibilidade ajustado para telas pequenas */
-  .availabilityBadge {
-    position: relative;
-    left: auto;
-    top: auto;
-    margin-bottom: var(--space-md);
-    align-self: center;
-    transform: scale(0.9);
-  }
-  
-  /* Botões menores */
-  .primaryButton, .secondaryButton {
-    padding: 10px 16px;
-    font-size: 13px;
+  /* Botões mais apropriados para telas muito pequenas */
+  .heroActions {
+    flex-direction: column;
     width: 100%;
   }
   
-  /* Reduz ainda mais a quantidade de partículas */
-  .particle:nth-child(n+5) {
+  .primaryButton, .secondaryButton {
+    width: 100%;
+    padding: 10px;
+    justify-content: center;
+  }
+  
+  /* Esconde elementos menos importantes */
+  .decorElement,
+  .particle:nth-child(n+4) {
     display: none;
   }
   
-  /* Scroll indicador menor */
-  .heroScroll {
-    transform: scale(0.8) translateX(-60%);
-    bottom: var(--space-md);
-  }
-  
-  .decorElement {
-    display: none;
-  }
-  
-  /* Reduzir estatísticas */
-  .statsContainer {
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding: var(--space-sm);
-    margin-top: var(--space-sm);
-  }
-  
-  .statDivider {
-    width: 80px;
-    height: 1px;
-    margin: 5px 0;
+  /* Simplifica efeitos para melhor performance */
+  .gradientLayer {
+    filter: blur(40px);
   }
 }
 
-/* Dispositivos móveis */
-@media (max-width: 768px) {
+/* Telas pequenas (smartphones) */
+@media (max-width: 576px) {
   .hero {
-    padding: var(--space-xl) var(--space-md) var(--space-md);
-    padding-top: calc(var(--space-xl) * 1.8); /* Espaço extra para o NavBar */
-  }
-  
-  /* Container principal com mais espaço */
-  .heroContent {
-    margin-top: 10px; /* Ajuste para distanciar da navbar em mobile */
-  }
-  
-  .profession {
-    font-size: calc(var(--heading-h2) - 8px);
+    padding: var(--space-lg) var(--space-sm) var(--space-md);
+    padding-top: max(70px, 15vh);
   }
   
   .greeting {
-    font-size: calc(var(--heading-h4) + 2px);
+    font-size: calc(var(--heading-h4) - 2px);
   }
   
-  .heroSubtitle {
-    font-size: var(--body-l);
-  }
-  
-  /* Container de imagem mais compacto */
-  .heroImageContainer {
-    margin: var(--space-md) 0;
+  .profession {
+    font-size: calc(var(--heading-h3) - 2px);
   }
   
   .imageWrapper {
-    width: 240px;
-    height: 240px;
+    width: min(240px, 80vw);
+    height: min(240px, 80vw);
     border-radius: 25px;
   }
-  
-  .statsContainer {
-    position: relative;
-    gap: var(--space-md);
-    padding: var(--space-md);
-    width: 100%;
-    margin-top: var(--space-md); /* Reduzido */
-    box-sizing: border-box;
-  }
 
-  /* Centralização do badge de disponibilidade para mobile */
-  .availabilityBadge {
-    position: relative;
+  .heroScroll {
+    position: absolute;
     left: auto;
-    top: auto;
-    align-self: center;
-    justify-content: center;
-    margin-bottom: var(--space-md);
-    margin-top: 10px; /* Garante espaço suficiente abaixo da navbar */
   }
   
-  .statDivider {
-    width: 60px;
-    height: 1px;
+  .heroActions {
+    flex-direction: column;
+    width: 100%;
   }
   
   .primaryButton, .secondaryButton {
     width: 100%;
-    padding: var(--space-sm) var(--space-lg);
   }
   
-  /* Menos partículas em dispositivos móveis */
-  .particle:nth-child(n+8) {
-    display: none;
+  .statsContainer {
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
   }
   
-  /* Animação mais lenta em dispositivos menores */
-  .heroBackground {
-    animation-duration: 35s;
+  .statDivider {
+    width: 80%;
+    height: 1px;
+    margin: 0;
   }
   
-  /* Ajustes no efeito 3D para mobile */
-  .imageWrapper {
-    transform: none !important;
-  }
-}
-
-/* Tablets e PCs */
-@media (min-width: 992px) {
-  .heroContent {
-    flex-direction: row;
-    text-align: left;
-    gap: var(--space-xl);
-    align-items: center;
-  }
-  
+  /* Badge de disponibilidade centralizado */
   .availabilityBadge {
     position: relative;
     left: auto;
     top: auto;
-    align-self: center;
-    justify-content: center;
     margin-bottom: var(--space-md);
-    margin-top: 10px; /* Garante espaço suficiente abaixo da navbar */
+    align-self: center;
   }
   
+  /* Mais adaptações para telas pequenas */
+  .particle:nth-child(n+6) {
+    display: none;
+  }
+  
+  /* Ajustar botão de rolagem */
+  .heroScroll {
+    bottom: 1.5rem; /* Posição ajustada para telas pequenas */
+    transform: translateX(-50%) scale(0.9); /* Ligeiramente menor */
+  }
+
+  .heroScroll:hover, .heroScroll:focus {
+    transform: translateX(-50%) translateY(-5px) scale(0.9); /* Mantém escala ao fazer hover */
+  }
+  
+  /* Escala reduzida para elementos decorativos */
+  .glowEffect {
+    opacity: 0.3;
+  }
+}
+
+/* Dispositivos móveis (médios) */
+@media (min-width: 577px) and (max-width: 768px) {
+  .hero {
+    padding-top: max(80px, 12vh);
+  }
+  
+  .profession {
+    font-size: calc(var(--heading-h2) - 6px);
+  }
+  
+  .heroActions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .primaryButton, .secondaryButton {
+    width: auto;
+    flex: 1 1 auto;
+  }
+  
+  .statsContainer {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .statDivider:last-of-type {
+    display: none;
+  }
+  
+  /* Os elementos decorativos ainda são mostrados, mas menores */
+  .decorElement {
+    transform: scale(0.7);
+  }
+}
+
+/* Tablets */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero {
+    padding-top: max(90px, 10vh);
+  }
+
+  .primaryButton, .secondaryButton {
+    padding: 12px 24px; /* Paddings mais confortáveis */
+    min-width: 180px; /* Largura mínima para melhor proporção */
+    font-size: 18px; /* Tamanho de fonte ligeiramente maior */
+  }
+
+  .heroScroll {
+    position: relative;
+    left: auto;
+    bottom: 4rem; /* Ajustado para tablets */
+    transform: translateX(-50%) scale(1); /* Mantém tamanho original */
+  }
+
+  .heroActions {
+    gap: 16px;
+    justify-content: center; /* Centraliza os botões */
+    margin-top: var(--space-lg);
+  }
+  
+  .heroContent {
+    flex-direction: column;
+    text-align: center;
+    padding: 0 var(--space-md);
+  }
+
+  .scrollIcon {
+    width: 26px;
+    height: 40px;
+  }
+  
+  .imageWrapper {
+    width: min(320px, 50vw);
+    height: min(320px, 50vw);
+  }
+  
+  /* Mais partículas em tablets */
+  .particle:nth-child(n+10) {
+    display: none;
+    font-size: 18px;
+  }
+  .techName {
+    font-size: 16px;
+  }
+
+  .statNumber {
+    font-size: 15px;
+  }
+
+  .statLabel{
+    font-size: 15px;
+  }
+
+
+  .techStack {
+    padding: 8px 12px;
+    border-radius: var(--border-radius-sm);
+  }
+  
+  .availabilityBadge, .experienceBadge {
+    position: relative;
+    left: auto;
+    top: auto;
+    align-self: center;
+    margin-bottom: var(--space-md);
+    font-size: 16px;
+  }
+  
+  /* Layout de duas colunas para estatísticas */
+  .statsContainer {
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  .statItem {
+    flex: 1 1 40%;
+    margin: var(--space-xs) 0;
+  }
+  
+  .statDivider:nth-child(even) {
+    display: none;
+  }
+}
+
+/* Desktops pequenos */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .heroContent {
+    flex-direction: row;
+    text-align: left;
+    gap: var(--space-lg);
+    align-items: center;
+  }
+  
+  .heroScroll {
+    position: absolute;
+    left: auto;
+  }
+
   .heroTextContainer {
     align-items: flex-start;
     text-align: left;
     margin-bottom: 0;
     flex: 3;
-  }
-  
-  .experienceBadge {
-    align-self: flex-start;
   }
   
   .techStack {
@@ -1293,21 +1307,74 @@ html[data-theme="dark"] .particle {
     justify-content: flex-start;
   }
   
+  .experienceBadge {
+    align-self: flex-start;
+  }
+  
   .heroImageContainer {
     flex: 2;
     margin-top: 0;
   }
   
   .imageWrapper {
-    width: 380px;
-    height: 380px;
-    border-radius: 30px;
+    width: 340px;
+    height: 340px;
+  }
+  
+  /* Posicionamento da badge em desktop */
+  .availabilityBadge {
+    position: absolute;
+    top: 80px;
+    left: var(--space-lg);
   }
 }
 
+/* Telas grandes e ultrawides */
 @media (min-width: 1200px) {
-  .profession {
-    font-size: var(--heading-h1);
+  .heroContent {
+    flex-direction: row;
+    text-align: left;
+    gap: var(--space-xl);
+  }
+  
+  .heroTextContainer {
+    align-items: flex-start;
+    text-align: left;
+    margin-bottom: 0;
+    flex: 3;
+  }
+  
+  .techStack {
+    justify-content: flex-start;
+  }
+  
+  .heroActions {
+    justify-content: flex-start;
+  }
+  
+  .experienceBadge {
+    align-self: flex-start;
+  }
+  
+  .heroImageContainer {
+    flex: 2;
+  }
+  
+  .imageWrapper {
+    width: min(380px, 25vw);
+    height: min(380px, 25vw);
+  }
+  
+  /* Versão completa para desktops */
+  .availabilityBadge {
+    position: absolute;
+    top: 80px;
+    left: var(--space-lg);
+  }
+  
+  /* Todas as partículas visíveis em desktop */
+  .particle {
+    display: block;
   }
 }
 
@@ -1315,12 +1382,13 @@ html[data-theme="dark"] .particle {
 
 /* Dark mode específico */
 html[data-theme="dark"] .imageWrapper {
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), 0 0 30px rgba(var(--color-primary-rgb), 0.2);
+  color: rgba(255, 255, 255, 0.85); /* Cor mais clara no tema escuro */
+
 }
 
 /* Light mode específico */
 html[data-theme="light"] .imageWrapper {
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  color: rgba(0, 0, 0, 0.75); 
 }
 
 /* ========== ACESSIBILIDADE ========== */
@@ -1363,5 +1431,48 @@ html[data-theme="light"] .imageWrapper {
   /* Simplifica o background para melhor performance */
   .heroBackground {
     background-size: 100% 100% !important;
+  }
+}
+
+/* ========== MELHORIAS DE PERFORMANCE ========== */
+
+/* Content-visibility para elementos abaixo da dobra inicial */
+@supports (content-visibility: auto) {
+  .statsContainer,
+  .heroScroll {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 200px; /* Valor estimado de altura */
+  }
+}
+
+/* Suporte a navegadores mais antigos */
+@supports not (aspect-ratio: 1) {
+  .imageWrapper {
+    height: 0;
+    padding-bottom: 100%; /* Mantém proporção quadrada */
+  }
+  
+  .heroImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Otimização para Safari no iOS */
+@supports (-webkit-touch-callout: none) {
+  .hero {
+    min-height: -webkit-fill-available;
+  }
+  
+  /* Corrige problemas de backdrop-filter no Safari */
+  .availabilityBadge,
+  .techBadge,
+  .secondaryButton,
+  .statsContainer,
+  .heroScroll {
+    -webkit-backdrop-filter: blur(8px);
   }
 }

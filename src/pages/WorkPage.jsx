@@ -63,6 +63,58 @@ function WorkPage() {
       setAllTags(Array.from(tags));
     }
   }, [availableProjects, contextTags]);
+
+  // Adicione este script em seu componente React que renderiza a WorkPage
+
+// Substitua o useEffect que gerencia o resize com este:
+useEffect(() => {
+  const handleResize = () => {
+    // Use seletores mais específicos baseados nos estilos do seu módulo CSS
+    const projectsGrid = document.querySelector(`.${styles.projectsGrid}`);
+    const projectCards = document.querySelectorAll(`.${styles.projectCard}`);
+    
+    // Verificar se é um Surface Pro 7 ou similar (912px de largura)
+    if (window.innerWidth >= 900 && window.innerWidth <= 920) {
+      console.log('Surface Pro 7 detected!'); // Log para debug
+      
+      // Aplicar classes específicas com o prefixo do CSS Module
+      if (projectsGrid) {
+        projectsGrid.classList.add(styles.surfaceProGrid);
+        console.log('Added surfaceProGrid class');
+      }
+      
+      if (projectCards && projectCards.length > 0) {
+        projectCards.forEach(card => {
+          card.classList.add(styles.surfaceProCard);
+        });
+        console.log(`Added surfaceProCard class to ${projectCards.length} cards`);
+      }
+    } else {
+      // Remover classes específicas
+      if (projectsGrid) {
+        projectsGrid.classList.remove(styles.surfaceProGrid);
+      }
+      
+      if (projectCards && projectCards.length > 0) {
+        projectCards.forEach(card => {
+          card.classList.remove(styles.surfaceProCard);
+        });
+      }
+    }
+  };
+  
+  // Executar no carregamento e em cada redimensionamento
+  handleResize();
+  window.addEventListener('resize', handleResize);
+  
+  // Executar novamente após um pequeno delay para garantir que o DOM foi carregado
+  const timeoutId = setTimeout(handleResize, 500);
+  
+  return () => {
+    window.removeEventListener('resize', handleResize);
+    clearTimeout(timeoutId);
+  };
+}, [styles]); // Adicionar styles como dependência
   
   // Filtrar projetos
   const filterProjects = (tag) => {

@@ -195,6 +195,64 @@ const Hero = () => {
     
     return () => clearTimeout(timer);
   }, [typedText, currentPhraseIndex, isDeleting, phrases, deviceInfo.prefersReducedMotion]);
+
+  useEffect(() => {
+    const handleIPadProDetection = () => {
+      // Selecionar os elementos principais
+      const heroElement = document.querySelector(`.${styles.hero}`);
+      const heroContent = document.querySelector(`.${styles.heroContent}`);
+      const imageWrapper = document.querySelector(`.${styles.imageWrapper}`);
+      
+      // Verificar se é um iPad Pro com resolução de 1024px
+      const isIPadPro = window.innerWidth >= 1020 && window.innerWidth <= 1030;
+      
+      if (isIPadPro) {
+        console.log('iPad Pro 1024px detected in Hero component');
+        
+        // Aplicar classes específicas
+        if (heroElement) {
+          heroElement.classList.add(styles.iPadProHero);
+        }
+        
+        if (heroContent) {
+          heroContent.classList.add(styles.iPadProContent);
+        }
+        
+        if (imageWrapper) {
+          imageWrapper.classList.add(styles.iPadProImage);
+        }
+        
+        // Ajustar algumas propriedades via CSS vars para maior flexibilidade
+        document.documentElement.style.setProperty('--hero-max-width', '960px');
+        document.documentElement.style.setProperty('--hero-padding-side', '32px');
+      } else {
+        // Remover classes se não for iPad Pro
+        if (heroElement) {
+          heroElement.classList.remove(styles.iPadProHero);
+        }
+        
+        if (heroContent) {
+          heroContent.classList.remove(styles.iPadProContent);
+        }
+        
+        if (imageWrapper) {
+          imageWrapper.classList.remove(styles.iPadProImage);
+        }
+        
+        // Restaurar propriedades padrão
+        document.documentElement.style.removeProperty('--hero-max-width');
+        document.documentElement.style.removeProperty('--hero-padding-side');
+      }
+    };
+    
+    // Executar no carregamento e em cada resize
+    handleIPadProDetection();
+    window.addEventListener('resize', handleIPadProDetection);
+    
+    return () => {
+      window.removeEventListener('resize', handleIPadProDetection);
+    };
+  }, [styles]);
   
   // Efeito para elementos decorativos parallax
   useEffect(() => {

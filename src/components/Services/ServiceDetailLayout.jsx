@@ -63,7 +63,7 @@ const ServiceDetailLayout = ({ serviceData }) => {
       <div className={styles.hero}>
         <div className={styles.heroBackground}></div>
         <div className={styles.heroContent}>
-          <Link to="/#services" className={styles.backLink}>
+          <Link to="#services" className={styles.backLink}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
               <path d="M10 17L3 10L10 3L11.4 4.4L7.8 8H17V12H7.8L11.4 15.6L10 17Z" />
             </svg>

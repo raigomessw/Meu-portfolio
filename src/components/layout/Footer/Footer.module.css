@@ -1,24 +1,25 @@
+/* ========== LAYOUT PRINCIPAL ========== */
 .footer {
-  --footer-animation-timing: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
   width: 100%;
-  padding: 80px 0 40px;
-  background-color: rgba(10, 10, 15, 0.95);
-  color: var(--text-light-tertiary);
+  padding: var(--spacing-xxl) 0 var(--spacing-lg);
+  background-color: var(--dark-color-bg-0);
+  color: var(--dark-color-text-3);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-lg-top-dark);
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/* Versão modo claro para o footer */
-.footerLight {
-  background-color: rgba(250, 250, 255, 0.97);
-  color: var(--text-dark-tertiary, #555);
+html[data-theme="light"] .footer {
+  background-color: var(--light-color-bg-0);
+  color: var(--light-color-text-3);
   border-top: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.07);
+  box-shadow: var(--shadow-lg-top);
 }
 
-/* Efeitos de fundo aprimorados */
+/* ========== EFEITOS DE FUNDO ========== */
+/* Gradientes de fundo */
 .footer::before {
   content: '';
   position: absolute;
@@ -27,31 +28,30 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 15% 15%, rgba(0, 198, 255, 0.04) 0%, transparent 50%),
-    radial-gradient(circle at 85% 85%, rgba(131, 56, 236, 0.03) 0%, transparent 70%);
+    radial-gradient(circle at 15% 15%, rgba(var(--color-tertiary-rgb), 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(var(--color-primary-rgb), 0.03) 0%, transparent 70%);
   z-index: 0;
   opacity: 0.8;
   animation: backgroundPulse 15s infinite alternate ease-in-out;
   will-change: opacity, background-position;
 }
 
-/* Ajuste dos gradientes para o tema claro */
-.footerLight::before {
+html[data-theme="light"] .footer::before {
   background: 
-    radial-gradient(circle at 15% 15%, rgba(0, 120, 255, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 85% 85%, rgba(131, 56, 236, 0.02) 0%, transparent 70%);
+    radial-gradient(circle at 15% 15%, rgba(var(--color-tertiary-rgb), 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(var(--color-primary-rgb), 0.02) 0%, transparent 70%);
   opacity: 0.6;
 }
 
-/* Botão Voltar ao Topo */
+/* ========== BOTÃO VOLTAR AO TOPO ========== */
 .scrollTopButton {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: var(--spacing-md);
+  right: var(--spacing-md);
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-light-quinary), var(--accent-light-senary));
+  background: var(--color-primary);
   color: white;
   border: none;
   display: flex;
@@ -61,17 +61,13 @@
   z-index: 100;
   opacity: 0;
   transform: translateY(20px) scale(0.8);
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 
-              0 0 0 rgba(var(--accent-light-quinary-rgb, 124, 58, 237), 0.5);
+  transition: all 0.3s var(--hero-animation-curve);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
-/* Versão modo claro para o botão voltar ao topo */
-.scrollTopButtonLight {
-  background: linear-gradient(135deg, var(--accent-dark-quinary, #6366f1), var(--accent-dark-senary, #8b5cf6));
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25), 
-              0 0 0 rgba(139, 92, 246, 0.3);
+html[data-theme="light"] .scrollTopButton {
+  box-shadow: var(--shadow-md);
 }
 
 .scrollTopButton::before {
@@ -92,8 +88,12 @@
 .scrollTopButton:hover {
   opacity: 1;
   transform: translateY(-5px) scale(1.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3),
-              0 0 20px rgba(var(--accent-light-quinary-rgb, 124, 58, 237), 0.4);
+  box-shadow: var(--shadow-lg);
+  background: var(--color-primary-light);
+}
+
+html[data-theme="light"] .scrollTopButton:hover {
+  box-shadow: var(--shadow-lg);
 }
 
 .scrollTopButton:hover::before {
@@ -101,11 +101,11 @@
 }
 
 .scrollTopButton:focus-visible {
-  outline: 3px solid var(--accent-light-quinary);
+  outline: 3px solid var(--color-primary);
   outline-offset: 4px;
 }
 
-/* Melhoria de desempenho - reduzir repinturas */
+/* ========== ANIMAÇÕES ========== */
 @keyframes backgroundPulse {
   0% {
     opacity: 0.7;
@@ -117,38 +117,38 @@
   }
 }
 
-/* Conteúdo principal */
+/* ========== LAYOUT DO CONTEÚDO ========== */
 .content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 30px;
+  padding: 0 var(--spacing-md);
   position: relative;
   z-index: 1;
 }
 
-/* Seção superior do footer */
+/* ========== SEÇÃO SUPERIOR DO FOOTER ========== */
 .footerTop {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-bottom: 50px;
-  gap: 40px;
+  margin-bottom: var(--spacing-xl);
+  gap: var(--spacing-lg);
 }
 
-/* Seção do logotipo */
+/* ========== SEÇÃO DO LOGOTIPO ========== */
 .logoSection {
   flex: 1;
   min-width: 240px;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-md);
   animation: fadeIn 0.5s ease-out forwards;
 }
 
 .name {
-  font-size: 1.8rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-  color: #c576f6; /* Fallback para navegadores que não suportam gradiente */
-  background: linear-gradient(135deg, var(--accent-light-quinary, #7c4dff), var(--accent-light-senary, #c576f6));
+  font-size: var(--heading-h4);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -158,15 +158,6 @@
   display: inline-block;
 }
 
-/* Tema claro para o nome */
-.nameLight {
-  color: #8b5cf6; /* Fallback para navegadores que não suportam gradiente */
-  background: linear-gradient(135deg, var(--accent-dark-quinary, #6366f1), var(--accent-dark-senary, #8b5cf6));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
 .name::after {
   content: '';
   position: absolute;
@@ -174,14 +165,9 @@
   height: 4px;
   bottom: -6px;
   left: 0;
-  background: linear-gradient(90deg, var(--accent-light-quinary), transparent);
+  background: linear-gradient(90deg, var(--color-primary), transparent);
   border-radius: 2px;
-  transition: width var(--footer-animation-timing);
-}
-
-/* Tema claro para o sublinhado do nome */
-.nameLight::after {
-  background: linear-gradient(90deg, var(--accent-dark-quinary, #6366f1), transparent);
+  transition: width 0.4s var(--hero-animation-curve);
 }
 
 .logoSection:hover .name::after {
@@ -189,58 +175,55 @@
 }
 
 .title {
-  font-size: 1rem;
-  color: var(--text-light-quaternary);
-  font-weight: 500;
+  font-size: var(--body-m);
+  color: var(--dark-color-text-2);
+  font-weight: var(--font-medium);
   letter-spacing: 0.03em;
   max-width: 300px;
   line-height: 1.5;
-  margin-top: 12px;
+  margin-top: var(--spacing-sm);
 }
 
-/* Tema claro para o título */
-.titleLight {
-  color: var(--text-dark-quaternary, #555);
+html[data-theme="light"] .title {
+  color: var(--light-color-text-2);
 }
 
 .subtitle {
-  font-size: 0.9rem;
-  color: var(--text-light-quaternary);
-  font-weight: 300;
+  font-size: var(--caption);
+  color: var(--dark-color-text-3);
+  font-weight: var(--font-light);
   letter-spacing: 0.03em;
   max-width: 300px;
   line-height: 1.5;
-  margin-top: 8px;
+  margin-top: var(--spacing-xs);
   opacity: 0.8;
 }
 
-/* Tema claro para o subtítulo */
-.subtitleLight {
-  color: var(--text-dark-quaternary, #666);
+html[data-theme="light"] .subtitle {
+  color: var(--light-color-text-3);
 }
 
-/* Seção de navegação */
+/* ========== SEÇÃO DE NAVEGAÇÃO ========== */
 .navigationSection {
   flex: 1;
   min-width: 200px;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-md);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
 .navigationTitle {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 16px;
-  color: var(--text-light-secondary);
+  font-size: var(--subtitle-l);
+  font-weight: var(--font-semi-bold);
+  margin-bottom: var(--spacing-sm);
+  color: var(--dark-color-text-1);
   position: relative;
   padding-left: 14px;
 }
 
-/* Tema claro para o título da navegação */
-.navigationTitleLight {
-  color: var(--text-dark-secondary, #333);
+html[data-theme="light"] .navigationTitle {
+  color: var(--light-color-text-1);
 }
 
 .navigationTitle::before {
@@ -252,37 +235,30 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: var(--accent-light-quinary);
-  box-shadow: 0 0 10px var(--accent-light-quinary);
-}
-
-/* Tema claro para o marcador do título da navegação */
-.navigationTitleLight::before {
-  background-color: var(--accent-dark-quinary, #6366f1);
-  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+  background-color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.5);
 }
 
 .footerNav {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--spacing-xs);
   margin-left: 14px;
 }
 
 .footerLink {
-  color: var(--text-light-tertiary);
+  color: var(--dark-color-text-3);
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: all 0.3s var(--hero-animation-curve);
   position: relative;
   display: inline-block;
   padding: 3px 0;
-  font-size: 0.95rem;
+  font-size: var(--body-s);
   transform-origin: left;
 }
 
-/* Tema claro para os links do footer */
-.footerLinkLight {
-  color: var(--text-dark-tertiary, #555);
+html[data-theme="light"] .footerLink {
+  color: var(--light-color-text-3);
 }
 
 .footerLink::before {
@@ -291,13 +267,8 @@
   left: -14px;
   opacity: 0;
   transform: translateX(-8px);
-  transition: all var(--footer-animation-timing);
-  color: var(--accent-light-quinary);
-}
-
-/* Tema claro para o ícone de seta dos links */
-.footerLinkLight::before {
-  color: var(--accent-dark-quinary, #6366f1);
+  transition: all 0.3s var(--hero-animation-curve);
+  color: var(--color-primary);
 }
 
 .footerLink::after {
@@ -307,23 +278,17 @@
   height: 1px;
   bottom: 0;
   left: 0;
-  background: linear-gradient(to right, var(--accent-light-quinary), transparent);
-  transition: width var(--footer-animation-timing);
-}
-
-/* Tema claro para o sublinhado dos links */
-.footerLinkLight::after {
-  background: linear-gradient(to right, var(--accent-dark-quinary, #6366f1), transparent);
+  background: linear-gradient(to right, var(--color-primary), transparent);
+  transition: width 0.3s var(--hero-animation-curve);
 }
 
 .footerLink:hover {
-  color: var(--text-light-primary);
+  color: var(--dark-color-text-1);
   transform: translateX(8px);
 }
 
-/* Tema claro para o hover dos links */
-.footerLinkLight:hover {
-  color: var(--text-dark-primary, #111);
+html[data-theme="light"] .footerLink:hover {
+  color: var(--light-color-text-1);
 }
 
 .footerLink:hover::before {
@@ -336,32 +301,31 @@
 }
 
 .footerLink:focus-visible {
-  outline: 2px solid var(--accent-light-quinary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 4px;
   border-radius: 2px;
 }
 
-/* Seção social */
+/* ========== SEÇÃO SOCIAL ========== */
 .socialSection {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-xs);
   flex-wrap: wrap;
 }
 
 .socialContainer {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-md);
 }
 
 .socialTitle {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 16px;
-  color: var(--text-light-secondary);
+  font-size: var(--subtitle-l);
+  font-weight: var(--font-semi-bold);
+  margin-bottom: var(--spacing-sm);
+  color: var(--dark-color-text-1);
 }
 
-/* Tema claro para o título da seção social */
-.socialTitleLight {
-  color: var(--text-dark-secondary, #333);
+html[data-theme="light"] .socialTitle {
+  color: var(--light-color-text-1);
 }
 
 .socialIcon {
@@ -372,18 +336,17 @@
   height: 40px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.05);
-  color: var(--text-light-quaternary);
-  transition: all var(--footer-animation-timing);
+  color: var(--dark-color-text-2);
+  transition: all 0.3s var(--hero-animation-curve);
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Tema claro para os ícones sociais */
-.socialIconLight {
+html[data-theme="light"] .socialIcon {
   background: rgba(0, 0, 0, 0.03);
-  color: var(--text-dark-quaternary, #666);
+  color: var(--light-color-text-2);
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
@@ -399,22 +362,21 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, var(--accent-light-quinary), var(--accent-light-senary));
+  background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
   opacity: 0;
-  transition: opacity var(--footer-animation-timing);
+  transition: opacity 0.3s var(--hero-animation-curve);
   z-index: 1;
-}
-
-/* Tema claro para o gradiente dos ícones sociais */
-.socialIconLight::before {
-  background: linear-gradient(45deg, var(--accent-dark-quinary, #6366f1), var(--accent-dark-senary, #8b5cf6));
 }
 
 .socialIcon:hover {
   color: #fff;
   transform: translateY(-5px) rotate(5deg);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="light"] .socialIcon:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .socialIcon:hover svg {
@@ -426,11 +388,11 @@
 }
 
 .socialIcon:focus-visible {
-  outline: 2px solid var(--accent-light-quinary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 4px;
 }
 
-/* Divider */
+/* ========== DIVIDER ========== */
 .divider {
   height: 1px;
   background: linear-gradient(
@@ -439,13 +401,12 @@
     rgba(255, 255, 255, 0.1),
     transparent
   );
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-md);
   position: relative;
   overflow: hidden;
 }
 
-/* Tema claro para o divisor */
-.dividerLight {
+html[data-theme="light"] .divider {
   background: linear-gradient(
     to right,
     transparent,
@@ -471,45 +432,52 @@
   will-change: left;
 }
 
+html[data-theme="light"] .divider::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.1),
+    transparent
+  );
+}
+
 @keyframes shimmer {
   100% {
     left: 150%;
   }
 }
 
-/* Seção inferior do footer */
+/* ========== SEÇÃO INFERIOR DO FOOTER ========== */
 .footerBottom {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.9rem;
-  color: var(--text-light-quaternary);
+  font-size: var(--caption);
+  color: var(--dark-color-text-3);
   position: relative;
   padding-top: 5px;
 }
 
+html[data-theme="light"] .footerBottom {
+  color: var(--light-color-text-3);
+}
+
 .copyright, .made {
-  margin-bottom: 10px;
+  margin-bottom: var(--spacing-xs);
   transition: color 0.3s ease;
   position: relative;
   z-index: 1;
 }
 
-/* Tema claro para o texto de copyright e made */
-.copyrightLight, .madeLight {
-  color: var(--text-dark-quaternary, #666);
-}
-
 .footerBottom:hover .copyright,
 .footerBottom:hover .made {
-  color: var(--text-light-tertiary);
+  color: var(--dark-color-text-2);
 }
 
-/* Tema claro para o hover do texto de copyright e made */
-.footerBottom:hover .copyrightLight,
-.footerBottom:hover .madeLight {
-  color: var(--text-dark-tertiary, #444);
+html[data-theme="light"] .footerBottom:hover .copyright,
+html[data-theme="light"] .footerBottom:hover .made {
+  color: var(--light-color-text-2);
 }
 
 .heartIcon {
@@ -532,7 +500,7 @@
   }
 }
 
-/* Animações de entrada */
+/* ========== ANIMAÇÕES ========== */
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -544,10 +512,10 @@
   }
 }
 
-/* Media queries aprimorados */
+/* ========== RESPONSIVIDADE ========== */
 @media (max-width: 992px) {
   .footerTop {
-    gap: 50px;
+    gap: var(--spacing-xl);
   }
   
   .logoSection, .navigationSection {
@@ -555,17 +523,21 @@
   }
   
   .scrollTopButton {
-    bottom: 20px;
-    right: 20px;
+    bottom: var(--spacing-sm);
+    right: var(--spacing-sm);
     width: 44px;
     height: 44px;
   }
 }
 
 @media (max-width: 768px) {
+  .footer {
+    padding-top: var(--spacing-xl);
+  }
+  
   .footerTop {
     flex-direction: column;
-    gap: 40px;
+    gap: var(--spacing-lg);
   }
   
   .navigationSection {
@@ -574,22 +546,22 @@
   
   .socialSection {
     justify-content: flex-start;
-    margin-top: 10px;
+    margin-top: var(--spacing-xs);
   }
   
   .footerBottom {
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    gap: var(--spacing-sm);
   }
   
   .name {
-    font-size: 1.6rem;
+    font-size: var(--heading-h5);
   }
   
   .scrollTopButton {
-    bottom: 15px;
-    right: 15px;
+    bottom: var(--spacing-sm);
+    right: var(--spacing-sm);
     width: 42px;
     height: 42px;
   }
@@ -597,15 +569,15 @@
 
 @media (max-width: 480px) {
   .footer {
-    padding: 60px 0 30px;
+    padding: var(--spacing-xl) 0 var(--spacing-md);
   }
   
   .content {
-    padding: 0 20px;
+    padding: 0 var(--spacing-sm);
   }
   
   .footerNav {
-    gap: 12px;
+    gap: var(--spacing-xs);
   }
   
   .socialIcon {
@@ -614,51 +586,53 @@
   }
   
   .scrollTopButton {
-    bottom: 10px;
-    right: 10px;
+    bottom: var(--spacing-xs);
+    right: var(--spacing-xs);
     width: 40px;
     height: 40px;
   }
 }
 
-/* Acessibilidade - Modo de alto contraste */
+/* ========== ACESSIBILIDADE ========== */
+/* Modo de alto contraste */
 @media (prefers-contrast: more) {
   .footer {
-    background-color: #000;
+    background-color: black;
     border-top: 1px solid #666;
   }
   
-  .footerLight {
-    background-color: #fff;
+  html[data-theme="light"] .footer {
+    background-color: white;
     border-top: 1px solid #444;
   }
   
   .footerLink, .socialIcon {
-    color: #fff;
+    color: white;
   }
   
-  .footerLinkLight, .socialIconLight {
-    color: #000;
+  html[data-theme="light"] .footerLink, 
+  html[data-theme="light"] .socialIcon {
+    color: black;
   }
   
   .divider {
     background: #666;
   }
   
-  .dividerLight {
+  html[data-theme="light"] .divider {
     background: #444;
   }
   
   .scrollTopButton {
-    background-color: #fff;
-    color: #000;
-    border: 2px solid #000;
+    background-color: white;
+    color: black;
+    border: 2px solid black;
   }
   
-  .scrollTopButtonLight {
-    background-color: #000;
-    color: #fff;
-    border: 2px solid #fff;
+  html[data-theme="light"] .scrollTopButton {
+    background-color: black;
+    color: white;
+    border: 2px solid white;
   }
 }
 
@@ -669,25 +643,15 @@
   .scrollTopButton,
   .footerLink,
   .socialIcon,
-  .name::after {
+  .name::after,
+  .heartIcon {
     transition: none !important;
     animation: none !important;
   }
   
-  .scrollTopButton:hover {
+  .scrollTopButton:hover,
+  .footerLink:hover,
+  .socialIcon:hover svg {
     transform: none;
-  }
-}
-
-/* Dark mode refinado */
-@media (prefers-color-scheme: dark) {
-  .footer::before {
-    opacity: 0.5;
-  }
-  
-  /* Manter estilos escuros mesmo quando o tema do sistema é escuro mas o tema do site é claro */
-  .footerLight {
-    background-color: rgba(250, 250, 255, 0.97);
-    color: var(--text-dark-tertiary, #555);
   }
 }

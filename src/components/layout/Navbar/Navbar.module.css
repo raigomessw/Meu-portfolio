@@ -1,18 +1,40 @@
 /* ======== VARIÁVEIS PRINCIPAIS ======== */
 :root {
-  --navbar-height: 80px;
-  --navbar-height-scrolled: 70px;
+  /* Dimensões da navbar */
+  --navbar-height: 90px; /* Aumentado para 90px */
+  --navbar-height-scrolled: 80px; /* Aumentado para 80px */
   --navbar-mobile-height: 70px;
   --navbar-mobile-height-scrolled: 60px;
+  
+  /* Cores para tema escuro (padrão) */
   --navbar-background: rgba(15, 15, 30, 0.8);
   --navbar-background-scrolled: rgba(10, 10, 20, 0.95);
   --navbar-border: rgba(255, 255, 255, 0.08);
   --text-color: #ffffff;
   --text-color-muted: rgba(255, 255, 255, 0.8);
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --active-bg: rgba(255, 255, 255, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-intense: rgba(0, 0, 0, 0.15);
+  
+  /* Cores de destaque e transições */
   --accent-color: #6e07f3;
   --accent-color-hover: #7f28fa;
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
+}
+
+/* Variáveis para tema claro */
+html[data-theme="light"] {
+  --navbar-background: rgba(255, 255, 255, 0.8);
+  --navbar-background-scrolled: rgba(255, 255, 255, 0.95);
+  --navbar-border: rgba(0, 0, 0, 0.05);
+  --text-color: #1f1f3d;
+  --text-color-muted: rgba(31, 31, 61, 0.7);
+  --hover-bg: rgba(0, 0, 0, 0.03);
+  --active-bg: rgba(0, 0, 0, 0.05);
+  --shadow-color: rgba(0, 0, 0, 0.06);
+  --shadow-intense: rgba(0, 0, 0, 0.08);
 }
 
 /* ======== CABEÇALHO PRINCIPAL ======== */
@@ -34,7 +56,7 @@
 .header.scrolled {
   height: var(--navbar-height-scrolled);
   background-color: var(--navbar-background-scrolled);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 20px var(--shadow-color);
 }
 
 .container {
@@ -53,6 +75,7 @@
   display: flex;
   align-items: center;
   transition: transform var(--transition-fast);
+  position: relative;
 }
 
 .logo:hover {
@@ -64,16 +87,37 @@
 }
 
 .logoText {
-  font-size: 1.8rem;
+  font-size: 1.9rem; /* Aumentado */
   font-weight: 700;
   color: var(--text-color);
 }
 
 .logoDot {
-  font-size: 2.2rem;
+  font-size: 2.3rem; /* Aumentado */
   font-weight: 700;
   color: var(--accent-color);
   margin-left: 2px;
+}
+
+/* Efeito de brilho no logo (opcional) */
+.logo::after {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  right: -15px;
+  bottom: -15px;
+  background: radial-gradient(circle, 
+    rgba(110, 7, 243, 0.1) 0%, 
+    transparent 70%);
+  z-index: -1;
+  opacity: 0;
+  border-radius: 50%;
+  transition: opacity var(--transition-normal);
+}
+
+.logo:hover::after {
+  opacity: 0.6;
 }
 
 /* ======== NAVEGAÇÃO DESKTOP ======== */
@@ -96,23 +140,23 @@
 
 .navLink, .navLinkActive {
   display: block;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem; /* Aumentado */
   color: var(--text-color-muted);
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 1rem; /* Aumentado */
   font-weight: 500;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
   border-radius: 6px;
 }
 
 .navLink:hover {
   color: var(--text-color);
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--hover-bg);
 }
 
 .navLinkActive {
   color: var(--text-color);
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--active-bg);
 }
 
 .navLink::after, .navLinkActive::after {
@@ -141,22 +185,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 40px; /* Aumentado */
+  height: 40px; /* Aumentado */
   border-radius: 50%;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--navbar-border);
   cursor: pointer;
   transition: all 0.2s ease;
   margin-left: 16px;
   color: var(--text-color);
-  font-size: 1.1rem;
+  font-size: 1.2rem; /* Aumentado */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .themeToggle:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--hover-bg);
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow-color);
 }
 
 .themeToggle:active {
@@ -185,11 +230,11 @@
 }
 
 .menuButton:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--hover-bg);
 }
 
 .menuButton:active {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--active-bg);
 }
 
 .menuIcon {
@@ -203,7 +248,7 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: white;
+  background-color: var(--text-color);
   border-radius: 2px;
   transition: transform var(--transition-fast), top var(--transition-fast);
 }
@@ -229,10 +274,11 @@
 /* ======== MENU MOBILE DROPDOWN ======== */
 .mobileMenu {
   display: none;
-  position: absolute;
+  position: fixed; /* Alterado: absolute para fixed para resolver problemas no mobile */
   top: var(--navbar-mobile-height);
   left: 0;
   right: 0;
+  height: calc(100vh - var(--navbar-mobile-height)); /* Altura explícita para mobile */
   background-color: var(--navbar-background-scrolled);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -243,13 +289,14 @@
               opacity var(--transition-normal),
               visibility 0s var(--transition-normal);
   border-bottom: 1px solid var(--navbar-border);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 20px var(--shadow-intense);
   z-index: 999;
-  overflow: hidden;
+  overflow-y: auto; /* Para permitir rolagem se o menu for grande */
 }
 
 .header.scrolled .mobileMenu {
   top: var(--navbar-mobile-height-scrolled);
+  height: calc(100vh - var(--navbar-mobile-height-scrolled));
 }
 
 .mobileMenu.open {
@@ -259,10 +306,14 @@
   transition: transform var(--transition-normal),
               opacity var(--transition-normal),
               visibility 0s;
+  pointer-events: auto;
 }
 
 .mobileMenuContainer {
   padding: 1.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .mobileNavList {
@@ -271,7 +322,8 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.8rem; /* Aumentado */
+  padding-bottom: 1rem;
 }
 
 .mobileNavItem {
@@ -289,24 +341,39 @@
 
 .mobileNavLink, .mobileNavLinkActive {
   display: block;
-  padding: 1rem;
+  padding: 1.2rem 1rem; /* Aumentado: mais espaço para toque */
   color: var(--text-color-muted);
   text-decoration: none;
   font-size: 1.2rem;
   font-weight: 500;
   transition: all var(--transition-fast);
   border-radius: 8px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobileNavLink:hover {
   color: var(--text-color);
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--hover-bg);
 }
 
 .mobileNavLinkActive {
   color: var(--text-color);
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--active-bg);
   box-shadow: 0 0 0 1px var(--navbar-border);
+}
+
+/* Indicador visual para link ativo no mobile */
+.mobileNavLinkActive::before {
+  content: '';
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 1.2rem;
+  background-color: var(--accent-color);
+  border-radius: 2px;
 }
 
 /* ======== RESPONSIVIDADE ======== */
@@ -329,6 +396,7 @@
   
   .menuButton {
     display: block;
+    z-index: 1001; /* Garantir que o botão fique acima do menu */
   }
   
   .mobileMenu {
@@ -362,22 +430,28 @@
   }
   
   .logoText {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
   }
   
   .logoDot {
-    font-size: 1.8rem;
+    font-size: 1.9rem;
   }
   
   .mobileNavLink, .mobileNavLinkActive {
-    padding: 0.8rem;
+    padding: 1rem 0.8rem; /* Ajustado para melhor usabilidade */
     font-size: 1.1rem;
+    margin-bottom: 0.25rem;
   }
   
   .themeToggle {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     font-size: 1rem;
+  }
+  
+  /* Garantir que o menu se abra corretamente */
+  .mobileMenu {
+    max-height: calc(100vh - var(--navbar-mobile-height));
   }
 }
 
@@ -386,12 +460,29 @@
   .navLink:hover::after {
     transform: scaleX(0); /* Desativa o hover em dispositivos touch */
   }
+  
+  .logo:hover::after {
+    opacity: 0; /* Desativa o efeito de brilho em dispositivos touch */
+  }
 }
 
 /* Otimização para iOS */
 @supports (-webkit-touch-callout: none) {
   .mobileMenu {
-    padding-bottom: env(safe-area-inset-bottom, 20px);
+    padding-bottom: max(env(safe-area-inset-bottom, 20px), 20px);
+    height: calc(100vh - var(--navbar-mobile-height) + env(safe-area-inset-top, 0px));
+  }
+  
+  .header.scrolled .mobileMenu {
+    height: calc(100vh - var(--navbar-mobile-height-scrolled) + env(safe-area-inset-top, 0px));
+  }
+  
+  /* Corrigir problema de rolagem em iOS */
+  body.nav-menu-open {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
   }
 }
 
@@ -409,20 +500,94 @@
 
 /* Preferências para redução de movimento */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  .logo, 
+  .navLink::after, 
+  .navLinkActive::after,
+  .themeToggle,
+  .menuIcon span,
+  .mobileMenu,
+  .mobileNavItem {
     transition-duration: 0.01s !important;
     animation-duration: 0.01s !important;
+  }
+  
+  .logo:hover,
+  .themeToggle:hover {
+    transform: none;
   }
 }
 
 /* Acessibilidade - foco */
 .themeToggle:focus-visible,
-.menuButton:focus-visible {
+.menuButton:focus-visible,
+.logo:focus-visible,
+.navLink:focus-visible,
+.mobileNavLink:focus-visible {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
 }
 
 /* Estilo global - adicione no seu arquivo CSS global */
 body.nav-menu-open {
-  overflow-y: hidden;
+  overflow: hidden;
+}
+
+/* Animações para os itens do menu mobile */
+.mobileMenu.open .mobileNavItem:nth-child(1) {
+  --delay: 0.05s;
+}
+
+.mobileMenu.open .mobileNavItem:nth-child(2) {
+  --delay: 0.1s;
+}
+
+.mobileMenu.open .mobileNavItem:nth-child(3) {
+  --delay: 0.15s;
+}
+
+.mobileMenu.open .mobileNavItem:nth-child(4) {
+  --delay: 0.2s;
+}
+
+.mobileMenu.open .mobileNavItem:nth-child(5) {
+  --delay: 0.25s;
+}
+
+.mobileMenu.open .mobileNavItem:nth-child(6) {
+  --delay: 0.3s;
+}
+
+/* Efeito de destaque para links no menu mobile */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.mobileNavLinkActive {
+  animation: pulse 2s infinite;
+}
+
+/* Animação ao mudar de tema */
+.header,
+.mobileMenu,
+.navLink,
+.navLinkActive,
+.mobileNavLink,
+.mobileNavLinkActive,
+.menuIcon span,
+.themeToggle {
+  transition: 
+    background-color var(--transition-normal),
+    color var(--transition-normal), 
+    border-color var(--transition-normal),
+    box-shadow var(--transition-normal),
+    transform var(--transition-fast), 
+    opacity var(--transition-normal);
 }

@@ -1,6 +1,6 @@
-/* base.css - Estilos base e resets */
+/* base.css - Estilos base e resets otimizados para todos os tamanhos de tela */
 
-/* Configuração base (reset) */
+/* ========== RESETS E CONFIGURAÇÕES BÁSICAS ========== */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -12,6 +12,23 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   transition: color 0.3s, background-color 0.3s;
+  overflow-x: hidden;
+  /* Adiciona padding ao topo para mobile para compensar barras de navegação fixas */
+  scroll-padding-top: var(--navbar-height, 80px);
+  width: 100%;
+}
+
+/* Ajustes responsivos para tamanho de fonte base */
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 2000px) {
+  html {
+    font-size: 18px;
+  }
 }
 
 body {
@@ -24,58 +41,107 @@ body {
   background: var(--color-bg-0);
   color: var(--color-text-1);
   transition: background 0.3s var(--transition-ease), color 0.3s var(--transition-ease);
+  overflow-x: hidden;
+  width: 100%;
+  min-height: 100vh;
+  /* Suporte para dispositivos móveis com notch e interfaces dinâmicas */
+  padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
 }
 
+/* Ajuste para telas de toque para evitar delay */
+@media (hover: none) {
+  a, button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* ========== TIPOGRAFIA RESPONSIVA ========== */
 /* Fonte para código e elementos técnicos */
 code, kbd, samp, pre {
   font-family: 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  font-size: 0.9em;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  word-break: break-word;
+  white-space: pre-wrap;
+  border-radius: 4px;
 }
 
-/* Parágrafos e tipografia geral */
+/* Parágrafos e tipografia geral com ajustes responsivos */
 p {
-  margin-bottom: var(--space-4);
+  margin-bottom: clamp(var(--space-3), 2vw, var(--space-4));
   max-width: 70ch;
+  line-height: 1.6;
 }
 
+/* Ajustes responsivos para textos longos */
+@media (max-width: 768px) {
+  p {
+    max-width: 100%;
+  }
+}
+
+/* Links com melhor acessibilidade e suporte a toque */
 a {
   color: var(--color-primary);
   text-decoration: none;
   transition: color var(--transition-base) var(--transition-ease);
+  position: relative;
+  padding: 0.1em 0;
 }
 
 a:hover {
   color: var(--color-primary-light);
 }
 
-/* Texto pequeno e secundário */
-small, .text-small {
-  font-size: var(--font-size-sm);
+/* Área de toque ampliada para dispositivos móveis */
+@media (max-width: 768px) {
+  a:not([class]), button:not([class]) {
+    min-height: 44px; /* Seguindo diretrizes de acessibilidade */
+    display: inline-flex;
+    align-items: center;
+  }
 }
 
-/* === CLASSES DE LAYOUT === */
+/* Texto pequeno e secundário - Escala responsiva */
+small, .text-small {
+  font-size: clamp(var(--font-size-xs), 1.5vw, var(--font-size-sm));
+}
+
+/* ========== CLASSES DE LAYOUT RESPONSIVO ========== */
+/* Container principal com paddings responsivos */
 .container {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  padding-left: var(--container-padding);
-  padding-right: var(--container-padding);
+  padding-left: clamp(var(--space-4), 4vw, var(--container-padding));
+  padding-right: clamp(var(--space-4), 4vw, var(--container-padding));
 }
 
+/* Container adaptativo para diferentes conteúdos */
 .content-wrapper {
   max-width: var(--container-lg);
   margin-left: auto;
   margin-right: auto;
+  width: 100%;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
 }
 
+@media (max-width: 640px) {
+  .content-wrapper {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+}
+
+/* Espaçamento de seções responsivo */
 .section {
-  padding-top: var(--space-16);
-  padding-bottom: var(--space-16);
+  padding-top: clamp(var(--space-8), 6vw, var(--space-16));
+  padding-bottom: clamp(var(--space-8), 6vw, var(--space-16));
 }
 
 .section-lg {
-  padding-top: var(--space-24);
-  padding-bottom: var(--space-24);
+  padding-top: clamp(var(--space-12), 8vw, var(--space-24));
+  padding-bottom: clamp(var(--space-12), 8vw, var(--space-24));
 }
 
 /* Breakpoints para os containers */
@@ -109,7 +175,83 @@ small, .text-small {
   }
 }
 
-/* === UTILITÁRIOS DE ACESSIBILIDADE === */
+/* Support for ultrawide monitors */
+@media (min-width: 1921px) {
+  .container {
+    max-width: min(var(--container-3xl), 90vw);
+  }
+}
+
+/* ========== SUPORTE ESPECÍFICO PARA RESOLUÇÕES COMUNS ========== */
+/* Específico para Surface Pro 7 (912px) */
+@media screen and (min-width: 900px) and (max-width: 920px) {
+  .container {
+    max-width: 860px;
+    padding-left: var(--space-5);
+    padding-right: var(--space-5);
+  }
+  
+  html {
+    scroll-padding-top: calc(var(--navbar-height, 80px) + 20px);
+  }
+}
+
+/* iPhone SE e dispositivos pequenos */
+@media screen and (max-width: 375px) {
+  html {
+    font-size: 13px;
+  }
+  
+  .container {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+  
+  .section {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+}
+
+/* Suporte para orientação paisagem em celulares */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  html {
+    scroll-padding-top: calc(var(--navbar-height, 60px) + 10px);
+  }
+  
+  .section {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  
+  .section-lg {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-8);
+  }
+}
+
+/* Tablets em orientação retrato */
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  .container {
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+}
+
+/* Dispositivos com notch */
+@supports (padding-top: env(safe-area-inset-top)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  .container {
+    padding-left: calc(var(--container-padding) + env(safe-area-inset-left));
+    padding-right: calc(var(--container-padding) + env(safe-area-inset-right));
+  }
+}
+
+/* ========== UTILITÁRIOS DE ACESSIBILIDADE ========== */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -122,6 +264,7 @@ small, .text-small {
   border-width: 0;
 }
 
+/* Melhorias de acessibilidade para foco */
 .focus-outline {
   outline: none;
   transition: box-shadow 0.2s ease;
@@ -132,10 +275,18 @@ small, .text-small {
   outline: none;
 }
 
+/* Garantir acessibilidade para dispositivos touchscreen */
+@media (hover: none) {
+  .focus-outline:focus {
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+  }
+}
+
 /* Desativar transição quando o usuário prefere redução de movimento */
 @media (prefers-reduced-motion: reduce) {
   html {
     transition: none;
+    scroll-behavior: auto;
   }
   
   *,
@@ -146,17 +297,30 @@ small, .text-small {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  
+  .animate-fade-in,
+  .animate-fade-up,
+  .animate-fade-left,
+  .animate-fade-right,
+  .animate-scale,
+  .animate-pulse,
+  .stagger-item {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
-/* === MELHORIAS DE SCROLLBARS === */
+/* ========== MELHORIAS DE INTERFACE ========== */
+/* Scrollbars customizadas e responsivas */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--color-primary-dark) var(--color-bg-2);
 }
 
 *::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: clamp(6px, 0.5vw, 8px);
+  height: clamp(6px, 0.5vw, 8px);
 }
 
 *::-webkit-scrollbar-track {
@@ -169,7 +333,42 @@ small, .text-small {
   border: 2px solid var(--color-bg-2);
 }
 
-/* === ANIMAÇÕES REUTILIZÁVEIS === */
+/* Esconder scrollbar em dispositivos móveis onde não é comum */
+@media (max-width: 768px) and (hover: none) {
+  *::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
+/* ========== SUPORTE A IMPRESSÃO ========== */
+@media print {
+  html, body {
+    font-size: 12pt;
+    color: #000;
+    background: #fff;
+  }
+  
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  .section, .section-lg {
+    padding: 1em 0;
+  }
+  
+  .container {
+    max-width: 100%;
+    padding: 0 1em;
+  }
+}
+
+/* ========== ANIMAÇÕES REUTILIZÁVEIS ========== */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -207,30 +406,106 @@ small, .text-small {
 
 .animate-fade-up {
   animation: fadeInUp 0.8s var(--transition-curve) forwards;
+  opacity: 0;
 }
 
 .animate-fade-left {
   animation: fadeInLeft 0.8s var(--transition-curve) forwards;
+  opacity: 0;
 }
 
 .animate-fade-right {
   animation: fadeInRight 0.8s var(--transition-curve) forwards;
+  opacity: 0;
 }
 
 .animate-scale {
   animation: scaleIn 0.5s var(--transition-curve) forwards;
+  opacity: 0;
 }
 
 .animate-pulse {
   animation: pulse 2s infinite;
 }
 
-/* Delay staggered para listas */
-.stagger-item:nth-child(1) { animation-delay: 0s; }
-.stagger-item:nth-child(2) { animation-delay: 0.1s; }
-.stagger-item:nth-child(3) { animation-delay: 0.2s; }
-.stagger-item:nth-child(4) { animation-delay: 0.3s; }
-.stagger-item:nth-child(5) { animation-delay: 0.4s; }
-.stagger-item:nth-child(6) { animation-delay: 0.5s; }
-.stagger-item:nth-child(7) { animation-delay: 0.6s; }
-.stagger-item:nth-child(8) { animation-delay: 0.7s; }
+/* Delay escalonado para listas - Otimizado para dispositivos móveis */
+@media (prefers-reduced-motion: no-preference) {
+  .stagger-item {
+    opacity: 0;
+  }
+  
+  .stagger-item:nth-child(1) { animation-delay: 0.05s; }
+  .stagger-item:nth-child(2) { animation-delay: 0.1s; }
+  .stagger-item:nth-child(3) { animation-delay: 0.15s; }
+  .stagger-item:nth-child(4) { animation-delay: 0.2s; }
+  .stagger-item:nth-child(5) { animation-delay: 0.25s; }
+  .stagger-item:nth-child(6) { animation-delay: 0.3s; }
+  .stagger-item:nth-child(7) { animation-delay: 0.35s; }
+  .stagger-item:nth-child(8) { animation-delay: 0.4s; }
+}
+
+/* Delays reduzidos para dispositivos móveis para melhor UX */
+@media (max-width: 768px) {
+  .stagger-item:nth-child(n) { animation-delay: calc(0.05s * var(--n, 0)); }
+  .stagger-item:nth-child(1) { --n: 1; }
+  .stagger-item:nth-child(2) { --n: 2; }
+  .stagger-item:nth-child(3) { --n: 3; }
+  .stagger-item:nth-child(4) { --n: 4; }
+  .stagger-item:nth-child(5) { --n: 5; }
+  .stagger-item:nth-child(6) { --n: 6; }
+  .stagger-item:nth-child(7) { --n: 7; }
+  .stagger-item:nth-child(8) { --n: 8; }
+}
+
+/* ========== GRID RESPONSIVO ========== */
+.grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(1, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(1, 1fr);
+}
+
+.grid-4 {
+  grid-template-columns: repeat(1, 1fr);
+}
+
+/* Ajustes responsivos para grid */
+@media (min-width: 640px) {
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Classes de utilidade para espaçamento responsivo */
+.gap-sm { gap: clamp(var(--space-2), 1vw, var(--space-3)); }
+.gap-md { gap: clamp(var(--space-4), 2vw, var(--space-6)); }
+.gap-lg { gap: clamp(var(--space-6), 3vw, var(--space-8)); }
+.gap-xl { gap: clamp(var(--space-8), 4vw, var(--space-12)); }

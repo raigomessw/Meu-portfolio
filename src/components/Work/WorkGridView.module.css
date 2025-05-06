@@ -1,17 +1,28 @@
+/* ========== VARIÁVEIS RESPONSIVAS ========== */
+:root {
+  --grid-columns: auto;
+  --grid-max-width: 1400px;
+  --grid-gap: var(--spacing-xl);
+  --card-min-width: 320px;
+  --card-aspect-ratio: 5/6;
+  --card-min-height: 420px;
+  --card-border-radius: var(--border-radius-lg);
+}
+
 /* ========== Container e Layout ========== */
 /* Container Grid Principal */
 .gridContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: clamp(var(--space-6), 3vw, var(--space-10));
+  gap: var(--spacing-xl);
   width: 100%;
   position: relative;
   perspective: 1200px;
   margin: 0 auto;
-  max-width: var(--container-xl);
-  padding: var(--space-4);
+  max-width: 1400px;
+  padding: var(--spacing-md);
   will-change: opacity, transform;
-  animation: fadeIn 0.8s var(--transition-curve);
+  animation: fadeIn 0.8s var(--hero-animation-curve);
 }
 
 @keyframes fadeIn {
@@ -41,7 +52,7 @@
 .gridContainer:has(:nth-child(1):nth-last-child(3)) {
   grid-template-columns: repeat(3, 1fr);
   max-width: 1200px;
-  gap: var(--space-8);
+  gap: var(--spacing-lg);
 }
 
 /* ========== Card Styles ========== */
@@ -50,17 +61,15 @@
   position: relative;
   aspect-ratio: 5/6;
   min-height: 420px;
-  border-radius: var(--radius-xl);
+  border-radius: var(--border-radius-lg);
   overflow: hidden;
   background-position: center;
   background-size: cover;
   transform: translateY(30px);
   opacity: 0;
-  box-shadow: 0 15px 40px -15px rgba(0, 0, 0, 0.3), 
-              0 30px 70px -20px rgba(0, 0, 0, 0.5),
-              0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  box-shadow: var(--shadow-lg);
   cursor: pointer;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 0.6s var(--hero-animation-curve);
   will-change: transform, box-shadow, filter;
   isolation: isolate;
   transform-style: preserve-3d;
@@ -69,26 +78,31 @@
   justify-content: flex-end;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Brilho interno do card premium */
+html[data-theme="dark"] .gridCard {
+  box-shadow: var(--shadow-lg-dark);
+}
+
+/* Brilho interno do card */
 .gridCard::after {
   content: '';
   position: absolute;
   inset: 0;
   background: radial-gradient(
     circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-    rgba(110, 7, 243, 0.15) 0%, 
-    rgba(110, 7, 243, 0) 60%
+    rgba(var(--color-primary-rgb), 0.15), 
+    rgba(var(--color-primary-rgb), 0.01) 60%
   );
   opacity: 0;
   z-index: 1;
-  transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: opacity 0.6s var(--hero-animation-curve);
   pointer-events: none;
   mix-blend-mode: overlay;
 }
 
-/* Borda com gradiente premium */
+/* Borda com gradiente */
 .gridCard::before {
   content: '';
   position: absolute;
@@ -96,25 +110,31 @@
   background: inherit;
   background-position: center;
   background-size: cover;
-  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.8s var(--hero-animation-curve);
   z-index: 0;
   will-change: transform;
 }
 
 /* Versão clara do card */
-:global([data-theme="light"]) .gridCard {
-  box-shadow: 0 15px 40px -15px rgba(110, 7, 243, 0.12), 
-              0 30px 70px -20px rgba(110, 7, 243, 0.2),
-              0 0 0 1px rgba(110, 7, 243, 0.05) inset;
+html[data-theme="light"] .gridCard {
+  box-shadow: 0 15px 40px -15px rgba(var(--color-primary-rgb), 0.12), 
+              0 30px 70px -20px rgba(var(--color-primary-rgb), 0.2),
+              0 0 0 1px rgba(var(--color-primary-rgb), 0.05) inset;
 }
 
-/* Efeitos premium no hover */
+/* Efeitos no hover */
 .gridCard:hover {
   transform: translateY(-15px) scale(1.02) rotateX(2deg);
-  box-shadow: 0 25px 50px -12px rgba(110, 7, 243, 0.25), 
+  box-shadow: 0 25px 50px -12px rgba(var(--color-primary-rgb), 0.25), 
               0 30px 60px -20px rgba(0, 0, 0, 0.3),
-              0 0 0 1px rgba(110, 7, 243, 0.2) inset;
+              0 0 0 1px rgba(var(--color-primary-rgb), 0.2) inset;
   z-index: 2;
+}
+
+html[data-theme="dark"] .gridCard:hover {
+  box-shadow: 0 25px 50px -12px rgba(var(--color-primary-rgb), 0.25), 
+              0 30px 60px -20px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(var(--color-primary-rgb), 0.2) inset;
 }
 
 .gridCard:hover::after {
@@ -130,19 +150,19 @@
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: var(--radius-xl);
+  border-radius: var(--border-radius-lg);
   padding: 1px;
   background: linear-gradient(135deg,
-    rgba(110, 7, 243, 0.5),
-    rgba(138, 69, 245, 0.3),
-    rgba(110, 7, 243, 0.5));
+    rgba(var(--color-primary-rgb), 0.5),
+    rgba(var(--color-primary-rgb), 0.3),
+    rgba(var(--color-primary-rgb), 0.5));
   -webkit-mask: 
     linear-gradient(#fff 0 0) content-box, 
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   opacity: 0;
-  transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: opacity 0.6s var(--hero-animation-curve);
   z-index: 1;
 }
 
@@ -156,11 +176,11 @@
   100% { background-position: 200% 0%; }
 }
 
-/* Quando o card fica visível na viewport - com animações premium */
+/* Quando o card fica visível na viewport */
 .gridCard.inView {
   transform: translateY(0);
   opacity: 1;
-  animation: cardRevealPremium 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation: cardRevealPremium 0.8s var(--hero-animation-curve) forwards;
 }
 
 @keyframes cardRevealPremium {
@@ -193,31 +213,31 @@
 .gridCard:nth-child(6).inView { animation-delay: 0.6s; }
 
 /* ========== Overlay e Backgrounds ========== */
-/* Overlay com gradiente premium para melhor legibilidade */
+/* Overlay com gradiente para melhor legibilidade */
 .cardOverlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(16, 16, 40, 0.95) 0%,
-    rgba(16, 16, 40, 0.8) 35%,
-    rgba(16, 16, 40, 0.5) 60%,
-    rgba(16, 16, 40, 0.2) 80%,
-    rgba(16, 16, 40, 0.1) 100%
+    rgba(15, 23, 42, 0.95) 0%,
+    rgba(15, 23, 42, 0.8) 35%,
+    rgba(15, 23, 42, 0.5) 60%,
+    rgba(15, 23, 42, 0.2) 80%,
+    rgba(15, 23, 42, 0.1) 100%
   );
   z-index: 1;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 0.6s var(--hero-animation-curve);
   backdrop-filter: blur(0);
 }
 
-:global([data-theme="light"]) .cardOverlay {
+html[data-theme="light"] .cardOverlay {
   background: linear-gradient(
     to top,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 255, 255, 0.85) 35%,
-    rgba(255, 255, 255, 0.6) 60%,
-    rgba(255, 255, 255, 0.3) 80%,
-    rgba(255, 255, 255, 0.1) 100%
+    rgba(248, 250, 252, 0.9) 0%,
+    rgba(248, 250, 252, 0.85) 35%,
+    rgba(248, 250, 252, 0.6) 60%,
+    rgba(248, 250, 252, 0.3) 80%,
+    rgba(248, 250, 252, 0.1) 100%
   );
   backdrop-filter: blur(0);
 }
@@ -225,17 +245,17 @@
 .gridCard:hover .cardOverlay {
   background: linear-gradient(
     to top,
-    rgba(110, 7, 243, 0.95) 0%,
-    rgba(110, 7, 243, 0.8) 35%,
-    rgba(110, 7, 243, 0.5) 60%,
-    rgba(110, 7, 243, 0.2) 85%,
-    rgba(110, 7, 243, 0.05) 100%
+    rgba(var(--color-primary-rgb), 0.95) 0%,
+    rgba(var(--color-primary-rgb), 0.8) 35%,
+    rgba(var(--color-primary-rgb), 0.5) 60%,
+    rgba(var(--color-primary-rgb), 0.2) 85%,
+    rgba(var(--color-primary-rgb), 0.05) 100%
   );
   backdrop-filter: blur(5px);
 }
 
 /* Adicionando um gradient mais claro para o hover no light mode para melhor legibilidade */
-:global([data-theme="light"]) .gridCard:hover .cardOverlay {
+html[data-theme="light"] .gridCard:hover .cardOverlay {
   background: linear-gradient(
     to top,
     rgba(246, 248, 255, 0.95) 0%,
@@ -250,17 +270,17 @@
 .cardOverlay.hovered {
   background: linear-gradient(
     to top,
-    rgba(110, 7, 243, 0.95) 0%,
-    rgba(110, 7, 243, 0.8) 40%,
-    rgba(110, 7, 243, 0.5) 70%,
-    rgba(110, 7, 243, 0.3) 85%,
-    rgba(110, 7, 243, 0.1) 100%
+    rgba(var(--color-primary-rgb), 0.95) 0%,
+    rgba(var(--color-primary-rgb), 0.8) 40%,
+    rgba(var(--color-primary-rgb), 0.5) 70%,
+    rgba(var(--color-primary-rgb), 0.3) 85%,
+    rgba(var(--color-primary-rgb), 0.1) 100%
   );
   backdrop-filter: blur(5px);
 }
 
 /* Adicionando uma versão mais clara para o light mode */
-:global([data-theme="light"]) .cardOverlay.hovered {
+html[data-theme="light"] .cardOverlay.hovered {
   background: linear-gradient(
     to top,
     rgba(246, 248, 255, 0.95) 0%,
@@ -288,7 +308,7 @@
     rgba(255, 255, 255, 0) 100%
   );
   transform: translateX(-100%) translateY(-100%) rotate(35deg);
-  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.8s var(--hero-animation-curve);
   mix-blend-mode: overlay;
   pointer-events: none;
   z-index: 2;
@@ -299,17 +319,17 @@
 }
 
 /* ========== Conteúdo do Card ========== */
-/* Conteúdo do card com efeito 3D premium */
+/* Conteúdo do card com efeito 3D */
 .cardContent {
   position: relative;
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: var(--space-8) var(--space-6) var(--space-6);
+  padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
   z-index: 3;
   display: flex;
   flex-direction: column;
-  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.5s var(--hero-animation-curve);
   transform: translateZ(30px);
 }
 
@@ -318,18 +338,19 @@
 }
 
 .cardTitle {
-  font-size: clamp(var(--font-size-xl), 4vw, var(--font-size-2xl));
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
   color: var(--dark-color-text-0);
-  margin-bottom: var(--space-4);
-  line-height: var(--line-height-tight);
-  letter-spacing: var(--letter-spacing-tight);
-  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), color 0.3s ease;
+  margin-bottom: var(--spacing-md);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  transition: transform 0.4s var(--hero-animation-curve), color 0.3s ease;
   position: relative;
   display: inline-block;
   width: auto;
+  font-weight: var(--font-semi-bold);
 }
 
-:global([data-theme="light"]) .cardTitle {
+html[data-theme="light"] .cardTitle {
   color: var(--light-color-text-0);
 }
 
@@ -338,8 +359,8 @@
   color: #fff;
 }
 
-:global([data-theme="light"]) .gridCard:hover .cardTitle {
-  color: #6e07f3;
+html[data-theme="light"] .gridCard:hover .cardTitle {
+  color: var(--color-primary);
 }
 
 /* Sublinhado animado para o título */
@@ -351,13 +372,13 @@
   width: 0;
   height: 2px;
   background: linear-gradient(to right, #fff 0%, rgba(255, 255, 255, 0.5) 100%);
-  transition: width 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: width 0.5s var(--hero-animation-curve);
   border-radius: 2px;
   opacity: 0.7;
 }
 
-:global([data-theme="light"]) .cardTitle::after {
-  background: linear-gradient(to right, #6e07f3 0%, rgba(110, 7, 243, 0.5) 100%);
+html[data-theme="light"] .cardTitle::after {
+  background: linear-gradient(to right, var(--color-primary) 0%, rgba(var(--color-primary-rgb), 0.5) 100%);
 }
 
 .gridCard:hover .cardTitle::after {
@@ -365,48 +386,54 @@
   opacity: 1;
 }
 
-/* Tags com efeito premium */
+/* Tags com efeito */
 .cardTags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
-  margin-bottom: var(--space-4);
-  transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+  transition: opacity 0.5s var(--hero-animation-curve);
 }
 
 .tag {
-  background: rgba(144, 101, 246, 0.15);
-  color: #d4b8ff;
+  background: rgba(var(--color-primary-rgb), 0.15);
+  color: var(--dark-color-text-0);
   padding: 0.2rem 0.8rem;
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+  font-size: 0.75rem;
+  font-weight: var(--font-medium);
+  transition: all 0.5s var(--hero-animation-curve);
+  box-shadow: var(--shadow-sm);
   backdrop-filter: blur(5px);
-  letter-spacing: var(--letter-spacing-tight);
+  letter-spacing: 0.02em;
   transform: translateY(0);
   border: 1px solid transparent;
 }
 
-:global([data-theme="light"]) .tag {
-  background: rgba(144, 101, 246, 0.1);
-  color: #6e07f3;
-  box-shadow: 0 2px 5px rgba(110, 7, 243, 0.1);
+html[data-theme="dark"] .tag {
+  box-shadow: var(--shadow-sm-dark);
+  color: var(--dark-color-text-0);
+}
+
+html[data-theme="light"] .tag {
+  background: rgba(var(--color-primary-rgb), 0.1);
+  color: var(--color-primary-dark);
+  box-shadow: 0 2px 5px rgba(var(--color-primary-rgb), 0.1);
 }
 
 .gridCard:hover .tag {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px) scale(1.05);
   border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
+  color: white;
 }
 
-:global([data-theme="light"]) .gridCard:hover .tag {
-  background: rgba(110, 7, 243, 0.15);
-  color: #6e07f3;
-  border-color: rgba(110, 7, 243, 0.3);
-  box-shadow: 0 3px 8px rgba(110, 7, 243, 0.15);
+html[data-theme="light"] .gridCard:hover .tag {
+  background: rgba(var(--color-primary-rgb), 0.15);
+  color: var(--color-primary);
+  border-color: rgba(var(--color-primary-rgb), 0.3);
+  box-shadow: 0 3px 8px rgba(var(--color-primary-rgb), 0.15);
 }
 
 /* Animação sequencial para as tags */
@@ -416,20 +443,20 @@
 
 .cardDescription {
   color: var(--dark-color-text-2);
-  font-size: var(--font-size-sm);
-  margin-bottom: var(--space-6);
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-md);
   max-width: 90%;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  transition: opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1), transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  line-height: var(--line-height-normal);
+  transition: opacity 0.4s var(--hero-animation-curve), transform 0.4s var(--hero-animation-curve);
+  line-height: 1.5;
   transform: translateY(0);
 }
 
-:global([data-theme="light"]) .cardDescription {
+html[data-theme="light"] .cardDescription {
   color: var(--light-color-text-2);
 }
 
@@ -439,17 +466,17 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-:global([data-theme="light"]) .gridCard:hover .cardDescription {
-  color: rgba(66, 13, 135, 0.9);
+html[data-theme="light"] .gridCard:hover .cardDescription {
+  color: rgba(var(--color-primary-dark-rgb), 0.9);
 }
 
 /* Botões de ação com animação de entrada elegante */
 .cardActions {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--spacing-md);
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 0.5s var(--hero-animation-curve);
   transition-delay: 0.1s;
 }
 
@@ -460,20 +487,20 @@
 }
 
 /* ========== Botões e Ações ========== */
-/* Estilo dos botões premium */
+/* Estilo dos botões */
 .viewButton,
 .detailsButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: var(--letter-spacing-wide);
+  gap: var(--spacing-xs);
+  font-size: 0.75rem;
+  font-weight: var(--font-medium);
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: var(--space-2) var(--space-6);
-  border-radius: var(--radius-full);
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: 30px;
+  transition: all 0.4s var(--hero-animation-curve);
   white-space: nowrap;
   min-width: 100px;
   position: relative;
@@ -491,7 +518,7 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 0.8s var(--hero-animation-curve);
   z-index: -1;
 }
 
@@ -500,30 +527,38 @@
   left: 100%;
 }
 
-/* Botão de visualização premium */
+/* Botão de visualização */
 .viewButton {
   background: rgba(255, 255, 255, 0.95);
-  color: #6e07f3;
+  color: var(--color-primary);
   border: none;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
-:global([data-theme="light"]) .viewButton {
-  background: rgba(110, 7, 243, 0.95);
+html[data-theme="dark"] .viewButton {
+  box-shadow: var(--shadow-md-dark);
+}
+
+html[data-theme="light"] .viewButton {
+  background: rgba(var(--color-primary-rgb), 0.95);
   color: white;
-  box-shadow: 0 5px 15px rgba(110, 7, 243, 0.2);
+  box-shadow: var(--shadow-md);
 }
 
 .viewButton:hover {
   transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-lg);
 }
 
-:global([data-theme="light"]) .viewButton:hover {
-  box-shadow: 0 8px 20px rgba(110, 7, 243, 0.3);
+html[data-theme="dark"] .viewButton:hover {
+  box-shadow: var(--shadow-lg-dark);
 }
 
-/* Botão de detalhes premium */
+html[data-theme="light"] .viewButton:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Botão de detalhes */
 .detailsButton {
   background: rgba(255, 255, 255, 0.1);
   color: white;
@@ -531,37 +566,47 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
 }
 
-:global([data-theme="light"]) .detailsButton {
-  color: #6e07f3;
-  border: 1px solid rgba(110, 7, 243, 0.6);
-  background: rgba(110, 7, 243, 0.05);
+html[data-theme="dark"] .detailsButton {
+  box-shadow: var(--shadow-sm-dark);
+}
+
+html[data-theme="light"] .detailsButton {
+  color: var(--color-primary);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.6);
+  background: rgba(var(--color-primary-rgb), 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .detailsButton:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.9);
   transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
 }
 
-:global([data-theme="light"]) .detailsButton:hover {
-  background: rgba(110, 7, 243, 0.15);
-  border-color: rgba(110, 7, 243, 0.9);
-  box-shadow: 0 5px 15px rgba(110, 7, 243, 0.15);
+html[data-theme="dark"] .detailsButton:hover {
+  box-shadow: var(--shadow-md-dark);
 }
 
-/* Ícone com animação premium */
+html[data-theme="light"] .detailsButton:hover {
+  background: rgba(var(--color-primary-rgb), 0.15);
+  border-color: rgba(var(--color-primary-rgb), 0.9);
+  box-shadow: var(--shadow-md);
+}
+
+/* Ícone com animação */
 .buttonIcon {
   font-size: 0.75rem;
-  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.3s var(--hero-animation-curve);
 }
 
 .viewButton:hover .buttonIcon,
 .detailsButton:hover .buttonIcon {
   transform: translateX(4px);
-  animation: iconPulsePremium 1s infinite alternate cubic-bezier(0.23, 1, 0.32, 1);
+  animation: iconPulsePremium 1s infinite alternate var(--hero-animation-curve);
 }
 
 @keyframes iconPulsePremium {
@@ -574,7 +619,7 @@
 }
 
 /* ========== Placeholders e Loaders ========== */
-/* Placeholder de carregamento premium */
+/* Placeholder de carregamento */
 .loadingPlaceholder {
   position: absolute;
   inset: 0;
@@ -584,13 +629,17 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border-radius: var(--radius-xl);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
-:global([data-theme="light"]) .loadingPlaceholder {
+html[data-theme="dark"] .loadingPlaceholder {
+  box-shadow: var(--shadow-md-dark);
+}
+
+html[data-theme="light"] .loadingPlaceholder {
   background-color: var(--light-color-bg-2);
-  box-shadow: 0 10px 30px rgba(110, 7, 243, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .placeholderPulse {
@@ -605,10 +654,10 @@
     var(--dark-color-bg-2) 100%
   );
   background-size: 200% 100%;
-  animation: pulsePremium 1.5s infinite cubic-bezier(0.23, 1, 0.32, 1);
+  animation: pulsePremium 1.5s infinite var(--hero-animation-curve);
 }
 
-:global([data-theme="light"]) .placeholderPulse {
+html[data-theme="light"] .placeholderPulse {
   background: linear-gradient(
     90deg, 
     var(--light-color-bg-2) 0%, 
@@ -622,20 +671,24 @@
   100% { background-position: -135% 0; }
 }
 
-/* Mensagem de sem resultados com estilo premium */
+/* Mensagem de sem resultados com estilo */
 .noResults {
   grid-column: 1 / -1;
   text-align: center;
-  padding: var(--space-16) var(--space-8);
+  padding: var(--spacing-xxl) var(--spacing-lg);
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--dark-color-border-2);
-  border-radius: var(--radius-xl);
+  border-radius: var(--border-radius-lg);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
   transform: translateY(20px);
   opacity: 0;
-  animation: fadeInUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  animation: fadeInUp 0.8s var(--hero-animation-curve) forwards;
+}
+
+html[data-theme="dark"] .noResults {
+  box-shadow: var(--shadow-lg-dark);
 }
 
 @keyframes fadeInUp {
@@ -649,25 +702,26 @@
   }
 }
 
-:global([data-theme="light"]) .noResults {
+html[data-theme="light"] .noResults {
   background: rgba(0, 0, 0, 0.02);
   border: 1px solid var(--light-color-border-2);
-  box-shadow: 0 20px 40px rgba(110, 7, 243, 0.05);
+  box-shadow: var(--shadow-lg);
 }
 
 .noResults h3 {
-  font-size: var(--font-size-xl);
+  font-size: 1.5rem;
   color: var(--dark-color-text-1);
-  margin-bottom: var(--space-4);
-  background: linear-gradient(135deg, #ffffff 30%, #a97dff 100%);
+  margin-bottom: var(--spacing-md);
+  background: linear-gradient(135deg, #ffffff 30%, var(--color-accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: inline-block;
+  font-weight: var(--font-semi-bold);
 }
 
-:global([data-theme="light"]) .noResults h3 {
-  background: linear-gradient(135deg, #6e07f3 30%, #a97dff 100%);
+html[data-theme="light"] .noResults h3 {
+  background: linear-gradient(135deg, var(--color-primary) 30%, var(--color-accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -675,16 +729,85 @@
 
 .noResults p {
   color: var(--dark-color-text-3);
-  font-size: var(--font-size-base);
+  font-size: 1rem;
   max-width: 80%;
   margin: 0 auto;
 }
 
-:global([data-theme="light"]) .noResults p {
+html[data-theme="light"] .noResults p {
   color: var(--light-color-text-3);
 }
 
-/* ========== Responsividade ========== */
+/* ========== RESPONSIVIDADE APRIMORADA ========== */
+/* Dispositivos muito grandes (Monitores ultrawide, TVs) */
+@media (min-width: 1921px) {
+  .gridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: var(--spacing-xxl);
+    max-width: 1800px;
+  }
+  
+  .gridCard {
+    min-height: 480px;
+  }
+  
+  /* Ajustar o layout para poucos itens em telas grandes */
+  .gridContainer:has(:nth-child(1):nth-last-child(3)) {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1500px;
+  }
+  
+  .cardTitle {
+    font-size: 1.7rem;
+  }
+  
+  .cardDescription {
+    font-size: 1rem;
+  }
+  
+  .tag {
+    padding: 0.3rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .viewButton,
+  .detailsButton {
+    min-width: 130px;
+    font-size: 0.85rem;
+    padding: var(--spacing-sm) var(--spacing-lg);
+  }
+}
+
+/* Telas grandes (Desktops) */
+@media (min-width: 1201px) and (max-width: 1920px) {
+  .gridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  }
+  
+  .gridCard {
+    min-height: 430px;
+  }
+}
+
+/* Notebooks e tablets grandes */
+@media (min-width: 1024px) and (max-width: 1200px) {
+  .gridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md);
+  }
+  
+  .gridCard {
+    min-height: 400px;
+  }
+  
+  /* Ajustar o layout para poucos itens em telas médias */
+  .gridContainer:has(:nth-child(1):nth-last-child(3)) {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1050px;
+  }
+}
+
 /* Responsividade */
 @media (max-width: 1200px) {
   .gridContainer {
@@ -695,7 +818,7 @@
 @media (max-width: 992px) {
   .gridContainer {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--space-8);
+    gap: var(--spacing-lg);
   }
   
   .gridCard {
@@ -703,10 +826,12 @@
   }
 }
 
-@media (max-width: 768px) {
+/* iPads e tablets médios */
+@media (min-width: 768px) and (max-width: 1023px) {
   .gridContainer {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md);
   }
   
   .gridCard {
@@ -714,12 +839,204 @@
   }
   
   .cardContent {
-    padding: var(--space-6) var(--space-4) var(--space-4);
+    padding: var(--spacing-md);
+  }
+  
+  .cardTitle {
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  /* Layout para 3 itens em telas médias */
+  .gridContainer:has(:nth-child(1):nth-last-child(3)) {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 900px;
+  }
+  
+  /* Reduz a animação para melhor performance */
+  .gridCard:hover {
+    transform: translateY(-10px) scale(1.01);
+  }
+}
+
+@media (max-width: 768px) {
+  .gridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+  }
+  
+  .gridCard {
+    min-height: 380px;
+  }
+  
+  .cardContent {
+    padding: var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
   }
   
   /* Layout especial para 3 itens em telas menores */
   .gridContainer:has(:nth-child(1):nth-last-child(3)) {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+/* Específico para iPad Pro (1024px) */
+@media screen and (min-width: 1020px) and (max-width: 1030px) {
+  /* Layout ajustado para iPad Pro */
+  .gridContainer {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* Duas colunas para melhor visualização */
+    gap: var(--spacing-lg) !important;
+    max-width: 960px !important;
+    margin: 0 auto !important;
+    padding: var(--spacing-md) !important;
+  }
+  
+  /* Ajuste do tamanho dos cards */
+  .gridCard {
+    min-height: 400px !important;
+    width: 100% !important;
+    aspect-ratio: auto !important;
+  }
+  
+  /* Melhorar uso de espaço interno */
+  .cardContent {
+    padding: var(--spacing-md) !important;
+  }
+  
+  /* Garantir que os cards de 3 itens também se distribuam em 2 colunas */
+  .gridContainer:has(:nth-child(1):nth-last-child(3)) {
+    grid-template-columns: repeat(2, 1fr) !important;
+    max-width: 960px !important;
+  }
+  
+  /* Melhores proporções de imagem de fundo */
+  .gridCard::before {
+    background-size: cover !important;
+    background-position: center center !important;
+  }
+  
+  /* Ajuste responsivo para descrições */
+  .cardDescription {
+    -webkit-line-clamp: 3 !important;
+    line-clamp: 3 !important;
+  }
+}
+
+/* Classes para aplicação dinâmica via JavaScript */
+.iPadPro1024Grid {
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: var(--spacing-lg) !important;
+  max-width: 960px !important;
+  margin: 0 auto !important;
+  padding: var(--spacing-md) 32px !important;
+}
+
+.iPadPro1024Card {
+  min-height: 400px !important;
+  width: 100% !important;
+}
+
+/* Surface Pro 7 (912px) - Específico para este dispositivo */
+@media screen and (min-width: 900px) and (max-width: 920px) {
+  /* Layout ajustado para Surface Pro 7 */
+  .gridContainer {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 24px !important;
+    max-width: 860px !important;
+    margin: 0 auto !important;
+    padding: var(--spacing-md) !important;
+  }
+  
+  /* Ajuste do tamanho dos cards */
+  .gridCard {
+    aspect-ratio: auto !important; /* Permite flexibilidade na altura */
+    min-height: 380px !important;
+    width: 100% !important;
+  }
+  
+  /* Melhora a proporção das imagens de fundo */
+  .gridCard::before {
+    background-size: cover !important;
+    background-position: center center !important;
+  }
+  
+  /* Ajuste do conteúdo */
+  .cardContent {
+    padding: var(--spacing-md) !important;
+  }
+  
+  .cardTitle {
+    font-size: 1.3rem !important;
+    margin-bottom: var(--spacing-sm) !important;
+  }
+  
+  .cardDescription {
+    max-width: 100% !important;
+    -webkit-line-clamp: 3 !important; /* Permite uma linha extra de descrição */
+  }
+  
+  /* Ajuste dos botões */
+  .viewButton,
+  .detailsButton {
+    padding: 6px 16px !important;
+    min-width: 90px !important;
+    font-size: 0.7rem !important;
+  }
+  
+  /* Ajuste das tags */
+  .tag {
+    font-size: 0.7rem !important;
+    padding: 0.15rem 0.7rem !important;
+  }
+  
+  /* Caso específico para 3 itens */
+  .gridContainer:has(:nth-child(1):nth-last-child(3)) {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Tablets menores e celulares grandes */
+@media (min-width: 577px) and (max-width: 767px) {
+  .gridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+  }
+  
+  .gridCard {
+    min-height: 360px;
+  }
+  
+  .cardContent {
+    padding: var(--spacing-sm);
+  }
+  
+  .cardTitle {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .cardDescription {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .cardTags {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .tag {
+    padding: 0.15rem 0.6rem;
+    font-size: 0.7rem;
+  }
+  
+  .viewButton,
+  .detailsButton {
+    padding: 6px 14px;
+    min-width: 85px;
+    font-size: 0.7rem;
   }
 }
 
@@ -731,13 +1048,182 @@
   }
   
   .cardContent {
-    padding: var(--space-6) var(--space-4) var(--space-4);
+    padding: var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
+  }
+}
+
+/* Celulares */
+@media (max-width: 576px) {
+  .gridContainer {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: var(--spacing-sm);
+    gap: var(--spacing-lg);
+  }
+  
+  .gridCard {
+    min-height: 340px;
+  }
+  
+  .cardTitle {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .cardActions {
+    gap: var(--spacing-sm);
+  }
+  
+  /* Simplificação para melhor usabilidade em telas pequenas */
+  .gridCard:hover {
+    transform: translateY(-8px);
+  }
+  
+  .gridCard:hover .cardContent {
+    transform: translateY(-3px) translateZ(30px);
+  }
+  
+  .viewButton,
+  .detailsButton {
+    min-width: 90px;
+    font-size: 0.7rem;
+    padding: 8px 16px;
+  }
+  
+  .viewButton:hover,
+  .detailsButton:hover {
+    transform: translateY(-3px) scale(1.02);
+  }
+}
+
+/* Celulares pequenos */
+@media (max-width: 375px) {
+  .gridContainer {
+    max-width: 320px;
+    padding: var(--spacing-xs);
+    gap: var(--spacing-md);
+  }
+  
+  .gridCard {
+    min-height: 320px;
+    border-radius: var(--border-radius-md);
+  }
+  
+  .cardContent {
+    padding: var(--spacing-sm);
+  }
+  
+  .cardTitle {
+    font-size: 1.15rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .cardDescription {
+    font-size: 0.8rem;
+    -webkit-line-clamp: 2;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .tag {
+    padding: 0.1rem 0.5rem;
+    font-size: 0.65rem;
+  }
+  
+  .viewButton,
+  .detailsButton {
+    min-width: 75px;
+    padding: 6px 12px;
+    font-size: 0.65rem;
+  }
+  
+  .cardActions {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    width: 100%;
+  }
+  
+  .viewButton,
+  .detailsButton {
+    width: 100%;
+  }
+  
+  .buttonIcon {
+    font-size: 0.65rem;
+  }
+}
+
+/* iPhone SE e dispositivos muito pequenos */
+@media (max-width: 320px) {
+  .gridContainer {
+    padding: var(--spacing-xs) 8px;
+  }
+  
+  .gridCard {
+    min-height: 280px;
+  }
+  
+  .cardTitle {
+    font-size: 1.05rem;
+  }
+  
+  .cardDescription {
+    font-size: 0.75rem;
+    -webkit-line-clamp: 2;
+  }
+  
+  .cardTags {
+    gap: 4px;
+  }
+  
+  .tag {
+    padding: 0.1rem 0.4rem;
+    font-size: 0.6rem;
+  }
+}
+
+/* Classes para aplicação dinâmica via JavaScript */
+.surfacePro912Grid {
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 24px !important;
+  max-width: 860px !important;
+  margin: 0 auto !important;
+  padding: var(--spacing-md) !important;
+}
+
+.surfacePro912Card {
+  min-height: 380px !important;
+  width: 100% !important;
+}
+
+/* Otimizações para orientação paisagem em dispositivos móveis */
+@media (max-height: 500px) and (orientation: landscape) {
+  .gridCard {
+    min-height: 280px !important;
+    aspect-ratio: 16/9 !important;
+  }
+  
+  .cardContent {
+    padding: var(--spacing-xs) var(--spacing-sm) !important;
+  }
+  
+  .cardTitle {
+    margin-bottom: 8px !important;
+  }
+  
+  .cardDescription {
+    margin-bottom: 8px !important;
+    -webkit-line-clamp: 1 !important;
+  }
+  
+  .cardTags {
+    margin-bottom: 8px !important;
   }
 }
 
 /* Acessibilidade e preferência de movimento reduzido */
 .gridCard:focus {
-  outline: 2px solid rgba(144, 101, 246, 0.6);
+  outline: 2px solid rgba(var(--color-primary-rgb), 0.6);
   outline-offset: 4px;
 }
 
@@ -755,18 +1241,36 @@
   .gridCard::before,
   .gridCard::after,
   .gridCard:hover::before {
-    transition: none;
-    animation: none;
-    transform: none;
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
   }
   
   .placeholderPulse {
-    animation: none;
+    animation: none !important;
   }
   
   .noResults {
-    animation: none;
+    animation: none !important;
     opacity: 1;
     transform: none;
+  }
+  
+  .gridCard.inView {
+    opacity: 1;
+  }
+  
+  .cardActions {
+    opacity: 1;
+  }
+}
+
+/* Suporte para dispositivos dobráveis */
+@supports (display: flex) and (overflow: clip) {
+  @media (min-width: 600px) and (max-width: 700px) {
+    .gridContainer {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 650px;
+    }
   }
 }

@@ -17,6 +17,97 @@ const WorkGridView = ({ projects, onQuickView }) => {
     cardRefs.current = cardRefs.current.slice(0, projects.length);
   }, [projects]);
 
+  // Detecção de Surface Pro 7 e aplicação de estilos específicos
+  useEffect(() => {
+    const handleResize = () => {
+      // Use seletores para o WorkGridView
+      const gridContainer = document.querySelector(`.${styles.gridContainer}`);
+      const gridCards = document.querySelectorAll(`.${styles.gridCard}`);
+
+      // No arquivo WorkGridView.jsx, adicione este bloco dentro do useEffect de detecção de dispositivos
+
+// Detecção específica para iPad Pro (1024px)
+const isIPadPro1024 = window.innerWidth >= 1020 && window.innerWidth <= 1030;
+
+if (isIPadPro1024) {
+  console.log('iPad Pro 1024px detected');
+  
+  if (gridContainer) {
+    gridContainer.classList.add(styles.iPadPro1024Grid);
+    gridContainer.dataset.device = 'ipad-pro';
+  }
+  
+  if (gridCards && gridCards.length > 0) {
+    gridCards.forEach(card => {
+      card.classList.add(styles.iPadPro1024Card);
+    });
+  }
+  
+  // Aplicar variáveis CSS específicas
+  document.documentElement.style.setProperty('--grid-max-width', '960px');
+  document.documentElement.style.setProperty('--grid-columns', '2');
+} 
+// O resto do código para remover estas classes quando necessário...
+      
+      // Verificar se é um Surface Pro 7 ou similar (912px de largura)
+      const isSurfacePro = window.innerWidth >= 900 && window.innerWidth <= 920;
+      
+      if (isSurfacePro) {
+        console.log('Surface Pro 7 detected (912px)');
+        
+        if (gridContainer) {
+          gridContainer.classList.add(styles.surfacePro912Grid);
+          gridContainer.style.setProperty('--grid-columns', '2');
+        }
+        
+        if (gridCards && gridCards.length > 0) {
+          gridCards.forEach(card => {
+            card.classList.add(styles.surfacePro912Card);
+            card.style.width = '100%';
+          });
+        }
+        
+        // Aplicar estilos diretamente no nível do documento para maior especificidade
+        document.documentElement.style.setProperty('--grid-max-width', '860px');
+        document.documentElement.style.setProperty('--grid-gap', '24px');
+      } else {
+        // Remover classes específicas
+        if (gridContainer) {
+          gridContainer.classList.remove(styles.surfacePro912Grid);
+          gridContainer.style.removeProperty('--grid-columns');
+        }
+        
+        if (gridCards && gridCards.length > 0) {
+          gridCards.forEach(card => {
+            card.classList.remove(styles.surfacePro912Card);
+            card.style.removeProperty('width');
+          });
+        }
+        
+        // Remover variáveis CSS
+        document.documentElement.style.removeProperty('--grid-max-width');
+        document.documentElement.style.removeProperty('--grid-gap');
+      }
+    };
+    
+    // Executar imediatamente e adicionar listener
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    
+    // Executar novamente após carregamento completo da página
+    window.addEventListener('load', handleResize);
+    
+    // Executar novamente com um delay para garantir que tudo esteja carregado
+    const timeoutId = setTimeout(handleResize, 500);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('load', handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, [styles]);
+
   // Versão atualizada utilizando o hook useInView corretamente
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -83,6 +174,8 @@ const WorkGridView = ({ projects, onQuickView }) => {
     card.style.transform = '';
     setHoveredCard(null);
   };
+
+  
   
   // Função para navegar para a página de detalhes do projeto
   const handleViewProject = (e, project) => {
@@ -122,11 +215,15 @@ const WorkGridView = ({ projects, onQuickView }) => {
   }
   
   return (
-    <div className={styles.gridContainer} ref={gridRef}>
+    <div 
+      className={`${styles.gridContainer} workProjectsGrid`} 
+      ref={gridRef} 
+      data-surface-pro={window.innerWidth >= 900 && window.innerWidth <= 920 ? 'true' : 'false'}
+    >
       {projects.map((project, index) => (
         <div
           key={project.id || index}
-          className={styles.gridCard}
+          className={`${styles.gridCard} workProjectCard`}
           style={{ 
             backgroundImage: `url(${project.thumbnailImage})`,
             animationDelay: `${index * 0.1}s`
@@ -136,6 +233,7 @@ const WorkGridView = ({ projects, onQuickView }) => {
           onMouseEnter={() => setHoveredCard(index)}
           onMouseLeave={() => handleMouseLeave(index)}
           onClick={(e) => handleViewProject(e, project)}
+          data-index={index}
         >
           <div className={`${styles.cardOverlay} ${hoveredCard === index ? styles.hovered : ''}`}></div>
 

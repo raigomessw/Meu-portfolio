@@ -203,7 +203,7 @@ const About = () => {
   </div>
   
   <div className={styles.ctaContainer}>
-    <a href="#contact" className={styles.ctaButton}>Kontakta mig</a>
+    <a href="/contact" className={styles.ctaButton}>Kontakta mig</a>
   </div>
 </div>
         </div>
@@ -217,14 +217,14 @@ const About = () => {
                 icon: <SiReact />,
                 title: "React & Next.js",
                 description: "Utveckling av moderna gränssnitt med React, React Native och Next.js",
-                percentage: 95,
+                percentage: 85,
                 order: 0
               },
               {
                 icon: <SiJavascript />,
                 title: "JavaScript & TypeScript",
                 description: "Avancerad erfarenhet med ES6+, TypeScript och moderna ramverk",
-                percentage: 90,
+                percentage: 85,
                 order: 1
               },
               {
@@ -238,7 +238,7 @@ const About = () => {
                 icon: <MdDesignServices />,
                 title: "UI/UX Design",
                 description: "Design av intuitiva gränssnitt med fokus på användarupplevelse",
-                percentage: 90,
+                percentage: 95,
                 order: 3
               },
               {
