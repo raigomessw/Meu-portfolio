@@ -1,67 +1,92 @@
-/* ========== VARIÁVEIS RESPONSIVAS ========== */
+/* ========== VARIÁVEIS PREMIUM CENTRALIZADAS ========== */
 :root {
-  --grid-columns: auto;
-  --grid-max-width: 1400px;
-  --grid-gap: var(--spacing-xl);
-  --card-min-width: 320px;
-  --card-aspect-ratio: 5/6;
-  --card-min-height: 420px;
-  --card-border-radius: var(--border-radius-lg);
+  /* Dimensões base */
+  --grid-max-width-xl: 1400px;
+  --grid-max-width-lg: 1200px;
+  --grid-max-width-md: 960px;
+  --grid-max-width-sm: 768px;
+  --grid-gap-xl: 40px;
+  --grid-gap-lg: 32px;
+  --grid-gap-md: 24px;
+  --grid-gap-sm: 16px;
+  
+  /* Cards - alturas por dispositivo */
+  --card-min-height-xl: 460px;
+  --card-min-height-desktop: 420px;
+  --card-min-height-laptop: 380px;
+  --card-min-height-tablet: 360px;
+  --card-min-height-mobile: 340px;
+  --card-min-height-small: 300px;
+  --card-min-height-tiny: 280px;
+  
+  /* Proporções para diferentes dispositivos */
+  --card-aspect-ratio-desktop: 5/6;
+  --card-aspect-ratio-tablet: 4/5;
+  --card-aspect-ratio-mobile: 1/1.2;
+  --card-aspect-ratio-landscape: 16/9;
+  
+  /* Botões - alturas por dispositivo */
+  --button-height-xl: 44px;
+  --button-height-desktop: 36px;
+  --button-height-tablet: 34px;
+  --button-height-mobile: 32px;
+  --button-height-small: 30px;
+  --button-height-tiny: 28px;
+  
+  /* Raios de borda para diferentes dispositivos */
+  --card-radius-lg: var(--border-radius-lg);
+  --card-radius-md: var(--border-radius-md);
+  --card-radius-sm: var(--border-radius-sm);
+  
+  /* Animações otimizadas */
+  --animation-fast: 0.2s;
+  --animation-normal: 0.4s;
+  --animation-slow: 0.6s;
 }
 
-/* ========== Container e Layout ========== */
-/* Container Grid Principal */
+/* ========== CONTAINER E LAYOUT PRINCIPAL ========== */
 .gridContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: var(--spacing-xl);
+  grid-template-columns: repeat(auto-fill, minmax(320px, 2fr));
+  gap: var(--grid-gap-xl);
   width: 100%;
+  max-width: var(--grid-max-width-xl);
+  margin: 0 auto;
+  padding: var(--spacing-md);
   position: relative;
   perspective: 1200px;
-  margin: 0 auto;
-  max-width: 1400px;
-  padding: var(--spacing-md);
-  will-change: opacity, transform;
+  transition: opacity 0.5s ease;
   animation: fadeIn 0.8s var(--hero-animation-curve);
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Organização visual para diferentes contagens de itens */
+/* Layouts otimizados para diferentes contagens de cards */
 .gridContainer:has(:nth-child(1):nth-last-child(1)) {
+  grid-template-columns: 1fr;
   max-width: 600px;
-  margin: 0 auto;
 }
 
 .gridContainer:has(:nth-child(1):nth-last-child(2)) {
-  grid-template-columns: repeat(2, minmax(300px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   max-width: 900px;
-  margin: 0 auto;
 }
 
-/* Layout especial para 3 itens */
 .gridContainer:has(:nth-child(1):nth-last-child(3)) {
   grid-template-columns: repeat(3, 1fr);
-  max-width: 1200px;
-  gap: var(--spacing-lg);
+  max-width: var(--grid-max-width-lg);
+  gap: var(--grid-gap-lg);
 }
 
-/* ========== Card Styles ========== */
-/* Card do projeto na visualização grid - Versão Premium */
+/* ========== CARD - ESTILO BASE ========== */
 .gridCard {
   position: relative;
-  aspect-ratio: 5/6;
-  min-height: 420px;
-  border-radius: var(--border-radius-lg);
+  aspect-ratio: var(--card-aspect-ratio-desktop);
+  min-height: var(--card-min-height-desktop);
+  border-radius: var(--card-radius-lg);
   overflow: hidden;
   background-position: center;
   background-size: cover;
@@ -69,8 +94,7 @@
   opacity: 0;
   box-shadow: var(--shadow-lg);
   cursor: pointer;
-  transition: all 0.6s var(--hero-animation-curve);
-  will-change: transform, box-shadow, filter;
+  transition: all 0.5s var(--hero-animation-curve);
   isolation: isolate;
   transform-style: preserve-3d;
   display: flex;
@@ -79,220 +103,23 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.05);
+  will-change: transform, opacity, box-shadow;
 }
 
+/* Tema escuro e claro para cards */
 html[data-theme="dark"] .gridCard {
   box-shadow: var(--shadow-lg-dark);
 }
 
-/* Brilho interno do card */
-.gridCard::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-    rgba(var(--color-primary-rgb), 0.15), 
-    rgba(var(--color-primary-rgb), 0.01) 60%
-  );
-  opacity: 0;
-  z-index: 1;
-  transition: opacity 0.6s var(--hero-animation-curve);
-  pointer-events: none;
-  mix-blend-mode: overlay;
-}
-
-/* Borda com gradiente */
-.gridCard::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: inherit;
-  background-position: center;
-  background-size: cover;
-  transition: transform 0.8s var(--hero-animation-curve);
-  z-index: 0;
-  will-change: transform;
-}
-
-/* Versão clara do card */
 html[data-theme="light"] .gridCard {
-  box-shadow: 0 15px 40px -15px rgba(var(--color-primary-rgb), 0.12), 
-              0 30px 70px -20px rgba(var(--color-primary-rgb), 0.2),
-              0 0 0 1px rgba(var(--color-primary-rgb), 0.05) inset;
+  box-shadow: 
+    0 15px 40px -15px rgba(var(--color-primary-rgb), 0.12), 
+    0 30px 70px -20px rgba(var(--color-primary-rgb), 0.2),
+    0 0 0 1px rgba(var(--color-primary-rgb), 0.05) inset;
 }
 
-/* Efeitos no hover */
-.gridCard:hover {
-  transform: translateY(-15px) scale(1.02) rotateX(2deg);
-  box-shadow: 0 25px 50px -12px rgba(var(--color-primary-rgb), 0.25), 
-              0 30px 60px -20px rgba(0, 0, 0, 0.3),
-              0 0 0 1px rgba(var(--color-primary-rgb), 0.2) inset;
-  z-index: 2;
-}
-
-html[data-theme="dark"] .gridCard:hover {
-  box-shadow: 0 25px 50px -12px rgba(var(--color-primary-rgb), 0.25), 
-              0 30px 60px -20px rgba(0, 0, 0, 0.5),
-              0 0 0 1px rgba(var(--color-primary-rgb), 0.2) inset;
-}
-
-.gridCard:hover::after {
-  opacity: 1;
-}
-
-.gridCard:hover::before {
-  transform: scale(1.08);
-}
-
-/* Bordas animadas em hover */
-.gridCard::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--border-radius-lg);
-  padding: 1px;
-  background: linear-gradient(135deg,
-    rgba(var(--color-primary-rgb), 0.5),
-    rgba(var(--color-primary-rgb), 0.3),
-    rgba(var(--color-primary-rgb), 0.5));
-  -webkit-mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.6s var(--hero-animation-curve);
-  z-index: 1;
-}
-
-.gridCard:hover::before {
-  opacity: 1;
-  animation: borderRotate 8s linear infinite;
-}
-
-@keyframes borderRotate {
-  0% { background-position: 0% 0%; }
-  100% { background-position: 200% 0%; }
-}
-
-/* Quando o card fica visível na viewport */
-.gridCard.inView {
-  transform: translateY(0);
-  opacity: 1;
-  animation: cardRevealPremium 0.8s var(--hero-animation-curve) forwards;
-}
-
-@keyframes cardRevealPremium {
-  0% {
-    opacity: 0;
-    transform: translateY(30px) scale(0.96);
-    filter: blur(5px);
-  }
-  60% {
-    opacity: 0.8;
-  }
-  80% {
-    transform: translateY(-8px) scale(1.01);
-    opacity: 1;
-    filter: blur(0);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
-}
-
-/* Animação sequencial para os cards */
-.gridCard:nth-child(1).inView { animation-delay: 0.1s; }
-.gridCard:nth-child(2).inView { animation-delay: 0.2s; }
-.gridCard:nth-child(3).inView { animation-delay: 0.3s; }
-.gridCard:nth-child(4).inView { animation-delay: 0.4s; }
-.gridCard:nth-child(5).inView { animation-delay: 0.5s; }
-.gridCard:nth-child(6).inView { animation-delay: 0.6s; }
-
-/* ========== Overlay e Backgrounds ========== */
-/* Overlay com gradiente para melhor legibilidade */
-.cardOverlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(15, 23, 42, 0.95) 0%,
-    rgba(15, 23, 42, 0.8) 35%,
-    rgba(15, 23, 42, 0.5) 60%,
-    rgba(15, 23, 42, 0.2) 80%,
-    rgba(15, 23, 42, 0.1) 100%
-  );
-  z-index: 1;
-  transition: all 0.6s var(--hero-animation-curve);
-  backdrop-filter: blur(0);
-}
-
-html[data-theme="light"] .cardOverlay {
-  background: linear-gradient(
-    to top,
-    rgba(248, 250, 252, 0.9) 0%,
-    rgba(248, 250, 252, 0.85) 35%,
-    rgba(248, 250, 252, 0.6) 60%,
-    rgba(248, 250, 252, 0.3) 80%,
-    rgba(248, 250, 252, 0.1) 100%
-  );
-  backdrop-filter: blur(0);
-}
-
-.gridCard:hover .cardOverlay {
-  background: linear-gradient(
-    to top,
-    rgba(var(--color-primary-rgb), 0.95) 0%,
-    rgba(var(--color-primary-rgb), 0.8) 35%,
-    rgba(var(--color-primary-rgb), 0.5) 60%,
-    rgba(var(--color-primary-rgb), 0.2) 85%,
-    rgba(var(--color-primary-rgb), 0.05) 100%
-  );
-  backdrop-filter: blur(5px);
-}
-
-/* Adicionando um gradient mais claro para o hover no light mode para melhor legibilidade */
-html[data-theme="light"] .gridCard:hover .cardOverlay {
-  background: linear-gradient(
-    to top,
-    rgba(246, 248, 255, 0.95) 0%,
-    rgba(230, 234, 255, 0.85) 35%,
-    rgba(222, 225, 255, 0.6) 60%,
-    rgba(210, 215, 255, 0.3) 80%,
-    rgba(200, 210, 255, 0.1) 100%
-  );
-  backdrop-filter: blur(5px);
-}
-
-.cardOverlay.hovered {
-  background: linear-gradient(
-    to top,
-    rgba(var(--color-primary-rgb), 0.95) 0%,
-    rgba(var(--color-primary-rgb), 0.8) 40%,
-    rgba(var(--color-primary-rgb), 0.5) 70%,
-    rgba(var(--color-primary-rgb), 0.3) 85%,
-    rgba(var(--color-primary-rgb), 0.1) 100%
-  );
-  backdrop-filter: blur(5px);
-}
-
-/* Adicionando uma versão mais clara para o light mode */
-html[data-theme="light"] .cardOverlay.hovered {
-  background: linear-gradient(
-    to top,
-    rgba(246, 248, 255, 0.95) 0%,
-    rgba(230, 234, 255, 0.85) 40%,
-    rgba(222, 225, 255, 0.6) 70%,
-    rgba(210, 215, 255, 0.3) 85%,
-    rgba(200, 210, 255, 0.1) 100%
-  );
-  backdrop-filter: blur(5px);
-}
-
-/* Reflexo na superfície do card */
+/* ========== EFEITOS VISUAIS DO CARD ========== */
+/* Efeito de brilho */
 .gridCard::after {
   content: '';
   position: absolute;
@@ -314,16 +141,158 @@ html[data-theme="light"] .cardOverlay.hovered {
   z-index: 2;
 }
 
+/* Borda com gradiente */
+.gridCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg,
+    rgba(var(--color-primary-rgb), 0.5),
+    rgba(var(--color-primary-rgb), 0.3),
+    rgba(var(--color-primary-rgb), 0.5));
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.6s var(--hero-animation-curve);
+  z-index: 1;
+  background-size: 200% 100%;
+}
+
+/* ========== ESTADOS DO CARD ========== */
+/* Hover */
+.gridCard:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 
+    0 25px 50px -12px rgba(var(--color-primary-rgb), 0.25), 
+    0 30px 60px -20px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(var(--color-primary-rgb), 0.2) inset;
+  z-index: 2;
+}
+
+/* Efeitos no hover */
 .gridCard:hover::after {
   transform: translateX(0) translateY(0) rotate(35deg);
 }
 
-/* ========== Conteúdo do Card ========== */
-/* Conteúdo do card com efeito 3D */
+.gridCard:hover::before {
+  opacity: 1;
+  animation: borderRotate 8s linear infinite;
+}
+
+@keyframes borderRotate {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
+
+/* Animação de entrada */
+.gridCard.inView {
+  transform: translateY(0);
+  opacity: 1;
+  animation: cardReveal 0.8s var(--hero-animation-curve) forwards;
+}
+
+@keyframes cardReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+    filter: blur(5px);
+  }
+  60% { 
+    opacity: 0.8; 
+  }
+  80% {
+    transform: translateY(-8px) scale(1.01);
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* Delay sequencial na animação */
+.gridCard:nth-child(1).inView { animation-delay: 0.1s; }
+.gridCard:nth-child(2).inView { animation-delay: 0.2s; }
+.gridCard:nth-child(3).inView { animation-delay: 0.3s; }
+.gridCard:nth-child(4).inView { animation-delay: 0.4s; }
+.gridCard:nth-child(5).inView { animation-delay: 0.5s; }
+.gridCard:nth-child(6).inView { animation-delay: 0.6s; }
+
+/* ========== OVERLAY DO CARD ========== */
+.cardOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(15, 23, 42, 0.95) 0%,
+    rgba(15, 23, 42, 0.8) 35%,
+    rgba(15, 23, 42, 0.5) 60%,
+    rgba(15, 23, 42, 0.2) 80%,
+    rgba(15, 23, 42, 0.1) 100%
+  );
+  z-index: 1;
+  transition: background 0.5s var(--hero-animation-curve);
+  backdrop-filter: blur(0);
+}
+
+html[data-theme="light"] .cardOverlay {
+  background: linear-gradient(
+    to top,
+    rgba(248, 250, 252, 0.9) 0%,
+    rgba(248, 250, 252, 0.85) 35%,
+    rgba(248, 250, 252, 0.6) 60%,
+    rgba(248, 250, 252, 0.3) 80%,
+    rgba(248, 250, 252, 0.1) 100%
+  );
+}
+
+/* Overlay em hover */
+.gridCard:hover .cardOverlay {
+  background: linear-gradient(
+    to top,
+    rgba(var(--color-primary-rgb), 0.95) 0%,
+    rgba(var(--color-primary-rgb), 0.8) 35%,
+    rgba(var(--color-primary-rgb), 0.5) 60%,
+    rgba(var(--color-primary-rgb), 0.2) 85%,
+    rgba(var(--color-primary-rgb), 0.05) 100%
+  );
+  backdrop-filter: blur(5px);
+}
+
+html[data-theme="light"] .gridCard:hover .cardOverlay {
+  background: linear-gradient(
+    to top,
+    rgba(246, 248, 255, 0.95) 0%,
+    rgba(230, 234, 255, 0.85) 35%,
+    rgba(222, 225, 255, 0.6) 60%,
+    rgba(210, 215, 255, 0.3) 80%,
+    rgba(200, 210, 255, 0.1) 100%
+  );
+}
+
+/* Classe .hovered para controle via JavaScript */
+.cardOverlay.hovered {
+  background: linear-gradient(
+    to top,
+    rgba(var(--color-primary-rgb), 0.95) 0%,
+    rgba(var(--color-primary-rgb), 0.8) 40%,
+    rgba(var(--color-primary-rgb), 0.5) 70%,
+    rgba(var(--color-primary-rgb), 0.3) 85%,
+    rgba(var(--color-primary-rgb), 0.1) 100%
+  );
+  backdrop-filter: blur(5px);
+}
+
+/* ========== CONTEÚDO DO CARD ========== */
 .cardContent {
   position: relative;
-  bottom: 0;
-  left: 0;
   width: 100%;
   padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
   z-index: 3;
@@ -337,17 +306,18 @@ html[data-theme="light"] .cardOverlay.hovered {
   transform: translateY(-5px) translateZ(50px);
 }
 
+/* Título do card */
 .cardTitle {
   font-size: clamp(1.25rem, 4vw, 1.5rem);
   color: var(--dark-color-text-0);
   margin-bottom: var(--spacing-md);
   line-height: 1.25;
   letter-spacing: -0.02em;
-  transition: transform 0.4s var(--hero-animation-curve), color 0.3s ease;
+  font-weight: var(--font-semi-bold);
   position: relative;
   display: inline-block;
-  width: auto;
-  font-weight: var(--font-semi-bold);
+  transition: transform 0.4s var(--hero-animation-curve), color 0.3s ease;
+  max-width: 100%;
 }
 
 html[data-theme="light"] .cardTitle {
@@ -363,7 +333,7 @@ html[data-theme="light"] .gridCard:hover .cardTitle {
   color: var(--color-primary);
 }
 
-/* Sublinhado animado para o título */
+/* Sublinhado animado do título */
 .cardTitle::after {
   content: '';
   position: absolute;
@@ -386,7 +356,7 @@ html[data-theme="light"] .cardTitle::after {
   opacity: 1;
 }
 
-/* Tags com efeito */
+/* ========== TAGS E LABELS ========== */
 .cardTags {
   display: flex;
   flex-wrap: wrap;
@@ -406,13 +376,7 @@ html[data-theme="light"] .cardTitle::after {
   box-shadow: var(--shadow-sm);
   backdrop-filter: blur(5px);
   letter-spacing: 0.02em;
-  transform: translateY(0);
   border: 1px solid transparent;
-}
-
-html[data-theme="dark"] .tag {
-  box-shadow: var(--shadow-sm-dark);
-  color: var(--dark-color-text-0);
 }
 
 html[data-theme="light"] .tag {
@@ -423,9 +387,8 @@ html[data-theme="light"] .tag {
 
 .gridCard:hover .tag {
   background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px) scale(1.05);
+  transform: translateY(-2px);
   border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: var(--shadow-sm);
   color: white;
 }
 
@@ -433,19 +396,14 @@ html[data-theme="light"] .gridCard:hover .tag {
   background: rgba(var(--color-primary-rgb), 0.15);
   color: var(--color-primary);
   border-color: rgba(var(--color-primary-rgb), 0.3);
-  box-shadow: 0 3px 8px rgba(var(--color-primary-rgb), 0.15);
 }
 
-/* Animação sequencial para as tags */
-.gridCard:hover .tag:nth-child(1) { transition-delay: 0.05s; }
-.gridCard:hover .tag:nth-child(2) { transition-delay: 0.1s; }
-.gridCard:hover .tag:nth-child(3) { transition-delay: 0.15s; }
-
+/* Descrição do card */
 .cardDescription {
   color: var(--dark-color-text-2);
   font-size: 0.875rem;
   margin-bottom: var(--spacing-md);
-  max-width: 90%;
+  max-width: 100%;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -453,7 +411,6 @@ html[data-theme="light"] .gridCard:hover .tag {
   overflow: hidden;
   transition: opacity 0.4s var(--hero-animation-curve), transform 0.4s var(--hero-animation-curve);
   line-height: 1.5;
-  transform: translateY(0);
 }
 
 html[data-theme="light"] .cardDescription {
@@ -470,14 +427,16 @@ html[data-theme="light"] .gridCard:hover .cardDescription {
   color: rgba(var(--color-primary-dark-rgb), 0.9);
 }
 
-/* Botões de ação com animação de entrada elegante */
+/* ========== ÁREA DE BOTÕES ========== */
 .cardActions {
   display: flex;
-  gap: var(--spacing-md);
+  gap: 12px;
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.5s var(--hero-animation-curve);
   transition-delay: 0.1s;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .gridCard:hover .cardActions,
@@ -486,26 +445,106 @@ html[data-theme="light"] .gridCard:hover .cardDescription {
   transform: translateY(0);
 }
 
-/* ========== Botões e Ações ========== */
-/* Estilo dos botões */
+/* ========== BOTÕES PREMIUM ========== */
+/* Base compartilhada para botões */
 .viewButton,
 .detailsButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-xs);
-  font-size: 0.75rem;
-  font-weight: var(--font-medium);
-  letter-spacing: 0.05em;
+  gap: 8px;
+  height: var(--button-height-desktop);
   text-transform: uppercase;
-  padding: var(--spacing-xs) var(--spacing-md);
+  letter-spacing: 0.03em;
+  font-weight: var(--font-medium);
   border-radius: 30px;
-  transition: all 0.4s var(--hero-animation-curve);
-  white-space: nowrap;
-  min-width: 100px;
+  transition: all 0.3s var(--hero-animation-curve);
   position: relative;
   overflow: hidden;
   z-index: 1;
+  white-space: nowrap;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* Botão primário - "Se projekt" */
+.viewButton {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--color-primary);
+  border: none;
+  box-shadow: var(--shadow-md);
+  flex: 0.9;
+  min-width: 110px;
+  max-width: 140px;
+  font-size: 0.72rem;
+  padding: 0 14px;
+}
+
+html[data-theme="light"] .viewButton {
+  background: rgba(var(--color-primary-rgb), 0.95);
+  color: white;
+}
+
+/* Botão secundário - "Förhandsgranska" */
+.detailsButton {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
+  flex: 1.1;
+  min-width: 120px;
+  max-width: 180px;
+  font-size: 0.68rem;
+  padding: 0 12px;
+}
+
+html[data-theme="light"] .detailsButton {
+  color: var(--color-primary);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.6);
+  background: rgba(var(--color-primary-rgb), 0.05);
+}
+
+/* Estilo para o texto dentro dos botões */
+.viewButton span,
+.detailsButton span {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 20px);
+  line-height: 1;
+}
+
+/* Ajustes específicos para o botão com texto longo */
+.detailsButton span {
+  font-size: 0.66rem;
+}
+
+/* Efeitos de hover nos botões */
+.viewButton:hover,
+.detailsButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.detailsButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+html[data-theme="light"] .detailsButton:hover {
+  background: rgba(var(--color-primary-rgb), 0.15);
+  border-color: rgba(var(--color-primary-rgb), 0.9);
+}
+
+/* Efeito de clique */
+.viewButton:active,
+.detailsButton:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.2);
+  transition: all 0.1s ease;
 }
 
 /* Efeito de brilho nos botões */
@@ -517,8 +556,8 @@ html[data-theme="light"] .gridCard:hover .cardDescription {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: all 0.8s var(--hero-animation-curve);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.6s var(--hero-animation-curve);
   z-index: -1;
 }
 
@@ -527,151 +566,19 @@ html[data-theme="light"] .gridCard:hover .cardDescription {
   left: 100%;
 }
 
-/* Botão de visualização */
-.viewButton {
-  background: rgba(255, 255, 255, 0.95);
-  color: var(--color-primary);
-  border: none;
-  box-shadow: var(--shadow-md);
-}
-
-html[data-theme="dark"] .viewButton {
-  box-shadow: var(--shadow-md-dark);
-}
-
-html[data-theme="light"] .viewButton {
-  background: rgba(var(--color-primary-rgb), 0.95);
-  color: white;
-  box-shadow: var(--shadow-md);
-}
-
-.viewButton:hover {
-  transform: translateY(-5px) scale(1.03);
-  box-shadow: var(--shadow-lg);
-}
-
-html[data-theme="dark"] .viewButton:hover {
-  box-shadow: var(--shadow-lg-dark);
-}
-
-html[data-theme="light"] .viewButton:hover {
-  box-shadow: var(--shadow-lg);
-}
-
-/* Botão de detalhes */
-.detailsButton {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  cursor: pointer;
-  box-shadow: var(--shadow-sm);
-}
-
-html[data-theme="dark"] .detailsButton {
-  box-shadow: var(--shadow-sm-dark);
-}
-
-html[data-theme="light"] .detailsButton {
-  color: var(--color-primary);
-  border: 1px solid rgba(var(--color-primary-rgb), 0.6);
-  background: rgba(var(--color-primary-rgb), 0.05);
-  box-shadow: var(--shadow-sm);
-}
-
-.detailsButton:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.9);
-  transform: translateY(-5px) scale(1.03);
-  box-shadow: var(--shadow-md);
-}
-
-html[data-theme="dark"] .detailsButton:hover {
-  box-shadow: var(--shadow-md-dark);
-}
-
-html[data-theme="light"] .detailsButton:hover {
-  background: rgba(var(--color-primary-rgb), 0.15);
-  border-color: rgba(var(--color-primary-rgb), 0.9);
-  box-shadow: var(--shadow-md);
-}
-
-/* Ícone com animação */
+/* Ícone e animações */
 .buttonIcon {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   transition: transform 0.3s var(--hero-animation-curve);
+  flex-shrink: 0;
 }
 
 .viewButton:hover .buttonIcon,
 .detailsButton:hover .buttonIcon {
   transform: translateX(4px);
-  animation: iconPulsePremium 1s infinite alternate var(--hero-animation-curve);
 }
 
-@keyframes iconPulsePremium {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  60% {
-    transform: translateX(5px);
-  }
-}
-
-/* ========== Placeholders e Loaders ========== */
-/* Placeholder de carregamento */
-.loadingPlaceholder {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background-color: var(--dark-color-bg-2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-md);
-}
-
-html[data-theme="dark"] .loadingPlaceholder {
-  box-shadow: var(--shadow-md-dark);
-}
-
-html[data-theme="light"] .loadingPlaceholder {
-  background-color: var(--light-color-bg-2);
-  box-shadow: var(--shadow-md);
-}
-
-.placeholderPulse {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg, 
-    var(--dark-color-bg-2) 0%, 
-    var(--dark-color-bg-3) 50%, 
-    var(--dark-color-bg-2) 100%
-  );
-  background-size: 200% 100%;
-  animation: pulsePremium 1.5s infinite var(--hero-animation-curve);
-}
-
-html[data-theme="light"] .placeholderPulse {
-  background: linear-gradient(
-    90deg, 
-    var(--light-color-bg-2) 0%, 
-    var(--light-color-bg-3) 50%, 
-    var(--light-color-bg-2) 100%
-  );
-}
-
-@keyframes pulsePremium {
-  0% { background-position: 0% 0; }
-  100% { background-position: -135% 0; }
-}
-
-/* Mensagem de sem resultados com estilo */
+/* ========== ESTADOS DE CARREGAMENTO E MENSAGENS ========== */
 .noResults {
   grid-column: 1 / -1;
   text-align: center;
@@ -682,35 +589,21 @@ html[data-theme="light"] .placeholderPulse {
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   box-shadow: var(--shadow-lg);
-  transform: translateY(20px);
-  opacity: 0;
   animation: fadeInUp 0.8s var(--hero-animation-curve) forwards;
 }
 
-html[data-theme="dark"] .noResults {
-  box-shadow: var(--shadow-lg-dark);
-}
-
 @keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 html[data-theme="light"] .noResults {
   background: rgba(0, 0, 0, 0.02);
   border: 1px solid var(--light-color-border-2);
-  box-shadow: var(--shadow-lg);
 }
 
 .noResults h3 {
   font-size: 1.5rem;
-  color: var(--dark-color-text-1);
   margin-bottom: var(--spacing-md);
   background: linear-gradient(135deg, #ffffff 30%, var(--color-accent) 100%);
   -webkit-background-clip: text;
@@ -724,7 +617,6 @@ html[data-theme="light"] .noResults h3 {
   background: linear-gradient(135deg, var(--color-primary) 30%, var(--color-accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .noResults p {
@@ -738,501 +630,586 @@ html[data-theme="light"] .noResults p {
   color: var(--light-color-text-3);
 }
 
-/* ========== RESPONSIVIDADE APRIMORADA ========== */
-/* Dispositivos muito grandes (Monitores ultrawide, TVs) */
+/* ========== RESPONSIVIDADE ULTRA PREMIUM ========== */
+/* Telas muito grandes (>1920px) */
 @media (min-width: 1921px) {
   .gridContainer {
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: var(--spacing-xxl);
+    grid-template-columns: repeat(auto-fill, minmax(380px, 2fr));
+    gap: 48px;
     max-width: 1800px;
   }
   
   .gridCard {
-    min-height: 480px;
+    min-height: var(--card-min-height-xl);
   }
   
-  /* Ajustar o layout para poucos itens em telas grandes */
-  .gridContainer:has(:nth-child(1):nth-last-child(3)) {
-    grid-template-columns: repeat(3, 1fr);
-    max-width: 1500px;
+  .cardContent {
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
   }
   
   .cardTitle {
     font-size: 1.7rem;
+    margin-bottom: 24px;
   }
   
   .cardDescription {
     font-size: 1rem;
+    margin-bottom: 24px;
   }
   
   .tag {
     padding: 0.3rem 1rem;
     font-size: 0.85rem;
+    border-radius: 35px;
   }
   
   .viewButton,
   .detailsButton {
-    min-width: 130px;
-    font-size: 0.85rem;
-    padding: var(--spacing-sm) var(--spacing-lg);
+    height: var(--button-height-xl);
+    font-size: 0.8rem;
+    padding: 0 20px;
+    min-width: 140px;
+  }
+  
+  .detailsButton {
+    max-width: 200px;
+    font-size: 0.75rem;
+  }
+  
+  .buttonIcon {
+    font-size: 1rem;
   }
 }
 
-/* Telas grandes (Desktops) */
+/* Desktops (1201px-1920px) */
 @media (min-width: 1201px) and (max-width: 1920px) {
   .gridContainer {
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(340px, 2fr));
   }
   
   .gridCard {
-    min-height: 430px;
+    min-height: var(--card-min-height-desktop);
   }
 }
 
-/* Notebooks e tablets grandes */
+/* Notebooks e tablets grandes (1024px-1200px) */
 @media (min-width: 1024px) and (max-width: 1200px) {
   .gridContainer {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-lg);
-    padding: var(--spacing-md);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 2fr));
+    gap: var(--grid-gap-lg);
   }
   
   .gridCard {
-    min-height: 400px;
-  }
-  
-  /* Ajustar o layout para poucos itens em telas médias */
-  .gridContainer:has(:nth-child(1):nth-last-child(3)) {
-    grid-template-columns: repeat(3, 1fr);
-    max-width: 1050px;
-  }
-}
-
-/* Responsividade */
-@media (max-width: 1200px) {
-  .gridContainer {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  }
-}
-
-@media (max-width: 992px) {
-  .gridContainer {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--spacing-lg);
-  }
-  
-  .gridCard {
-    min-height: 400px;
-  }
-}
-
-/* iPads e tablets médios */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .gridContainer {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--spacing-lg);
-    padding: var(--spacing-md);
-  }
-  
-  .gridCard {
-    min-height: 380px;
+    min-height: var(--card-min-height-laptop);
   }
   
   .cardContent {
-    padding: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-md) var(--spacing-md);
   }
   
   .cardTitle {
-    font-size: 1.2rem;
-    margin-bottom: var(--spacing-sm);
+    font-size: 1.4rem;
   }
   
-  /* Layout para 3 itens em telas médias */
-  .gridContainer:has(:nth-child(1):nth-last-child(3)) {
-    grid-template-columns: repeat(3, 1fr);
-    max-width: 900px;
-  }
-  
-  /* Reduz a animação para melhor performance */
-  .gridCard:hover {
-    transform: translateY(-10px) scale(1.01);
-  }
-}
-
-@media (max-width: 768px) {
-  .gridContainer {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: var(--spacing-md);
-  }
-  
-  .gridCard {
-    min-height: 380px;
-  }
-  
-  .cardContent {
-    padding: var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
-  }
-  
-  /* Layout especial para 3 itens em telas menores */
-  .gridContainer:has(:nth-child(1):nth-last-child(3)) {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
-}
-
-/* Específico para iPad Pro (1024px) */
-@media screen and (min-width: 1020px) and (max-width: 1030px) {
-  /* Layout ajustado para iPad Pro */
-  .gridContainer {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important; /* Duas colunas para melhor visualização */
-    gap: var(--spacing-lg) !important;
-    max-width: 960px !important;
-    margin: 0 auto !important;
-    padding: var(--spacing-md) !important;
-  }
-  
-  /* Ajuste do tamanho dos cards */
-  .gridCard {
-    min-height: 400px !important;
-    width: 100% !important;
-    aspect-ratio: auto !important;
-  }
-  
-  /* Melhorar uso de espaço interno */
-  .cardContent {
-    padding: var(--spacing-md) !important;
-  }
-  
-  /* Garantir que os cards de 3 itens também se distribuam em 2 colunas */
-  .gridContainer:has(:nth-child(1):nth-last-child(3)) {
-    grid-template-columns: repeat(2, 1fr) !important;
-    max-width: 960px !important;
-  }
-  
-  /* Melhores proporções de imagem de fundo */
-  .gridCard::before {
-    background-size: cover !important;
-    background-position: center center !important;
-  }
-  
-  /* Ajuste responsivo para descrições */
-  .cardDescription {
-    -webkit-line-clamp: 3 !important;
-    line-clamp: 3 !important;
-  }
-}
-
-/* Classes para aplicação dinâmica via JavaScript */
-.iPadPro1024Grid {
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: var(--spacing-lg) !important;
-  max-width: 960px !important;
-  margin: 0 auto !important;
-  padding: var(--spacing-md) 32px !important;
-}
-
-.iPadPro1024Card {
-  min-height: 400px !important;
-  width: 100% !important;
-}
-
-/* Surface Pro 7 (912px) - Específico para este dispositivo */
-@media screen and (min-width: 900px) and (max-width: 920px) {
-  /* Layout ajustado para Surface Pro 7 */
-  .gridContainer {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 24px !important;
-    max-width: 860px !important;
-    margin: 0 auto !important;
-    padding: var(--spacing-md) !important;
-  }
-  
-  /* Ajuste do tamanho dos cards */
-  .gridCard {
-    aspect-ratio: auto !important; /* Permite flexibilidade na altura */
-    min-height: 380px !important;
-    width: 100% !important;
-  }
-  
-  /* Melhora a proporção das imagens de fundo */
-  .gridCard::before {
-    background-size: cover !important;
-    background-position: center center !important;
-  }
-  
-  /* Ajuste do conteúdo */
-  .cardContent {
-    padding: var(--spacing-md) !important;
-  }
-  
-  .cardTitle {
-    font-size: 1.3rem !important;
-    margin-bottom: var(--spacing-sm) !important;
-  }
-  
-  .cardDescription {
-    max-width: 100% !important;
-    -webkit-line-clamp: 3 !important; /* Permite uma linha extra de descrição */
-  }
-  
-  /* Ajuste dos botões */
   .viewButton,
   .detailsButton {
-    padding: 6px 16px !important;
-    min-width: 90px !important;
-    font-size: 0.7rem !important;
+    min-width: 100px;
+    font-size: 0.7rem;
+    height: var(--button-height-desktop);
+    padding: 0 12px;
   }
   
-  /* Ajuste das tags */
-  .tag {
-    font-size: 0.7rem !important;
-    padding: 0.15rem 0.7rem !important;
-  }
-  
-  /* Caso específico para 3 itens */
-  .gridContainer:has(:nth-child(1):nth-last-child(3)) {
-    grid-template-columns: repeat(2, 1fr) !important;
+  .detailsButton {
+    max-width: 160px;
+    font-size: 0.66rem;
   }
 }
 
-/* Tablets menores e celulares grandes */
+/* iPad Pro (1020px-1030px) - Otimização específica */
+@media screen and (min-width: 1020px) and (max-width: 1030px) {
+  .gridContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--grid-gap-lg);
+    max-width: var(--grid-max-width-md);
+    padding: var(--spacing-md);
+  }
+  
+  .gridCard {
+    min-height: var(--card-min-height-laptop);
+    aspect-ratio: var(--card-aspect-ratio-desktop);
+  }
+  
+  .cardContent {
+    padding: var(--spacing-md);
+  }
+  
+  .cardTitle {
+    font-size: 1.3rem;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .cardDescription {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .cardActions {
+    gap: 12px;
+  }
+  
+  .viewButton {
+    flex: 0.9;
+    min-width: 100px;
+    max-width: 140px;
+    font-size: 0.7rem;
+    padding: 0 10px;
+    height: var(--button-height-tablet);
+  }
+  
+  .detailsButton {
+    flex: 1.1;
+    min-width: 100px;
+    max-width: 160px;
+    font-size: 0.66rem;
+    padding: 0 10px;
+    height: var(--button-height-tablet);
+  }
+}
+
+/* ========== MUDANÇA PARA LAYOUT DE UMA COLUNA A PARTIR DE 889px ========== */
+@media (max-width: 889px) {
+  .gridContainer {
+    grid-template-columns: 1fr !important; /* Força uma coluna única em todos os dispositivos abaixo de 889px */
+    max-width: 550px !important; /* Largura limitada para melhor leitura */
+    padding: 20px;
+    gap: 32px; /* Espaçamento maior entre cards */
+    margin: 0 auto;
+  }
+  
+  .gridCard {
+    min-height: var(--card-min-height-tablet);
+    aspect-ratio: var(--card-aspect-ratio-tablet);
+    transform-style: flat; /* Eliminar efeitos 3D que podem causar problemas */
+  }
+  
+  /* Garantir que os botões sejam sempre visíveis */
+  .cardActions {
+    opacity: 1;
+    transform: translateY(0);
+    transition: none;
+    gap: 12px;
+    justify-content: space-between;
+  }
+  
+  .viewButton {
+    flex: 0.9;
+    min-width: 0;
+    max-width: none;
+    font-size: 0.7rem;
+    height: 36px;
+    text-transform: none;
+    border-radius: 20px;
+    padding: 0 14px;
+  }
+  
+  .detailsButton {
+    flex: 1.1;
+    min-width: 0;
+    max-width: none;
+    font-size: 0.68rem;
+    height: 36px;
+    text-transform: none;
+    border-radius: 20px;
+    padding: 0 12px;
+  }
+  
+  /* Melhorar a legibilidade em telas pequenas */
+  .cardContent {
+    transform: none !important;
+    padding: 18px 16px;
+  }
+  
+  .gridCard:hover .cardContent {
+    transform: none !important;
+  }
+  
+  .cardTitle {
+    font-size: 1.35rem;
+    margin-bottom: 15px;
+  }
+  
+  .cardDescription {
+    font-size: 0.9rem;
+    max-width: 100%;
+    -webkit-line-clamp: 3; /* Mostrar mais texto da descrição em mobile */
+    line-clamp: 3;
+    margin-bottom: 16px;
+  }
+  
+  /* Simplificar os efeitos hover para melhor performance */
+  .gridCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px -10px rgba(var(--color-primary-rgb), 0.25);
+  }
+  
+  .gridCard:hover .cardTitle,
+  .gridCard:hover .cardDescription,
+  .gridCard:hover .tag {
+    transform: none;
+  }
+  
+  /* Fix para botões em todos os dispositivos */
+  .viewButton span,
+  .detailsButton span {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 20px);
+  }
+  
+  /* Fix específico para o botão com texto longo */
+  .detailsButton span {
+    font-size: 0.66rem;
+  }
+}
+
+/* iPads e tablets médios (768px-889px) */
+@media (min-width: 768px) and (max-width: 889px) {
+  .gridContainer {
+    max-width: 520px;
+  }
+  
+  .gridCard {
+    min-height: 380px;
+  }
+  
+  .cardContent {
+    padding: var(--spacing-md);
+  }
+  
+  .cardTitle {
+    font-size: 1.4rem;
+  }
+  
+  .cardDescription {
+    font-size: 0.88rem;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
+
+/* Tablets pequenos (577px-767px) */
 @media (min-width: 577px) and (max-width: 767px) {
   .gridContainer {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: var(--spacing-md);
-    padding: var(--spacing-sm);
+    max-width: 500px;
+    padding: 16px;
+    gap: 28px;
   }
   
   .gridCard {
     min-height: 360px;
+    border-radius: var(--card-radius-md);
   }
   
   .cardContent {
-    padding: var(--spacing-sm);
+    padding: 16px;
   }
   
   .cardTitle {
-    font-size: 1.1rem;
-    margin-bottom: var(--spacing-sm);
+    font-size: 1.3rem;
   }
   
   .cardDescription {
     font-size: 0.85rem;
-    -webkit-line-clamp: 2;
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  .cardTags {
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  .tag {
-    padding: 0.15rem 0.6rem;
-    font-size: 0.7rem;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
   
   .viewButton,
   .detailsButton {
-    padding: 6px 14px;
-    min-width: 85px;
-    font-size: 0.7rem;
+    height: 34px;
   }
 }
 
+/* iPhone e smartphones (até 576px) */
 @media (max-width: 576px) {
   .gridContainer {
-    grid-template-columns: 1fr;
-    max-width: 400px;
-    margin: 0 auto;
-  }
-  
-  .cardContent {
-    padding: var(--spacing-md) var(--spacing-sm) var(--spacing-sm);
-  }
-}
-
-/* Celulares */
-@media (max-width: 576px) {
-  .gridContainer {
-    grid-template-columns: 1fr;
-    max-width: 400px;
-    margin: 0 auto;
-    padding: var(--spacing-sm);
-    gap: var(--spacing-lg);
+    max-width: 95%; /* Usa mais espaço disponível em telas pequenas */
+    padding: 16px 12px;
+    gap: 24px;
   }
   
   .gridCard {
-    min-height: 340px;
+    min-height: var(--card-min-height-mobile);
+    aspect-ratio: var(--card-aspect-ratio-mobile);
+    border-radius: var(--card-radius-md);
+  }
+  
+  .cardContent {
+    padding: 16px 14px;
   }
   
   .cardTitle {
     font-size: 1.25rem;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 12px;
+  }
+  
+  .cardDescription {
+    font-size: 0.85rem;
+    margin-bottom: 14px;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  
+  /* Tags com rolagem horizontal em mobile */
+  .cardTags {
+    margin-bottom: 14px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    max-width: 100%;
+  }
+  
+  .cardTags::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .tag {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    margin-right: 4px;
   }
   
   .cardActions {
-    gap: var(--spacing-sm);
-  }
-  
-  /* Simplificação para melhor usabilidade em telas pequenas */
-  .gridCard:hover {
-    transform: translateY(-8px);
-  }
-  
-  .gridCard:hover .cardContent {
-    transform: translateY(-3px) translateZ(30px);
+    gap: 10px;
   }
   
   .viewButton,
   .detailsButton {
-    min-width: 90px;
-    font-size: 0.7rem;
-    padding: 8px 16px;
+    height: 34px;
+    padding: 0 10px;
   }
   
-  .viewButton:hover,
-  .detailsButton:hover {
-    transform: translateY(-3px) scale(1.02);
+  .buttonIcon {
+    font-size: 0.85rem;
   }
 }
 
-/* Celulares pequenos */
+/* iPhone pequeno (até 375px) */
 @media (max-width: 375px) {
   .gridContainer {
-    max-width: 320px;
-    padding: var(--spacing-xs);
-    gap: var(--spacing-md);
+    gap: 20px;
+    padding: 12px 8px;
   }
   
   .gridCard {
-    min-height: 320px;
-    border-radius: var(--border-radius-md);
+    min-height: var(--card-min-height-small);
+    border-radius: 12px;
   }
   
   .cardContent {
-    padding: var(--spacing-sm);
+    padding: 14px 12px;
   }
   
   .cardTitle {
-    font-size: 1.15rem;
-    margin-bottom: var(--spacing-xs);
+    font-size: 1.2rem;
+    margin-bottom: 10px;
   }
   
   .cardDescription {
     font-size: 0.8rem;
-    -webkit-line-clamp: 2;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 12px;
+  }
+  
+  .cardTags {
+    margin-bottom: 12px;
   }
   
   .tag {
-    padding: 0.1rem 0.5rem;
     font-size: 0.65rem;
-  }
-  
-  .viewButton,
-  .detailsButton {
-    min-width: 75px;
-    padding: 6px 12px;
-    font-size: 0.65rem;
+    padding: 3px 8px;
   }
   
   .cardActions {
-    flex-direction: column;
-    gap: var(--spacing-xs);
-    width: 100%;
+    gap: 8px;
   }
   
   .viewButton,
   .detailsButton {
-    width: 100%;
+    height: 32px;
+    font-size: 0.65rem;
+    padding: 0 8px;
+  }
+  
+  .detailsButton span {
+    font-size: 0.62rem;
   }
   
   .buttonIcon {
-    font-size: 0.65rem;
+    font-size: 0.8rem;
   }
 }
 
-/* iPhone SE e dispositivos muito pequenos */
+/* iPhone SE e dispositivos muito pequenos (até 320px) */
 @media (max-width: 320px) {
   .gridContainer {
-    padding: var(--spacing-xs) 8px;
+    gap: 16px;
+    padding: 10px 6px;
   }
   
   .gridCard {
-    min-height: 280px;
+    min-height: var(--card-min-height-tiny);
+    border-radius: 10px;
+  }
+  
+  .cardContent {
+    padding: 12px 10px;
   }
   
   .cardTitle {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
   }
   
   .cardDescription {
     font-size: 0.75rem;
+    margin-bottom: 10px;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
   
   .cardTags {
-    gap: 4px;
+    margin-bottom: 10px;
   }
   
   .tag {
-    padding: 0.1rem 0.4rem;
     font-size: 0.6rem;
+    padding: 2px 6px;
+  }
+  
+  .viewButton,
+  .detailsButton {
+    height: 30px;
+    font-size: 0.6rem;
+    padding: 0 6px;
+  }
+  
+  /* Fix específico para o botão Förhandsgranska em telas muito pequenas */
+  .detailsButton {
+    font-size: 0.58rem;
+  }
+  
+  /* Remover ícone em telas muito estreitas */
+  @media (max-width: 300px) {
+    .buttonIcon {
+      display: none;
+    }
+    
+    .viewButton span,
+    .detailsButton span {
+      max-width: 100%;
+    }
   }
 }
 
-/* Classes para aplicação dinâmica via JavaScript */
-.surfacePro912Grid {
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: 24px !important;
-  max-width: 860px !important;
-  margin: 0 auto !important;
-  padding: var(--spacing-md) !important;
-}
-
-.surfacePro912Card {
-  min-height: 380px !important;
-  width: 100% !important;
-}
-
-/* Otimizações para orientação paisagem em dispositivos móveis */
-@media (max-height: 500px) and (orientation: landscape) {
+/* ========== ORIENTAÇÃO PAISAGEM OTIMIZADA ========== */
+@media (max-width: 889px) and (max-height: 500px) and (orientation: landscape) {
+  .gridContainer {
+    grid-template-columns: 1fr !important; /* Manter layout de uma coluna mesmo em paisagem */
+    max-width: 95% !important;
+    padding: 12px 20px;
+  }
+  
   .gridCard {
-    min-height: 280px !important;
-    aspect-ratio: 16/9 !important;
+    min-height: 200px !important;
+    aspect-ratio: 2/1 !important; /* Proporção mais horizontal para paisagem */
+    border-radius: 10px;
   }
   
   .cardContent {
-    padding: var(--spacing-xs) var(--spacing-sm) !important;
+    padding: 12px 16px !important;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
   }
   
   .cardTitle {
-    margin-bottom: 8px !important;
+    font-size: 1.15rem;
+    margin-bottom: 0;
+    width: 50%;
   }
   
+  /* Descrição ocupa toda a largura */
   .cardDescription {
-    margin-bottom: 8px !important;
-    -webkit-line-clamp: 1 !important;
+    order: 3;
+    font-size: 0.8rem;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    width: 100%;
+    margin: 10px 0;
   }
   
   .cardTags {
-    margin-bottom: 8px !important;
+    width: 100%;
+    order: 4;
+    margin-bottom: 10px;
+    overflow-x: auto;
+  }
+  
+  /* Botões agrupados à direita */
+  .cardActions {
+    order: 2;
+    width: 48%;
+    margin: 0;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  
+  .viewButton,
+  .detailsButton {
+    height: 32px;
+    padding: 0 10px;
+    font-size: 0.65rem;
+  }
+  
+  .detailsButton {
+    font-size: 0.6rem;
+  }
+  
+  .buttonIcon {
+    font-size: 0.7rem;
+  }
+  
+  /* Telas muito baixas em paisagem */
+  @media (max-height: 350px) {
+    .gridCard {
+      min-height: 180px !important;
+    }
+    
+    .cardDescription {
+      display: none;
+    }
+    
+    .cardTags {
+      margin: 0;
+    }
   }
 }
 
-/* Acessibilidade e preferência de movimento reduzido */
-.gridCard:focus {
-  outline: 2px solid rgba(var(--color-primary-rgb), 0.6);
-  outline-offset: 4px;
-}
-
+/* ========== ACESSIBILIDADE E PREFERÊNCIAS ========== */
 @media (prefers-reduced-motion: reduce) {
+  .gridContainer,
   .gridCard,
   .gridCard.inView,
   .gridCard:hover,
   .cardActions,
-  .gridCard:hover .cardTitle,
   .cardTitle::after,
   .viewButton::before,
   .detailsButton::before,
@@ -1240,37 +1217,60 @@ html[data-theme="light"] .noResults p {
   .detailsButton:hover .buttonIcon,
   .gridCard::before,
   .gridCard::after,
-  .gridCard:hover::before {
+  .gridCard:hover::before,
+  .noResults {
     transition: none !important;
     animation: none !important;
     transform: none !important;
   }
   
-  .placeholderPulse {
-    animation: none !important;
-  }
-  
-  .noResults {
-    animation: none !important;
-    opacity: 1;
-    transform: none;
-  }
-  
-  .gridCard.inView {
-    opacity: 1;
-  }
-  
+  .gridCard.inView,
   .cardActions {
     opacity: 1;
   }
 }
 
-/* Suporte para dispositivos dobráveis */
-@supports (display: flex) and (overflow: clip) {
-  @media (min-width: 600px) and (max-width: 700px) {
-    .gridContainer {
-      grid-template-columns: repeat(2, 1fr);
-      max-width: 650px;
-    }
+/* ========== CLASSES PARA JS ========== */
+/* Classes para aplicação dinâmica via JavaScript */
+.iPadPro1024Grid {
+  grid-template-columns: 1fr !important;
+  max-width: 550px !important;
+  margin: 0 auto !important;
+  padding: var(--spacing-md) 32px !important;
+}
+
+.surfacePro912Grid {
+  grid-template-columns: 1fr !important;
+  max-width: 520px !important;
+  margin: 0 auto !important;
+  padding: var(--spacing-md) !important;
+}
+
+/* Classes específicas para device detection */
+.mobileOptimized {
+  aspect-ratio: var(--card-aspect-ratio-mobile) !important;
+  transform-style: flat !important;
+}
+
+.touchScreenOptimized .gridCard .cardActions {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: none !important;
+}
+
+/* Fix para iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .cardActions {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    transition: none !important;
+  }
+  
+  .gridCard {
+    transform-style: flat !important;
+  }
+  
+  .gridCard:hover {
+    transform: translateY(-5px) !important;
   }
 }

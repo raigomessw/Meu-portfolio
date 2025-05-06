@@ -7,8 +7,8 @@
   --navbar-mobile-height-scrolled: 60px;
   
   /* Cores para tema escuro (padrão) */
-  --navbar-background: rgba(15, 15, 30, 0.204);
-  --navbar-background-scrolled: rgba(10, 10, 20, 0.741);
+  --navbar-background: rgba(15, 15, 30, 0.572);
+  --navbar-background-scrolled: rgba(10, 10, 20, 0.883);
   --navbar-border: rgba(255, 255, 255, 0.08);
   --text-color: #ffffff;
   --text-color-muted: rgba(255, 255, 255, 0.8);
@@ -26,11 +26,11 @@
 
 /* Variáveis para tema claro */
 html[data-theme="light"] {
-  --navbar-background: rgba(255, 255, 255, 0.204);
-  --navbar-background-scrolled: rgba(255, 255, 255, 0.741);
+  --navbar-background: rgba(255, 255, 255, 0.572);
+  --navbar-background-scrolled: rgba(255, 255, 255, 0.883);
   --navbar-border: rgba(0, 0, 0, 0.05);
-  --text-color: #1f1f3d;
-  --text-color-muted: rgba(31, 31, 61, 0.7);
+  --text-color: #0f0f29;
+  --text-color-muted: rgba(12, 12, 20, 0.7);
   --hover-bg: rgba(0, 0, 0, 0.03);
   --active-bg: rgba(0, 0, 0, 0.05);
   --shadow-color: rgba(0, 0, 0, 0.06);
