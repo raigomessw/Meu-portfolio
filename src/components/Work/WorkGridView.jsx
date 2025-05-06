@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './WorkGridView.module.css';
-import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useReducedMotion } from '../../hooks/useReducedMotion'; // Note a extensão .JS
 import { FiExternalLink, FiArrowRight } from 'react-icons/fi';
 
 const WorkGridView = ({ projects, onQuickView }) => {
