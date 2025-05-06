@@ -1,16 +1,25 @@
+/* ========== LAYOUT PRINCIPAL ========== */
 .footer {
-  --footer-animation-timing: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
   width: 100%;
-  padding: 80px 0 40px;
-  background-color: rgba(10, 10, 15, 0.95);
-  color: var(--text-light-tertiary);
+  padding: var(--spacing-xxl) 0 var(--spacing-lg);
+  background-color: var(--dark-color-bg-0);
+  color: var(--dark-color-text-3);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-lg-top-dark);
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/* Efeitos de fundo aprimorados */
+html[data-theme="light"] .footer {
+  background-color: var(--light-color-bg-0);
+  color: var(--light-color-text-3);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-lg-top);
+}
+
+/* ========== EFEITOS DE FUNDO ========== */
+/* Gradientes de fundo */
 .footer::before {
   content: '';
   position: absolute;
@@ -19,13 +28,84 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 15% 15%, rgba(0, 198, 255, 0.04) 0%, transparent 50%),
-    radial-gradient(circle at 85% 85%, rgba(131, 56, 236, 0.03) 0%, transparent 70%);
+    radial-gradient(circle at 15% 15%, rgba(var(--color-tertiary-rgb), 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(var(--color-primary-rgb), 0.03) 0%, transparent 70%);
   z-index: 0;
   opacity: 0.8;
   animation: backgroundPulse 15s infinite alternate ease-in-out;
+  will-change: opacity, background-position;
 }
 
+html[data-theme="light"] .footer::before {
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(var(--color-tertiary-rgb), 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(var(--color-primary-rgb), 0.02) 0%, transparent 70%);
+  opacity: 0.6;
+}
+
+/* ========== BOTÃO VOLTAR AO TOPO ========== */
+.scrollTopButton {
+  position: fixed;
+  bottom: var(--spacing-md);
+  right: var(--spacing-md);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  transition: all 0.3s var(--hero-animation-curve);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+html[data-theme="light"] .scrollTopButton {
+  box-shadow: var(--shadow-md);
+}
+
+.scrollTopButton::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 80%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.scrollTopButton.visible {
+  opacity: 0.9;
+  transform: translateY(0) scale(1);
+}
+
+.scrollTopButton:hover {
+  opacity: 1;
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: var(--shadow-lg);
+  background: var(--color-primary-light);
+}
+
+html[data-theme="light"] .scrollTopButton:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.scrollTopButton:hover::before {
+  opacity: 1;
+}
+
+.scrollTopButton:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+/* ========== ANIMAÇÕES ========== */
 @keyframes backgroundPulse {
   0% {
     opacity: 0.7;
@@ -37,37 +117,38 @@
   }
 }
 
-/* Conteúdo principal */
+/* ========== LAYOUT DO CONTEÚDO ========== */
 .content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 30px;
+  padding: 0 var(--spacing-md);
   position: relative;
   z-index: 1;
 }
 
-/* Seção superior do footer */
+/* ========== SEÇÃO SUPERIOR DO FOOTER ========== */
 .footerTop {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-bottom: 50px;
-  gap: 40px;
+  margin-bottom: var(--spacing-xl);
+  gap: var(--spacing-lg);
 }
 
-/* Seção do logotipo */
+/* ========== SEÇÃO DO LOGOTIPO ========== */
 .logoSection {
   flex: 1;
   min-width: 240px;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-md);
   animation: fadeIn 0.5s ease-out forwards;
 }
 
 .name {
-  font-size: 1.8rem;
-  font-weight: 800;
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, var(--accent-light-quinary), var(--accent-light-senary));
+  font-size: var(--heading-h4);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -84,9 +165,9 @@
   height: 4px;
   bottom: -6px;
   left: 0;
-  background: linear-gradient(90deg, var(--accent-light-quinary), transparent);
+  background: linear-gradient(90deg, var(--color-primary), transparent);
   border-radius: 2px;
-  transition: width var(--footer-animation-timing);
+  transition: width 0.4s var(--hero-animation-curve);
 }
 
 .logoSection:hover .name::after {
@@ -94,32 +175,55 @@
 }
 
 .title {
-  font-size: 1rem;
-  color: var(--text-light-quaternary);
-  font-weight: 300;
+  font-size: var(--body-m);
+  color: var(--dark-color-text-2);
+  font-weight: var(--font-medium);
   letter-spacing: 0.03em;
   max-width: 300px;
   line-height: 1.5;
-  margin-top: 12px;
+  margin-top: var(--spacing-sm);
 }
 
-/* Seção de navegação */
+html[data-theme="light"] .title {
+  color: var(--light-color-text-2);
+}
+
+.subtitle {
+  font-size: var(--caption);
+  color: var(--dark-color-text-3);
+  font-weight: var(--font-light);
+  letter-spacing: 0.03em;
+  max-width: 300px;
+  line-height: 1.5;
+  margin-top: var(--spacing-xs);
+  opacity: 0.8;
+}
+
+html[data-theme="light"] .subtitle {
+  color: var(--light-color-text-3);
+}
+
+/* ========== SEÇÃO DE NAVEGAÇÃO ========== */
 .navigationSection {
   flex: 1;
   min-width: 200px;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-md);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
 .navigationTitle {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 16px;
-  color: var(--text-light-secondary);
+  font-size: var(--subtitle-l);
+  font-weight: var(--font-semi-bold);
+  margin-bottom: var(--spacing-sm);
+  color: var(--dark-color-text-1);
   position: relative;
   padding-left: 14px;
+}
+
+html[data-theme="light"] .navigationTitle {
+  color: var(--light-color-text-1);
 }
 
 .navigationTitle::before {
@@ -131,26 +235,30 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: var(--accent-light-quinary);
-  box-shadow: 0 0 10px var(--accent-light-quinary);
+  background-color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.5);
 }
 
 .footerNav {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--spacing-xs);
   margin-left: 14px;
 }
 
 .footerLink {
-  color: var(--text-light-tertiary);
+  color: var(--dark-color-text-3);
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: all 0.3s var(--hero-animation-curve);
   position: relative;
   display: inline-block;
   padding: 3px 0;
-  font-size: 0.95rem;
+  font-size: var(--body-s);
   transform-origin: left;
+}
+
+html[data-theme="light"] .footerLink {
+  color: var(--light-color-text-3);
 }
 
 .footerLink::before {
@@ -159,8 +267,8 @@
   left: -14px;
   opacity: 0;
   transform: translateX(-8px);
-  transition: all var(--footer-animation-timing);
-  color: var(--accent-light-quinary);
+  transition: all 0.3s var(--hero-animation-curve);
+  color: var(--color-primary);
 }
 
 .footerLink::after {
@@ -170,13 +278,17 @@
   height: 1px;
   bottom: 0;
   left: 0;
-  background: linear-gradient(to right, var(--accent-light-quinary), transparent);
-  transition: width var(--footer-animation-timing);
+  background: linear-gradient(to right, var(--color-primary), transparent);
+  transition: width 0.3s var(--hero-animation-curve);
 }
 
 .footerLink:hover {
-  color: var(--text-light-primary);
+  color: var(--dark-color-text-1);
   transform: translateX(8px);
+}
+
+html[data-theme="light"] .footerLink:hover {
+  color: var(--light-color-text-1);
 }
 
 .footerLink:hover::before {
@@ -189,27 +301,31 @@
 }
 
 .footerLink:focus-visible {
-  outline: 2px solid var(--accent-light-quinary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 4px;
   border-radius: 2px;
 }
 
-/* Seção social */
+/* ========== SEÇÃO SOCIAL ========== */
 .socialSection {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-xs);
   flex-wrap: wrap;
 }
 
 .socialContainer {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-md);
 }
 
 .socialTitle {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 16px;
-  color: var(--text-light-secondary);
+  font-size: var(--subtitle-l);
+  font-weight: var(--font-semi-bold);
+  margin-bottom: var(--spacing-sm);
+  color: var(--dark-color-text-1);
+}
+
+html[data-theme="light"] .socialTitle {
+  color: var(--light-color-text-1);
 }
 
 .socialIcon {
@@ -220,12 +336,18 @@
   height: 40px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.05);
-  color: var(--text-light-quaternary);
-  transition: all var(--footer-animation-timing);
+  color: var(--dark-color-text-2);
+  transition: all 0.3s var(--hero-animation-curve);
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme="light"] .socialIcon {
+  background: rgba(0, 0, 0, 0.03);
+  color: var(--light-color-text-2);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .socialIcon svg {
@@ -240,17 +362,21 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, var(--accent-light-quinary), var(--accent-light-senary));
+  background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
   opacity: 0;
-  transition: opacity var(--footer-animation-timing);
+  transition: opacity 0.3s var(--hero-animation-curve);
   z-index: 1;
 }
 
 .socialIcon:hover {
   color: #fff;
   transform: translateY(-5px) rotate(5deg);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-theme="light"] .socialIcon:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .socialIcon:hover svg {
@@ -262,11 +388,11 @@
 }
 
 .socialIcon:focus-visible {
-  outline: 2px solid var(--accent-light-quinary);
+  outline: 2px solid var(--color-primary);
   outline-offset: 4px;
 }
 
-/* Divider */
+/* ========== DIVIDER ========== */
 .divider {
   height: 1px;
   background: linear-gradient(
@@ -275,9 +401,18 @@
     rgba(255, 255, 255, 0.1),
     transparent
   );
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-md);
   position: relative;
   overflow: hidden;
+}
+
+html[data-theme="light"] .divider {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 0, 0, 0.07),
+    transparent
+  );
 }
 
 .divider::after {
@@ -294,6 +429,16 @@
     transparent
   );
   animation: shimmer 4s infinite;
+  will-change: left;
+}
+
+html[data-theme="light"] .divider::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 0, 0, 0.1),
+    transparent
+  );
 }
 
 @keyframes shimmer {
@@ -302,20 +447,24 @@
   }
 }
 
-/* Seção inferior do footer */
+/* ========== SEÇÃO INFERIOR DO FOOTER ========== */
 .footerBottom {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.9rem;
-  color: var(--text-light-quaternary);
+  font-size: var(--caption);
+  color: var(--dark-color-text-3);
   position: relative;
   padding-top: 5px;
 }
 
+html[data-theme="light"] .footerBottom {
+  color: var(--light-color-text-3);
+}
+
 .copyright, .made {
-  margin-bottom: 10px;
+  margin-bottom: var(--spacing-xs);
   transition: color 0.3s ease;
   position: relative;
   z-index: 1;
@@ -323,7 +472,12 @@
 
 .footerBottom:hover .copyright,
 .footerBottom:hover .made {
-  color: var(--text-light-tertiary);
+  color: var(--dark-color-text-2);
+}
+
+html[data-theme="light"] .footerBottom:hover .copyright,
+html[data-theme="light"] .footerBottom:hover .made {
+  color: var(--light-color-text-2);
 }
 
 .heartIcon {
@@ -346,7 +500,7 @@
   }
 }
 
-/* Animações de entrada */
+/* ========== ANIMAÇÕES ========== */
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -358,21 +512,32 @@
   }
 }
 
-/* Media queries aprimorados */
+/* ========== RESPONSIVIDADE ========== */
 @media (max-width: 992px) {
   .footerTop {
-    gap: 50px;
+    gap: var(--spacing-xl);
   }
   
   .logoSection, .navigationSection {
     flex-basis: 45%;
   }
+  
+  .scrollTopButton {
+    bottom: var(--spacing-sm);
+    right: var(--spacing-sm);
+    width: 44px;
+    height: 44px;
+  }
 }
 
 @media (max-width: 768px) {
+  .footer {
+    padding-top: var(--spacing-xl);
+  }
+  
   .footerTop {
     flex-direction: column;
-    gap: 40px;
+    gap: var(--spacing-lg);
   }
   
   .navigationSection {
@@ -381,58 +546,112 @@
   
   .socialSection {
     justify-content: flex-start;
-    margin-top: 10px;
+    margin-top: var(--spacing-xs);
   }
   
   .footerBottom {
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    gap: var(--spacing-sm);
   }
   
   .name {
-    font-size: 1.6rem;
+    font-size: var(--heading-h5);
+  }
+  
+  .scrollTopButton {
+    bottom: var(--spacing-sm);
+    right: var(--spacing-sm);
+    width: 42px;
+    height: 42px;
   }
 }
 
 @media (max-width: 480px) {
   .footer {
-    padding: 60px 0 30px;
+    padding: var(--spacing-xl) 0 var(--spacing-md);
   }
   
   .content {
-    padding: 0 20px;
+    padding: 0 var(--spacing-sm);
   }
   
   .footerNav {
-    gap: 12px;
+    gap: var(--spacing-xs);
   }
   
   .socialIcon {
     width: 38px;
     height: 38px;
   }
+  
+  .scrollTopButton {
+    bottom: var(--spacing-xs);
+    right: var(--spacing-xs);
+    width: 40px;
+    height: 40px;
+  }
 }
 
-/* Acessibilidade - Modo de alto contraste */
+/* ========== ACESSIBILIDADE ========== */
+/* Modo de alto contraste */
 @media (prefers-contrast: more) {
   .footer {
-    background-color: #000;
+    background-color: black;
     border-top: 1px solid #666;
   }
   
+  html[data-theme="light"] .footer {
+    background-color: white;
+    border-top: 1px solid #444;
+  }
+  
   .footerLink, .socialIcon {
-    color: #fff;
+    color: white;
+  }
+  
+  html[data-theme="light"] .footerLink, 
+  html[data-theme="light"] .socialIcon {
+    color: black;
   }
   
   .divider {
     background: #666;
   }
+  
+  html[data-theme="light"] .divider {
+    background: #444;
+  }
+  
+  .scrollTopButton {
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+  }
+  
+  html[data-theme="light"] .scrollTopButton {
+    background-color: black;
+    color: white;
+    border: 2px solid white;
+  }
 }
 
-/* Dark mode refinado */
-@media (prefers-color-scheme: dark) {
-  .footer::before {
-    opacity: 0.5;
+/* Modo de movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  .footer::before,
+  .divider::after,
+  .scrollTopButton,
+  .footerLink,
+  .socialIcon,
+  .name::after,
+  .heartIcon {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .scrollTopButton:hover,
+  .footerLink:hover,
+  .socialIcon:hover svg {
+    transform: none;
   }
 }

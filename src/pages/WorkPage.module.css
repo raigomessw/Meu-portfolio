@@ -2,11 +2,17 @@
 .workContainer {
   position: relative;
   min-height: 100vh;
-  padding: 6rem 0 4rem;
+  padding: calc(var(--spacing-xxl) + var(--navbar-height, 80px)) 0 var(--spacing-xl);
   overflow: hidden;
-  color: var(--color-text-1);
-  background-color: #050b1f;
+  color: var(--dark-color-text-1);
+  background-color: var(--dark-color-bg-0);
   will-change: transform;
+  transition: background-color 0.6s ease, color 0.6s ease;
+}
+
+html[data-theme="light"] .workContainer {
+  color: var(--light-color-text-1);
+  background-color: var(--light-color-bg-0);
 }
 
 .content {
@@ -14,12 +20,12 @@
   z-index: 1;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1.5rem;
-  transition: var(--transition-slow);
+  padding: 0 var(--spacing-md);
+  transition: all 0.6s ease;
   contain: paint layout;
 }
 
-/* ========== NOVO BACKGROUND DE ALTA QUALIDADE ========== */
+/* ========== BACKGROUND DE ALTA QUALIDADE ========== */
 /* Camada de fundo principal - Gradiente moderno */
 .pageBackground {
   position: fixed;
@@ -27,11 +33,20 @@
   z-index: -3;
   background: radial-gradient(
     ellipse at top left,
-    rgba(16, 16, 50, 1) 0%,
-    rgba(9, 9, 30, 1) 50%,
+    rgba(var(--dark-color-bg-0-rgb), 1) 0%,
+    rgba(15, 15, 45, 1) 50%,
     rgba(5, 5, 15, 1) 100%
   );
   transform: translateZ(0);
+}
+
+html[data-theme="light"] .pageBackground {
+  background: radial-gradient(
+    ellipse at top left,
+    rgba(var(--light-color-bg-0-rgb), 1) 0%,
+    rgba(240, 242, 255, 1) 50%,
+    rgba(230, 232, 250, 1) 100%
+  );
 }
 
 /* Malha geométrica com linhas conectadas */
@@ -41,8 +56,8 @@
   width: 200%;
   height: 200%;
   background-image: 
-    linear-gradient(rgba(102, 45, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(102, 45, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(var(--color-primary-rgb), 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--color-primary-rgb), 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
   transform: perspective(1000px) rotateX(60deg) scale(2.5);
   transform-origin: center;
@@ -50,6 +65,13 @@
   z-index: -2;
   animation: meshMove 30s linear infinite;
   will-change: transform;
+}
+
+html[data-theme="light"] .meshGrid {
+  background-image: 
+    linear-gradient(rgba(var(--color-primary-rgb), 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--color-primary-rgb), 0.02) 1px, transparent 1px);
+  opacity: 0.7;
 }
 
 /* Pontos de conexão luminosos */
@@ -65,8 +87,13 @@
   position: absolute;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.03);
-  box-shadow: 0 0 15px rgba(138, 43, 226, 0.2);
+  box-shadow: 0 0 15px rgba(var(--color-primary-rgb), 0.2);
   will-change: transform;
+}
+
+html[data-theme="light"] .node {
+  background: rgba(var(--color-primary-rgb), 0.05);
+  box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.1);
 }
 
 /* Posicionamento dos nós */
@@ -75,7 +102,7 @@
   height: 4px;
   top: 25%;
   left: 20%;
-  background: rgba(138, 43, 226, 0.3);
+  background: rgba(var(--color-primary-rgb), 0.3);
   animation: pulse 4s infinite alternate;
 }
 
@@ -84,7 +111,7 @@
   height: 6px;
   top: 35%;
   left: 70%;
-  background: rgba(123, 104, 238, 0.3);
+  background: rgba(var(--color-secondary-rgb), 0.3);
   animation: pulse 6s infinite alternate-reverse;
 }
 
@@ -93,7 +120,7 @@
   height: 5px;
   top: 65%;
   left: 30%;
-  background: rgba(147, 112, 219, 0.3);
+  background: rgba(var(--color-tertiary-rgb), 0.3);
   animation: pulse 5s infinite alternate;
 }
 
@@ -102,7 +129,7 @@
   height: 7px;
   top: 15%;
   left: 80%;
-  background: rgba(186, 85, 211, 0.3);
+  background: rgba(var(--color-accent-rgb), 0.3);
   animation: pulse 7s infinite alternate-reverse;
 }
 
@@ -111,7 +138,7 @@
   height: 3px;
   top: 80%;
   left: 75%;
-  background: rgba(153, 50, 204, 0.3);
+  background: rgba(var(--color-accent-alt-rgb), 0.3);
   animation: pulse 3.5s infinite alternate;
 }
 
@@ -120,13 +147,21 @@
   position: fixed;
   inset: 0;
   background: 
-    radial-gradient(circle at 20% 30%, rgba(102, 45, 145, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(65, 105, 225, 0.1) 0%, transparent 40%),
-    radial-gradient(circle at 40% 80%, rgba(138, 43, 226, 0.12) 0%, transparent 60%);
+    radial-gradient(circle at 20% 30%, rgba(var(--color-primary-rgb), 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(var(--color-tertiary-rgb), 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 40% 80%, rgba(var(--color-secondary-rgb), 0.12) 0%, transparent 60%);
   z-index: -1;
   opacity: 0.7;
   animation: fogShift 20s ease-in-out infinite alternate;
   will-change: opacity, background-position;
+}
+
+html[data-theme="light"] .colorFog {
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(var(--color-primary-rgb), 0.07) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(var(--color-tertiary-rgb), 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 40% 80%, rgba(var(--color-secondary-rgb), 0.06) 0%, transparent 60%);
+  opacity: 0.5;
 }
 
 /* Partículas brilhantes */
@@ -146,6 +181,10 @@
   opacity: 0;
   animation: twinkle var(--duration, 4s) infinite ease-in-out;
   animation-delay: var(--delay, 0s);
+}
+
+html[data-theme="light"] .star {
+  background: rgba(var(--color-primary-rgb), 0.7);
 }
 
 /* Posições das estrelas */
@@ -173,12 +212,22 @@
   background: 
     radial-gradient(
       ellipse at center,
-      rgba(90, 20, 220, 0.1) 0%,
-      rgba(90, 20, 220, 0) 60%
+      rgba(var(--color-primary-rgb), 0.1) 0%,
+      rgba(var(--color-primary-rgb), 0) 60%
     );
   z-index: -1;
   opacity: 0.7;
   pointer-events: none;
+}
+
+html[data-theme="light"] .topLight {
+  background: 
+    radial-gradient(
+      ellipse at center,
+      rgba(var(--color-primary-rgb), 0.05) 0%,
+      rgba(var(--color-primary-rgb), 0) 60%
+    );
+  opacity: 0.5;
 }
 
 /* Animações */
@@ -214,86 +263,124 @@
 /* ========== CABEÇALHO ========== */
 .header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-lg);
   contain: content;
 }
 
 .header h1 {
-  font-size: clamp(2rem, 5vw, 2.8rem);
-  margin-bottom: 1rem;
-  background: linear-gradient(180deg, #ffffff 0%, #9065F6 100%);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  margin-bottom: var(--spacing-md);
+  background: linear-gradient(180deg, #ffffff 0%, var(--color-primary) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   transform: translateZ(0);
-  text-shadow: 0 0 20px rgba(144, 101, 246, 0.2);
+  text-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.2);
+  font-weight: var(--font-semi-bold);
+}
+
+html[data-theme="light"] .header h1 {
+  background: linear-gradient(180deg, var(--dark-color-bg-1) 0%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
 }
 
 .header p {
   font-size: clamp(1rem, 3vw, 1.2rem);
-  color: var(--color-text-3, #a0a0a0);
+  color: var(--dark-color-text-3);
   max-width: 600px;
   margin: 0 auto;
+  line-height: 1.6;
 }
 
-/* ========== CONTROLES E FILTROS - OTIMIZADOS ========== */
+html[data-theme="light"] .header p {
+  color: var(--light-color-text-2);
+}
+
+/* ========== CONTROLES E FILTROS ========== */
 .controlsBar {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-lg);
 }
 
 .mobileFilterToggle {
   display: none;
   align-items: center;
-  gap: 0.5rem;
-  background: rgba(144, 101, 246, 0.15);
-  color: #b191fa;
+  gap: var(--spacing-xs);
+  background: rgba(var(--color-primary-rgb), 0.15);
+  color: var(--color-primary-light);
   border: none;
-  padding: 0.7rem 1.5rem;
-  border-radius: var(--border-radius-full, 50px);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: 9999px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: var(--font-medium);
   transition: background 0.3s ease;
   touch-action: manipulation;
 }
 
 .mobileFilterToggle:hover {
-  background: rgba(144, 101, 246, 0.25);
+  background: rgba(var(--color-primary-rgb), 0.25);
+}
+
+html[data-theme="light"] .mobileFilterToggle {
+  background: rgba(var(--color-primary-rgb), 0.1);
+  color: var(--color-primary);
+}
+
+html[data-theme="light"] .mobileFilterToggle:hover {
+  background: rgba(var(--color-primary-rgb), 0.2);
 }
 
 .filters {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem;
-  margin-bottom: 3rem;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
 }
 
 .filterButton {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--border-radius-full, 50px);
-  padding: 0.6rem 1.5rem;
-  font-size: 0.95rem;
-  color: var(--color-text-3, #a0a0a0);
+  border-radius: 9999px;
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: 0.875rem;
+  color: var(--dark-color-text-3);
   cursor: pointer;
   transition: all 0.3s ease;
   touch-action: manipulation;
 }
 
+html[data-theme="light"] .filterButton {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--light-color-text-2);
+}
+
 .filterButton:hover {
-  border-color: #9065F6;
-  color: #b191fa;
-  background: rgba(144, 101, 246, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary-light);
+  background: rgba(var(--color-primary-rgb), 0.1);
+}
+
+html[data-theme="light"] .filterButton:hover {
+  color: var(--color-primary);
+  background: rgba(var(--color-primary-rgb), 0.05);
 }
 
 .filterButton.active {
-  background: #9065F6;
+  background: var(--color-primary);
   color: white;
-  border-color: #9065F6;
-  box-shadow: 0 0 15px rgba(144, 101, 246, 0.3);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 15px rgba(var(--color-primary-rgb), 0.3);
+}
+
+html[data-theme="light"] .filterButton.active {
+  box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.2);
 }
 
 /* ========== ELEMENTOS DE CARREGAMENTO ========== */
@@ -307,12 +394,12 @@
 .loader {
   width: 48px;
   height: 48px;
-  border: 4px solid rgba(144, 101, 246, 0.1);
+  border: 4px solid rgba(var(--color-primary-rgb), 0.1);
   border-radius: 50%;
-  border-top-color: #9065F6;
+  border-top-color: var(--color-primary);
   animation: spin 1s linear infinite;
   will-change: transform;
-  box-shadow: 0 0 10px rgba(144, 101, 246, 0.2);
+  box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.2);
 }
 
 @keyframes spin {
@@ -320,9 +407,128 @@
 }
 
 /* ========== RESPONSIVIDADE - OTIMIZADA ========== */
+
+/* Regras específicas para Surface Pro 7 (912px) - Mais força nas seletores */
+@media screen and (min-width: 900px) and (max-width: 920px) {
+  /* Aplicado diretamente no media query para maior especificidade */
+  .projectsGrid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 24px !important;
+    width: 100% !important;
+    max-width: 840px !important; /* Um pouco menor para garantir espaço nas bordas */
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+  }
+  
+  .projectCard {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  
+  /* Melhorar o espaçamento interno */
+  .cardContent {
+    padding: 20px !important;
+  }
+  
+  /* Redução da altura das imagens para melhor proporção */
+  .projectImage {
+    height: 170px !important;
+  }
+  
+  /* Reduzir padding vertical no container principal */
+  .content {
+    padding-top: 20px !important;
+    padding-bottom: 40px !important;
+  }
+  
+  /* Espaçamento dos filtros */
+  .filters {
+    margin-bottom: 20px !important;
+  }
+  
+  /* Botões de filtro mais compactos */
+  .filterButton {
+    padding: 6px 14px !important;
+    font-size: 14px !important;
+  }
+}
+
+/* Classes para aplicação via JavaScript - com !important para garantir prioridade */
+.surfaceProGrid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  max-width: 840px !important;
+  margin: 0 auto !important;
+  gap: 24px !important;
+  padding: 0 20px !important;
+}
+
+.surfaceProCard {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+}
+
+/* Ajustes adicionais para melhorar a visualização dos cards */
+.surfaceProCard .projectImage {
+  height: 170px !important;
+}
+
+.surfaceProCard .cardContent {
+  padding: 18px !important;
+}
+
+.surfaceProCard .cardContent h3 {
+  font-size: 1.2rem !important;
+  margin-bottom: 8px !important;
+}
+
+.surfaceProCard .cardContent p {
+  font-size: 0.9rem !important;
+  line-height: 1.5 !important;
+  margin-bottom: 10px !important;
+}
+
+/* Garantir que o Project Grid do WorkGridView seja selecionado corretamente */
+:global(.projectsGrid) {
+  width: 100%;
+}
+
+@media screen and (width: 912px) {
+  :global(.projectsGrid) {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 24px !important;
+    max-width: 840px !important;
+    margin: 0 auto !important;
+  }
+  
+  :global(.projectCard) {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+}
+
+/* Adicione esta classe para aplicar nos cartões quando JS detectar a resolução específica */
+.surfaceProCard {
+  height: 100%;
+  max-width: 420px !important;
+  margin: 0 auto !important;
+}
+
+.surfaceProGrid {
+  grid-template-columns: repeat(2, 1fr) !important;
+  max-width: 900px !important;
+  margin: 0 auto !important;
+  gap: 24px !important;
+}
+
 @media (max-width: 768px) {
   .header h1 {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
   
   .mobileFilterToggle {
@@ -334,12 +540,17 @@
   .filters {
     display: none;
     flex-direction: column;
-    padding: 1rem;
-    background: rgba(10, 10, 25, 0.9);
-    border: 1px solid rgba(144, 101, 246, 0.1);
-    border-radius: var(--border-radius-md, 12px);
-    margin-bottom: 2rem;
+    padding: var(--spacing-md);
+    background: rgba(var(--dark-color-bg-0-rgb), 0.9);
+    border: 1px solid rgba(var(--color-primary-rgb), 0.1);
+    border-radius: var(--border-radius-lg);
+    margin-bottom: var(--spacing-lg);
     backdrop-filter: blur(10px);
+  }
+  
+  html[data-theme="light"] .filters {
+    background: rgba(var(--light-color-bg-0-rgb), 0.9);
+    border: 1px solid rgba(var(--color-primary-rgb), 0.05);
   }
   
   .filtersVisible {
@@ -353,6 +564,82 @@
   
   .star {
     opacity: 0.5;
+  }
+}
+/* Ajustes específicos para telas pequenas (375px ou menor) */
+@media (max-width: 375px) {
+  /* Ajuste do padding em telas pequenas */
+  .content {
+    padding: 0 var(--spacing-sm);
+  }
+
+  /* Garantir que os projetos estejam centralizados */
+  .projectsGrid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    width: 100%;
+  }
+
+  /* Ajustar a largura dos cards de projeto */
+  .projectCard, 
+  .projectCardWrapper {
+    width: 100% !important;
+    max-width: calc(100% - var(--spacing-sm) * 2);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Ajuste no padding interno dos cards */
+  .cardContent {
+    padding: var(--spacing-sm);
+  }
+
+  /* Reduzir o tamanho da fonte para melhor ajuste */
+  .projectCategory {
+    font-size: 0.7rem;
+  }
+
+  .cardContent h3 {
+    font-size: 1.1rem;
+  }
+
+  .cardContent p {
+    font-size: 0.85rem;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  /* Ajustar espaçamento nos filtros */
+  .filterButton {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.75rem;
+  }
+  
+  /* Ajuste de padding para o container principal */
+  .workContainer {
+    padding-top: calc(var(--spacing-lg) + var(--navbar-height, 80px));
+  }
+}
+
+/* Telas muito pequenas (320px) */
+@media (max-width: 320px) {
+  .content {
+    padding: 0 var(--spacing-xs);
+  }
+
+  .projectCard, 
+  .projectCardWrapper {
+    max-width: 100%;
+  }
+  
+  /* Reduzir ainda mais o tamanho da fonte */
+  .cardContent h3 {
+    font-size: 1rem;
+  }
+  
+  .cardContent p {
+    font-size: 0.8rem;
   }
 }
 

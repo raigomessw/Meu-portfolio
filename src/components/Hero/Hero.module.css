@@ -1,34 +1,96 @@
+/* ========== VARIÁVEIS GLOBAIS ========== */
+:root {
+  /* Definições de fonte e tamanhos */
+  --heading-h1: clamp(42px, 5vw, 80px); /* Valores responsivos com clamp */
+  --heading-h2: clamp(36px, 4vw, 60px);
+  --heading-h3: clamp(30px, 3.5vw, 48px);
+  --heading-h4: clamp(20px, 2vw, 24px);
+  --heading-h5: clamp(18px, 1.8vw, 20px);
+  --subtitle-l: clamp(15px, 1.5vw, 17px);
+  --subtitle-s: clamp(14px, 1.3vw, 15px);
+  --body-l: clamp(15px, 1.5vw, 17px);
+  --body-s: clamp(14px, 1.3vw, 15px);
+  --caption: clamp(12px, 1.1vw, 13px);
+  --button: clamp(14px, 1.2vw, 15px);
+  
+  /* Espessuras de fonte */
+  --font-semi-bold: 600;
+  --font-medium: 500;
+  --font-regular: 400;
+  
+  /* Border radius */
+  --border-radius-lg: max(16px, min(24px, 2vw));
+  --border-radius-md: max(12px, min(16px, 1.5vw));
+  --border-radius-sm: max(6px, min(8px, 0.8vw));
+  --border-radius-xs: 4px;
+  
+  /* Espaçamentos responsivos */
+  --space-xl: clamp(32px, 4vw, 48px);
+  --space-lg: clamp(24px, 3vw, 32px);
+  --space-md: clamp(16px, 2vw, 24px);
+  --space-sm: clamp(12px, 1.5vw, 16px);
+  --space-xs: clamp(6px, 0.7vw, 8px);
+  
+  /* Animações */
+  --hero-animation-duration: 0.7s;
+  --hero-animation-stagger: 0.15s;
+  --hero-animation-curve: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Variáveis específicas do Hero */
+.hero {
+  /* Cores que se adaptam ao tema atual */
+  --hero-text-main: var(--color-text-0);
+  --hero-text-secondary: var(--color-text-1);
+  --hero-text-muted: var(--color-text-2);
+  --hero-accent: var(--color-primary);
+  --hero-accent-secondary: var(--color-accent);
+  --hero-bg: var(--color-bg-0);
+  --hero-border: var(--color-border-0);
+  --hero-card-bg: var(--color-bg-1);
+}
+
+/* Variáveis de cor RGB para uso em transparências */
+:root {
+  --color-bg-1-rgb: 255, 255, 255; /* Claro por padrão */
+  --color-bg-2-rgb: 245, 247, 250;
+  --color-primary-rgb: 99, 102, 241;
+  --color-accent-rgb: 236, 72, 153;
+}
+
+html[data-theme="dark"] {
+  --color-bg-1-rgb: 29, 28, 52;
+  --color-bg-2-rgb: 43, 47, 83;
+}
+
+/* Estilos base do Hero - Otimizados */
 .hero {
   position: relative;
   min-height: 100vh;
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--text-light-primary, #ffffff);
+  color: var(--hero-text-main);
   overflow: hidden;
-  contain: layout paint style; /* Otimização de performance */
+  padding: var(--space-xl) var(--space-md);
+  padding-top: max(80px, 15vh); /* Espaço responsivo para o NavBar */
   opacity: 0;
-  transform: translateY(30px) translateZ(0);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(30px);
+  transition: opacity var(--hero-animation-duration) var(--hero-animation-curve), 
+              transform var(--hero-animation-duration) var(--hero-animation-curve);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  content-visibility: auto; /* Otimização para carregamento inicial */
+  contain: layout style; /* Ajuda o navegador a otimizar */
 }
 
 .hero.visible {
   opacity: 1;
-  transform: translateY(0) translateZ(0);
+  transform: translateY(0);
 }
 
-/* Redução de movimento para dispositivos de baixa performance */
-.hero.reducedMotion {
-  transition-duration: 0.1s;
-}
-
-.hero.reducedMotion * {
-  animation-duration: 0.1s !important;
-  transition-duration: 0.1s !important;
-}
-
+/* ========== BACKGROUND PREMIUM ========== */
 .heroBackground {
   position: absolute;
   top: 0;
@@ -36,575 +98,1424 @@
   width: 100%;
   height: 100%;
   z-index: -1;
-  will-change: transform;
-  transform: translateZ(0);
-  backface-visibility: hidden;
+  overflow: hidden;
+  will-change: transform; /* Melhora desempenho de animação */
+  translate: 0 0; /* Forçar GPU rendering */
 }
 
-.backgroundGradient {
+/* Camada de gradiente principal com blobs e blur */
+.gradientLayer {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
-  opacity: 0.9;
+  inset: -20%;
+  width: 140%;
+  height: 140%;
+  background-size: 150% 150%;
+  will-change: background-position, transform;
+  transform: translateZ(0); /* Otimização para GPU */
+  animation: gradientAnimation 25s ease infinite;
+  backface-visibility: hidden; /* Evita problemas de renderização */
 }
 
-.blurOverlay {
+/* Tema claro - Blobs gradiente */
+html[data-theme="light"] .gradientLayer {
+  background: radial-gradient(
+      circle at 30% 30%, 
+      rgba(236, 72, 153, 0.25) 0%, 
+      rgba(236, 72, 153, 0) 50%
+    ),
+    radial-gradient(
+      circle at 70% 60%, 
+      rgba(79, 70, 229, 0.25) 0%, 
+      rgba(79, 70, 229, 0) 50%
+    ),
+    radial-gradient(
+      circle at 40% 80%, 
+      rgba(56, 189, 248, 0.25) 0%, 
+      rgba(56, 189, 248, 0) 50%
+    ),
+    rgba(255, 255, 255, 0.95);
+  filter: blur(70px);
+}
+
+/* Tema escuro - Blobs gradiente */
+html[data-theme="dark"] .gradientLayer {
+  background: radial-gradient(
+      circle at 30% 30%, 
+      rgba(0, 0, 0, 0.35) 0%, 
+      rgba(236, 72, 153, 0) 50%
+    ),
+    radial-gradient(
+      circle at 70% 60%, 
+      rgba(79, 70, 229, 0.35) 0%, 
+      rgba(79, 70, 229, 0) 50%
+    ),
+    radial-gradient(
+      circle at 40% 80%, 
+      rgba(56, 189, 248, 0.35) 0%, 
+      rgba(56, 189, 248, 0) 50%
+    ),
+    rgba(6, 14, 33, 0.9);
+  filter: blur(70px);
+}
+
+/* Correções para as estatísticas no tema claro */
+html[data-theme="light"] .statLabel {
+  color: var(--hero-text-secondary); /* Cor escura para tema claro */
+  text-shadow: none; /* Remove a sombra no tema claro */
+}
+
+html[data-theme="light"] .statNumber {
+  color: var(--hero-accent);
+  text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.15); /* Sombra mais sutil */
+}
+
+/* Estilização específica para as cores de fundo das estatísticas no tema claro */
+html[data-theme="light"] .statsContainer {
+  background: rgba(var(--color-bg-1-rgb), 0.08);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* Ajuste o divisor para ser visível no tema claro */
+html[data-theme="light"] .statDivider {
+  background: linear-gradient(to bottom,
+    rgba(0, 0, 0, 0.03),
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.03));
+}
+
+/* Mesmo problema com estatísticas no modo claro, mas invertendo cores */
+.ars,
+.slutforda {
+  font-size: var(--caption);
+  color: var(--hero-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: var(--font-medium);
+  text-shadow: none; /* Remove sombra */
+}
+
+/* Garantindo que no tema escuro as letras continuam com contraste */
+html[data-theme="dark"] .statLabel,
+html[data-theme="dark"] .ars,
+html[data-theme="dark"] .slutforda {
+  color: rgba(255, 255, 255, 0.85); /* Cor mais clara para o tema escuro */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Mantém sombra no tema escuro */
+}
+
+/* Animação de movimentação suave dos blobs */
+@keyframes gradientAnimation {
+  0% { 
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(-2%, 2%) scale(1.02);
+  }
+  50% { 
+    transform: translate(2%, 4%) scale(1);
+  }
+  75% {
+    transform: translate(3%, -2%) scale(0.98);
+  }
+  100% { 
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+/* Camada de ruído para textura premium - Otimizada para performance */
+.noiseLayer {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* Overlay escuro com 70% de opacidade */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  inset: 0;
   z-index: 1;
+  opacity: 0.025;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  background-size: 200px; /* Tamanho menor para melhor performance */
 }
 
-.particleOverlay {
+/* Grade sutil - Otimizada */
+.gridLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.02;
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, var(--hero-text-main) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hero-text-main) 1px, transparent 1px);
+  transform: 
+    perspective(1000px) 
+    rotateX(calc((var(--mouse-y, 0.5) - 0.5) * 5deg))
+    rotateY(calc((var(--mouse-x, 0.5) - 0.5) * -5deg));
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+/* ========== EFEITOS DE BRILHO PREMIUM - OTIMIZADOS ========== */
+.glowEffect {
+  position: absolute;
+  border-radius: 100%;
+  filter: blur(80px);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  animation: glowPulse 15s infinite alternate ease-in-out;
+}
+
+.glow1 {
+  top: 15%;
+  left: 25%;
+  width: min(40vw, 600px); /* Limite de tamanho para telas grandes */
+  height: min(40vw, 600px);
+  background: radial-gradient(circle, 
+    rgba(var(--color-primary-rgb), 0.3) 0%, 
+    rgba(var(--color-primary-rgb), 0) 60%);
+  animation-delay: -5s;
+}
+
+.glow2 {
+  bottom: 20%;
+  right: 20%;
+  width: min(35vw, 500px); /* Limite de tamanho para telas grandes */
+  height: min(35vw, 500px);
+  background: radial-gradient(circle, 
+    rgba(var(--color-accent-rgb), 0.25) 0%, 
+    rgba(var(--color-accent-rgb), 0) 60%);
+  animation-delay: -8s;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(5%, 5%) scale(1.05);
+  }
+}
+
+/* ========== PARTÍCULAS PREMIUM - OTIMIZADAS ========== */
+.heroParticles {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: 
-    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 50px 50px;
-  background-position: 0 0, 25px 25px;
-  animation: particleAnimation 20s infinite linear;
-  opacity: 0.3;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+  transform: translateZ(0);
 }
 
-@keyframes particleAnimation {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(-50px, -50px, 0);
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: floatingAnimation var(--duration, 20s) ease-in-out infinite;
+  will-change: transform;
+  backdrop-filter: blur(var(--blur, 1px));
+  transform: translateZ(0);
+}
+
+html[data-theme="light"] .particle {
+  background-image: linear-gradient(135deg, 
+    rgba(99, 102, 241, 0.15), 
+    rgba(99, 102, 241, 0.05));
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+}
+
+html[data-theme="dark"] .particle {
+  background-image: linear-gradient(135deg, 
+    rgba(129, 140, 248, 0.15), 
+    rgba(129, 140, 248, 0.05));
+  box-shadow: 0 0 15px rgba(129, 140, 248, 0.1);
+}
+
+.particle:nth-child(odd) {
+  background-image: linear-gradient(135deg, 
+    rgba(236, 72, 153, 0.1), 
+    rgba(236, 72, 153, 0.03));
+  box-shadow: 0 0 15px rgba(236, 72, 153, 0.1);
+}
+
+@keyframes floatingAnimation {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(15px, -15px) rotate(5deg); }
+  50% { transform: translate(-5px, 20px) rotate(-5deg); }
+  75% { transform: translate(-10px, 5px) rotate(3deg); }
+}
+
+/* ========== BADGE DE DISPONIBILIDADE - RESPONSIVO ========== */
+.availabilityBadge {
+  position: absolute;
+  top: 80px; /* Posição absoluta com espaço para a NavBar */
+  left: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: rgba(var(--color-bg-1-rgb), 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: var(--space-md) var(--space-md);
+  border-radius: 30px;
+  font-size: var(--caption);
+  z-index: 10;
+  border: 1px solid rgba(var(--color-bg-1-rgb), 0.15);
+  transition: all 0.3s var(--hero-animation-curve);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transform: translateY(-20px);
+  opacity: 0;
+  animation: fadeInDown 0.6s var(--hero-animation-curve) 0.3s forwards;
+}
+
+.hero.visible .availabilityBadge {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.availabilityBadge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background: rgba(var(--color-bg-1-rgb), 0.12);
+}
+
+@supports not (backdrop-filter: blur(8px)) {
+  .availabilityBadge {
+    /* Alternativa para navegadores sem suporte a backdrop-filter */
+    background: rgba(var(--color-bg-1-rgb), 0.85);
   }
 }
 
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: relative;
+  animation: pulseDot 2s infinite;
+}
+
+.statusDot.available {
+  background-color: #22C55E;
+}
+
+.statusDot.busy {
+  background-color: #EF4444;
+}
+
+.statusDot.limited {
+  background-color: #F97316;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.statusText {
+  color: var(--hero-text-secondary);
+  font-weight: var(--font-medium);
+  white-space: nowrap;
+}
+
+/* ========== CONTEÚDO PRINCIPAL - LAYOUT FLEXÍVEL ========== */
 .heroContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   max-width: 1200px;
-  width: 90%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  width: 100%;
+  margin-top: var(--space-xl);
+  position: relative;
   z-index: 2;
-  contain: layout style;
 }
 
+/* Container de texto - Responsivo */
 .heroTextContainer {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  will-change: transform;
+  align-items: center;
+  text-align: center;
+  max-width: min(900px, 90vw); /* Limite para telas ultralargas */
+  margin-bottom: var(--space-xl);
+  width: 100%;
 }
 
-.heroTitle {
+/* ========== BADGE DE EXPERIÊNCIA - RESPONSIVO ========== */
+.experienceBadge {
+  background: linear-gradient(90deg, 
+    rgba(var(--color-accent-rgb), 0.15),
+    rgba(var(--color-primary-rgb), 0.15));
+  color: var(--hero-text-secondary);
+  font-size: var(--subtitle-s);
+  font-weight: var(--font-medium);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: 30px;
+  margin-bottom: var(--space-md);
   display: flex;
-  flex-direction: column;
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  align-items: center;
+  gap: var(--space-xs);
+  animation: shimmer 2.5s infinite linear;
+  background-size: 200% 100%;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(var(--color-primary-rgb), 0.15);
+  transform: translateY(-20px);
+  opacity: 0;
+  animation: fadeInDown 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 0) forwards;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.badgeIcon {
+  color: #FFD700;
+  font-size: calc(var(--subtitle-s) + 2px);
+}
+
+/* ========== TÍTULO PRINCIPAL - RESPONSIVO ========== */
+.heroTitle {
+  margin: 0 0 var(--space-md);
   line-height: 1.2;
-  transform: translateZ(0);
-  will-change: transform, opacity;
-  margin-bottom: 24px;
+  display: block;
+  width: 100%;
 }
 
 .greeting {
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: var(--accent-light-senary, #23a6d5);
-  margin-bottom: 8px;
+  font-size: var(--heading-h3);
+  font-weight: var(--font-semi-bold);
+  margin-bottom: var(--space-sm);
+  display: block;
+  color: var(--hero-text-main);
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 1) forwards;
 }
 
-.name {
-  font-weight: 800;
-  background: linear-gradient(135deg, #ffffff 0%, #aacfe2 100%);
+.profession {
+  font-size: var(--heading-h1);
+  font-weight: var(--font-semi-bold);
+  background: linear-gradient(135deg, 
+    var(--hero-text-main) 0%, 
+    var(--hero-accent) 50%, 
+    var(--hero-accent-secondary) 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 8px;
+  color: transparent;
+  display: block;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 2) forwards;
+  word-break: break-word; /* Evita overflow em telas pequenas */
+  hyphens: auto; /* Permite hifenização em telas pequenas */
 }
 
-.role {
-  font-size: 1.8rem;
-  color: var(--text-light-secondary, rgba(255, 255, 255, 0.8));
-}
-
-.heroDescription {
-  font-size: 1.1rem;
-  max-width: 500px;
-  margin-bottom: 40px;
+/* ========== SUBTÍTULO - RESPONSIVO ========== */
+.heroSubtitle {
+  font-size: var(--subtitle-l);
+  font-weight: var(--font-regular);
   line-height: 1.6;
-  color: var(--text-light-secondary, rgba(255, 255, 255, 0.8));
-  will-change: transform, opacity;
-  transform: translateZ(0);
+  color: var(--hero-text-secondary);
+  margin-bottom: var(--space-lg);
+  max-width: min(800px, 90vw); /* Limite para telas ultralargas */
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 3) forwards;
 }
 
-.heroCta {
+.typedTextContainer {
+  color: var(--hero-accent);
+  font-weight: var(--font-medium);
+  position: relative;
+  white-space: normal; /* Alterado para permitir quebra em telas pequenas */
+  display: inline;
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  background-color: var(--hero-accent);
+  margin-left: 4px;
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+}
+
+@keyframes blink {
+  from, to { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ========== TECH STACK - RESPONSIVO ========== */
+.techStack {
   display: flex;
-  gap: 20px;
-  will-change: transform;
-  transform: translateZ(0);
-  position: relative; 
-  z-index: 2; /* Sempre acima do scrollDown */
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin: var(--space-sm) 0 var(--space-lg);
+  max-width: min(850px, 95vw); /* Limite para telas ultralargas */
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 4) forwards;
 }
 
-.primaryBtn,
-.secondaryBtn {
+.techBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--border-radius-md);
+  background: rgba(var(--color-bg-1-rgb), 0.06);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s var(--hero-animation-curve);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.techBadge:hover, .techBadge.activeTech {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  background: rgba(var(--color-bg-1-rgb), 0.1);
+  border-color: var(--tech-color, var(--hero-accent));
+}
+
+.techIcon {
+  font-size: 1.2em;
+  color: var(--tech-color, var(--hero-accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.techSvgIcon {
+  width: 22px;
+  height: 22px;
+  color: var(--tech-color, var(--hero-accent));
+}
+
+.techDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+}
+
+.techName {
+  font-size: var(--caption);
+  font-weight: var(--font-medium);
+  color: var(--hero-text-main);
+}
+
+.techYears {
+  font-size: 11px;
+  color: var(--hero-text-muted);
+}
+
+.techGlow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.techBadge:hover .techGlow, .techBadge.activeTech .techGlow {
+  opacity: 0.15;
+}
+
+/* ========== BOTÕES - RESPONSIVOS ========== */
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 5) forwards;
+  width: 100%; /* Garante que os botões usem o espaço disponível */
+}
+
+.primaryButton, .secondaryButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 28px;
-  border-radius: 30px;
-  font-weight: 600;
-  font-size: 1rem;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--border-radius-sm);
+  font-weight: var(--font-medium);
+  font-size: var(--button);
+  transition: all 0.3s var(--hero-animation-curve);
   text-decoration: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  transform: translateZ(0);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  white-space: nowrap; /* Evita quebras de texto nos botões */
 }
 
-.primaryBtn {
-  background: linear-gradient(135deg, #23a6d5, #e73c7e);
+.primaryButton {
+  background: var(--hero-accent);
   color: white;
-  box-shadow: 0 4px 15px rgba(35, 166, 213, 0.4);
+  box-shadow: 0 5px 15px rgba(var(--color-primary-rgb), 0.35);
 }
 
-.secondaryBtn {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+.primaryButton:hover {
+  transform: translateY(-3px);
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 25px rgba(var(--color-primary-rgb), 0.45);
 }
 
-.primaryBtn:hover,
-.secondaryBtn:hover {
-  color: var(--color-text-2);
-  transform: translateY(-3px) translateZ(0);
+.primaryButton:active {
+  transform: translateY(-1px);
 }
 
-.primaryBtn:hover {
-  box-shadow: 0 8px 20px rgba(35, 166, 213, 0.5);
-  color: var(--color-text-2);
+.buttonShine {
+  position: absolute;
+  top: -180%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  transform: rotate(45deg);
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  z-index: 2;
+  animation: shineEffect 4s infinite;
+  pointer-events: none;
 }
 
-.secondaryBtn:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  background: rgba(255, 255, 255, 0.15);
+@keyframes shineEffect {
+  0% { left: -50%; }
+  100% { left: 150%; }
 }
 
-.heroImageContainer {
+.secondaryButton {
+  background: rgba(var(--color-bg-1-rgb), 0.9);
+  color: var(--hero-text-main);
+  border: 1px solid var(--hero-border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.secondaryButton:hover {
+  background: rgba(var(--color-bg-1-rgb), 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.secondaryButton:active {
+  transform: translateY(-1px);
+}
+
+.buttonIcon {
+  font-size: 1.1em;
+  line-height: 1;
+  transition: transform 0.3s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
+}
+
+.primaryButton:hover .buttonIcon, .secondaryButton:hover .buttonIcon {
+  transform: translateX(4px);
+}
+
+/* ========== IMAGEM DO HERO - RESPONSIVA ========== */
+.heroImageContainer {
+  margin: var(--space-lg) 0;
   position: relative;
+  transform-style: preserve-3d;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 6) forwards;
 }
 
 .imageWrapper {
   position: relative;
-  width: 450px;
-  height: 450px;
-  will-change: transform;
-  transform: translateZ(0);
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+  border-radius: 30px;
+  overflow: hidden;
+  width: min(300px, 85vw); /* Responsivo para todos os tamanhos */
+  height: min(300px, 85vw);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  transform-style: preserve-3d;
+  transition: transform 0.6s var(--hero-animation-curve);
+  transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
 }
 
 .heroImage {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
-  border-radius: 20px;
-  transform: translateZ(0);
+  will-change: transform;
+  transition: transform 0.5s var(--hero-animation-curve);
 }
 
-.scrollDown {
+.imageWrapper:hover .heroImage {
+  transform: scale(1.05);
+}
+
+.imageGlow {
   position: absolute;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  border-radius: 50px;
+  background: radial-gradient(circle at center, 
+    rgba(var(--color-primary-rgb), 0.3), 
+    transparent 70%);
+  filter: blur(25px);
   opacity: 0.8;
-  transition: opacity 0.3s ease;
-  z-index: 1; /* Valor base de z-index */
+  z-index: -1;
+  transform: translateZ(-10px);
 }
 
-.scrollDown a {
+.imageBorder {
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  border: 3px solid rgba(var(--color-primary-rgb), 0.3);
+  box-shadow: 
+    inset 0 0 30px rgba(var(--color-primary-rgb), 0.2),
+    0 0 30px rgba(var(--color-primary-rgb), 0.1);
+  transform: translateZ(10px);
+  pointer-events: none;
+}
+
+/* Overlay sobre a imagem com efeito de profundidade */
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg, 
+    rgba(0, 0, 0, 0.01), 
+    rgba(0, 0, 0, 0.2)
+  );
+  transform: translateZ(5px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: var(--space-md);
+  pointer-events: none;
+}
+
+.imageText {
+  font-size: var(--heading-h4);
+  font-weight: var(--font-semi-bold);
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+/* Elementos decorativos responsivos */
+.decorElement {
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  filter: blur(1px);
+  transform-style: preserve-3d;
+  transform: translateZ(-20px);
+}
+
+.decor1 {
+  top: -20px;
+  right: -20px;
+  width: min(60px, 15vw);
+  height: min(60px, 15vw);
+  background: rgba(var(--color-primary-rgb), 0.3);
+  animation: floatDecor 8s infinite alternate ease-in-out;
+}
+
+.decor2 {
+  bottom: 40px;
+  left: -30px;
+  width: min(40px, 10vw);
+  height: min(40px, 10vw);
+  background: rgba(var(--color-accent-rgb), 0.3);
+  animation: floatDecor 12s infinite alternate-reverse ease-in-out;
+}
+
+.decor3 {
+  bottom: -15px;
+  right: 40px;
+  width: min(30px, 8vw);
+  height: min(30px, 8vw);
+  background: rgba(99, 102, 241, 0.3);
+  animation: floatDecor 9s infinite alternate ease-in-out;
+  animation-delay: 2s;
+}
+
+@keyframes floatDecor {
+  0%, 100% { transform: translateZ(-20px) translate(0, 0); }
+  50% { transform: translateZ(-20px) translate(10px, -10px); }
+}
+
+/* ========== ESTATÍSTICAS - RESPONSIVAS ========== */
+.statsContainer {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--space-lg);
+  gap: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+  background: rgba(var(--color-bg-1-rgb), 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--hero-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 7) forwards;
+  width: min(100%, 600px); /* Limita largura e garante responsividade */
+}
+
+@supports not (backdrop-filter: blur(10px)) {
+  .statsContainer {
+    /* Alternativa para navegadores sem suporte a backdrop-filter */
+    background: rgba(var(--color-bg-1-rgb), 0.8);
+  }
+}
+
+.statItem {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: white;
-  text-decoration: none;
+  text-align: center;
+  transition: transform 0.3s var(--hero-animation-curve);
+  flex: 1;
 }
 
+.statItem:hover {
+  transform: translateY(-5px);
+}
+
+.statNumber {
+  font-size: var(--heading-h4);
+  font-weight: var(--font-semi-bold);
+  margin-bottom: 4px;
+  /* Substitui o gradiente por uma cor sólida para melhor visibilidade */
+  background: unset;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--hero-accent); /* Cor sólida mais visível */
+  text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.3); /* Adiciona glow suave */
+}
+
+.statLabel {
+  font-size: var(--caption);
+  color: rgba(255, 255, 255, 0.85); /* Cor mais clara para melhor visibilidade */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: var(--font-medium);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Sombra para melhorar legibilidade */
+}
+
+.statDivider {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom,
+    rgba(var(--color-bg-1-rgb), 0.1),
+    rgba(var(--color-bg-1-rgb), 0.4),
+    rgba(var(--color-bg-1-rgb), 0.1));
+}
+
+/* ========== BOTÃO DE SCROLL - RESPONSIVO ========== */
+.heroScroll {
+  position: fixed; /* Alterado para fixed para garantir posição consistente */
+  left: 50%;
+  bottom: 35px; /* Ajustado para dar mais espaço na parte inferior */
+  transform: translateX(-50%);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-text-1);
+  font-weight: 500;
+  transition: all 0.4s var(--hero-animation-curve);
+  z-index: 100; /* Aumentado para garantir que fique sempre visível */
+  background: rgba(var(--color-bg-1-rgb), 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 12px 20px;
+  border-radius: 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+  font-size: 1rem;
+  opacity: 0;
+  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 8) forwards;
+}
+
+.heroScroll:hover, .heroScroll:focus {
+  transform: translateX(-50%) translateY(-5px);
+  color: var(--color-primary);
+  background: rgba(var(--color-bg-1-rgb), 0.25);
+  border-color: rgba(var(--color-primary-rgb), 0.6);
+}
+
+/* Ícone de rolagem animado */
 .scrollIcon {
-  display: block;
   width: 30px;
   height: 50px;
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  border-radius: 20px;
+  border: 2px solid rgba(var(--color-accent-rgb), 0.6);
+  border-radius: 15px;
+  margin-bottom: 8px;
   position: relative;
-  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
-.scrollIcon::before {
-  content: '';
-  position: absolute;
-  top: 10px;
-  left: 50%;
+.heroScroll:hover .scrollIcon {
+  border-color: var(--color-primary);
+}
+
+.scrollDot {
   width: 6px;
   height: 6px;
-  background: white;
+  background: var(--color-primary);
   border-radius: 50%;
-  transform: translateX(-50%);
-  animation: scrollAnimation 1.5s infinite;
+  position: absolute;
+  top: 10px;
+  animation: scrollAnimation 2s infinite ease-in-out;
 }
 
-.scrollText {
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
+/* Animação de rolagem */
 @keyframes scrollAnimation {
   0% {
+    transform: translateY(0);
     opacity: 1;
-    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translateY(20px);
+    opacity: 0.2;
   }
   100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Efeito de brilho pulsante ao redor do botão */
+.heroScroll::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 34px;
+  background: linear-gradient(135deg, 
+    rgba(var(--color-primary-rgb), 0.4),
+    rgba(var(--color-primary-rgb), 0),
+    rgba(var(--color-accent-rgb), 0.2)
+  );
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: pulseEffect 3s infinite;
+}
+
+.heroScroll:hover::after {
+  opacity: 0.8;
+}
+
+@keyframes pulseEffect {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes fadeInUp {
+  from {
     opacity: 0;
-    transform: translate(-50%, 20px);
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Reduzir trabalho do navegador durante scroll */
-body.is-scrolling .scrollIcon::before {
-  animation-play-state: paused;
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Responsividade otimizada */
-@media (max-width: 992px) {
+/* ========== RESPONSIVIDADE MELHORADA ========== */
+
+/* Telas muito pequenas (375px e menor) */
+@media (max-width: 375px) {
+  .hero {
+    padding: var(--space-lg) var(--space-sm) var(--space-md);
+    padding-top: max(70px, 15vh); /* Espaço para NavBar em telas muito pequenas */
+    min-height: 100svh; /* Use svh quando disponível */
+  }
+  
+  /* Container principal */
   .heroContent {
-    grid-template-columns: 1fr;
-    text-align: center;
+    margin-top: clamp(10px, 3vh, 30px);
   }
   
-  .heroTextContainer {
-    order: 1;
-  }
-  
-  .heroImageContainer {
-    order: 0;
-    margin-bottom: 40px;
-  }
-  
-  .imageWrapper {
-    width: 350px;
-    height: 350px;
-  }
-  
-  .heroDescription {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .heroCta {
+  /* Tech badges ainda mais compactos */
+  .techStack {
+    gap: 5px; /* Reduz ainda mais o espaçamento */
+    margin-top: var(--space-xs);
+    margin-bottom: var(--space-md);
     justify-content: center;
   }
+  
+  .techBadge {
+    padding: 5px 8px;
+    border-radius: var(--border-radius-sm);
+  }
+  
+  .techSvgIcon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  /* Botões mais apropriados para telas muito pequenas */
+  .heroActions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .primaryButton, .secondaryButton {
+    width: 100%;
+    padding: 10px;
+    justify-content: center;
+  }
+  
+  /* Esconde elementos menos importantes */
+  .decorElement,
+  .particle:nth-child(n+4) {
+    display: none;
+  }
+  
+  /* Simplifica efeitos para melhor performance */
+  .gradientLayer {
+    filter: blur(40px);
+  }
 }
 
-@media (max-width: 768px) {
-  .heroTitle {
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
-  }
-  
-  .role {
-    font-size: 1.3rem;
-  }
-  
-  .imageWrapper {
-    width: 280px;
-    height: 280px;
-  }
-  
-  /* Aumentar espaço para navbar fixa */
+/* Telas pequenas (smartphones) */
+@media (max-width: 576px) {
   .hero {
-    padding-top: 60px;
-  }
-  
-  .scrollDown {
-    bottom: 20px;
-  }
-  
-  /* Melhorar proporções */
-  .heroContent {
-    width: 95%;
-    gap: 30px;
-  }
-}
-
-@media (max-width: 480px) {
-  /* Ajustes para telas pequenas */
-  .heroCta {
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 60px;
-    z-index: 5; /* Garantir que fique acima de tudo */
-  }
-  
-  .heroContent {
-    gap: 25px;
-    width: 92%;
-  }
-  
-  .heroDescription {
-    font-size: 1rem;
-    margin-bottom: 30px;
-  }
-  
-  .heroCta {
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 60px; /* ADICIONADO: Espaço extra após os botões CTA */
-  }
-  
-  .primaryBtn, 
-  .secondaryBtn {
-    padding: 14px;
-  }
-  
-  .imageWrapper {
-    width: 150px;
-    height: 150px;
+    padding: var(--space-lg) var(--space-sm) var(--space-md);
+    padding-top: max(70px, 15vh);
   }
   
   .greeting {
-    font-size: 0.9rem;
-    letter-spacing: 2px;
+    font-size: calc(var(--heading-h4) - 2px);
   }
   
-  .name {
-    font-size: 2.2rem;
+  .profession {
+    font-size: calc(var(--heading-h3) - 2px);
   }
   
-  .role {
-    font-size: 1.2rem;
+  .imageWrapper {
+    width: min(240px, 80vw);
+    height: min(240px, 80vw);
+    border-radius: 25px;
+  }
+
+  .heroScroll {
+    position: absolute;
+    left: auto;
   }
   
-  /* Melhorar facilidade de toque */
+  .heroActions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .primaryButton, .secondaryButton {
+    width: 100%;
+  }
+  
+  .statsContainer {
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+  }
+  
+  .statDivider {
+    width: 80%;
+    height: 1px;
+    margin: 0;
+  }
+  
+  /* Badge de disponibilidade centralizado */
+  .availabilityBadge {
+    position: relative;
+    left: auto;
+    top: auto;
+    margin-bottom: var(--space-md);
+    align-self: center;
+  }
+  
+  /* Mais adaptações para telas pequenas */
+  .particle:nth-child(n+6) {
+    display: none;
+  }
+  
+  /* Ajustar botão de rolagem */
+  .heroScroll {
+    bottom: 1.5rem; /* Posição ajustada para telas pequenas */
+    transform: translateX(-50%) scale(0.9); /* Ligeiramente menor */
+  }
+
+  .heroScroll:hover, .heroScroll:focus {
+    transform: translateX(-50%) translateY(-5px) scale(0.9); /* Mantém escala ao fazer hover */
+  }
+  
+  /* Escala reduzida para elementos decorativos */
+  .glowEffect {
+    opacity: 0.3;
+  }
+}
+
+/* Dispositivos móveis (médios) */
+@media (min-width: 577px) and (max-width: 768px) {
+  .hero {
+    padding-top: max(80px, 12vh);
+  }
+  
+  .profession {
+    font-size: calc(var(--heading-h2) - 6px);
+  }
+  
+  .heroActions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .primaryButton, .secondaryButton {
+    width: auto;
+    flex: 1 1 auto;
+  }
+  
+  .statsContainer {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .statDivider:last-of-type {
+    display: none;
+  }
+  
+  /* Os elementos decorativos ainda são mostrados, mas menores */
+  .decorElement {
+    transform: scale(0.7);
+  }
+}
+
+/* Tablets */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero {
+    padding-top: max(90px, 10vh);
+  }
+
+  .primaryButton, .secondaryButton {
+    padding: 12px 24px; /* Paddings mais confortáveis */
+    min-width: 180px; /* Largura mínima para melhor proporção */
+    font-size: 18px; /* Tamanho de fonte ligeiramente maior */
+  }
+
+  .heroScroll {
+    position: relative;
+    left: auto;
+    bottom: 4rem; /* Ajustado para tablets */
+    transform: translateX(-50%) scale(1); /* Mantém tamanho original */
+  }
+
+  .heroActions {
+    gap: 16px;
+    justify-content: center; /* Centraliza os botões */
+    margin-top: var(--space-lg);
+  }
+  
+  .heroContent {
+    flex-direction: column;
+    text-align: center;
+    padding: 0 var(--space-md);
+  }
+
   .scrollIcon {
     width: 26px;
     height: 40px;
   }
   
-  .scrollText {
-    font-size: 0.7rem;
-  }
-  
-  /* ADICIONADO: Reposicionar o botão scroll down */
-  .scrollDown {
-    display: none;
-    bottom: 80px; /* Aumentado para evitar sobreposição com os botões CTA */
-  }
-}
-
-/* ADICIONADO: Media query específica para a faixa problemática */
-@media (min-width: 376px) and (max-width: 480px) {
-  .scrollDown {
-    bottom: 120px; /* Valor ainda maior para esta faixa específica */
-  }
-}
-
-/* Otimização MELHORADA para dispositivos muito pequenos como iPhone SE */
-@media (max-width: 375px) {
-  /* Ajustar container principal para melhor visibilidade */
-  .hero {
-    min-height: 90vh;
-    padding-top: 70px;
-  }
-  
-  .heroContent {
-    gap: 15px;
-    width: 90%;
-  }
-  
-  /* Ajustar tamanhos de título */
-  .greeting {
-    font-size: 0.8rem;
-    margin-bottom: 5px;
-  }
-  
-  .name {
-    font-size: 1.9rem;
-    margin-bottom: 5px;
-  }
-  
-  .role {
-    font-size: 1.1rem;
-  }
-  
-  .heroDescription {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin-bottom: 25px;
-    max-width: 100%;
-  }
-  
-  /* Reduzir espaçamento vertical */
-  .heroTitle {
-    margin-bottom: 15px;
-  }
-  
-  /* Otimizar botões para telas pequenas */
-  .primaryBtn,
-  .secondaryBtn {
-    width: 90%;
-    padding: 12px 20px;
-    font-size: 0.95rem;
-    letter-spacing: 0.5px;
-  }
-  
-  /* Ajustar imagem do perfil */
   .imageWrapper {
-    display: none; /* Remover imagem do perfil */
+    width: min(320px, 50vw);
+    height: min(320px, 50vw);
   }
   
-  /* Remover scroll indicator em telas muito pequenas para economizar espaço */
-  .scrollDown {
+  /* Mais partículas em tablets */
+  .particle:nth-child(n+10) {
+    display: none;
+    font-size: 18px;
+  }
+  .techName {
+    font-size: 16px;
+  }
+
+  .statNumber {
+    font-size: 15px;
+  }
+
+  .statLabel{
+    font-size: 15px;
+  }
+
+
+  .techStack {
+    padding: 8px 12px;
+    border-radius: var(--border-radius-sm);
+  }
+  
+  .availabilityBadge, .experienceBadge {
+    position: relative;
+    left: auto;
+    top: auto;
+    align-self: center;
+    margin-bottom: var(--space-md);
+    font-size: 16px;
+  }
+  
+  /* Layout de duas colunas para estatísticas */
+  .statsContainer {
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  .statItem {
+    flex: 1 1 40%;
+    margin: var(--space-xs) 0;
+  }
+  
+  .statDivider:nth-child(even) {
     display: none;
   }
-  
-  /* Ajustar imagens e fundos */
-  .particleOverlay {
-    background-size: 30px 30px;
-    background-position: 0 0, 15px 15px;
-    opacity: 0.2; /* Menos visível em telas pequenas */
+}
+
+/* Desktops pequenos */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .heroContent {
+    flex-direction: row;
+    text-align: left;
+    gap: var(--space-lg);
+    align-items: center;
   }
   
-  /* Reduzir padding do hero container */
+  .heroScroll {
+    position: absolute;
+    left: auto;
+  }
+
+  .heroTextContainer {
+    align-items: flex-start;
+    text-align: left;
+    margin-bottom: 0;
+    flex: 3;
+  }
+  
+  .techStack {
+    justify-content: flex-start;
+  }
+  
+  .heroActions {
+    justify-content: flex-start;
+  }
+  
+  .experienceBadge {
+    align-self: flex-start;
+  }
+  
   .heroImageContainer {
-    margin-bottom: 20px;
-  }
-}
-
-/* Especificações para dispositivos ainda menores */
-@media (max-width: 320px) {
-  .heroTitle {
-    font-size: 1.7rem !important;
-  }
-  
-  .greeting {
-    font-size: 0.75rem;
-    letter-spacing: 1.5px;
-  }
-  
-  .role {
-    font-size: 1rem;
-  }
-  
-  .heroDescription {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    margin-bottom: 20px;
-  }
-  
-  .primaryBtn, 
-  .secondaryBtn {
-    padding: 10px 15px;
-    font-size: 0.9rem;
+    flex: 2;
+    margin-top: 0;
   }
   
   .imageWrapper {
-    width: 160px;
-    height: 160px;
+    width: 340px;
+    height: 340px;
   }
   
-  /* Ajustar espaçamento vertical */
-  .hero {
-    padding-top: 65px;
-    min-height: 80vh;
+  /* Posicionamento da badge em desktop */
+  .availabilityBadge {
+    position: absolute;
+    top: 80px;
+    left: var(--space-lg);
   }
-  
+}
+
+/* Telas grandes e ultrawides */
+@media (min-width: 1200px) {
   .heroContent {
-    gap: 12px;
-  }
-}
-
-/* Suporte para telas altas (iPhone Pro Max) */
-@media (min-height: 800px) and (max-width: 480px) {
-  .hero {
-    padding-top: 90px;
+    flex-direction: row;
+    text-align: left;
+    gap: var(--space-xl);
   }
   
-  .scrollDown {
-    display: block; /* Mostrar apenas em telas altas */
-    bottom: 20px; /* Valor baixo - no rodapé da página */
-    z-index: 1;
+  .heroTextContainer {
+    align-items: flex-start;
+    text-align: left;
+    margin-bottom: 0;
+    flex: 3;
+  }
+  
+  .techStack {
+    justify-content: flex-start;
+  }
+  
+  .heroActions {
+    justify-content: flex-start;
+  }
+  
+  .experienceBadge {
+    align-self: flex-start;
+  }
+  
+  .heroImageContainer {
+    flex: 2;
   }
   
   .imageWrapper {
-    width: 240px;
-    height: 240px;
+    width: min(380px, 25vw);
+    height: min(380px, 25vw);
+  }
+  
+  /* Versão completa para desktops */
+  .availabilityBadge {
+    position: absolute;
+    top: 80px;
+    left: var(--space-lg);
+  }
+  
+  /* Todas as partículas visíveis em desktop */
+  .particle {
+    display: block;
   }
 }
 
-/* Preferência por movimento reduzido */
+/* ========== AJUSTES POR TEMA ========== */
+
+/* Dark mode específico */
+html[data-theme="dark"] .imageWrapper {
+  color: rgba(255, 255, 255, 0.85); /* Cor mais clara no tema escuro */
+
+}
+
+/* Light mode específico */
+html[data-theme="light"] .imageWrapper {
+  color: rgba(0, 0, 0, 0.75); 
+}
+
+/* ========== ACESSIBILIDADE ========== */
+
+/* Preferências para redução de movimento */
 @media (prefers-reduced-motion: reduce) {
-  .hero,
-  .heroTitle,
-  .heroDescription,
-  .heroCta,
-  .heroImageContainer,
-  .primaryBtn,
-  .secondaryBtn,
-  .scrollIcon::before {
-    transition-duration: 0.001s !important;
-    animation-duration: 0.001s !important;
+  .heroBackground,
+  .gradientLayer,
+  .noiseLayer,
+  .gridLayer,
+  .particle,
+  .glowEffect,
+  .statusDot,
+  .scrollDot,
+  .cursor,
+  .buttonShine,
+  .decorElement,
+  .heroScroll::after {
+    animation: none !important;
+    transition: none !important;
   }
   
-  .particleOverlay {
-    animation: none;
+  .hero, .greeting, .profession, .heroSubtitle, .techStack, 
+  .heroActions, .heroImageContainer, .statsContainer,
+  .experienceBadge, .availabilityBadge, .heroScroll {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
   
-  .scrollIcon::before {
-    animation: none;
+  .imageWrapper {
+    transform: none !important;
+  }
+  
+  .heroScroll:hover, .heroScroll:focus {
+    transform: translateX(-50%) !important;
+  }
+  
+  /* Simplifica o background para melhor performance */
+  .heroBackground {
+    background-size: 100% 100% !important;
   }
 }
 
-/* Correções específicas para Safari iOS */
+/* ========== MELHORIAS DE PERFORMANCE ========== */
+
+/* Content-visibility para elementos abaixo da dobra inicial */
+@supports (content-visibility: auto) {
+  .statsContainer,
+  .heroScroll {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 200px; /* Valor estimado de altura */
+  }
+}
+
+/* Suporte a navegadores mais antigos */
+@supports not (aspect-ratio: 1) {
+  .imageWrapper {
+    height: 0;
+    padding-bottom: 100%; /* Mantém proporção quadrada */
+  }
+  
+  .heroImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Otimização para Safari no iOS */
 @supports (-webkit-touch-callout: none) {
   .hero {
     min-height: -webkit-fill-available;
   }
   
-  /* Corrigir bug de background-clip em alguns dispositivos iOS */
-  .name {
-    -webkit-text-fill-color: transparent !important;
-  }
-}
-
-/* Suporte para modo de tela dividida em dispositivos móveis */
-@media (max-width: 480px) and (max-height: 600px) {
-  .hero {
-    min-height: 100vh;
-    padding-top: 50px;
-  }
-  
-  .heroContent {
-    gap: 15px;
-  }
-  
-  .imageWrapper {
-    width: 150px;
-    height: 150px;
-  }
-  
-  .scrollDown {
-    display: none;
+  /* Corrige problemas de backdrop-filter no Safari */
+  .availabilityBadge,
+  .techBadge,
+  .secondaryButton,
+  .statsContainer,
+  .heroScroll {
+    -webkit-backdrop-filter: blur(8px);
   }
 }

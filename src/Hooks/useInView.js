@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
  * @param {string} options.rootMargin - Margin around the root
  * @returns {boolean} - Whether the element is in view or not
  */
-const useInView = (ref, { threshold = 0.1, rootMargin = '0px' } = {}) => {
+export const useInView = (ref, { threshold = 0.1, rootMargin = '0px' } = {}) => {
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
@@ -35,4 +35,5 @@ const useInView = (ref, { threshold = 0.1, rootMargin = '0px' } = {}) => {
   return isInView;
 };
 
+// Mantendo a exportação default para compatibilidade com código existente
 export default useInView;

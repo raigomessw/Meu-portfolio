@@ -1,327 +1,278 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { FaGithub, FaLinkedin, FaTwitter, FaFileAlt } from 'react-icons/fa';
+import { MdDesignServices, MdDevices, MdSpeed, MdAccessibility } from 'react-icons/md';
+import { SiJavascript, SiReact, SiNodedotjs } from 'react-icons/si';
 import styles from './About.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faReact, 
-  faJs, 
-  faHtml5, 
-  faCss3Alt, 
-  faFigma, 
-  faVuejs, 
-  faLinkedin, 
-  faGithub 
-} from '@fortawesome/free-brands-svg-icons';
-import { faDownload, faBrain, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
-import { detectDeviceCapability, throttle } from '../../utils/performance';
+import profileImage from '../common/Image/profile.jpeg';
+import CVsv from '../../../public/resume/Rai Gomes CV SV.pdf';
+import CVeng from '../../../public/resume/Rai Gomes CV ENG.pdf';
 
-// Usar import.meta.url para caminhos de arquivos estáticos
-const ProfileImage = new URL('../common/Image/profile.jpeg', import.meta.url).href;
-const ResumeEN = new URL('/resume/Rai Gomes CV ENG.pdf', import.meta.url).href;
-const ResumeSW = new URL('/resume/Rai Gomes CV SV.pdf', import.meta.url).href;
-// Importando corretamente os assets de vídeo/imagem
-const GradientStatic = new URL('../../assets/gradient-static.jpg', import.meta.url).href;
-const GradientVideo = new URL('../common/video/gradient-video.mp4', import.meta.url).href;
-
-function AboutPage() {
-  const [isVisible, setIsVisible] = useState(false);
-  const containerRef = useRef(null);
+const About = () => {
+  const [visible, setVisible] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const aboutRef = useRef(null);
   const skillsRef = useRef(null);
   const statsRef = useRef(null);
   const philosophyRef = useRef(null);
-  const videoRef = useRef(null);
-  
-  // Detectar preferências de dispositivo para reduzir efeitos
-  const deviceCaps = detectDeviceCapability();
-  const reducedMotion = deviceCaps.shouldUseReducedEffects;
-  
-  // Skills data - memoizado para evitar recriação
-  const skills = [
-    { name: "Figma", icon: faFigma, level: 90, description: "Design system creation, prototyping, and UI design" },
-    { name: "React", icon: faReact, level: 90, description: "Component architecture, hooks, state management" },
-    { name: "JavaScript", icon: faJs, level: 85, description: "ES6+, async programming, DOM manipulation" },
-    { name: "HTML5", icon: faHtml5, level: 95, description: "Semantic markup, accessibility, web standards" },
-    { name: "CSS3", icon: faCss3Alt, level: 90, description: "Flexbox, Grid, animations, responsive design" },
-    { name: "Vue", icon: faVuejs, level: 80, description: "Vue components, Vue Router, Vuex" },
-    { name: "Framer", icon: faLayerGroup, level: 85, description: "Interactive prototyping, animation, and design" },
-    { name: "AI", icon: faBrain, level: 80, description: "AI tools integration, prompt engineering, generative design" },
-  ];
+  const statItems = useRef([]);
+  const skills = useRef([]);
+  const philosophyItems = useRef([]);
 
-  // Otimização 1: Carregamento eficiente de vídeo
+  // Verificar preferência por movimento reduzido
   useEffect(() => {
-    if (videoRef.current && !reducedMotion) {
-      // Carregar vídeo somente quando visível
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            videoRef.current.play().catch(err => {
-              console.warn("Auto-play was prevented:", err);
-            });
-            observer.unobserve(entry.target);
-          }
-        },
-        { threshold: 0.1 }
-      );
-      
-      observer.observe(videoRef.current);
-      return () => observer.disconnect();
-    }
-  }, [reducedMotion]);
-
-  // Otimização 2: Intersection Observer otimizado
-  useEffect(() => {
-    if (reducedMotion) {
-      // Para dispositivos com preferência por movimento reduzido, mostrar tudo de uma vez
-      setIsVisible(true);
-      if (skillsRef.current) {
-        const skillBars = skillsRef.current.querySelectorAll(`.${styles.progressBar}`);
-        skillBars.forEach(bar => {
-          const targetWidth = bar.getAttribute('data-width');
-          bar.style.width = targetWidth;
-        });
-      }
-      return;
-    }
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setReducedMotion(prefersReducedMotion);
     
-    // Observer principal para animações de entrada com otimização de performance
+    // Observer para animação de entrada
     const observer = new IntersectionObserver(
-      (entries, observer) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Usar requestAnimationFrame para melhor sincronização com o ciclo de renderização
-            requestAnimationFrame(() => {
-              if (entry.target.classList.contains(styles.progressBar)) {
-                const targetWidth = entry.target.getAttribute('data-width');
-                entry.target.style.width = targetWidth;
-              } else {
-                entry.target.classList.add(styles.animate);
-              }
-            });
-            
-            // Parar de observar após animar
-            observer.unobserve(entry.target);
-          }
-        });
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
       },
-      { 
-        threshold: 0.15,
-        rootMargin: '0px 0px -10% 0px' // Começar animação um pouco antes do elemento entrar na viewport
-      }
+      { threshold: 0.1 }
     );
-
-    // Animação container principal
-    if (containerRef.current) {
-      setIsVisible(true);
-    }
-
-    // Observar barras de progresso
-    if (skillsRef.current) {
-      // Aplicar hardware acceleration aos elementos
-      const skillItems = skillsRef.current.querySelectorAll(`.${styles.skill}`);
-      skillItems.forEach((item, index) => {
-        // Escalonar a ordem de animação para evitar jank
-        item.style.setProperty('--animation-order', index);
-        item.style.transform = 'translateZ(0)';
-        item.style.willChange = 'opacity, transform';
-        observer.observe(item);
-      });
-      
-      const skillBars = skillsRef.current.querySelectorAll(`.${styles.progressBar}`);
-      skillBars.forEach(bar => {
-        bar.style.willChange = 'width';
-        bar.style.transform = 'translateZ(0)';
-        observer.observe(bar);
-      });
-    }
-
-    // Observar estatísticas
-    if (statsRef.current) {
-      const statItems = statsRef.current.querySelectorAll(`.${styles.statItem}`);
-      statItems.forEach((item, index) => {
-        item.style.setProperty('--animation-order', index);
-        item.style.transform = 'translateZ(0)';
-        item.style.willChange = 'opacity, transform';
-        observer.observe(item);
-      });
+    
+    if (aboutRef.current) {
+      observer.observe(aboutRef.current);
     }
     
-    // Observar filosofia
-    if (philosophyRef.current) {
-      const philosophyItems = philosophyRef.current.querySelectorAll(`.${styles.philosophyItem}`);
-      philosophyItems.forEach((item, index) => {
-        item.style.setProperty('--animation-order', index);
-        item.style.transform = 'translateZ(0)';
-        item.style.willChange = 'opacity, transform';
-        observer.observe(item);
-      });
-    }
-
     return () => observer.disconnect();
-  }, [reducedMotion]);
+  }, []);
 
-  // Otimização 3: Aplicar efeitos de parallax leves com throttling
+  // Animar elementos na visualização
   useEffect(() => {
     if (reducedMotion) return;
     
-    const handleScroll = throttle(() => {
-      requestAnimationFrame(() => {
-        if (containerRef.current) {
-          const scrollPosition = window.scrollY;
-          const overlayElements = containerRef.current.querySelectorAll(`.${styles.overlay}`);
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -10% 0px'
+    };
+    
+    const createIntersectionObserver = (elements, className) => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add(className);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+      
+      elements.forEach((el) => {
+        if (el) observer.observe(el);
+      });
+      
+      return observer;
+    };
+    
+    // Observadores para cada tipo de elemento
+    const statObserver = createIntersectionObserver(statItems.current, styles.animate);
+    const skillObserver = createIntersectionObserver(skills.current, styles.animate);
+    const philosophyObserver = createIntersectionObserver(philosophyItems.current, styles.animate);
+    
+    return () => {
+      statObserver.disconnect();
+      skillObserver.disconnect();
+      philosophyObserver.disconnect();
+    };
+  }, [reducedMotion]);
+
+  // Animar barras de progresso
+  useEffect(() => {
+    if (reducedMotion) return;
+    
+    const progressBars = document.querySelectorAll(`.${styles.progressBar}`);
+    
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -10% 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const target = entry.target;
+          const percentage = target.getAttribute('data-percentage');
           
-          overlayElements.forEach(overlay => {
-            overlay.style.transform = `translate3d(0, ${scrollPosition * 0.05}px, 0)`;
-          });
+          // Pequeno atraso para melhor efeito visual
+          setTimeout(() => {
+            target.style.width = `${percentage}%`;
+          }, 200);
+          
+          observer.unobserve(target);
         }
       });
-    }, 50);
+    }, observerOptions);
     
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    progressBars.forEach((bar) => {
+      observer.observe(bar);
+    });
+    
+    return () => observer.disconnect();
   }, [reducedMotion]);
 
   return (
-    <div 
-      className={`${styles.aboutContainer} ${isVisible ? styles.visible : ''} ${reducedMotion ? styles.reducedMotion : ''}`}
-      ref={containerRef}
+    <section 
+      ref={aboutRef} 
+      className={`${styles.aboutContainer} ${visible ? styles.visible : ''} ${reducedMotion ? styles.reducedMotion : ''}`}
+      id="about"
     >
-      {/* Background otimizado com controle de carregamento */}
-      <div className={styles.backgroundVideo}>
-        <picture>
-          {/* Imagem estática para dispositivos móveis ou com preferência por movimento reduzido */}
-          <source srcSet={GradientStatic} media="(max-width: 768px), (prefers-reduced-motion: reduce)" />
-          {!reducedMotion && (
-            <video
-              ref={videoRef}
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="metadata"
-              disablePictureInPicture
-              disableRemotePlayback
-              className={styles.video}
-              aria-hidden="true"
-              poster={GradientStatic} // Usar imagem como poster para melhor LCP
-            >
-              <source src={GradientVideo} type="video/mp4" />
-            </video>
-          )}
-        </picture>
-        <div className={styles.overlay}></div>
+      {/* Background escandinavo moderno */}
+      <div className={styles.scandinavianBackground}>
+        <div className={styles.patternLayer}></div>
+        <div className={styles.minimalLayer}></div>
+        <div className={styles.dotPattern}></div>
       </div>
       
       <div className={styles.content}>
-        {/* Seção de perfil */}
         <div className={styles.profileSection}>
           <div className={styles.profileImageContainer}>
-            <div className={styles.profileImage} aria-label="Profile picture">
-              <img 
-                loading="lazy"
-                src={ProfileImage} 
-                alt="Profile" 
-                width="300" 
-                height="300"
-                className={styles.profileImage}
-                decoding="async"
-              />
-              <span className={styles.profileImageOverlay}></span>
+            <div className={styles.profileImage}>
+              <img src={profileImage} alt="Profilbild" loading="lazy" />
+              <div className={styles.profileImageOverlay}></div>
+              <div className={styles.profileImageGlow}></div>
             </div>
             
-            {/* Links sociais e CV */}
             <div className={styles.socialLinks}>
-              <a 
-                href="https://www.linkedin.com/in/rai-gomes-6487b2153/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                aria-label="LinkedIn Profile"
-              >
-                <FontAwesomeIcon icon={faLinkedin} />
+              <a href="https://github.com/seugitHub" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                <FaGithub />
               </a>
-              <a 
-                href="https://github.com/raigomessw" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                aria-label="GitHub Profile"
-              >
-                <FontAwesomeIcon icon={faGithub} />
+              <a href="https://linkedin.com/in/seulinkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <FaLinkedin />
               </a>
-              <a 
-                href={ResumeEN} 
-                download 
-                className={styles.resumeLink} 
-                aria-label="Download Resume in English"
-              >
-                <FontAwesomeIcon icon={faDownload} />
-                <span className={styles.resumeText}>Resume-EN</span>
+              <a href="https://twitter.com/seutwitter" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                <FaTwitter />
               </a>
-              <a 
-                href={ResumeSW} 
-                download 
-                className={styles.resumeLink} 
-                aria-label="Download Resume in Swedish"
-              >
-                <FontAwesomeIcon icon={faDownload} />
-                <span className={styles.resumeText}>Resume-SW</span>
+              <a href={CVsv} target="_blank" rel="noopener noreferrer" className={styles.resumeLink} aria-label="CV SV">
+                <FaFileAlt />
+                <span className={styles.resumeText}>CV SV</span>
+              </a>
+              <a href={CVeng} target="_blank" rel="noopener noreferrer" className={styles.resumeLink} aria-label="CV ENG">
+                <FaFileAlt />
+                <span className={styles.resumeText}>CV ENG</span>
               </a>
             </div>
           </div>
           
           <div className={styles.profileInfo}>
-            <h1>About me</h1>
-            <h2>UI/UX Designer & Front-End Developer</h2>
-            
-            {/* Descrição pessoal */}
-            <p>Technology has been my passion since my teenage years. After moving to Sweden, I transformed this enthusiasm into a career, beginning with programming courses that built my technical foundation.</p>
+  <h1>Rai Gomes</h1>
+  <h2>Fullstack-utvecklare & UX/UI-designer</h2>
+  
+  <p>
+    Sedan jag var tonåring har jag alltid varit fascinerad av teknologi. Jag höll mig uppdaterad med de senaste trenderna och följde marknadsinnovationer noga. När jag flyttade till Sverige bestämde jag mig för att det var dags att omvandla den här passionen till en karriär.
+  </p>
+  
+  <p>
+    Min resa började med en programmeringskurs, där jag utvecklade viktiga tekniska färdigheter. Strax därefter fördjupade jag mig i apputveckling. Under den här tiden arbetade jag med flera projekt och lärde mig olika programmeringsspråk. Det var genom att skapa applikationer som jag upptäckte en annan passion: UX/UI-design.
+  </p>
+  
+  <p>
+    Jag insåg att det inte räckte med att en applikation fungerade bra – den behövde också vara intuitiv, visuellt tilltalande och erbjuda en angenäm användarupplevelse. Denna insikt ledde mig till att utforska världen av användarupplevelse och gränssnittsdesign djupare, och kombinera min tekniska bakgrund med ett användarcentrerat designperspektiv.
+  </p>
+  
+  <p>
+    Under min inlärningsresa deltog jag i workshops, utvecklade praktiska projekt och fördjupade mina kunskaper inom UX-research, wireframing, prototyputveckling, användbarhetstester och frontend-utveckling. Detta har gjort det möjligt för mig att förena två passioner till en karriär: teknologi och design.
+  </p>
+  
+  <p>
+    När jag inte arbetar tycker jag om att tillbringa tid med min familj, umgås med vänner och hålla mig aktiv genom att träna på gymmet. Jag är också fascinerad av datorspel och, när det är möjligt, gillar jag att spela spel online med vänner på kvällarna.
+  </p>
 
-            <p>Throughout my journey into app development, I discovered another passion: UX/UI Design. I realized great applications need both flawless functionality and intuitive, appealing interfaces that delight users.</p>
-
-            <p>This realization guided me deeper into user experience and interface design, where I combine my technical background with a user-centered approach. Through workshops, practical projects, and continuous learning, I've strengthened my skills in UX research, wireframing, prototyping, usability testing, and frontend development.</p>
-            
-            <p>Outside of work, I enjoy family time, socializing with friends, staying active at the gym, and gaming online. I'm constantly seeking opportunities to create functional, creative solutions that positively impact people's lives.</p>
-
-            <blockquote className={styles.quote}>
-              "I believe impactful digital experiences bridge connections and transform daily routines. At the crossroads of creativity and code, I focus on usability and accessibility, striving for designs so intuitive they become invisible, enabling users to achieve their objectives seamlessly."
-            </blockquote>
-            
-            {/* Estatísticas com animação */}
-            <div className={styles.stats} ref={statsRef}>
-              <div className={styles.statItem}>
-                <span className={styles.number}>5+</span>
-                <span className={styles.label}>Projects<br/>Completed</span>
-              </div>
-              <div className={styles.statItem}>
-                <span className={styles.number}>3+</span>
-                <span className={styles.label}>Years of<br/>Experience</span>
-              </div>
-              
-              {/* CTA */}
-              <div className={styles.ctaContainer}>
-                <a href="/contact" className={styles.ctaButton}>Get in Touch</a>
-              </div>
-            </div>
-          </div>
+  <div className={styles.quote}>
+    "Jag tror att fantastiska digitala upplevelser har kraften att koppla samman människor och förändra vardagslivet."
+  </div>
+  
+  <div ref={statsRef} className={styles.stats}>
+    {[
+      { number: "4+", label: "Års erfarenhet", order: 0 },
+      { number: "8+", label: "Avslutade projekt", order: 1 },
+      { number: "5+", label: "Behärskade teknologier", order: 2 }
+    ].map((stat, index) => (
+      <div 
+        key={index}
+        className={styles.statItem}
+        ref={el => statItems.current[index] = el}
+        style={{ "--animation-order": stat.order }}
+      >
+        <span className={styles.number}>{stat.number}</span>
+        <span className={styles.label}>{stat.label}</span>
+      </div>
+    ))}
+  </div>
+  
+  <div className={styles.ctaContainer}>
+    <a href="/contact" className={styles.ctaButton}>Kontakta mig</a>
+  </div>
+</div>
         </div>
         
-        {/* Seção de habilidades */}
-        <div className={styles.skillsSection} id="skills">
-          <h2>My Skills</h2>
-          <div className={styles.skillsContainer} ref={skillsRef}>
-            {skills.map((skill, index) => (
-              <div key={index} className={styles.skill}>
-                <div className={styles.skillIconContainer} aria-hidden="true">
-                  <FontAwesomeIcon icon={skill.icon} className={styles.skillIcon} />
+        <div ref={skillsRef} className={styles.skillsSection}>
+          <h2>Mina färdigheter</h2>
+          
+          <div className={styles.skillsContainer}>
+            {[
+              {
+                icon: <SiReact />,
+                title: "React & Next.js",
+                description: "Utveckling av moderna gränssnitt med React, React Native och Next.js",
+                percentage: 85,
+                order: 0
+              },
+              {
+                icon: <SiJavascript />,
+                title: "JavaScript & TypeScript",
+                description: "Avancerad erfarenhet med ES6+, TypeScript och moderna ramverk",
+                percentage: 85,
+                order: 1
+              },
+              {
+                icon: <SiNodedotjs />,
+                title: "Node.js & Backend",
+                description: "Utveckling av RESTful APIs, GraphQL och skalbara tjänster",
+                percentage: 85,
+                order: 2
+              },
+              {
+                icon: <MdDesignServices />,
+                title: "UI/UX Design",
+                description: "Design av intuitiva gränssnitt med fokus på användarupplevelse",
+                percentage: 95,
+                order: 3
+              },
+              {
+                icon: <MdDevices />,
+                title: "Responsiv utveckling",
+                description: "Skapande av gränssnitt som fungerar perfekt på alla enheter",
+                percentage: 95,
+                order: 4
+              },
+              {
+                icon: <MdAccessibility />,
+                title: "Tillgänglighet",
+                description: "Implementering av WCAG-riktlinjer för inkluderande design",
+                percentage: 85,
+                order: 5
+              }
+            ].map((skill, index) => (
+              <div 
+                key={index}
+                className={styles.skill}
+                ref={el => skills.current[index] = el}
+                style={{ "--animation-order": skill.order }}
+              >
+                <div className={styles.skillIconContainer}>
+                  {skill.icon}
                 </div>
                 <div className={styles.skillInfo}>
-                  <h3>{skill.name}</h3>
+                  <h3>{skill.title}</h3>
                   <p className={styles.skillDescription}>{skill.description}</p>
-                  <div 
-                    className={styles.progressContainer} 
-                    aria-label={`${skill.name} skill level: ${skill.level}%`}
-                  >
+                  <div className={styles.progressContainer}>
                     <div 
-                      className={styles.progressBar} 
-                      style={{ width: reducedMotion ? `${skill.level}%` : '0%' }} 
-                      data-width={`${skill.level}%`}
+                      className={styles.progressBar}
+                      data-percentage={skill.percentage}
+                      style={reducedMotion ? { width: `${skill.percentage}%` } : {}}
                     ></div>
                   </div>
                 </div>
@@ -330,27 +281,42 @@ function AboutPage() {
           </div>
         </div>
         
-        {/* Seção de filosofia */}
-        <div className={styles.philosophySection} ref={philosophyRef}>
-          <h2>My Design Philosophy</h2>
+        <div ref={philosophyRef} className={styles.philosophySection}>
+          <h2>Min arbetsfilosofi</h2>
+          
           <div className={styles.philosophyItems}>
-            <div className={styles.philosophyItem}>
-              <h3>User-Centered</h3>
-              <p>I create solutions that meet the real needs of people, based on research and empathy.</p>
-            </div>
-            <div className={styles.philosophyItem}>
-              <h3>Functional Minimalism</h3>
-              <p>I believe in clean designs that remove the unnecessary and highlight the essential.</p>
-            </div>
-            <div className={styles.philosophyItem}>
-              <h3>Accessibility for All</h3>
-              <p>I am committed to creating digital experiences that are accessible to people of all abilities.</p>
-            </div>
+            {[
+              {
+                title: "Tillgänglighet först",
+                description: "Jag skapar applikationer som kan användas av alla, oavsett deras förmågor eller begränsningar.",
+                order: 0
+              },
+              {
+                title: "Ren och skalbar kod",
+                description: "Jag utvecklar välstrukturerade lösningar som är lätta att underhålla och är förberedda för framtida tillväxt.",
+                order: 1
+              },
+              {
+                title: "Användarcentrerad",
+                description: "Jag designar varje gränssnitt med slutanvändarnas verkliga behov och mål i åtanke.",
+                order: 2
+              }
+            ].map((item, index) => (
+              <div 
+                key={index}
+                className={styles.philosophyItem}
+                ref={el => philosophyItems.current[index] = el}
+                style={{ "--animation-order": item.order }}
+              >
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
-}
+};
 
-export default AboutPage;
+export default About;

@@ -1,6 +1,15 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { 
+  BrowserRouter as Router, 
+  Routes, 
+  Route, 
+  useLocation,
+  createBrowserRouter,
+  RouterProvider
+} from 'react-router-dom';
 import HomePage from './pages/HomePage';
+import { WorkProjectProvider } from './components/Work/WorkProjectContext';
+import { ThemeProvider } from './components/context/ThemeProvider';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import Navbar from './components/layout/Navbar/Navbar';
@@ -11,112 +20,58 @@ import MarketResearch from './components/Services/MarketResearch';
 import UserResearch from './components/Services/UserResearch';
 import MVPPrototyping from './components/Services/MVPPrototyping';
 import DesignValidation from './components/Services/DesignValidation';
-import { setupPassiveListeners, detectDeviceCapability } from './utils/performance';
+// Importando funções premium ao invés das básicas
+import {
+  detectDevicePerformance,
+  setupPremiumLazyLoading,
+  setupOptimizedBgImages
+} from './components/utils/premiumPerformance';
+import PremiumEffects from './components/common/PremiumEffects';
+import ScrollToTop from './components/common/ScrollToTop';
 
-// Componente otimizado para gerenciar scroll
-function ScrollToSection() {
+// Componente ScrollManager separado para usar dentro do BrowserRouter
+const ScrollManager = () => {
   const location = useLocation();
   
   useEffect(() => {
     if (location.pathname === '/work') {
-      // Usar requestAnimationFrame para garantir performance
       requestAnimationFrame(() => {
         const workSection = document.getElementById('work');
         if (workSection) {
-          // Sroll apenas após o componente ter renderizado completamente
           setTimeout(() => {
+            // Verifica preferência por movimento reduzido usando detectDevicePerformance
+            const { prefersReducedMotion } = (typeof window !== 'undefined') ? 
+              detectDevicePerformance() : { prefersReducedMotion: false };
+              
             workSection.scrollIntoView({ 
-              behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+              behavior: prefersReducedMotion ? 'auto' : 'smooth'
             });
           }, 100);
         }
       });
     } else {
-      // Usar { behavior: 'instant' } para evitar animações desnecessárias
+      // Verifica preferência por movimento reduzido
+      const { prefersReducedMotion } = (typeof window !== 'undefined') ? 
+        detectDevicePerformance() : { prefersReducedMotion: false };
+        
       window.scrollTo({
         top: 0,
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'instant'
+        behavior: prefersReducedMotion ? 'auto' : 'instant'
       });
     }
   }, [location]);
   
   return null;
-}
+};
 
-function App() {
-  // Configurações de performance global
-  useEffect(() => {
-    // 1. Configurar listeners passivos para melhorar performance de eventos
-    const cleanupPassiveListeners = setupPassiveListeners();
-    
-    // 2. Detectar preferências de redução de movimento e capacidades do dispositivo
-    const deviceCaps = detectDeviceCapability();
-    if (deviceCaps.shouldUseReducedEffects) {
-      document.documentElement.classList.add('reduced-motion');
-    }
-    
-    // 3. Otimizar carregamento de imagens
-    const lazyloadImages = () => {
-      if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const img = entry.target;
-              const src = img.getAttribute('data-src');
-              if (src) {
-                img.src = src;
-                img.removeAttribute('data-src');
-              }
-              imageObserver.unobserve(img);
-            }
-          });
-        });
-
-        document.querySelectorAll('img[data-src]').forEach(img => {
-          imageObserver.observe(img);
-        });
-      }
-    };
-    
-    // 4. Limpar timers e animações quando a página não está visível
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        document.body.classList.add('page-hidden');
-      } else {
-        document.body.classList.remove('page-hidden');
-        // Reiniciar lazy loading quando a página volta a ser visível
-        lazyloadImages();
-      }
-    });
-    
-    // 5. Desativar animações durante scroll - melhora significativamente a performance
-    let scrollTimer;
-    const handleScroll = () => {
-      document.body.classList.add('is-scrolling');
-      
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => {
-        document.body.classList.remove('is-scrolling');
-      }, 150);
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    // Iniciar otimização de imagens
-    lazyloadImages();
-    
-    // Cleanup
-    return () => {
-      cleanupPassiveListeners();
-      window.removeEventListener('scroll', handleScroll);
-      clearTimeout(scrollTimer);
-    };
-  }, []);
-  
+// Layout comum para todas as rotas
+const AppLayout = () => {
   return (
-    <BrowserRouter>
+    <>
+      <ScrollToTop />
+      <PremiumEffects />
       <Navbar />
-      <ScrollToSection />
+      <ScrollManager />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/work" element={<WorkPage />} />
@@ -129,8 +84,96 @@ function App() {
         <Route path="/services/design-validation" element={<DesignValidation />} />
       </Routes>
       <Footer />
-    </BrowserRouter>
+    </>
   );
+};
+
+function App() {
+  // Configurações de performance premium global
+  useEffect(() => {
+    // Apenas executa no client-side
+    if (typeof window === 'undefined') return;
+    
+    // 1. Detectar capacidades do dispositivo usando a função premium
+    const deviceInfo = detectDevicePerformance();
+    
+    // 2. Aplicar classes CSS com base nas capacidades detectadas
+    if (deviceInfo.prefersReducedMotion || deviceInfo.shouldReduceEffects) {
+      document.documentElement.classList.add('reduced-motion');
+    }
+    
+    if (deviceInfo.isLowEndDevice) {
+      document.documentElement.classList.add('low-end-device');
+    }
+    
+    if (deviceInfo.isTouchDevice) {
+      document.documentElement.classList.add('touch-device');
+    }
+    
+    // 3. Configurar otimizações premium de lazy loading
+    const premiumLazyObserver = setupPremiumLazyLoading();
+    
+    // 4. Configurar otimizações para imagens de fundo
+    setupOptimizedBgImages();
+    
+    // 5. Otimizar interações durante scroll
+    let scrollTimer;
+    const handleScroll = () => {
+      document.body.classList.add('is-scrolling');
+      
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        document.body.classList.remove('is-scrolling');
+      }, 150);
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // 6. Limpar recursos quando a página está inativa
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        document.body.classList.add('page-hidden');
+      } else {
+        document.body.classList.remove('page-hidden');
+      }
+    });
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimer);
+      
+      // Se houver observadores ativos, os desconecta
+      if (premiumLazyObserver && typeof premiumLazyObserver.disconnect === 'function') {
+        premiumLazyObserver.disconnect();
+      }
+    };
+  }, []);
+  
+  // Criar router com flags futuras para evitar avisos
+  const router = createBrowserRouter(
+    [
+      {
+        path: "*",
+        element: (
+          <ThemeProvider>
+            <WorkProjectProvider>
+              <AppLayout />
+            </WorkProjectProvider>
+          </ThemeProvider>
+        )
+      }
+    ],
+    {
+      // Adicionando flags futuras para evitar os avisos
+      future: {
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }
+    }
+  );
+  
+  return <RouterProvider router={router} />;
 }
 
 export default App;

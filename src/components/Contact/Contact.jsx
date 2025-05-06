@@ -65,33 +65,33 @@ function Contact() {
     switch(name) {
       case 'name':
         if (!value.trim()) {
-          error = 'Name is required';
+          error = 'Namn krävs';
         } else if (value.trim().length < 2) {
-          error = 'Name is too short';
+          error = 'Namnet är för kort';
         }
         break;
       
       case 'email':
         if (!value.trim()) {
-          error = 'Email is required';
+          error = 'E-post krävs';
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          error = 'Invalid email';
+          error = 'Ogiltig e-postadress';
         }
         break;
       
       case 'confirmEmail':
         if (!value.trim()) {
-          error = 'Confirm your email';
+          error = 'Bekräfta din e-post';
         } else if (value !== formData.email) {
-          error = 'Emails do not match';
+          error = 'E-postadresserna matchar inte';
         }
         break;
       
       case 'message':
         if (!value.trim()) {
-          error = 'Message is required';
+          error = 'Meddelande krävs';
         } else if (value.trim().length < 10) {
-          error = 'Message is too short (min. 10 characters)';
+          error = 'Meddelandet är för kort (min. 10 tecken)';
         }
         break;
         
@@ -142,7 +142,7 @@ function Contact() {
     
     if (!validateForm()) {
       setSubmitStatus('error');
-      setSubmitMessage('Please correct the errors in the form.');
+      setSubmitMessage('Var god rätta felen i formuläret.');
       return;
     }
     
@@ -165,7 +165,7 @@ function Contact() {
       if (response.ok) {
         // Sucesso
         setSubmitStatus('success');
-        setSubmitMessage('Your message was sent successfully! I will contact you soon.');
+        setSubmitMessage('Ditt meddelande har skickats! Jag återkommer snart.');
         
         // Limpar o formulário após envio bem-sucedido
         setFormData({
@@ -186,7 +186,7 @@ function Contact() {
     } catch (error) {
       // Erro
       setSubmitStatus('error');
-      setSubmitMessage('An error occurred when sending your message. Please try again.');
+      setSubmitMessage('Ett fel uppstod när ditt meddelande skickades. Försök igen senare.');
       console.error('Error sending form:', error);
     } finally {
       setIsSubmitting(false);
@@ -204,9 +204,9 @@ function Contact() {
       
       <div className={styles.content}>
         <header className={`${styles.contactHeader} ${isVisible ? styles.visible : ''}`}>
-          <span className={styles.preHeading}>CONTACT</span>
-          <h1>Let's Work Together</h1>
-          <p>I am available for new projects and opportunities. Get in touch to discuss your ideas.</p>
+          <span className={styles.preHeading}>KONTAKT</span>
+          <h1>Låt oss arbeta tillsammans</h1>
+          <p>Jag är tillgänglig för nya projekt och möjligheter. Hör av dig för att diskutera dina idéer.</p>
         </header>
         
         <div className={styles.contactContent}>
@@ -215,8 +215,8 @@ function Contact() {
               <div className={styles.infoIcon}>
                 <FontAwesomeIcon icon={faEnvelope} />
               </div>
-              <h3>Email</h3>
-              <p>I respond within 24 hours on business days.</p>
+              <h3>E-post</h3>
+              <p>Jag svarar inom 24 timmar på vardagar.</p>
               <a href="mailto:raigomessw@gmail.com" className={styles.infoLink}>
                 raigomessw@gmail.com
                 <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
@@ -227,8 +227,8 @@ function Contact() {
               <div className={styles.infoIcon}>
                 <FontAwesomeIcon icon={faPhone} />
               </div>
-              <h3>Phone</h3>
-              <p>Available for calls during business hours.</p>
+              <h3>Telefon</h3>
+              <p>Tillgänglig för samtal under kontorstid.</p>
               <a href="tel:+46 076 070 05 69" className={styles.infoLink}>
                 +46 (0) 760700569
                 <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
@@ -239,16 +239,16 @@ function Contact() {
               <div className={styles.infoIcon}>
                 <FontAwesomeIcon icon={faLocationDot} />
               </div>
-              <h3>Location</h3>
-              <p>I work remotely from anywhere in the world.</p>
+              <h3>Plats</h3>
+              <p>Jag arbetar på distans från var som helst i världen.</p>
               <a href="https://www.google.se/maps/@59.3145508,18.0682806,14z?entry=ttu&g_ep=EgoyMDI1MDQyMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" className={styles.infoLink}>
-                Sweden, Stockholm
+                Sverige, Stockholm
                 <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
               </a>
             </div>
             
             <div className={`${styles.socialLinks} ${isVisible ? styles.visible : ''}`} style={{ transitionDelay: '0.4s' }}>
-              <h3>Social Media</h3>
+              <h3>Sociala Medier</h3>
               <div className={styles.socialIconsContainer}>
                 <a href="https://www.linkedin.com/in/rai-gomes-6487b2153/" target="_blank" rel="noopener noreferrer" className={`${styles.socialLink} ${styles.linkedinLink}`}>
                   <FontAwesomeIcon icon={faLinkedin} />

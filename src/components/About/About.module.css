@@ -1,55 +1,164 @@
+/* Variáveis de cor para o componente About - Paleta escandinava refinada */
+:root {
+  /* Usando variáveis globais ao invés de valores fixos */
+  --about-bg-primary: var(--color-bg-0);
+  --about-text-main: var(--color-text-0);
+  --about-text-secondary: var(--color-text-1);
+  --about-accent-primary: var(--color-primary);
+  --about-accent-secondary: var(--color-secondary);
+  --about-card-bg: var(--color-card);
+  --about-card-border: var(--color-border);
+  --about-glass-bg: var(--color-glass);
+  --about-glass-border: var(--color-glass-border);
+  --about-glass-blur: var(--backdrop-blur);
+  --about-glass-shadow: var(--shadow-lg);
+  
+  /* Cores para os padrões de fundo adaptadas às variáveis globais */
+  --pattern-color: rgba(var(--color-primary-rgb), 0.03);
+  --dot-color: rgba(var(--color-primary-rgb), 0.1);
+  --skill-icon-bg: rgba(var(--color-primary-rgb), 0.1);
+  --skill-icon-hover-bg: rgba(var(--color-primary-rgb), 0.2);
+  --progress-bg: rgba(var(--color-primary-rgb), 0.1);
+  --card-shadow: var(--shadow-sm);
+  --hover-shadow: var(--shadow-md);
+  --cta-hover-shadow: var(--shadow-lg);
+  --image-shadow: rgba(0, 0, 0, 0.1);
+  --image-glow: rgba(var(--color-primary-rgb), 0.3);
+}
+
+/* Ajustes específicos para o tema escuro */
+html[data-theme="dark"] {
+  /* Ajustes refinados para o dark mode escandinavo */
+  --about-glass-bg: var(--color-glass-dark);
+  --about-glass-border: var(--color-glass-border-dark);
+  --about-card-bg: var(--color-card-dark);
+  --about-card-border: var(--color-border-dark);
+  
+  /* Cores escuras para os padrões de fundo */
+  --pattern-color: rgba(var(--color-primary-rgb), 0.06);
+  --dot-color: rgba(var(--color-primary-rgb), 0.08);
+  --skill-icon-bg: rgba(var(--color-primary-rgb), 0.15);
+  --skill-icon-hover-bg: rgba(var(--color-primary-rgb), 0.25);
+  --progress-bg: rgba(var(--color-primary-rgb), 0.15);
+  --card-shadow: var(--shadow-sm-dark);
+  --hover-shadow: var(--shadow-md-dark);
+  --cta-hover-shadow: var(--shadow-lg-dark);
+  --image-shadow: rgba(0, 0, 0, 0.25);
+  --image-glow: rgba(var(--color-primary-rgb), 0.25);
+}
+
 .aboutContainer {
   position: relative;
   min-height: 100vh;
-  color: white;
+  color: var(--about-text-main);
   overflow-x: hidden;
   opacity: 0;
-  transform: translateY(20px) translateZ(0);
+  transform: translateY(20px);
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  contain: layout paint style; /* Isolar para evitar repaints globais */
-  will-change: opacity, transform;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-primary, "Inter", sans-serif);
+  letter-spacing: -0.01em; /* Tipografia escandinava refinada */
 }
 
 .aboutContainer.visible {
   opacity: 1;
-  transform: translateY(0) translateZ(0);
+  transform: translateY(0);
 }
 
-/* Redução de movimento para melhor performance */
-.aboutContainer.reducedMotion * {
-  transition-duration: 0.001s !important;
-  animation-duration: 0.001s !important;
-}
-
-/* Background de vídeo otimizado */
-.backgroundVideo {
+/* Background escandinavo moderno - Redesenhado para maior sutileza */
+.scandinavianBackground {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: -1;
-  contain: strict; /* Isolar para performance */
+  overflow: hidden;
 }
 
-.video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: translateZ(0); /* Força aceleração por hardware */
+/* Estilo minimalista sueco com gradiente otimizado */
+.minimalLayer {
+  position: absolute;
+  inset: 0;
+  background: var(--color-background-gradient);
+  opacity: 0.9;
 }
 
-.overlay {
+html[data-theme="dark"] .minimalLayer {
+  background: var(--color-background-gradient-dark);
+  opacity: 0.95;
+}
+
+/* Padrão geométrico típico do design sueco */
+.patternLayer {
+  position: absolute;
+  inset: 0;
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, var(--pattern-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--pattern-color) 1px, transparent 1px);
+  opacity: 0.6;
+}
+
+/* Padrão de pontos inspirado no design escandinavo moderno */
+.dotPattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    var(--dot-color) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+  opacity: 0.5;
+}
+
+/* Efeito aurora boreal (fenômeno natural escandinavo) */
+html[data-theme="dark"] .scandinavianBackground::after {
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(10px); /* Blur para vídeo de fundo */
-  -webkit-backdrop-filter: blur(10px);
-  will-change: transform;
-  transform: translateZ(0);
+  right: 0;
+  height: 25%;
+  background: linear-gradient(90deg, 
+    rgba(var(--color-primary-rgb), 0.05) 0%, 
+    rgba(var(--color-secondary-rgb), 0.07) 50%,
+    rgba(var(--color-tertiary-rgb), 0.05) 100%);
+  filter: blur(40px);
+  opacity: 0.7;
+  animation: moveAurora 25s infinite alternate ease-in-out;
+}
+
+@keyframes moveAurora {
+  0% { transform: translateX(-20%) scale(1.2); opacity: 0.5; }
+  50% { transform: translateX(10%) scale(0.9); opacity: 0.7; }
+  100% { transform: translateX(-15%) scale(1.1); opacity: 0.6; }
+}
+
+/* Efeito de "sol da meia-noite" para o tema claro - fenômeno sueco */
+html[data-theme="light"] .scandinavianBackground::after {
+  content: "";
+  position: absolute;
+  top: 15%;
+  right: 15%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    circle at center,
+    rgba(var(--color-accent-rgb), 0.08),
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.4;
+  animation: midnightSun 30s infinite alternate ease-in-out;
+}
+
+@keyframes midnightSun {
+  0% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 0.4; }
+  100% { transform: scale(0.9); opacity: 0.35; }
 }
 
 .content {
@@ -59,43 +168,49 @@
   margin: 0 auto;
   padding: 120px 0 80px;
   z-index: 1;
-  contain: content; /* Isolar para otimizar reflows */
 }
 
-/* Seção de Perfil */
+/* Seção de Perfil - Layout típico escandinavo com grid */
 .profileSection {
   display: grid;
   grid-template-columns: minmax(300px, 1fr) 2fr;
   gap: 50px;
   align-items: start;
   margin-bottom: 80px;
-  contain: layout style;
 }
 
 .profileImageContainer {
   position: sticky;
-  top: 120px; /* Ajustar com base na altura do navbar */
+  top: 120px;
   transition: transform 0.3s ease;
-  will-change: transform;
 }
 
-/* Otimização da imagem de perfil */
+/* Imagem de perfil com estilo escandinavo refinado */
 .profileImage {
   position: relative;
   width: 300px;
   height: 300px;
-  border-radius: 20px;
+  border-radius: 4px; /* Bordas minimalistas escandinavas */
   overflow: hidden;
-  transform: translateZ(0);
-  will-change: transform;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-md);
+  border: 4px solid var(--about-card-bg);
+  transform: perspective(1000px) rotateY(2deg); /* Sutil efeito 3D escandinavo */
+  transition: transform 0.5s ease;
+}
+
+.profileImage:hover {
+  transform: perspective(1000px) rotateY(0deg);
 }
 
 .profileImage img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: translateZ(0);
+  transition: transform 0.5s ease;
+}
+
+.profileImageContainer:hover .profileImage img {
+  transform: scale(1.05);
 }
 
 .profileImageOverlay {
@@ -103,14 +218,37 @@
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(35, 166, 213, 0.3),
-    rgba(231, 60, 126, 0.3)
+    rgba(var(--color-primary-rgb), 0.1),
+    rgba(var(--color-secondary-rgb), 0.1)
   );
-  border-radius: 20px;
   mix-blend-mode: overlay;
 }
 
-/* Links sociais */
+html[data-theme="dark"] .profileImageOverlay {
+  background: linear-gradient(
+    135deg,
+    rgba(var(--color-primary-rgb), 0.15),
+    rgba(var(--color-secondary-rgb), 0.15)
+  );
+  mix-blend-mode: screen;
+}
+
+/* Brilho da imagem - Efeito inspirado na luz escandinava */
+.profileImageGlow {
+  position: absolute;
+  inset: -15px;
+  border-radius: 10px;
+  background: radial-gradient(
+    circle at center,
+    var(--image-glow),
+    transparent 70%
+  );
+  filter: blur(20px);
+  opacity: 0.5;
+  z-index: -1;
+}
+
+/* Links sociais com estilo escandinavo minimalista */
 .socialLinks {
   display: flex;
   flex-wrap: wrap;
@@ -125,24 +263,24 @@
   justify-content: center;
   width: 45px;
   height: 45px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  color: white;
+  background: var(--about-card-bg);
+  border-radius: 4px; /* Cantos minimalistas escandinavos */
+  color: var(--about-accent-primary);
   text-decoration: none;
   font-size: 1.2rem;
-  transition: transform 0.3s ease, background 0.3s ease;
-  will-change: transform, background-color;
-  transform: translateZ(0);
+  transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+  border: 1px solid var(--about-card-border);
 }
 
 .socialLinks a:hover {
-  transform: translateY(-5px) translateZ(0);
-  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-5px);
+  background: var(--about-accent-primary);
+  color: white;
 }
 
 .resumeLink {
   width: auto !important;
-  border-radius: 20px !important;
+  border-radius: 4px !important;
   padding: 0 15px;
   gap: 8px;
 }
@@ -150,52 +288,68 @@
 .resumeText {
   font-size: 0.8rem;
   font-weight: 500;
+  text-transform: uppercase; /* Estilo tipográfico escandinavo */
+  letter-spacing: 0.05em;
 }
 
-/* Informações de perfil */
+/* Informações de perfil com estilo sueco contemporâneo */
 .profileInfo {
-  color: rgba(255, 255, 255, 0.9);
-  contain: content; /* Isolar para performance */
+  color: var(--about-text-main);
 }
 
 .profileInfo h1 {
   font-size: clamp(2.5rem, 5vw, 3.5rem);
-  font-weight: 800;
+  font-weight: 700;
   margin-bottom: 10px;
-  background: linear-gradient(135deg, #ffffff 0%, #aacfe2 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  transform: translateZ(0); /* Melhora renderização de texto com gradient */
+  color: var(--about-text-main);
+  line-height: 1.2;
+  letter-spacing: -0.03em; /* Estilo tipográfico escandinavo */
 }
 
 .profileInfo h2 {
   font-size: 1.5rem;
-  color: var(--accent-light-senary, #23a6d5);
+  color: var(--about-accent-primary);
   margin-bottom: 25px;
-  font-weight: 600;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .profileInfo p {
   font-size: 1.05rem;
   line-height: 1.7;
   margin-bottom: 20px;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--about-text-secondary);
 }
 
-/* Citação */
+/* Citação com estilo escandinavo com linhas limpas */
 .quote {
-  border-left: 4px solid var(--accent-light-senary, #23a6d5);
-  padding-left: 20px;
+  border-left: 4px solid var(--about-accent-primary);
+  padding: 25px 30px;
   font-style: italic;
-  margin: 30px 0;
+  margin: 35px 0;
   font-size: 1.1rem;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--about-text-main);
+  background: var(--about-glass-bg);
+  backdrop-filter: blur(var(--about-glass-blur));
+  -webkit-backdrop-filter: blur(var(--about-glass-blur));
+  border-radius: 0 4px 4px 0;
+  position: relative;
 }
 
-/* Estatísticas */
+/* Aspas decorativas estilizadas */
+.quote::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  font-size: 3rem;
+  color: var(--about-accent-primary);
+  opacity: 0.15;
+  font-family: Georgia, serif;
+}
+
+/* Estatísticas com visual escandinavo grid limpo */
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -206,17 +360,50 @@
 .statItem {
   text-align: center;
   opacity: 0;
-  transform: translateY(20px) translateZ(0);
+  transform: translateY(20px);
   transition: 
     opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform, opacity;
+    transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
   transition-delay: calc(var(--animation-order, 0) * 0.1s);
+  background: var(--about-card-bg);
+  padding: 25px 20px;
+  border-radius: 4px;
+  border: 1px solid var(--about-card-border);
+  box-shadow: var(--card-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decoração gráfica minimalista nos stats */
+.statItem::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  background: var(--about-accent-primary);
+  opacity: 0.05;
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.statItem:hover::after {
+  transform: scale(1.5);
+  opacity: 0.1;
 }
 
 .statItem.animate {
   opacity: 1;
-  transform: translateY(0) translateZ(0);
+  transform: translateY(0);
+}
+
+.statItem:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--hover-shadow);
+  border-color: var(--about-accent-primary);
 }
 
 .number {
@@ -224,49 +411,75 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 5px;
-  background: linear-gradient(135deg, #23a6d5, #e73c7e);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  transform: translateZ(0);
+  color: var(--about-accent-primary);
+  letter-spacing: -0.03em;
 }
 
 .label {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  color: var(--about-text-secondary);
   line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
-/* CTA button */
+/* CTA button com estilo escandinavo clean e funcional */
 .ctaContainer {
   grid-column: 1 / -1;
   text-align: center;
-  margin-top: 20px;
+  margin-top: 50px;
 }
 
 .ctaButton {
   display: inline-block;
-  padding: 12px 30px;
-  background: linear-gradient(135deg, #23a6d5, #e73c7e);
+  padding: 14px 32px;
+  background: var(--about-accent-primary);
   color: white;
   text-decoration: none;
-  border-radius: 30px;
-  font-weight: 600;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  transform: translateZ(0);
-  will-change: transform, box-shadow;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  border: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase; /* Estilo tipográfico escandinavo */
+  font-size: 0.9rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaButton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 150%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: skewX(-20deg);
+  transition: transform 0.5s ease;
+  opacity: 0;
 }
 
 .ctaButton:hover {
-  transform: translateY(-3px) translateZ(0);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+  color: aliceblue;
+  box-shadow: var(--cta-hover-shadow);
+  background: var(--color-primary-dark); /* Um pouco mais escuro quando hover */
 }
 
-/* Seção de habilidades */
+.ctaButton:hover::after {
+  transform: translateX(100%) skewX(-20deg);
+  opacity: 0.4;
+  transition: transform 1s ease;
+}
+
+html[data-theme="dark"] .ctaButton:hover {
+  background: var(--color-primary-light); /* Um pouco mais claro quando hover no modo escuro */
+}
+
+/* Seção de habilidades em estilo escandinavo mais clean */
 .skillsSection {
   margin-bottom: 80px;
-  contain: content;
 }
 
 .skillsSection h2,
@@ -278,6 +491,9 @@
   display: inline-block;
   left: 50%;
   transform: translateX(-50%);
+  color: var(--about-text-main);
+  letter-spacing: -0.01em;
+  font-weight: 600;
 }
 
 .skillsSection h2::after,
@@ -288,7 +504,7 @@
   bottom: -10px;
   width: 60px;
   height: 3px;
-  background: var(--accent-light-senary, #23a6d5);
+  background: var(--about-accent-primary);
   border-radius: 2px;
   left: 50%;
   transform: translateX(-50%);
@@ -301,35 +517,56 @@
 }
 
 .skill {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 15px;
+  background: var(--about-card-bg);
+  border-radius: 4px;
   padding: 25px;
   display: flex;
   align-items: flex-start;
   gap: 20px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
   opacity: 0;
-  transform: translateY(30px) translateZ(0);
+  transform: translateY(30px);
   transition: 
     opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     box-shadow 0.3s ease,
-    background-color 0.3s ease;
-  will-change: transform, opacity;
+    background-color 0.3s ease,
+    border-color 0.3s ease;
   transition-delay: calc(var(--animation-order, 0) * 0.1s);
-  contain: layout style;
+  border: 1px solid var(--about-card-border);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decoração gráfica no canto superior direito */
+.skill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  background: var(--about-accent-primary);
+  opacity: 0.05;
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.skill:hover::after {
+  transform: scale(1.5);
+  opacity: 0.1;
 }
 
 .skill:hover {
-  transform: translateY(-5px) translateZ(0);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-5px);
+  box-shadow: var(--hover-shadow);
+  border-color: var(--about-accent-primary);
 }
 
 .skill.animate {
   opacity: 1;
-  transform: translateY(0) translateZ(0);
+  transform: translateY(0);
 }
 
 .skillIconContainer {
@@ -339,17 +576,36 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  background: var(--skill-icon-bg);
+  border-radius: 4px;
   font-size: 1.8rem;
-  color: var(--accent-light-senary, #23a6d5);
-  transition: transform 0.3s ease;
-  will-change: transform;
-  transform: translateZ(0);
+  color: var(--about-accent-primary);
+  transition: transform 0.3s ease, background 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+/* Efeito de respingo minimalista */
+.skillIconContainer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--about-accent-primary);
+  border-radius: 4px;
+  transform: scale(0);
+  opacity: 0;
+  z-index: -1;
+  transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
 .skill:hover .skillIconContainer {
-  transform: scale(1.1) translateZ(0);
+  transform: scale(1.1);
+  color: white;
+}
+
+.skill:hover .skillIconContainer::after {
+  transform: scale(1);
+  opacity: 0.9;
 }
 
 .skillInfo {
@@ -361,12 +617,13 @@
   font-size: 1.2rem;
   margin-bottom: 5px;
   font-weight: 600;
-  color: white;
+  color: var(--about-text-main);
+  letter-spacing: -0.01em;
 }
 
 .skillDescription {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--about-text-secondary);
   margin-bottom: 15px;
   line-height: 1.5;
 }
@@ -374,26 +631,62 @@
 .progressContainer {
   width: 100%;
   height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--progress-bg);
   border-radius: 3px;
   overflow: hidden;
-  contain: strict;
+  position: relative;
+}
+
+/* Marcadores de progresso estilo escandinavo */
+.progressContainer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.1) 10px,
+    rgba(255, 255, 255, 0.1) 12px
+  );
+  z-index: 1;
+  opacity: 0.4;
+}
+
+html[data-theme="dark"] .progressContainer::after {
+  opacity: 0.15;
 }
 
 .progressBar {
   height: 100%;
   width: 0%; /* Começa em 0% e anima até o valor desejado */
-  background: linear-gradient(90deg, #23a6d5, #e73c7e);
+  background: linear-gradient(90deg, 
+    var(--about-accent-primary), 
+    var(--about-accent-secondary));
   border-radius: 3px;
   transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: width;
-  transform: translateZ(0);
+  position: relative;
 }
 
-/* Seção de filosofia */
+/* Ponto brilhante no final da barra de progresso */
+.progressBar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  background: #FFF;
+  opacity: 0.5;
+  filter: blur(2px);
+}
+
+/* Seção de filosofia com visual escandinavo contemporâneo */
 .philosophySection {
   margin-bottom: 60px;
-  contain: content;
 }
 
 .philosophyItems {
@@ -403,52 +696,85 @@
 }
 
 .philosophyItem {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--about-card-bg);
   padding: 30px;
-  border-radius: 15px;
+  border-radius: 4px;
   text-align: center;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
   opacity: 0;
-  transform: translateY(30px) translateZ(0);
+  transform: translateY(30px);
   transition: 
     opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     box-shadow 0.3s ease,
-    background-color 0.3s ease;
-  will-change: transform, opacity;
+    background-color 0.3s ease,
+    border-color 0.3s ease;
   transition-delay: calc(var(--animation-order, 0) * 0.15s);
-  contain: layout style;
+  border: 1px solid var(--about-card-border);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decoração estilo escandinavo - linhas simples */
+.philosophyItem::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--about-accent-primary);
+  opacity: 0.1;
+  transition: opacity 0.3s ease;
 }
 
 .philosophyItem.animate {
   opacity: 1;
-  transform: translateY(0) translateZ(0);
+  transform: translateY(0);
 }
 
 .philosophyItem:hover {
-  transform: translateY(-5px) translateZ(0);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-5px);
+  box-shadow: var(--hover-shadow);
+  border-color: var(--about-accent-primary);
+}
+
+.philosophyItem:hover::after {
+  opacity: 0.2;
 }
 
 .philosophyItem h3 {
   font-size: 1.3rem;
   margin-bottom: 15px;
-  color: var(--accent-light-senary, #23a6d5);
+  color: var(--about-accent-primary);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .philosophyItem p {
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--about-text-secondary);
   line-height: 1.6;
 }
 
-/* Pausa animações durante scroll */
-body.is-scrolling .progressBar {
-  transition-duration: 0.001s !important;
+.philosophyItem::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--about-accent-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease-out;
 }
 
-/* Responsividade */
+.philosophyItem:hover::before {
+  transform: scaleX(1);
+}
+
+/* Responsividade aprimorada */
 @media (max-width: 991px) {
   .profileSection {
     grid-template-columns: 1fr;
@@ -462,6 +788,10 @@ body.is-scrolling .progressBar {
     margin: 0 auto;
   }
   
+  .profileImage {
+    margin: 0 auto;
+  }
+  
   .profileInfo h1 {
     text-align: center;
   }
@@ -472,6 +802,16 @@ body.is-scrolling .progressBar {
 
   .skillsContainer {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  
+  .quote {
+    padding-left: 25px;
+  }
+  
+  .quote::before {
+    left: 8px;
+    top: 5px;
+    font-size: 2.5rem;
   }
 }
 
@@ -488,12 +828,39 @@ body.is-scrolling .progressBar {
   .profileImage {
     width: 250px;
     height: 250px;
+    transform: perspective(800px) rotateY(2deg);
+  }
+  
+  .profileInfo p {
+    font-size: 1rem;
+  }
+  
+  .number {
+    font-size: 2.2rem;
+  }
+  
+  .skillIconContainer {
+    width: 50px;
+    height: 50px;
+    font-size: 1.6rem;
+  }
+  
+  .skillInfo h3 {
+    font-size: 1.1rem;
+  }
+  
+  .philosophyItem {
+    padding: 25px 20px;
   }
 }
 
 @media (max-width: 480px) {
   .profileInfo h1 {
     font-size: 2.2rem;
+  }
+  
+  .profileInfo h2 {
+    font-size: 1.3rem;
   }
   
   .philosophyItems {
@@ -509,6 +876,25 @@ body.is-scrolling .progressBar {
     flex: 1 1 calc(50% - 15px);
     justify-content: center;
   }
+  
+  .quote {
+    padding: 20px 20px 20px 25px;
+    font-size: 1rem;
+  }
+  
+  .ctaButton {
+    padding: 12px 25px;
+    font-size: 0.85rem;
+  }
+  
+  .statItem {
+    padding: 20px 15px;
+  }
+  
+  .skill {
+    padding: 20px;
+    gap: 15px;
+  }
 }
 
 /* Preferência por movimento reduzido */
@@ -519,12 +905,21 @@ body.is-scrolling .progressBar {
   .progressBar,
   .philosophyItem,
   .ctaButton,
-  .socialLinks a {
+  .socialLinks a,
+  .scandinavianBackground::after,
+  .progressBar::after,
+  .profileImage,
+  .ctaButton::after {
     transition-duration: 0.001s !important;
     animation-duration: 0.001s !important;
+    animation: none !important;
   }
   
   .progressBar {
     transition: none !important;
+  }
+  
+  .profileImage {
+    transform: none !important;
   }
 }
