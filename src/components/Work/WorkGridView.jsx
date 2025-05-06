@@ -16,94 +16,59 @@ const WorkGridView = ({ projects, onQuickView }) => {
     cardRefs.current = cardRefs.current.slice(0, projects.length);
   }, [projects]);
 
-  // Detecção de Surface Pro 7 e aplicação de estilos específicos
+  // Função simplificada para responsividade
   useEffect(() => {
     const handleResize = () => {
-      // Use seletores para o WorkGridView
+      // Remover TODAS as manipulações de estilo inline
+      document.documentElement.style.removeProperty('--grid-max-width');
+      document.documentElement.style.removeProperty('--grid-gap');
+      document.documentElement.style.removeProperty('--grid-columns');
+      
+      // Usar apenas classes básicas para identificação de dispositivos
       const gridContainer = document.querySelector(`.${styles.gridContainer}`);
-      const gridCards = document.querySelectorAll(`.${styles.gridCard}`);
-
-      // No arquivo WorkGridView.jsx, adicione este bloco dentro do useEffect de detecção de dispositivos
-
-// Detecção específica para iPad Pro (1024px)
-const isIPadPro1024 = window.innerWidth >= 1020 && window.innerWidth <= 1030;
-
-if (isIPadPro1024) {
-  console.log('iPad Pro 1024px detected');
-  
-  if (gridContainer) {
-    gridContainer.classList.add(styles.iPadPro1024Grid);
-    gridContainer.dataset.device = 'ipad-pro';
-  }
-  
-  if (gridCards && gridCards.length > 0) {
-    gridCards.forEach(card => {
-      card.classList.add(styles.iPadPro1024Card);
-    });
-  }
-  
-  // Aplicar variáveis CSS específicas
-  document.documentElement.style.setProperty('--grid-max-width', '960px');
-  document.documentElement.style.setProperty('--grid-columns', '2');
-} 
-// O resto do código para remover estas classes quando necessário...
+      if (!gridContainer) return;
       
-      // Verificar se é um Surface Pro 7 ou similar (912px de largura)
-      const isSurfacePro = window.innerWidth >= 900 && window.innerWidth <= 920;
+      // Remover todas as classes antigas
+      gridContainer.className = `${styles.gridContainer} workProjectsGrid`;
       
-      if (isSurfacePro) {
-        console.log('Surface Pro 7 detected (912px)');
-        
-        if (gridContainer) {
-          gridContainer.classList.add(styles.surfacePro912Grid);
-          gridContainer.style.setProperty('--grid-columns', '2');
-        }
-        
-        if (gridCards && gridCards.length > 0) {
-          gridCards.forEach(card => {
-            card.classList.add(styles.surfacePro912Card);
-            card.style.width = '100%';
-          });
-        }
-        
-        // Aplicar estilos diretamente no nível do documento para maior especificidade
-        document.documentElement.style.setProperty('--grid-max-width', '860px');
-        document.documentElement.style.setProperty('--grid-gap', '24px');
+      // Adicionar apenas classes baseadas em largura para diagnóstico
+      if (window.innerWidth > 3000) {
+        gridContainer.classList.add('screen-ultrawide');
+      } else if (window.innerWidth > 2000) {
+        gridContainer.classList.add('screen-xxl');
+      } else if (window.innerWidth > 1600) {
+        gridContainer.classList.add('screen-xl');
+      } else if (window.innerWidth > 1200) {
+        gridContainer.classList.add('screen-lg');
+      } else if (window.innerWidth > 900) {
+        gridContainer.classList.add('screen-md');
+      } else if (window.innerWidth > 600) {
+        gridContainer.classList.add('screen-sm');
       } else {
-        // Remover classes específicas
-        if (gridContainer) {
-          gridContainer.classList.remove(styles.surfacePro912Grid);
-          gridContainer.style.removeProperty('--grid-columns');
-        }
-        
-        if (gridCards && gridCards.length > 0) {
-          gridCards.forEach(card => {
-            card.classList.remove(styles.surfacePro912Card);
-            card.style.removeProperty('width');
-          });
-        }
-        
-        // Remover variáveis CSS
-        document.documentElement.style.removeProperty('--grid-max-width');
-        document.documentElement.style.removeProperty('--grid-gap');
+        gridContainer.classList.add('screen-xs');
       }
+      
+      // Registrar para debug
+      console.log(`Screen width: ${window.innerWidth}, classe aplicada: ${gridContainer.className}`);
     };
     
-    // Executar imediatamente e adicionar listener
+    // Executar imediatamente
     handleResize();
-    window.addEventListener('resize', handleResize);
     
-    // Executar novamente após carregamento completo da página
+    // Adicionar listeners com throttle
+    let timeoutId;
+    const throttledResize = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(handleResize, 200);
+    };
+    
+    window.addEventListener('resize', throttledResize);
     window.addEventListener('load', handleResize);
     
-    // Executar novamente com um delay para garantir que tudo esteja carregado
-    const timeoutId = setTimeout(handleResize, 500);
-    
-    // Cleanup
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', throttledResize);
       window.removeEventListener('load', handleResize);
-      clearTimeout(timeoutId);
+      if (timeoutId) clearTimeout(timeoutId);
     };
   }, [styles]);
 
@@ -262,14 +227,6 @@ if (isIPadPro1024) {
                 Se projekt <FiArrowRight className={styles.buttonIcon} />
               </button>
               
-              <button
-                type="button"
-                className={styles.detailsButton}
-                onClick={(e) => handleQuickView(e, project)}
-                aria-label={`Förhandsgranska ${project.title}`}
-              >
-                Förhandsgranska <FiExternalLink className={styles.buttonIcon} />
-              </button>
             </div>
           </div>
         </div>

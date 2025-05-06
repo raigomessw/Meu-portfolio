@@ -120,7 +120,7 @@ html[data-theme="dark"] {
 html[data-theme="light"] .gradientLayer {
   background: radial-gradient(
       circle at 30% 30%, 
-      rgba(236, 72, 153, 0.25) 0%, 
+      #a3a6f840 0%, 
       rgba(236, 72, 153, 0) 50%
     ),
     radial-gradient(
@@ -142,11 +142,11 @@ html[data-theme="dark"] .gradientLayer {
   background: radial-gradient(
       circle at 30% 30%, 
       rgba(0, 0, 0, 0.35) 0%, 
-      rgba(236, 72, 153, 0) 50%
+      rgba(189, 21, 158, 0) 50%
     ),
     radial-gradient(
       circle at 70% 60%, 
-      rgba(79, 70, 229, 0.35) 0%, 
+      rgba(0, 0, 0, 0.35) 0%, 
       rgba(79, 70, 229, 0) 50%
     ),
     radial-gradient(
