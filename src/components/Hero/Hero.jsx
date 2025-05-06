@@ -392,7 +392,7 @@ const Hero = () => {
             </span>
           </h1>
           
-          {/* Subtítulo com efeito de digitação - Traduzido para sueco */}
+          {/* Subtítulo com efeito de digitação */}
           <p className={styles.heroSubtitle}>
             Specialiserad på <span className={styles.typedTextContainer}>{typedText}
             <span 

@@ -158,6 +158,50 @@ html[data-theme="dark"] .gradientLayer {
   filter: blur(70px);
 }
 
+/* Correções para as estatísticas no tema claro */
+html[data-theme="light"] .statLabel {
+  color: var(--hero-text-secondary); /* Cor escura para tema claro */
+  text-shadow: none; /* Remove a sombra no tema claro */
+}
+
+html[data-theme="light"] .statNumber {
+  color: var(--hero-accent);
+  text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.15); /* Sombra mais sutil */
+}
+
+/* Estilização específica para as cores de fundo das estatísticas no tema claro */
+html[data-theme="light"] .statsContainer {
+  background: rgba(var(--color-bg-1-rgb), 0.08);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* Ajuste o divisor para ser visível no tema claro */
+html[data-theme="light"] .statDivider {
+  background: linear-gradient(to bottom,
+    rgba(0, 0, 0, 0.03),
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.03));
+}
+
+/* Mesmo problema com estatísticas no modo claro, mas invertendo cores */
+.ars,
+.slutforda {
+  font-size: var(--caption);
+  color: var(--hero-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: var(--font-medium);
+  text-shadow: none; /* Remove sombra */
+}
+
+/* Garantindo que no tema escuro as letras continuam com contraste */
+html[data-theme="dark"] .statLabel,
+html[data-theme="dark"] .ars,
+html[data-theme="dark"] .slutforda {
+  color: rgba(255, 255, 255, 0.85); /* Cor mais clara para o tema escuro */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Mantém sombra no tema escuro */
+}
+
 /* Animação de movimentação suave dos blobs */
 @keyframes gradientAnimation {
   0% { 
@@ -313,7 +357,7 @@ html[data-theme="dark"] .particle {
   background: rgba(var(--color-bg-1-rgb), 0.08);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--space-md) var(--space-md);
   border-radius: 30px;
   font-size: var(--caption);
   z-index: 10;
@@ -323,7 +367,6 @@ html[data-theme="dark"] .particle {
   transform: translateY(-20px);
   opacity: 0;
   animation: fadeInDown 0.6s var(--hero-animation-curve) 0.3s forwards;
-  margin-bottom: var(--space-sm);
 }
 
 .hero.visible .availabilityBadge {
