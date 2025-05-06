@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './WorkGridView.module.css';
-import useInView from '../../Hooks/useInView';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { FiExternalLink, FiArrowRight } from 'react-icons/fi';
 
