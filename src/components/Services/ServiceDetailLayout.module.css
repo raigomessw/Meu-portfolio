@@ -1,33 +1,38 @@
 /* ======= VARIÁVEIS DO COMPONENTE ======= */
 :root {
-  /* Animações e transições */
-  --transition-base: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  --transition-smooth: 0.7s cubic-bezier(0.19, 1, 0.22, 1);
-  --transition-bounce: 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
-  --transition-decelerate: 0.6s cubic-bezier(0, 0.55, 0.45, 1);
+  /* Usando as variáveis globais de transição do seu sistema de design */
+  --transition-base: var(--transition-base);
+  --transition-smooth: var(--transition-slow);
+  --transition-bounce: var(--transition-bounce);
+  --transition-decelerate: var(--transition-curve);
   
-  /* Espaçamentos */
-  --space-3xs: 0.25rem;
-  --space-2xs: 0.5rem; 
-  --space-xs: 0.75rem;
-  --space-s: 1rem;
-  --space-m: 1.5rem;
-  --space-l: 2rem;
-  --space-xl: 3rem;
-  --space-2xl: 4rem;
-  --space-3xl: 6rem;
+  /* Espaçamentos alinhados com seu sistema global */
+  --space-3xs: var(--space-1);     /* 0.25rem = 4px */
+  --space-2xs: var(--space-2);     /* 0.5rem = 8px */
+  --space-xs: var(--space-3);      /* 0.75rem = 12px */
+  --space-s: var(--space-4);       /* 1rem = 16px */
+  --space-m: var(--space-6);       /* 1.5rem = 24px */
+  --space-l: var(--space-8);       /* 2rem = 32px */
+  --space-xl: var(--space-12);     /* 3rem = 48px */
+  --space-2xl: var(--space-16);    /* 4rem = 64px */
+  --space-3xl: var(--space-24);    /* 6rem = 96px */
   
-  /* Bordas e sombras */
-  --radius-s: 0.25rem;
-  --radius-m: 0.5rem;
-  --radius-l: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-full: 9999px;
+  /* Bordas consistentes com o sistema global */
+  --radius-s: var(--radius-sm);    /* 0.25rem = 2px */
+  --radius-m: var(--radius-md);    /* 0.5rem = 8px */
+  --radius-l: var(--radius-lg);    /* 0.75rem = 12px */
+  --radius-xl: var(--radius-xl);   /* 1rem = 16px */
+  --radius-full: var(--radius-full); /* 9999px */
   
-  /* Efeitos */
-  --blur-sm: 8px;
-  --blur-md: 16px;
-  --blur-lg: 24px;
+  /* Definindo os valores de roxo suaves para o tema escuro */
+  --accent-light: #a48efa;    /* Roxo mais suave para tema escuro */
+  --accent-medium: #8344db;   /* Tom médio consistente com o resto do site */
+  --accent-dark: #6e07f3;     /* Versão mais escura para tema claro */
+  
+  /* Efeitos consistentes com o sistema global */
+  --blur-sm: var(--backdrop-blur);
+  --blur-md: calc(var(--backdrop-blur) * 2);
+  --blur-lg: calc(var(--backdrop-blur) * 3);
   --glow-opacity: 0.5;
   --glow-spread: 70px;
   
@@ -55,55 +60,51 @@
 
 /* Tema claro */
 html[data-theme="light"] .container {
-  --bg-primary: hsl(210, 20%, 98%);
-  --bg-secondary: hsl(210, 16%, 93%);
+  --bg-primary: var(--light-color-bg-0);
+  --bg-secondary: var(--light-color-bg-1);
   --bg-tertiary: hsla(210, 25%, 96%, 0.8);
   
-  --text-primary: hsl(230, 25%, 18%);
-  --text-secondary: hsl(230, 10%, 30%);
-  --text-muted: hsl(230, 5%, 45%);
+  --text-primary: var(--light-color-text-0);
+  --text-secondary: var(--light-color-text-1);
+  --text-muted: var(--light-color-text-3);
   
-  --card-bg: hsla(0, 0%, 100%, 0.85);
-  --card-border: hsla(210, 25%, 90%, 0.4);
-  --card-shadow: 
-    0 4px 20px -4px hsla(210, 15%, 15%, 0.08),
-    0 16px 32px -4px hsla(210, 15%, 15%, 0.06);
+  --card-bg: var(--color-card);
+  --card-border: var(--light-color-border-1);
+  --card-shadow: var(--shadow-lg);
   
-  --section-bg: hsla(0, 0%, 100%, 0.7);
-  --section-border: hsla(210, 25%, 90%, 0.5);
+  --section-bg: var(--color-glass);
+  --section-border: var(--light-color-border-2);
   
-  background: linear-gradient(
-    135deg,
-    var(--bg-primary) 0%,
-    var(--bg-secondary) 100%
-  );
+  --accent: var(--accent-dark);
+  --accent-rgb: var(--color-accent-rgb);
+  --accent-lighten: rgba(var(--color-accent-rgb), 0.1);
+  
+  background: var(--color-background-gradient);
   color: var(--text-primary);
 }
 
 /* Tema escuro */
 html[data-theme="dark"] .container {
-  --bg-primary: hsl(230, 25%, 10%);
-  --bg-secondary: hsl(230, 25%, 8%);
+  --bg-primary: var(--dark-color-bg-0);
+  --bg-secondary: var(--dark-color-bg-1);
   --bg-tertiary: hsla(230, 30%, 15%, 0.8);
   
-  --text-primary: hsl(210, 15%, 93%);
-  --text-secondary: hsl(210, 10%, 80%);
-  --text-muted: hsl(210, 5%, 65%);
+  --text-primary: var(--dark-color-text-0);
+  --text-secondary: var(--dark-color-text-1);
+  --text-muted: var(--dark-color-text-3);
   
-  --card-bg: hsla(230, 25%, 16%, 0.75);
-  --card-border: hsla(230, 25%, 26%, 0.5);
-  --card-shadow: 
-    0 4px 20px -4px hsla(230, 25%, 5%, 0.14),
-    0 16px 32px -4px hsla(230, 25%, 5%, 0.12);
+  --card-bg: var(--color-card-dark);
+  --card-border: var(--dark-color-border-1);
+  --card-shadow: var(--shadow-lg-dark);
   
-  --section-bg: hsla(230, 25%, 18%, 0.6);
-  --section-border: hsla(230, 25%, 30%, 0.3);
+  --section-bg: var(--color-glass-dark);
+  --section-border: var(--dark-color-border-2);
   
-  background: linear-gradient(
-    135deg,
-    var(--bg-primary) 0%,
-    var(--bg-secondary) 100%
-  );
+  --accent: var(--accent-light);
+  --accent-rgb: var(--color-secondary-rgb);
+  --accent-lighten: rgba(var(--color-secondary-rgb), 0.2);
+  
+  background: var(--color-background-gradient-dark);
   color: var(--text-primary);
 }
 
