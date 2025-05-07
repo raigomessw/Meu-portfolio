@@ -117,13 +117,6 @@ const Hero = () => {
     'utvecklar kreativa lösningar'
   ], []);
   
-  // Dados de estatísticas - Traduzidos para sueco
-  const stats = useMemo(() => [
-    { number: `${experienceYears}+`, label: 'Års erfarenhet' },
-    { number: '8+', label: 'Slutförda projekt' },
-   
-  ], [experienceYears]);
-  
   // Efeito de animação de entrada com IntersectionObserver otimizado
   useEffect(() => {
     // Não usa IntersectionObserver se o usuário preferir movimento reduzido
@@ -374,9 +367,9 @@ const Hero = () => {
         </span>
       </div>
       
-      {/* Conteúdo principal */}
+      {/* Conteúdo principal - REORGANIZADO para imagem à direita e texto à esquerda */}
       <div className={styles.heroContent}>
-        {/* Texto do Hero */}
+        {/* Texto do Hero (LADO ESQUERDO) */}
         <div className={styles.heroTextContainer}>
           {/* Badge de experiência - Traduzido para sueco */}
           <div className={styles.experienceBadge} aria-label={`${experienceYears}+ års erfarenhet av webbutveckling`}>
@@ -434,22 +427,9 @@ const Hero = () => {
               <span className={styles.buttonIcon} aria-hidden="true">🔍</span>
             </Link>
           </div>
-          
-          {/* Estatísticas - Traduzidas para sueco */}
-          <div className={styles.statsContainer} aria-label="Karriärstatistik">
-            {stats.map((stat, index) => (
-              <React.Fragment key={index}>
-                {index > 0 && <div className={styles.statDivider} aria-hidden="true"></div>}
-                <div className={styles.statItem}>
-                  <div className={styles.statNumber}>{stat.number}</div>
-                  <div className={styles.statLabel}>{stat.label}</div>
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
         </div>
         
-        {/* Imagem do Hero com efeitos 3D */}
+        {/* Imagem do Hero com efeitos 3D - LADO DIREITO */}
         <div className={styles.heroImageContainer}>
           <div 
             className={styles.imageWrapper}
@@ -478,18 +458,20 @@ const Hero = () => {
         </div>
       </div>
       
-      {/* Botão de rolagem para baixo - Traduzido para sueco */}
-      <a 
-        href="#services" 
-        className={styles.heroScroll}
-        onClick={scrollToWork}
-        aria-label="Rulla till projektsektionen"
-      >
-        <div className={styles.scrollIcon} aria-hidden="true">
-          <div className={styles.scrollDot}></div>
-        </div>
-        <span>Utforska</span>
-      </a>
+      {/* Botão de rolagem para baixo - Centralizado no fundo da seção */}
+      <div className={styles.heroScrollContainer}>
+        <a 
+          href="#services" 
+          className={styles.heroScroll}
+          onClick={scrollToWork}
+          aria-label="Rulla till projektsektionen"
+        >
+          <div className={styles.scrollIcon} aria-hidden="true">
+            <div className={styles.scrollDot}></div>
+          </div>
+          <span>Utförska</span>
+        </a>
+      </div>
     </section>
   );
 };

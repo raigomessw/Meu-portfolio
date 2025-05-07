@@ -431,12 +431,12 @@ html[data-theme="dark"] .particle {
   white-space: nowrap;
 }
 
-/* ========== CONTEÚDO PRINCIPAL - LAYOUT FLEXÍVEL ========== */
+/* ========== CONTEÚDO PRINCIPAL - LAYOUT FLEXÍVEL AJUSTADO ========== */
 .heroContent {
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Mudança para row para colocar imagem à direita */
+  justify-content: space-between; /* Espaço entre os elementos */
   align-items: center;
-  justify-content: center;
   max-width: 1200px;
   width: 100%;
   margin-top: var(--space-xl);
@@ -444,15 +444,192 @@ html[data-theme="dark"] .particle {
   z-index: 2;
 }
 
-/* Container de texto - Responsivo */
+/* Container de texto - Alinhado à esquerda */
 .heroTextContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  max-width: min(900px, 90vw); /* Limite para telas ultralargas */
-  margin-bottom: var(--space-xl);
+  align-items: flex-start; /* Alinhado à esquerda */
+  text-align: left; /* Texto alinhado à esquerda */
+  max-width: 55%; /* Largura reduzida para compartilhar espaço com a imagem */
   width: 100%;
+  padding-right: var(--space-md);
+}
+
+/* ========== IMAGEM DO HERO - POSICIONAMENTO À DIREITA ========== */
+.heroImageContainer {
+  margin: 0 auto; /* Centraliza horizontalmente */
+  position: relative;
+  transform-style: preserve-3d;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 6) forwards;
+  max-width: 50%;
+  display: flex;
+  justify-content: center; /* Garante centralização do conteúdo */
+}
+
+/* Container de estatísticas ajustado */
+.statsContainer {
+  margin-top: var(--space-md);
+  align-self: flex-start; /* Alinhado à esquerda */
+  width: 100%; /* Ocupa toda a largura disponível do container de texto */
+}
+
+/* ========== BOTÃO DE SCROLL + CONTAINER (POSIÇÃO FIXA CENTRALIZADA) ========== */
+.heroScrollContainer {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  z-index: 9999;
+  top: var(--space-md);
+}
+
+.heroScroll {
+  position: static; /* Alterado de absolute para static */
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--color-text-1);
+  font-weight: var(--font-medium);
+  transition: all 0.4s var(--hero-animation-curve);
+  background: rgba(var(--color-bg-1-rgb), 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 12px 20px;
+  border-radius: 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+  font-size: var(--button);
+  opacity: 0;
+  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 8) forwards;
+}
+
+
+
+.heroScroll:hover, .heroScroll:focus {
+  transform: translateY(-5px); /* Simplificado */
+  background: rgba(var(--color-bg-1-rgb), 0.4);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+/* Media queries específicos para posicionamento em diferentes tamanhos de tela */
+@media (max-width: 768px) {
+  .heroScrollContainer {
+    bottom: 30px; /* Um pouco mais para cima em telas médias */
+  }
+  
+  .heroScroll {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroScrollContainer {
+    bottom: 20px;
+  }
+  
+  .heroScroll {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Media queries específicos para garantir responsividade */
+@media (max-width: 768px) {
+  .heroScrollContainer {
+    margin-top: var(--space-md);
+    height: 50px;
+  }
+  
+  .heroScroll {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroScrollContainer {
+    margin-top: var(--space-sm);
+    height: 45px;
+  }
+  
+  .heroScroll {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+}
+
+/* ========== RESPONSIVIDADE PARA OS NOVOS POSICIONAMENTOS ========== */
+@media (max-width: 992px) {
+  .heroContent {
+    flex-direction: column-reverse; /* Em telas médias, a imagem vai para cima */
+    align-items: center;
+  }
+  
+  .heroTextContainer {
+    max-width: 100%; /* Ocupa toda largura disponível */
+    align-items: center; /* Centraliza os conteúdos */
+    text-align: center; /* Texto centralizado */
+    padding-right: 0;
+    margin-top: var(--space-lg); /* Espaço após a imagem */
+  }
+  
+  .heroImageContainer {
+    max-width: min(320px, 80%); /* Limita a largura da imagem */
+  }
+  
+  .statsContainer {
+    align-self: center; /* Centralizado em telas médias */
+  }
+
+  .heroScrollContainer {
+    margin-top: var(--space-md);
+    height: 50px;
+    align-items: center; /* Centraliza o botão de scroll */
+  }
+}
+
+@media (max-width: 768px) {
+  .heroContent {
+    margin-top: var(--space-lg);
+  }
+  
+  .heroImageContainer {
+    max-width: min(280px, 80%);
+  }
+  
+  .heroScrollContainer {
+    margin-top: var(--space-md);
+    height: 50px;
+  }
+}
+
+/* Para telas muito pequenas (mobile) */
+@media (max-width: 480px) {
+  .statsContainer {
+    flex-direction: column; /* Vertical em celulares */
+    gap: var(--space-sm);
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .statDivider {
+    width: 80%;
+    height: 1px;
+    margin: var(--space-xs) 0;
+  }
+  
+  .heroScrollContainer {
+    margin-top: var(--space-sm);
+    height: 40px;
+  }
 }
 
 /* ========== BADGE DE EXPERIÊNCIA - RESPONSIVO ========== */
@@ -783,13 +960,14 @@ html[data-theme="dark"] .highlight {
 
 /* ========== IMAGEM DO HERO - RESPONSIVA ========== */
 .heroImageContainer {
-  margin: var(--space-lg) 0;
+  margin: 0;
   position: relative;
   transform-style: preserve-3d;
   z-index: 2;
   opacity: 0;
   transform: translateY(30px);
   animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 6) forwards;
+  max-width: 100%;
 }
 
 .imageWrapper {
@@ -802,11 +980,13 @@ html[data-theme="dark"] .highlight {
   transform-style: preserve-3d;
   transition: transform 0.6s var(--hero-animation-curve);
   transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+  margin: 0 auto; /* Centraliza horizontalmente */
 }
 
 .heroImage {
   width: 100%;
   height: 100%;
+  border-radius: 30px;
   object-fit: cover;
   will-change: transform;
   transition: transform 0.5s var(--hero-animation-curve);
@@ -912,181 +1092,54 @@ html[data-theme="dark"] .highlight {
   50% { transform: translateZ(-20px) translate(10px, -10px); }
 }
 
-/* ========== ESTATÍSTICAS - RESPONSIVAS ========== */
+/* ========== ESTATÍSTICAS - REPOSICIONADAS ========== */
 .statsContainer {
+  margin-top: var(--space-md);
+  align-self: flex-start; /* Alinhado à esquerda */
+  width: 100%; /* Ocupa toda a largura disponível do container de texto */
+}
+
+/* ========== BOTÃO DE SCROLL + CONTAINER (POSIÇÃO FIXA MELHORADA) ========== */
+.heroScrollContainer {
+  position: relative; /* Posição fixa para garantir visibilidade consistente */
+  bottom: 40px; /* Distância do fundo da tela */
+  left: 0;
+  right: 0;
   display: flex;
-  position: relative;
   justify-content: center;
   align-items: center;
-  margin-top: var(--space-lg);
-  gap: var(--space-lg);
-  padding: var(--space-md) var(--space-lg);
-  background: rgba(var(--color-bg-1-rgb), 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: var(--border-radius-lg);
-  border: 1px solid var(--hero-border);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  opacity: 0;
-  transform: translateY(30px);
-  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 7) forwards;
-  width: min(100%, 600px); /* Limita largura e garante responsividade */
+  width: 100%;
+  z-index: 9999;
+  pointer-events: none; /* Permite cliques em elementos abaixo */
+  height: auto;
 }
 
-@supports not (backdrop-filter: blur(10px)) {
-  .statsContainer {
-    /* Alternativa para navegadores sem suporte a backdrop-filter */
-    background: rgba(var(--color-bg-1-rgb), 0.8);
-  }
-}
-
-.statItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: transform 0.3s var(--hero-animation-curve);
-  flex: 1;
-}
-
-.statItem:hover {
-  transform: translateY(-5px);
-}
-
-.statNumber {
-  font-size: var(--heading-h4);
-  font-weight: var(--font-semi-bold);
-  margin-bottom: 4px;
-  /* Substitui o gradiente por uma cor sólida para melhor visibilidade */
-  background: unset;
-  -webkit-background-clip: unset;
-  background-clip: unset;
-  color: var(--hero-accent); /* Cor sólida mais visível */
-  text-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.3); /* Adiciona glow suave */
-}
-
-.statLabel {
-  font-size: var(--caption);
-  color: rgba(255, 255, 255, 0.85); /* Cor mais clara para melhor visibilidade */
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: var(--font-medium);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Sombra para melhorar legibilidade */
-}
-
-.statDivider {
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(to bottom,
-    rgba(var(--color-bg-1-rgb), 0.1),
-    rgba(var(--color-bg-1-rgb), 0.4),
-    rgba(var(--color-bg-1-rgb), 0.1));
-}
-
-/* ========== BOTÃO DE SCROLL - RESPONSIVO ========== */
 .heroScroll {
-  position: fixed; /* Alterado para fixed para garantir posição consistente */
-  left: 50%;
-  bottom: 35px; /* Ajustado para dar mais espaço na parte inferior */
-  transform: translateX(-50%);
-  margin: 0;
-  display: flex;
+  position: static; /* Alterado de absolute para static */
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-decoration: none;
   color: var(--color-text-1);
-  font-weight: 500;
+  font-weight: var(--font-medium);
   transition: all 0.4s var(--hero-animation-curve);
-  z-index: 100; /* Aumentado para garantir que fique sempre visível */
-  background: rgba(var(--color-bg-1-rgb), 0.2);
+  background: rgba(var(--color-bg-1-rgb), 0.3);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   padding: 12px 20px;
   border-radius: 30px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(var(--color-primary-rgb), 0.3);
-  font-size: 1rem;
+  font-size: var(--button);
   opacity: 0;
   animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 8) forwards;
 }
 
 .heroScroll:hover, .heroScroll:focus {
-  transform: translateX(-50%) translateY(-5px);
-  color: var(--color-primary);
-  background: rgba(var(--color-bg-1-rgb), 0.25);
-  border-color: rgba(var(--color-primary-rgb), 0.6);
-}
-
-/* Ícone de rolagem animado */
-.scrollIcon {
-  width: 30px;
-  height: 50px;
-  border: 2px solid rgba(var(--color-accent-rgb), 0.6);
-  border-radius: 15px;
-  margin-bottom: 8px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.heroScroll:hover .scrollIcon {
-  border-color: var(--color-primary);
-}
-
-.scrollDot {
-  width: 6px;
-  height: 6px;
-  background: var(--color-primary);
-  border-radius: 50%;
-  position: absolute;
-  top: 10px;
-  animation: scrollAnimation 2s infinite ease-in-out;
-}
-
-/* Animação de rolagem */
-@keyframes scrollAnimation {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(20px);
-    opacity: 0.2;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Efeito de brilho pulsante ao redor do botão */
-.heroScroll::after {
-  content: '';
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
-  border-radius: 34px;
-  background: linear-gradient(135deg, 
-    rgba(var(--color-primary-rgb), 0.4),
-    rgba(var(--color-primary-rgb), 0),
-    rgba(var(--color-accent-rgb), 0.2)
-  );
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  animation: pulseEffect 3s infinite;
-}
-
-.heroScroll:hover::after {
-  opacity: 0.8;
-}
-
-@keyframes pulseEffect {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 0.7; }
+  transform: translateY(-5px);
+  background: rgba(var(--color-bg-1-rgb), 0.4);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
 }
 
 @keyframes fadeInUp {
@@ -1108,463 +1161,6 @@ html[data-theme="dark"] .highlight {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-/* ========== RESPONSIVIDADE MELHORADA ========== */
-
-/* Telas muito pequenas (375px e menor) */
-@media (max-width: 375px) {
-  .hero {
-    padding: var(--space-lg) var(--space-sm) var(--space-md);
-    padding-top: max(70px, 15vh); /* Espaço para NavBar em telas muito pequenas */
-    min-height: 100svh; /* Use svh quando disponível */
-  }
-  
-  /* Container principal */
-  .heroContent {
-    margin-top: clamp(10px, 3vh, 30px);
-  }
-  
-  /* Tech badges ainda mais compactos */
-  .techStack {
-    gap: 5px; /* Reduz ainda mais o espaçamento */
-    margin-top: var(--space-xs);
-    margin-bottom: var(--space-md);
-    justify-content: center;
-  }
-  
-  .techBadge {
-    padding: 5px 8px;
-    border-radius: var(--border-radius-sm);
-  }
-  
-  .techSvgIcon {
-    width: 16px;
-    height: 16px;
-  }
-  
-  /* Botões mais apropriados para telas muito pequenas */
-  .heroActions {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .primaryButton, .secondaryButton {
-    width: 100%;
-    padding: 10px;
-    justify-content: center;
-  }
-  
-  /* Esconde elementos menos importantes */
-  .decorElement,
-  .particle:nth-child(n+4) {
-    display: none;
-  }
-  
-  /* Simplifica efeitos para melhor performance */
-  .gradientLayer {
-    filter: blur(40px);
-  }
-}
-
-/* Telas pequenas (smartphones) */
-@media (max-width: 576px) {
-  .hero {
-    padding: var(--space-lg) var(--space-sm) var(--space-md);
-    padding-top: max(70px, 15vh);
-  }
-  
-  .greeting {
-    font-size: calc(var(--heading-h4) - 2px);
-  }
-  
-  .profession {
-    font-size: calc(var(--heading-h3) - 2px);
-  }
-  
-  .imageWrapper {
-    width: min(240px, 80vw);
-    height: min(240px, 80vw);
-    border-radius: 25px;
-  }
-
-  .heroScroll {
-    position: absolute;
-    left: auto;
-  }
-  
-  .heroActions {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .primaryButton, .secondaryButton {
-    width: 100%;
-  }
-  
-  .statsContainer {
-    flex-direction: column;
-    gap: var(--space-sm);
-    padding: var(--space-sm);
-  }
-  
-  .statDivider {
-    width: 80%;
-    height: 1px;
-    margin: 0;
-  }
-  
-  /* Badge de disponibilidade centralizado */
-  .availabilityBadge {
-    position: relative;
-    left: auto;
-    top: auto;
-    margin-bottom: var(--space-md);
-    align-self: center;
-  }
-  
-  /* Mais adaptações para telas pequenas */
-  .particle:nth-child(n+6) {
-    display: none;
-  }
-  
-  /* Ajustar botão de rolagem */
-  .heroScroll {
-    bottom: 1.5rem; /* Posição ajustada para telas pequenas */
-    transform: translateX(-50%) scale(0.9); /* Ligeiramente menor */
-  }
-
-  .heroScroll:hover, .heroScroll:focus {
-    transform: translateX(-50%) translateY(-5px) scale(0.9); /* Mantém escala ao fazer hover */
-  }
-  
-  /* Escala reduzida para elementos decorativos */
-  .glowEffect {
-    opacity: 0.3;
-  }
-}
-
-/* Dispositivos móveis (médios) */
-@media (min-width: 577px) and (max-width: 768px) {
-  .hero {
-    padding-top: max(80px, 12vh);
-  }
-  
-  .profession {
-    font-size: calc(var(--heading-h2) - 6px);
-  }
-  
-  .heroActions {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  
-  .primaryButton, .secondaryButton {
-    width: auto;
-    flex: 1 1 auto;
-  }
-  
-  .statsContainer {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  
-  .statDivider:last-of-type {
-    display: none;
-  }
-  
-  /* Os elementos decorativos ainda são mostrados, mas menores */
-  .decorElement {
-    transform: scale(0.7);
-  }
-}
-
-/* Tablets */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .hero {
-    padding-top: max(90px, 10vh);
-  }
-
-  .primaryButton, .secondaryButton {
-    padding: 12px 24px; /* Paddings mais confortáveis */
-    min-width: 180px; /* Largura mínima para melhor proporção */
-    font-size: 18px; /* Tamanho de fonte ligeiramente maior */
-  }
-
-  .heroScroll {
-    position: relative;
-    left: auto;
-    bottom: 4rem; /* Ajustado para tablets */
-    transform: translateX(-50%) scale(1); /* Mantém tamanho original */
-  }
-
-  .heroActions {
-    gap: 16px;
-    justify-content: center; /* Centraliza os botões */
-    margin-top: var(--space-lg);
-  }
-  
-  .heroContent {
-    flex-direction: column;
-    text-align: center;
-    padding: 0 var(--space-md);
-  }
-
-  .scrollIcon {
-    width: 26px;
-    height: 40px;
-  }
-  
-  .imageWrapper {
-    width: min(320px, 50vw);
-    height: min(320px, 50vw);
-  }
-  
-  /* Mais partículas em tablets */
-  .particle:nth-child(n+10) {
-    display: none;
-    font-size: 18px;
-  }
-  .techName {
-    font-size: 16px;
-  }
-
-  .statNumber {
-    font-size: 15px;
-  }
-
-  .statLabel{
-    font-size: 15px;
-  }
-
-
-  .techStack {
-    padding: 8px 12px;
-    border-radius: var(--border-radius-sm);
-  }
-  
-  .availabilityBadge, .experienceBadge {
-    position: relative;
-    left: auto;
-    top: auto;
-    align-self: center;
-    margin-bottom: var(--space-md);
-    font-size: 16px;
-  }
-  
-  /* Layout de duas colunas para estatísticas */
-  .statsContainer {
-    flex-wrap: wrap;
-    justify-content: space-around;
-  }
-  
-  .statItem {
-    flex: 1 1 40%;
-    margin: var(--space-xs) 0;
-  }
-  
-  .statDivider:nth-child(even) {
-    display: none;
-  }
-}
-
-/* Desktops pequenos */
-@media (min-width: 992px) and (max-width: 1199px) {
-  .heroContent {
-    flex-direction: row;
-    text-align: left;
-    gap: var(--space-lg);
-    align-items: center;
-  }
-  
-  .heroScroll {
-    position: absolute;
-    left: auto;
-  }
-
-  .heroTextContainer {
-    align-items: flex-start;
-    text-align: left;
-    margin-bottom: 0;
-    flex: 3;
-  }
-  
-  .techStack {
-    justify-content: flex-start;
-  }
-  
-  .heroActions {
-    justify-content: flex-start;
-  }
-  
-  .experienceBadge {
-    align-self: flex-start;
-  }
-  
-  .heroImageContainer {
-    flex: 2;
-    margin-top: 0;
-  }
-  
-  .imageWrapper {
-    width: 340px;
-    height: 340px;
-  }
-  
-  /* Posicionamento da badge em desktop */
-  .availabilityBadge {
-    position: absolute;
-    top: 80px;
-    left: var(--space-lg);
-  }
-}
-
-/* Telas grandes e ultrawides */
-@media (min-width: 1200px) {
-  .heroContent {
-    flex-direction: row;
-    text-align: left;
-    gap: var(--space-xl);
-  }
-  
-  .heroTextContainer {
-    align-items: flex-start;
-    text-align: left;
-    margin-bottom: 0;
-    flex: 3;
-  }
-  
-  .techStack {
-    justify-content: flex-start;
-  }
-  
-  .heroActions {
-    justify-content: flex-start;
-  }
-  
-  .experienceBadge {
-    align-self: flex-start;
-  }
-  
-  .heroImageContainer {
-    flex: 2;
-  }
-  
-  .imageWrapper {
-    width: min(380px, 25vw);
-    height: min(380px, 25vw);
-  }
-  
-  /* Versão completa para desktops */
-  .availabilityBadge {
-    position: absolute;
-    top: 80px;
-    left: var(--space-lg);
-  }
-  
-  /* Todas as partículas visíveis em desktop */
-  .particle {
-    display: block;
-  }
-}
-
-/* ========== AJUSTES POR TEMA ========== */
-
-/* Dark mode específico */
-html[data-theme="dark"] .imageWrapper {
-  color: rgba(255, 255, 255, 0.85); /* Cor mais clara no tema escuro */
-
-}
-
-/* Light mode específico */
-html[data-theme="light"] .imageWrapper {
-  color: rgba(0, 0, 0, 0.75); 
-}
-
-/* ========== ACESSIBILIDADE ========== */
-
-/* Preferências para redução de movimento */
-@media (prefers-reduced-motion: reduce) {
-  .heroBackground,
-  .gradientLayer,
-  .noiseLayer,
-  .gridLayer,
-  .particle,
-  .glowEffect,
-  .statusDot,
-  .scrollDot,
-  .cursor,
-  .buttonShine,
-  .decorElement,
-  .heroScroll::after {
-    animation: none !important;
-    transition: none !important;
-  }
-  
-  .hero, .greeting, .profession, .heroSubtitle, .techStack, 
-  .heroActions, .heroImageContainer, .statsContainer,
-  .experienceBadge, .availabilityBadge, .heroScroll {
-    animation: none !important;
-    transition: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  
-  .imageWrapper {
-    transform: none !important;
-  }
-  
-  .heroScroll:hover, .heroScroll:focus {
-    transform: translateX(-50%) !important;
-  }
-  
-  /* Simplifica o background para melhor performance */
-  .heroBackground {
-    background-size: 100% 100% !important;
-  }
-}
-
-/* ========== MELHORIAS DE PERFORMANCE ========== */
-
-/* Content-visibility para elementos abaixo da dobra inicial */
-@supports (content-visibility: auto) {
-  .statsContainer,
-  .heroScroll {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 200px; /* Valor estimado de altura */
-  }
-}
-
-/* Suporte a navegadores mais antigos */
-@supports not (aspect-ratio: 1) {
-  .imageWrapper {
-    height: 0;
-    padding-bottom: 100%; /* Mantém proporção quadrada */
-  }
-  
-  .heroImage {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-}
-
-/* Otimização para Safari no iOS */
-@supports (-webkit-touch-callout: none) {
-  .hero {
-    min-height: -webkit-fill-available;
-  }
-  
-  /* Corrige problemas de backdrop-filter no Safari */
-  .availabilityBadge,
-  .techBadge,
-  .secondaryButton,
-  .statsContainer,
-  .heroScroll {
-    -webkit-backdrop-filter: blur(8px);
   }
 }
 

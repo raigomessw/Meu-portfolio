@@ -615,6 +615,17 @@ html[data-theme="dark"] .cardShine {
   box-shadow: 0 8px 16px -8px rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.3);
 }
 
+/* Correção para os ícones SVG */
+.cardIcon svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .card:hover .cardIcon,
 .card.active .cardIcon {
   transform: scale(1.05) translateY(-5px);
@@ -648,15 +659,6 @@ html[data-theme="dark"] .cardShine {
 .card.active .cardIcon::before {
   opacity: 1;
   transform: scale(1);
-}
-
-/* Ajuste dos SVG dentro do ícone */
-.cardIcon svg {
-  width: 100%;
-  height: 100%;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  transition: all 0.3s ease;
 }
 
 .card:hover .cardIcon svg,

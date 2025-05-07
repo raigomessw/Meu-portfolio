@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Services.module.css';
+import { MarketResearchIcon, UserResearchIcon, MVPPrototypingIcon, DesignValidationIcon } from './ServiceIcons';
 
 function Services() {
   // Dados dos serviços em sueco, usando os nomes baseados nos arquivos
@@ -10,62 +11,28 @@ function Services() {
       description: "Förstå marknadstrender och konkurrenslandskapet för att informera dina produktbeslut",
       accent: "rgba(255, 107, 107, 1)",
       slug: "market-research",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 3v18h18" />
-          <path d="M18 12l-3-3-4 4-3-3" />
-          <path d="M18 8v4h-4" />
-          <circle cx="8.5" cy="8.5" r="1" />
-          <circle cx="15.5" cy="15.5" r="1" />
-          <circle cx="12.5" cy="12.5" r="1" />
-        </svg>
-      )
+      icon: <MarketResearchIcon />
     },
     {
       title: "Användarundersökning",
       description: "Upptäck användarbehov, beteenden och smärtpunkter för att skapa bättre användarupplevelser",
       accent: "rgba(78, 205, 196, 1)",
       slug: "user-research",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          <path d="M13 16l-2 3 3 2" />
-        </svg>
-      )
+      icon: <UserResearchIcon />
     },
     {
       title: "MVP & Prototyping",
       description: "Skapa interaktiva prototyper för att testa koncept och minimera produktrisker",
       accent: "rgba(255, 190, 11, 1)",
       slug: "mvp-prototyping",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-          <line x1="8" y1="21" x2="16" y2="21" />
-          <line x1="12" y1="17" x2="12" y2="21" />
-          <path d="M6 8h.01" />
-          <line x1="2" y1="12" x2="22" y2="12" />
-          <path d="M17 8l-3 3-3-3" />
-        </svg>
-      )
+      icon: <MVPPrototypingIcon />
     },
     {
       title: "Designvalidering",
       description: "Testa designer och iterera baserat på användarfeedback för att säkerställa produktsuccess",
       accent: "rgba(131, 56, 236, 1)",
       slug: "design-validation",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-          <polyline points="22 4 12 14.01 9 11.01" />
-          <path d="M9 17l-2-2-4 4" />
-          <rect x="13" y="2" width="6" height="6" rx="1" />
-          <path d="M14 9v3a2 2 0 0 0 2 2h3" />
-        </svg>
-      )
+      icon: <DesignValidationIcon />
     }
   ];
 
