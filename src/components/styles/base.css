@@ -1,6 +1,17 @@
 /* base.css - Estilos base e resets otimizados para todos os tamanhos de tela */
 
+/* Importações das bases de estilo */
+@import './variables.css';
+@import './typography.css';
+@import './responsive.css'; /* Novo arquivo de responsividade */
+
 /* ========== RESETS E CONFIGURAÇÕES BÁSICAS ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -16,6 +27,7 @@ html {
   /* Adiciona padding ao topo para mobile para compensar barras de navegação fixas */
   scroll-padding-top: var(--navbar-height, 80px);
   width: 100%;
+  height: -webkit-fill-available;
 }
 
 /* Ajustes responsivos para tamanho de fonte base */
@@ -46,6 +58,7 @@ body {
   min-height: 100vh;
   /* Suporte para dispositivos móveis com notch e interfaces dinâmicas */
   padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+  min-height: -webkit-fill-available;
 }
 
 /* Ajuste para telas de toque para evitar delay */
@@ -110,13 +123,23 @@ small, .text-small {
 /* Container principal com paddings responsivos */
 .container {
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: clamp(var(--space-4), 4vw, var(--container-padding));
-  padding-right: clamp(var(--space-4), 4vw, var(--container-padding));
+  max-width: var(--container-max-width-xl);
+  margin: 0 auto;
+  padding: 0 var(--container-padding-mobile);
 }
 
-/* Container adaptativo para diferentes conteúdos */
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--container-padding-tablet);
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    padding: 0 var(--container-padding-desktop);
+  }
+}
+
 .content-wrapper {
   max-width: var(--container-lg);
   margin-left: auto;
@@ -509,3 +532,9 @@ small, .text-small {
 .gap-md { gap: clamp(var(--space-4), 2vw, var(--space-6)); }
 .gap-lg { gap: clamp(var(--space-6), 3vw, var(--space-8)); }
 .gap-xl { gap: clamp(var(--space-8), 4vw, var(--space-12)); }
+
+/* Classes Responsivas Base */
+.full-height {
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100); /* Correção para navegadores móveis */
+}

@@ -1,36 +1,66 @@
-import React, { useEffect, useRef } from 'react';
-import styles from './ServiceDetailLayout.module.css';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import styles from './ServiceDetailLayout.module.css';
+import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 const ServiceDetailLayout = ({ serviceData }) => {
-  // Referência para o contêiner para aplicar a classe inView quando visível
+  // Referências e estados
   const containerRef = useRef(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const reducedMotion = useReducedMotion();
   
-  // Rola para o topo e configura animação de entrada quando o componente é montado
+  // References para seções animadas
+  const heroRef = useRef(null);
+  const benefitsRef = useRef(null);
+  const processRef = useRef(null);
+  const deliverablesRef = useRef(null);
+  const caseStudyRef = useRef(null);
+  const ctaRef = useRef(null);
+  
+  // Configurar observadores de interseção para animações de rolagem
+  const { observedElements, setObservedElements } = useIntersectionObserver({
+    threshold: 0.15,
+    rootMargin: '-50px 0px',
+  });
+
+  // Registrar elementos para observação
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const elementsToObserve = [
+      { id: 'hero', ref: heroRef },
+      { id: 'benefits', ref: benefitsRef },
+      { id: 'process', ref: processRef },
+      { id: 'deliverables', ref: deliverablesRef },
+      { id: 'caseStudy', ref: caseStudyRef },
+      { id: 'cta', ref: ctaRef }
+    ].filter(item => item.ref.current);
     
-    // Adiciona a classe inView após um pequeno atraso para acionar animações
-    const timer = setTimeout(() => {
-      if (containerRef.current) {
-        containerRef.current.classList.add(styles.inView);
-      }
+    setObservedElements(elementsToObserve);
+    
+    // Animação de entrada inicial
+    setTimeout(() => {
+      setIsLoaded(true);
     }, 100);
     
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Se serviceData for undefined, exibe uma mensagem de carregamento ou erro
+    // Rolagem suave para o topo
+    window.scrollTo({
+      top: 0,
+      behavior: reducedMotion ? 'auto' : 'smooth'
+    });
+  }, [setObservedElements, reducedMotion]);
+  
+  // Se não houver dados do serviço
   if (!serviceData) {
     return (
       <div className={styles.container}>
-        <div className={styles.hero}>
+        <div className={styles.hero} role="banner">
           <div className={styles.heroContent}>
-            <Link to="/#services" className={styles.backLink}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10 17L3 10L10 3L11.4 4.4L7.8 8H17V12H7.8L11.4 15.6L10 17Z" />
+            <Link to="/#services" className={styles.backLink} aria-label="Gå tillbaka till tjänstelistan">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 12H5"></path>
+                <path d="M12 19l-7-7 7-7"></path>
               </svg>
-              Tillbaka till tjänster
+              <span>Tillbaka till tjänster</span>
             </Link>
             <h1 className={styles.title}>Tjänsten hittades inte</h1>
             <p className={styles.subtitle}>Detaljerna för denna tjänst är inte tillgängliga för närvarande.</p>
@@ -40,64 +70,117 @@ const ServiceDetailLayout = ({ serviceData }) => {
     );
   }
 
-  // Extrair o valor RGB do accent para usar em rgba
-  const accentRgb = serviceData.accent && serviceData.accent.match(/\d+/g) 
-    ? serviceData.accent.match(/\d+/g).join(',') 
+  // Extrair cores do tema para uso dinâmico
+  const accentRgb = serviceData.accent && serviceData.accent.match(/\d+/g)
+    ? serviceData.accent.match(/\d+/g).join(',')
     : '75,75,75';
 
-  // Define uma variável CSS personalizada para a cor de destaque
+  // Variáveis CSS dinâmicas
   const rootStyle = {
-    '--accent-color': serviceData.accent,
-    '--accent-color-rgb': accentRgb,
-    '--accent-color-soft': `rgba(${accentRgb}, 0.15)`
+    '--accent': serviceData.accent || 'var(--color-primary)',
+    '--accent-rgb': accentRgb,
+    '--accent-soft': `rgba(${accentRgb}, 0.15)`,
+    '--accent-lighten': `rgba(${accentRgb}, 0.07)`,
+    '--accent-darken': serviceData.accentDarken || serviceData.accent || 'var(--color-primary)'
   };
 
   return (
-    <div className={styles.container} style={rootStyle} ref={containerRef}>
-      {/* Elementos decorativos de fundo */}
-      <div className={`${styles.bgDecoration} ${styles.decoration1}`}></div>
-      <div className={`${styles.bgDecoration} ${styles.decoration2}`}></div>
-      <div className={`${styles.bgDecoration} ${styles.decoration3}`}></div>
+    <div
+      className={`${styles.container} ${isLoaded ? styles.loaded : ''}`}
+      style={rootStyle}
+      ref={containerRef}
+    >
+      {/* Decorações de fundo premium */}
+      <div className={styles.backgroundDecorations}>
+        <div className={`${styles.decoration} ${styles.decorationPrimary}`}></div>
+        <div className={`${styles.decoration} ${styles.decorationSecondary}`}></div>
+        <div className={`${styles.decoration} ${styles.decorationTertiary}`}></div>
+        <div className={`${styles.decoration} ${styles.decorationAccent}`}></div>
+      </div>
+      
+      {/* Linhas de grade */}
+      <div className={styles.gridLines}>
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className={styles.gridLine}></div>
+        ))}
+      </div>
       
       {/* Hero Section */}
-      <div className={styles.hero}>
-        <div className={styles.heroBackground}></div>
+      <section 
+        className={`${styles.hero} ${observedElements.hero ? styles.inView : ''}`}
+        ref={heroRef}
+        id="hero"
+        role="banner"
+      >
+        <div className={styles.heroBackdrop} aria-hidden="true"></div>
         <div className={styles.heroContent}>
-          <Link to="#services" className={styles.backLink}>
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M10 17L3 10L10 3L11.4 4.4L7.8 8H17V12H7.8L11.4 15.6L10 17Z" />
+          <Link 
+            to="/#services" 
+            className={styles.backLink}
+            aria-label="Gå tillbaka till tjänstelistan"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5"></path>
+              <path d="M12 19l-7-7 7-7"></path>
             </svg>
-            Tillbaka till tjänster
+            <span>Tillbaka till tjänster</span>
           </Link>
           
-          <div className={styles.iconWrapper}>
-            {serviceData.icon}
+          <div className={styles.iconContainer}>
+            <div className={styles.iconWrapper} aria-hidden="true">
+              {serviceData.icon}
+            </div>
           </div>
           
           <h1 className={styles.title}>{serviceData.title}</h1>
+          
           <p className={styles.subtitle}>
             {serviceData.subtitle || "Användarcentrerade designlösningar"}
           </p>
-          <p className={styles.description}>{serviceData.description}</p>
+          
+          <div className={styles.descriptionWrapper}>
+            <p className={styles.description}>{serviceData.description}</p>
+          </div>
+          
+          <div className={styles.heroDivider} aria-hidden="true">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+              <path d="M1200 0L0 0 598.97 114.72 1200 0z" fill="currentColor"></path>
+            </svg>
+          </div>
         </div>
-      </div>
+      </section>
       
-      {/* Benefícios */}
+      {/* Seção de Benefícios */}
       {serviceData.benefits && (
-        <section className={styles.section}>
+        <section 
+          className={`${styles.section} ${styles.benefitsSection} ${observedElements.benefits ? styles.inView : ''}`}
+          ref={benefitsRef}
+          id="benefits"
+        >
           <div className={styles.sectionContent}>
-            <h2 className={styles.sectionTitle}>Fördelar</h2>
+            <h2 className={styles.sectionTitle}>
+              <span className={styles.sectionTitleText}>Fördelar</span>
+            </h2>
+            
             <div className={styles.benefitsGrid}>
               {serviceData.benefits.map((benefit, index) => (
-                <div key={index} className={styles.benefitItem}>
-                  <div className={styles.benefitIcon}>
-                    <svg viewBox="0 0 20 20" fill="currentColor" width="1em" height="1em">
-                      <path fillRule="evenodd" clipRule="evenodd" d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18ZM13.7071 8.70711C14.0976 8.31658 14.0976 7.68342 13.7071 7.29289C13.3166 6.90237 12.6834 6.90237 12.2929 7.29289L9 10.5858L7.70711 9.29289C7.31658 8.90237 6.68342 8.90237 6.29289 9.29289C5.90237 9.68342 5.90237 10.3166 6.29289 10.7071L8.29289 12.7071C8.68342 13.0976 9.31658 13.0976 9.70711 12.7071L13.7071 8.70711Z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3>{benefit.title}</h3>
-                    <p>{benefit.description}</p>
+                <div 
+                  key={index} 
+                  className={styles.benefitCard}
+                  style={{ '--animation-order': index }}
+                >
+                  <div className={styles.benefitCardInner}>
+                    <div className={styles.benefitIconWrapper}>
+                      <div className={styles.benefitIcon}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                          <path d="M22 4L12 14.01l-3-3"></path>
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    <h3 className={styles.benefitTitle}>{benefit.title}</h3>
+                    <p className={styles.benefitDescription}>{benefit.description}</p>
                   </div>
                 </div>
               ))}
@@ -106,48 +189,81 @@ const ServiceDetailLayout = ({ serviceData }) => {
         </section>
       )}
       
-      {/* Processo */}
+      {/* Seção de Processo */}
       {serviceData.process && (
-        <section className={styles.section}>
+        <section 
+          className={`${styles.section} ${styles.processSection} ${observedElements.process ? styles.inView : ''}`}
+          ref={processRef}
+          id="process"
+        >
           <div className={styles.sectionContent}>
-            <h2 className={styles.sectionTitle}>Process</h2>
-            <ol className={styles.processList}>
-              {serviceData.process.map((step, index) => (
-                <li key={index} className={styles.processStep}>
-                  <div className={styles.stepNumber}>{index + 1}</div>
-                  <div>
-                    {typeof step === 'string' ? (
-                      <p className={styles.stepDescription}>{step}</p>
-                    ) : (
-                      <>
-                        <h3 className={styles.stepTitle}>{step.title}</h3>
-                        <p className={styles.stepDescription}>{step.description}</p>
-                      </>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <h2 className={styles.sectionTitle}>
+              <span className={styles.sectionTitleText}>Process</span>
+            </h2>
+            
+            <div className={styles.processContainer}>
+              <div className={styles.processTimeline} aria-hidden="true"></div>
+              
+              <ol className={styles.processList}>
+                {serviceData.process.map((step, index) => (
+                  <li 
+                    key={index} 
+                    className={styles.processStep}
+                    style={{ '--animation-order': index }}
+                  >
+                    <div className={styles.processStepContent}>
+                      <div className={styles.stepNumberContainer}>
+                        <div className={styles.stepNumber} aria-hidden="true">
+                          <span>{index + 1}</span>
+                        </div>
+                      </div>
+                      
+                      <div className={styles.stepContent}>
+                        {typeof step === 'string' ? (
+                          <p className={styles.stepDescription}>{step}</p>
+                        ) : (
+                          <>
+                            <h3 className={styles.stepTitle}>{step.title}</h3>
+                            <p className={styles.stepDescription}>{step.description}</p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
         </section>
       )}
       
-      {/* Entregas */}
+      {/* Seção de Entregas */}
       {serviceData.deliverables && (
-        <section className={styles.section}>
+        <section 
+          className={`${styles.section} ${styles.deliverablesSection} ${observedElements.deliverables ? styles.inView : ''}`}
+          ref={deliverablesRef}
+          id="deliverables"
+        >
           <div className={styles.sectionContent}>
-            <h2 className={styles.sectionTitle}>Vad du får</h2>
-            <div className={styles.benefitsGrid}>
+            <h2 className={styles.sectionTitle}>
+              <span className={styles.sectionTitleText}>Vad du får</span>
+            </h2>
+            
+            <div className={styles.deliverablesGrid}>
               {serviceData.deliverables.map((deliverable, index) => (
-                <div key={index} className={styles.benefitItem}>
-                  <div className={styles.benefitIcon}>
-                    <svg viewBox="0 0 20 20" fill="currentColor" width="1em" height="1em">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
+                <div 
+                  key={index} 
+                  className={styles.deliverableItem}
+                  style={{ '--animation-order': index }}
+                >
+                  <div className={styles.deliverableIconWrapper}>
+                    <div className={styles.deliverableIcon}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
                   </div>
-                  <div>
-                    <p>{deliverable}</p>
-                  </div>
+                  <p className={styles.deliverableText}>{deliverable}</p>
                 </div>
               ))}
             </div>
@@ -155,24 +271,41 @@ const ServiceDetailLayout = ({ serviceData }) => {
         </section>
       )}
       
-      {/* Estudo de Caso */}
+      {/* Seção de Estudo de Caso */}
       {serviceData.caseStudy && (
-        <section className={styles.section}>
+        <section 
+          className={`${styles.section} ${styles.caseStudySection} ${observedElements.caseStudy ? styles.inView : ''}`}
+          ref={caseStudyRef}
+          id="caseStudy"
+        >
           <div className={styles.sectionContent}>
-            <h2 className={styles.sectionTitle}>Fallstudie</h2>
+            <h2 className={styles.sectionTitle}>
+              <span className={styles.sectionTitleText}>Fallstudie</span>
+            </h2>
+            
             <div className={styles.caseStudyContainer}>
-              <div className={styles.caseStudyHeader}>
-                <div className={styles.caseStudyTitle}>
-                  <h3>{serviceData.caseStudy.title}</h3>
+              <div className={styles.caseStudyCard}>
+                <div className={styles.caseStudyHeader}>
+                  <h3 className={styles.caseStudyTitle}>{serviceData.caseStudy.title}</h3>
                 </div>
-              </div>
-              <div className={styles.caseStudyContent}>
-                <div className={styles.caseStudyDescription}>
-                  <p>{serviceData.caseStudy.description}</p>
-                </div>
-                <div className={styles.caseStudyResult}>
-                  <h4>Resultat:</h4>
-                  <p>{serviceData.caseStudy.outcome}</p>
+                
+                <div className={styles.caseStudyBody}>
+                  <div className={styles.caseStudyDescription}>
+                    <p>{serviceData.caseStudy.description}</p>
+                  </div>
+                  
+                  <div className={styles.caseStudyResult}>
+                    <div className={styles.resultHeader}>
+                      <div className={styles.resultIcon}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                      </div>
+                      <h4>Resultat:</h4>
+                    </div>
+                    <p>{serviceData.caseStudy.outcome}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -180,16 +313,32 @@ const ServiceDetailLayout = ({ serviceData }) => {
         </section>
       )}
       
-      {/* Call to Action */}
-      <section className={styles.ctaSection}>
-        <h2 className={styles.ctaTitle}>Ska vi arbeta tillsammans?</h2>
-        <p className={styles.ctaText}>Kontakta mig för att diskutera hur jag kan hjälpa till med ditt nästa projekt</p>
-        <Link to="/contact" className={styles.ctaButton} style={{ backgroundColor: serviceData.accent }}>
-          Kontakta mig
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M10 3L16 10L10 17L8.6 15.6L12.2 12H4V8H12.2L8.6 4.4L10 3Z" />
-          </svg>
-        </Link>
+      {/* Seção CTA */}
+      <section 
+        className={`${styles.ctaSection} ${observedElements.cta ? styles.inView : ''}`}
+        ref={ctaRef}
+        id="cta"
+      >
+        <div className={styles.ctaBackdrop} aria-hidden="true">
+          <div className={styles.ctaGlow}></div>
+        </div>
+        
+        <div className={styles.ctaContent}>
+          <h2 className={styles.ctaTitle}>Ska vi arbeta tillsammans?</h2>
+          <p className={styles.ctaText}>Kontakta mig för att diskutera hur jag kan hjälpa till med ditt nästa projekt</p>
+          
+          <Link 
+            to="/contact" 
+            className={styles.ctaButton}
+            aria-label="Kontakta mig för att diskutera ditt projekt"
+          >
+            <span>Kontakta mig</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </Link>
+        </div>
       </section>
     </div>
   );

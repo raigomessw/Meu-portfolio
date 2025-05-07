@@ -13,6 +13,10 @@
   --mouse-x: 0.5;
   --mouse-y: 0.5;
   isolation: isolate; /* Ajuda com o isolamento dos elementos de fundo */
+  background: 
+    linear-gradient(0deg, rgba(var(--color-bg-1-rgb), 1) 0%, 
+    rgba(var(--color-bg-1-rgb), 0.98) 70%,
+    rgba(var(--color-bg-1-rgb), 0.95) 100%);
 }
 
 /* Efeito interativo que segue o cursor - Aprimorado */
@@ -65,7 +69,7 @@ html[data-theme="light"] .container::after {
 /* Grid no tema escuro */
 html[data-theme="dark"] .container::after {
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to right, rgba(219, 79, 79, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
 }
 
@@ -151,40 +155,42 @@ html[data-theme="dark"] .bgTexture {
   z-index: -1;
   transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1);
   transform: translate3d(0, 100px, 0) scale(0.8);
-  mix-blend-mode: normal;
+  mix-blend-mode: plus-lighter; /* Melhorando o modo de blend para efeito mais premium */
 }
 
 /* Tema claro - círculos mais suaves */
 html[data-theme="light"] .bgCircle {
-  filter: blur(90px);
+  filter: blur(100px); /* Aumentando o blur para efeito mais suave */
+  opacity: 0.6; /* Maior opacidade de base */
 }
 
 /* Tema escuro - círculos mais definidos */
 html[data-theme="dark"] .bgCircle {
-  filter: blur(70px);
+  filter: blur(85px);
+  opacity: 0.7; /* Maior opacidade de base */
 }
 
 .inView .bgCircle {
-  opacity: 0.35;
+  opacity: 0.5;
   transform: translate3d(0, 0, 0) scale(1);
 }
 
 /* Tema claro - opacidade mais baixa */
 html[data-theme="light"] .inView .bgCircle {
-  opacity: 0.25;
+  opacity: 0.3;
 }
 
 /* Tema escuro - opacidade mais alta */
 html[data-theme="dark"] .inView .bgCircle {
-  opacity: 0.4;
+  opacity: 0.5;
 }
 
 /* Reposicionamento e cores dos círculos */
 .circle1 {
-  width: 600px;
-  height: 600px;
+  width: 650px; /* Círculo maior */
+  height: 650px;
   background: radial-gradient(circle, 
-    rgba(var(--color-primary-rgb), 0.3) 0%, 
+    rgba(var(--color-primary-rgb), 0.4) 0%, 
     rgba(var(--color-primary-rgb), 0) 70%);
   top: -15%;
   right: -10%;
@@ -192,20 +198,44 @@ html[data-theme="dark"] .inView .bgCircle {
 }
 
 .circle2 {
-  width: 500px;
-  height: 500px;
+  width: 550px; /* Círculo maior */
+  height: 550px;
   background: radial-gradient(circle, 
-    rgba(78, 205, 196, 0.25) 0%, 
+    rgba(78, 205, 196, 0.35) 0%, 
     rgba(78, 205, 196, 0) 70%);
   bottom: -15%;
   left: -10%;
   transition-delay: 0.4s;
 }
 
+/* Adicionando um terceiro círculo para mais profundidade */
+.circle3 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, 
+    rgba(255, 170, 50, 0.3) 0%, 
+    rgba(255, 170, 50, 0) 70%);
+  top: 30%;
+  right: 20%;
+  transition-delay: 0.6s;
+}
+
+/* Adicionando um quarto círculo para equilíbrio visual */
+.circle4 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, 
+    rgba(131, 56, 236, 0.25) 0%, 
+    rgba(131, 56, 236, 0) 70%);
+  bottom: 20%;
+  right: 30%;
+  transition-delay: 0.8s;
+}
+
 /* ========== CABEÇALHO DA SEÇÃO ========== */
 .header {
   text-align: center;
-  margin-bottom: 5rem;
+  margin-top: 5rem;
   max-width: 800px;
   padding: 0 2rem;
   position: relative;
@@ -213,13 +243,13 @@ html[data-theme="dark"] .inView .bgCircle {
 }
 
 .title {
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  margin-bottom: 1.4rem;
   background: linear-gradient(180deg, var(--color-text-0) 0%, var(--color-primary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-fill-color: transparent;
+  color: transparent; /* Substituindo text-fill-color por color:transparent */
   font-weight: 700;
   letter-spacing: -0.5px;
 }
@@ -235,13 +265,101 @@ html[data-theme="dark"] .inView .bgCircle {
 /* ========== CONTAINER DE CARDS ========== */
 .cardsContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-top: 3rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2.5rem;
   max-width: 1300px;
   width: 95%;
   padding: 0 2rem;
   position: relative;
   z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .cardsContainer {
+    grid-template-columns: 1fr;
+    gap: 3rem; /* Aumentando o espaçamento vertical entre os cards */
+    padding: 0 1rem;
+  }
+  
+  .card {
+    min-height: 320px; /* Altura ajustada para mobile */
+    padding: 1.75rem; /* Padding reduzido */
+  }
+  
+  .header {
+    margin-top: 2rem; /* Reduzindo margem superior em telas pequenas */
+  }
+  
+  .title {
+    font-size: 2.25rem; /* Fonte menor para o título */
+  }
+  
+  .subtitle {
+    font-size: 1rem; /* Fonte menor para o subtítulo */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 4rem 0 3rem; /* Reduzindo padding vertical */
+  }
+  
+  .card {
+    min-height: 300px; /* Altura menor para dispositivos muito pequenos */
+    padding: 1.5rem; /* Padding ainda menor */
+    aspect-ratio: auto; /* Removendo aspect-ratio fixo */
+  }
+  
+  .cardIcon {
+    font-size: 2rem; /* Ícone menor */
+    margin-bottom: 1rem; /* Menos espaço abaixo do ícone */
+  }
+  
+  .cardTitle {
+    font-size: 1.25rem; /* Título menor */
+    margin-bottom: 0.75rem; /* Menos espaço abaixo do título */
+  }
+  
+  .cardDescription {
+    font-size: 0.95rem; /* Descrição menor */
+    line-height: 1.5; /* Linha mais compacta */
+    margin-bottom: 1rem; /* Menos espaço abaixo da descrição */
+  }
+  
+  .learnMoreBtn {
+    padding: 8px 12px; /* Botão mais compacto */
+    font-size: 0.9rem; /* Texto menor no botão */
+  }
+  
+  .title {
+    font-size: 1.85rem; /* Título da seção menor */
+  }
+  
+  .subtitle {
+    font-size: 0.95rem; /* Subtítulo da seção menor */
+  }
+  
+  /* Ajuste para os círculos de fundo */
+  .circle1,
+  .circle2 {
+    width: 350px;
+    height: 350px;
+  }
+  
+  .circle3,
+  .circle4 {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+/* Ajustes para telas médias */
+@media (max-width: 992px) {
+  .card {
+    min-height: 340px;
+    padding: 1.75rem;
+  }
 }
 
 /* ========== CARD WRAPPER ========== */
@@ -254,6 +372,7 @@ html[data-theme="dark"] .inView .bgCircle {
   transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
   transition-delay: var(--delay);
   cursor: pointer;
+  height: 100%;
 }
 
 .cardWrapper.visible {
@@ -270,247 +389,67 @@ html[data-theme="dark"] .inView .bgCircle {
 }
 
 /* ========== CARD PRINCIPAL ========== */
+/* Atualizando o card para ter um efeito de espelho mais transparente */
 .card {
   position: relative;
-  background: rgba(var(--color-bg-2-rgb), 0.6);
-  backdrop-filter: blur(12px);
+  background: rgba(var(--color-bg-2-rgb), 0.3); /* Aumentando transparência */
+  backdrop-filter: blur(16px); /* Aumentando o blur para efeito de vidro */
+  -webkit-backdrop-filter: blur(16px); /* Suporte para Safari */
   border-radius: 16px;
-  padding: 2.5rem;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  padding: 2rem 2rem;
+  box-shadow: 
+    0 20px 35px rgba(0, 0, 0, 0.15),
+    0 5px 15px rgba(0, 0, 0, 0.05),
+    0 0 0 0.5px rgba(255, 255, 255, 0.1); /* Borda fina e sutil */
   overflow: hidden;
   transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   z-index: 2;
   height: 100%;
-  min-height: 280px;
   display: flex;
   flex-direction: column;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  aspect-ratio: 3/4; /* Reduzindo a proporção para cards mais compactos */
+  min-height: 360px;
 }
 
-/* Valores específicos por tema */
+/* Tema claro - Cards mais transparentes com efeito de vidro */
 html[data-theme="light"] .card {
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.7), /* Mais transparente */
+    rgba(255, 255, 255, 0.3)  /* Mais transparente */
+  );
+  box-shadow: 
+    0 20px 35px rgba(0, 0, 0, 0.08),
+    0 5px 15px rgba(0, 0, 0, 0.03),
+    0 0 0 0.5px rgba(255, 255, 255, 0.5); /* Borda com efeito espelhado */
 }
 
+/* Tema escuro - Cards mais transparentes com efeito de vidro */
 html[data-theme="dark"] .card {
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-}
-
-.touchDevice {
-  transform: none !important;
-}
-
-.touchDevice:active {
-  transform: scale(0.98) !important;
-}
-
-/* Brilho interno diferente para cada tema */
-html[data-theme="light"] .card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
   background: linear-gradient(
-    to right bottom,
-    rgba(255, 255, 255, 0.15),
-    rgba(255, 255, 255, 0.05)
+    135deg,
+    rgba(30, 32, 40, 0.7), /* Mais transparente */
+    rgba(20, 22, 30, 0.4)  /* Mais transparente */
   );
-  border-radius: 16px;
-  z-index: -1;
+  box-shadow: 
+    0 20px 35px rgba(0, 0, 0, 0.2),
+    0 5px 15px rgba(0, 0, 0, 0.1),
+    0 0 0 0.5px rgba(255, 255, 255, 0.1); /* Borda com efeito espelhado sutil */
 }
 
-html[data-theme="dark"] .card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to right bottom,
-    rgba(255, 255, 255, 0.08),
-    rgba(255, 255, 255, 0.01)
-  );
-  border-radius: 16px;
-  z-index: -1;
+.card:hover,
+.card.active {
+  transform: translateY(-8px);
+  box-shadow: 
+    0 25px 45px rgba(0, 0, 0, 0.18),
+    0 10px 20px rgba(0, 0, 0, 0.08),
+    0 0 0 0.5px rgba(255, 255, 255, 0.2); /* Borda realçada */
 }
 
-/* Borda com gradiente adaptado ao tema */
-.card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 16px;
-  padding: 1px;
-  background: linear-gradient(
-    to bottom right,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0),
-    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.2),
-    rgba(255, 255, 255, 0.1)
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
-
-.card:hover, .card.active {
-  transform: translateY(-10px);
-}
-
-/* ========== CONTEÚDO DO CARD ========== */
-.cardContent {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.cardIcon {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-  color: var(--accent-color, var(--color-primary));
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.card:hover .cardIcon, .card.active .cardIcon {
-  background: rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.25);
-  transform: scale(1.05);
-}
-
-.iconSymbol {
-  font-size: 1.8rem;
-  line-height: 1;
-}
-
-.cardTitle {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: var(--color-text-0);
-  font-weight: 700;
-  transition: all 0.3s ease;
-}
-
-.card:hover .cardTitle, .card.active .cardTitle {
-  color: var(--accent-color, var(--color-primary));
-}
-
-.cardDescription {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--color-text-2);
-  margin-bottom: 1.5rem;
-  flex-grow: 1;
-}
-
-/* ========== RODAPÉ DO CARD ========== */
-.cardFooter {
-  margin-top: auto;
-}
-
-.learnMoreBtn {
-  background: transparent;
-  border: none;
-  padding: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--accent-color, var(--color-primary));
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.learnMoreBtn:hover {
-  transform: translateX(5px);
-}
-
-.arrowIcon {
-  transition: transform 0.3s ease;
-}
-
-.learnMoreBtn:hover .arrowIcon {
-  transform: translateX(3px);
-}
-
-/* ========== EFEITO DE BRILHO ========== */
-.cardGlow {
-  position: absolute;
-  width: 150%;
-  height: 150%;
-  top: -25%;
-  left: -25%;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.8),
-    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.3) 20%,
-    transparent 60%
-  );
-  opacity: 0;
-  filter: blur(60px);
-  transform: scale(0.5);
-  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
-  z-index: -1;
-  pointer-events: none;
-}
-
-/* Ajuste de opacidade do brilho por tema */
-html[data-theme="light"] .card:hover .cardGlow, 
-html[data-theme="light"] .card.active .cardGlow {
-  opacity: 0.1; /* Menos opaco no tema claro */
-}
-
-html[data-theme="dark"] .card:hover .cardGlow, 
-html[data-theme="dark"] .card.active .cardGlow {
-  opacity: 0.15;
-}
-
-.cardShine {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 16px;
-  background: radial-gradient(
-    circle at var(--x-pos, 50%) var(--y-pos, 50%),
-    rgba(255, 255, 255, 0.2),
-    transparent 40%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Ajustes de brilho para temas */
-html[data-theme="light"] .cardShine {
-  background: radial-gradient(
-    circle at var(--x-pos, 50%) var(--y-pos, 50%),
-    rgba(255, 255, 255, 0.3),
-    transparent 40%
-  );
-}
-
-html[data-theme="dark"] .cardShine {
-  background: radial-gradient(
-    circle at var(--x-pos, 50%) var(--y-pos, 50%),
-    rgba(255, 255, 255, 0.15),
-    transparent 40%
-  );
-}
-
-.card.activeShine .cardShine {
-  opacity: 1;
-}
-
+/* Borda interna com brilho para reforçar o efeito de espelho */
 .cardBorder {
   position: absolute;
   inset: 0;
@@ -518,137 +457,320 @@ html[data-theme="dark"] .cardShine {
   padding: 1px;
   background: linear-gradient(
     135deg,
-    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.5),
-    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.2) 20%,
-    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0) 50%
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.1) 25%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(255, 255, 255, 0.05) 75%,
+    rgba(255, 255, 255, 0.2)
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  opacity: 0;
-  transition: all 0.5s ease;
+  opacity: 0.3;
+  transition: opacity 0.5s ease;
 }
 
-/* Ajustes de borda para temas */
-html[data-theme="light"] .card:hover .cardBorder, 
-html[data-theme="light"] .card.active .cardBorder {
+.card:hover .cardBorder,
+.card.active .cardBorder {
   opacity: 0.7;
 }
 
-html[data-theme="dark"] .card:hover .cardBorder, 
-html[data-theme="dark"] .card.active .cardBorder {
-  opacity: 0.8;
+/* Brilho interno que segue o mouse */
+.cardGlow {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.15),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
-/* ========== EFEITO DE REFLEXO ========== */
+.card:hover .cardGlow,
+.card.active .cardGlow {
+  opacity: 1;
+}
+
+/* Efeito de reflexo aprimorado para parecer um espelho real */
 .cardReflection {
-  position: relative;
+  position: absolute;
+  bottom: -30px; /* Posicionado abaixo do card */
+  left: 10%;
+  width: 80%;
   height: 40px;
-  margin-top: -10px;
-  background: linear-gradient(
-    to bottom,
-    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.15),
-    transparent
+  background: radial-gradient(
+    ellipse at center, 
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.2),
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.05) 60%,
+    transparent 100%
   );
-  border-bottom-left-radius: 50%;
-  border-bottom-right-radius: 50%;
   filter: blur(10px);
+  transform: perspective(500px) rotateX(60deg) scale(0.8, 0.4);
   opacity: 0;
-  transform: scaleX(0.95) translateY(-5px);
-  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.5s ease;
   z-index: 1;
 }
 
-/* Ajustes de reflexo por tema */
-html[data-theme="light"] .cardWrapper:hover .cardReflection, 
-html[data-theme="light"] .cardWrapper:focus-within .cardReflection {
-  opacity: 0.4; /* Menos visível no tema claro */
+.cardWrapper:hover .cardReflection {
+  opacity: 0.7;
+  transform: perspective(500px) rotateX(60deg) scale(1, 0.5);
 }
 
-html[data-theme="dark"] .cardWrapper:hover .cardReflection, 
-html[data-theme="dark"] .cardWrapper:focus-within .cardReflection {
-  opacity: 0.5;
+/* Tema claro - reflexo mais sutil */
+html[data-theme="light"] .cardReflection {
+  background: radial-gradient(
+    ellipse at center, 
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.15),
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.03) 60%,
+    transparent 100%
+  );
 }
 
-.cardWrapper:hover .cardReflection, 
-.cardWrapper:focus-within .cardReflection {
-  transform: scaleX(0.95) translateY(0);
+/* Tema escuro - reflexo mais intenso */
+html[data-theme="dark"] .cardReflection {
+  background: radial-gradient(
+    ellipse at center, 
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.25),
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.08) 60%,
+    transparent 100%
+  );
 }
 
-/* ========== RESPONSIVIDADE ========== */
-@media (max-width: 768px) {
-  .container {
-    padding: 6rem 0 4rem;
-  }
-  
-  .title {
-    font-size: 2.2rem;
-  }
-  
-  .subtitle {
-    font-size: 1.1rem;
-  }
-  
-  .cardsContainer {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  
-  .card {
-    padding: 1.8rem;
-    min-height: auto;
-  }
-  
-  .cardIcon {
-    width: 50px;
-    height: 50px;
-    font-size: 1.5rem;
-    margin-bottom: 1.2rem;
-  }
-  
-  .cardTitle {
-    font-size: 1.3rem;
-  }
+/* Efeito de brilho que segue o cursor como reflexo num espelho */
+.cardShine {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--x-pos, 50%) var(--y-pos, 50%), 
+    rgba(255, 255, 255, 0.8) 0%, 
+    transparent 15%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 1;
+  border-radius: 16px;
+  mix-blend-mode: overlay;
 }
 
-@media (min-width: 769px) and (max-width: 1200px) {
-  .cardsContainer {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* Efeito ativo quando o card está em hover */
+.card:hover .cardShine,
+.cardShine.activeShine {
+  opacity: 0.12; /* Sutil, mas visível */
 }
 
-/* ========== SUPORTE A REDUÇÃO DE MOVIMENTO ========== */
-@media (prefers-reduced-motion: reduce) {
-  .container::before,
-  .bgCircle,
-  .cardWrapper,
-  .card,
-  .cardIcon,
-  .learnMoreBtn,
-  .arrowIcon,
-  .cardGlow,
-  .cardShine,
-  .cardBorder,
-  .cardReflection {
-    transition: none !important;
-    animation: none !important;
-    transform: none !important;
-  }
-  
-  .card:hover, .card.active {
-    transform: none !important;
-  }
-  
-  .inView .bgCircle {
-    transform: none !important;
-  }
-  
-  .inView::before {
-    opacity: 0.5;
-  }
-  
-  .cardWrapper.visible {
-    opacity: 1;
-    transform: none;
-  }
+/* Tema claro - brilho mais suave */
+html[data-theme="light"] .cardShine {
+  background: radial-gradient(
+    circle at var(--x-pos, 50%) var(--y-pos, 50%), 
+    rgba(255, 255, 255, 0.9) 0%, 
+    transparent 20%
+  );
+}
+
+/* Tema escuro - brilho mais intenso */
+html[data-theme="dark"] .cardShine {
+  background: radial-gradient(
+    circle at var(--x-pos, 50%) var(--y-pos, 50%), 
+    rgba(255, 255, 255, 0.8) 0%, 
+    transparent 15%
+  );
+}
+
+/* ========== CONTEÚDO DO CARD ========== */
+.cardContent {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: var(--color-text-1);
+}
+
+/* Estilo aprimorado para ícones SVG */
+.cardIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.15),
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.05)
+  );
+  border-radius: 16px;
+  padding: 16px;
+  color: var(--accent-color, var(--color-primary));
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 16px -8px rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.3);
+}
+
+.card:hover .cardIcon,
+.card.active .cardIcon {
+  transform: scale(1.05) translateY(-5px);
+  box-shadow: 0 12px 20px -6px rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.2),
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.08)
+  );
+}
+
+/* Efeito de brilho no ícone */
+.cardIcon::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 60%
+  );
+  transform: scale(0);
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.card:hover .cardIcon::before,
+.card.active .cardIcon::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Ajuste dos SVG dentro do ícone */
+.cardIcon svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  transition: all 0.3s ease;
+}
+
+.card:hover .cardIcon svg,
+.card.active .cardIcon svg {
+  filter: drop-shadow(0 0 4px rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.5));
+}
+
+/* Título do card */
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-text-0);
+  transition: color 0.4s ease;
+}
+
+.card:hover .cardTitle,
+.card.active .cardTitle {
+  color: var(--accent-color, var(--color-primary));
+}
+
+/* Descrição do card */
+.cardDescription {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-2);
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+  opacity: 0.9;
+}
+
+/* Rodapé do card */
+.cardFooter {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* ========== BOTÃO DE AÇÃO DO CARD ========== */
+.learnMoreBtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(
+    135deg, 
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.3), 
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.05)
+  );
+  border-radius: 12px;
+  color: var(--accent-color, var(--color-primary));
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  overflow: hidden;
+  border: 1px solid rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.3);
+  backdrop-filter: blur(5px);
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  margin-top: auto;
+  width: 100%;
+  text-align: center;
+}
+
+/* Brilho ao passar o mouse */
+.learnMoreBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.3), 
+    transparent
+  );
+  transition: left 0.7s ease;
+  z-index: 1;
+}
+
+.learnMoreBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+  background: linear-gradient(
+    135deg, 
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.4), 
+    rgba(var(--accent-color-rgb, var(--color-primary-rgb)), 0.1)
+  );
+}
+
+.learnMoreBtn:hover::before {
+  left: 100%;
+}
+
+.learnMoreBtn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent), 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Animação do ícone de seta */
+.arrowIcon {
+  position: relative;
+  transition: transform 0.3s ease;
+  flex-shrink: 0; /* Evita que a seta encolha */
+}
+
+.learnMoreBtn:hover .arrowIcon {
+  transform: translateX(4px);
 }

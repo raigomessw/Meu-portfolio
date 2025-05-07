@@ -484,4 +484,323 @@ html[data-theme="light"] .viewButton {
   }
 }
 
+/* ======= MEDIA QUERIES APRIMORADAS PARA RESPONSIVIDADE ======= */
+@media (max-width: 1440px) {
+  .gridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--space-m);
+  }
+}
+
+@media (max-width: 1024px) {
+  .gridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    padding: var(--space-m);
+    gap: var(--space-s);
+  }
+  
+  .emptyState {
+    padding: var(--space-xl) var(--space-m);
+  }
+}
+
+@media (max-width: 768px) {
+  .gridContainer {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    padding: var(--space-s);
+    gap: var(--space-s);
+  }
+  
+  .gridItem {
+    aspect-ratio: 1/1;
+  }
+  
+  .projectImage {
+    border-radius: var(--radius-s);
+  }
+  
+  .overlay {
+    padding: var(--space-s);
+  }
+  
+  .projectTitle {
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
+  }
+  
+  .projectDescription {
+    font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    max-width: 100%;
+    line-height: 1.4;
+  }
+  
+  .projectTags {
+    margin-top: var(--space-xs);
+  }
+  
+  .projectTag {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    margin-right: var(--space-xs);
+    margin-bottom: var(--space-xs);
+  }
+  
+  .emptyState {
+    padding: var(--space-l) var(--space-s);
+  }
+  
+  .emptyStateIcon {
+    font-size: 3rem;
+    margin-bottom: var(--space-s);
+  }
+  
+  .emptyStateText {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gridContainer {
+    grid-template-columns: 1fr;
+    padding: var(--space-xs);
+    gap: var(--space-s);
+  }
+  
+  .gridItem {
+    aspect-ratio: 16/9;
+  }
+  
+  .projectTitle {
+    font-size: clamp(1.125rem, 5vw, 1.25rem);
+  }
+  
+  .projectDescription {
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    -webkit-line-clamp: 2;
+  }
+  
+  .projectTags {
+    margin-top: var(--space-xs);
+    flex-wrap: wrap;
+  }
+  
+  .projectTag {
+    font-size: 0.65rem;
+    padding: 3px 6px;
+  }
+  
+  .emptyState {
+    padding: var(--space-m) var(--space-xs);
+  }
+  
+  .emptyStateIcon {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-xs);
+  }
+  
+  .emptyStateText {
+    font-size: 0.9rem;
+  }
+}
+
+/* Melhorias para interfaces touch */
+@media (hover: none) {
+  .gridItem {
+    transition: transform 0.2s ease;
+  }
+  
+  .gridItem:active {
+    transform: scale(0.98);
+  }
+  
+  .overlay {
+    opacity: 0.9;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%);
+  }
+  
+  .projectTitle,
+  .projectDescription,
+  .projectTags {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Otimizações para alto contraste */
+@media (prefers-contrast: more) {
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.85);
+  }
+  
+  .projectTitle {
+    text-shadow: none;
+  }
+  
+  .projectTag {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Reduções de animações */
+@media (prefers-reduced-motion: reduce) {
+  .gridItem,
+  .projectImage,
+  .overlay,
+  .projectTitle,
+  .projectDescription,
+  .projectTags,
+  .projectTag {
+    transition: opacity 0.1s linear !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+/* ======= FIM DAS MEDIA QUERIES ======= */
+
+/* ======= MELHORIAS DE RESPONSIVIDADE PARA WORKGRIDVIEW ======= */
+@media (max-width: 1400px) {
+  .workGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-m);
+  }
+}
+
+@media (max-width: 1200px) {
+  .workGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-m);
+  }
+  
+  .projectCard {
+    aspect-ratio: 4/3;
+  }
+}
+
+@media (max-width: 992px) {
+  .workContainer {
+    padding: var(--space-l) var(--space-m);
+  }
+  
+  .workGrid {
+    gap: var(--space-s);
+  }
+  
+  .projectCardTitle {
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+  }
+  
+  .projectCardDescription {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .workContainer {
+    padding: var(--space-m) var(--space-s);
+  }
+  
+  .workGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xs);
+  }
+  
+  .projectCardOverlay {
+    padding: var(--space-s);
+  }
+  
+  .projectCardTags {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .projectCardTag {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  .workGrid {
+    grid-template-columns: 1fr;
+    max-width: 450px;
+    margin: 0 auto;
+  }
+  
+  .projectCard {
+    aspect-ratio: 16/10;
+  }
+  
+  .loadMoreButton {
+    width: 100%;
+    max-width: 300px;
+    padding: var(--space-s) var(--space-m);
+    margin-top: var(--space-m);
+  }
+}
+
+@media (max-width: 480px) {
+  .workContainer {
+    padding: var(--space-m) var(--space-xs);
+  }
+  
+  .projectCardTitle {
+    font-size: clamp(1.1rem, 5vw, 1.5rem);
+  }
+  
+  .projectCardDescription {
+    font-size: 0.85rem;
+    margin-bottom: var(--space-xs);
+  }
+  
+  .projectCardTag {
+    font-size: 0.75rem;
+    padding: 3px 6px;
+  }
+}
+
+/* Melhorias para interfaces touch */
+@media (hover: none) {
+  .projectCard {
+    /* Em dispositivos touch, mostrar uma prévia do overlay sempre */
+    position: relative;
+  }
+  
+  .projectCardOverlay {
+    opacity: 0.9;
+    background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+    transform: translateY(0);
+  }
+  
+  .projectCardTitle, 
+  .projectCardDescription {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .projectCardTags {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .projectCard:active .projectCardOverlay {
+    opacity: 1;
+  }
+}
+
+/* Reduções de animação */
+@media (prefers-reduced-motion: reduce) {
+  .projectCard,
+  .projectCardImage,
+  .projectCardOverlay,
+  .projectCardTitle,
+  .projectCardDescription,
+  .projectCardTags,
+  .projectCardTag,
+  .loadMoreButton {
+    transition: opacity 0.1s linear !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+/* ======= FIM DAS MELHORIAS DE RESPONSIVIDADE ======= */
+
 /* Foi removida toda a complexidade desnecessária e mantidos apenas os estilos essenciais */

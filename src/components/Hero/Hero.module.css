@@ -35,6 +35,24 @@
   --hero-animation-duration: 0.7s;
   --hero-animation-stagger: 0.15s;
   --hero-animation-curve: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Variáveis de cor RGB para uso em transparências */
+  --color-bg-1-rgb: 255, 255, 255; /* Claro por padrão */
+  --color-bg-2-rgb: 245, 247, 250;
+  --color-primary-rgb: 99, 102, 241;
+  --color-accent-rgb: 236, 72, 153;
+  --hero-text-main-rgb: 17, 24, 39; /* RGB para texto principal - tema claro */
+  --hero-text-secondary-rgb: 55, 65, 81; /* RGB para texto secundário - tema claro */
+  --hero-text-muted-rgb: 107, 114, 128; /* RGB para texto muted - tema claro */
+}
+
+/* Configuração específica para tema escuro */
+html[data-theme="dark"] {
+  --color-bg-1-rgb: 29, 28, 52;
+  --color-bg-2-rgb: 43, 47, 83;
+  --hero-text-main-rgb: 248, 250, 252; /* RGB para texto principal - tema escuro */
+  --hero-text-secondary-rgb: 226, 232, 240; /* RGB para texto secundário - tema escuro */
+  --hero-text-muted-rgb: 203, 213, 225; /* RGB para texto muted - tema escuro */
 }
 
 /* Variáveis específicas do Hero */
@@ -50,17 +68,12 @@
   --hero-card-bg: var(--color-bg-1);
 }
 
-/* Variáveis de cor RGB para uso em transparências */
-:root {
-  --color-bg-1-rgb: 255, 255, 255; /* Claro por padrão */
-  --color-bg-2-rgb: 245, 247, 250;
-  --color-primary-rgb: 99, 102, 241;
-  --color-accent-rgb: 236, 72, 153;
-}
-
-html[data-theme="dark"] {
-  --color-bg-1-rgb: 29, 28, 52;
-  --color-bg-2-rgb: 43, 47, 83;
+/* Ajustes específicos de cores para o tema escuro */
+html[data-theme="dark"] .hero {
+  --hero-text-main: rgba(248, 250, 252, 0.95);
+  --hero-text-secondary: rgba(226, 232, 240, 0.85);
+  --hero-text-muted: rgba(203, 213, 225, 0.75);
+  --hero-border: rgba(76, 81, 137, 0.35);
 }
 
 /* Estilos base do Hero - Otimizados */
@@ -495,6 +508,12 @@ html[data-theme="dark"] .particle {
   animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 1) forwards;
 }
 
+/* Estilos específicos para o tema escuro */
+html[data-theme="dark"] .greeting {
+  color: rgba(248, 250, 252, 0.95); /* Branco mais puro no tema escuro */
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Sombra sutil para melhorar legibilidade */
+}
+
 .profession {
   font-size: var(--heading-h1);
   font-weight: var(--font-semi-bold);
@@ -512,6 +531,35 @@ html[data-theme="dark"] .particle {
   animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 2) forwards;
   word-break: break-word; /* Evita overflow em telas pequenas */
   hyphens: auto; /* Permite hifenização em telas pequenas */
+}
+
+/* Estilos específicos para o tema escuro no texto da profissão - aprimorados para corresponder à imagem */
+html[data-theme="dark"] .profession {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: #e3e8ed; /* Cor azulada para o texto principal no tema escuro */
+  text-shadow: none;
+}
+
+/* Estilos para destaque dentro do texto */
+.highlight {
+  color: var(--hero-accent);
+  font-weight: var(--font-semi-bold);
+  position: relative;
+  display: inline-block;
+}
+
+/* Melhorando o destaque no tema escuro para a palavra "kreativ" - mais brilhante e com destaque */
+html[data-theme="dark"] .highlight {
+  color: #4dabf7; /* Azul mais vibrante e claro */
+  text-shadow: 
+    0 0 10px rgba(77, 171, 247, 0.6),
+    0 0 20px rgba(77, 171, 247, 0.4);
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  font-weight: 700; /* Mais negrito para dar destaque */
 }
 
 /* ========== SUBTÍTULO - RESPONSIVO ========== */
@@ -1519,3 +1567,243 @@ html[data-theme="light"] .imageWrapper {
     -webkit-backdrop-filter: blur(8px);
   }
 }
+
+/* ======= MEDIA QUERIES APRIMORADAS PARA RESPONSIVIDADE ======= */
+@media (max-width: 1400px) {
+  .heroSection {
+    min-height: calc(100vh - 80px);
+    padding: var(--space-xl) var(--space-l);
+  }
+  
+  .heroContent {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 1200px) {
+  .heroContent {
+    max-width: 95%;
+  }
+  
+  .heroTitle {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+  }
+  
+  .heroSubtitle {
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+  }
+}
+
+@media (max-width: 992px) {
+  .heroSection {
+    padding: var(--space-l) var(--space-m);
+  }
+  
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-l);
+  }
+  
+  .heroContent {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .heroImage {
+    max-width: 75%;
+    margin: 0 auto;
+  }
+  
+  .socialIcons {
+    justify-content: center;
+    margin-top: var(--space-m);
+  }
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    min-height: auto;
+    padding: var(--space-l) var(--space-s);
+  }
+  
+  .heroTitle {
+    font-size: clamp(2rem, 8vw, 3rem);
+    margin-bottom: var(--space-s);
+  }
+  
+  .heroSubtitle {
+    font-size: clamp(1rem, 4vw, 1.5rem);
+    margin-bottom: var(--space-m);
+  }
+  
+  .heroCTA {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-s);
+  }
+  
+  .heroButton {
+    width: 100%;
+    max-width: 300px;
+    padding: var(--space-s) var(--space-m);
+    font-size: 1rem;
+  }
+  
+  .heroImage {
+    max-width: 85%;
+  }
+  
+  .scrollPrompt {
+    bottom: var(--space-s);
+    font-size: 0.9rem;
+  }
+  
+  .socialIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .heroSection {
+    padding: var(--space-m) var(--space-xs);
+  }
+  
+  .heroContent {
+    max-width: 100%;
+  }
+  
+  .heroTitle {
+    font-size: clamp(1.75rem, 7vw, 2.5rem);
+  }
+  
+  .heroSubtitle {
+    font-size: clamp(0.95rem, 3.5vw, 1.25rem);
+  }
+  
+  .heroDescription {
+    font-size: 0.95rem;
+    margin-bottom: var(--space-m);
+  }
+  
+  .heroImage {
+    max-width: 90%;
+  }
+  
+  .scrollPrompt {
+    display: none;
+  }
+  
+  .socialIcons {
+    gap: var(--space-xs);
+    margin-top: var(--space-s);
+  }
+  
+  .socialIcon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+  }
+  
+  .heroSubtitle {
+    font-size: clamp(0.9rem, 4vw, 1.15rem);
+  }
+  
+  .heroDescription {
+    font-size: 0.9rem;
+  }
+  
+  .heroButton {
+    padding: calc(var(--space-s) - 2px) var(--space-s);
+    font-size: 0.9rem;
+  }
+  
+  .socialIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-height: 700px) and (min-width: 768px) {
+  .heroSection {
+    min-height: 100vh;
+    padding: var(--space-m) var(--space-s);
+  }
+  
+  .heroTitle {
+    margin-bottom: var(--space-xs);
+  }
+  
+  .heroSubtitle {
+    margin-bottom: var(--space-s);
+  }
+  
+  .heroDescription {
+    margin-bottom: var(--space-s);
+  }
+}
+
+/* Melhorias para interfaces touch */
+@media (hover: none) {
+  .heroButton,
+  .socialIcon {
+    transition: transform 0.2s ease;
+  }
+  
+  .heroButton:active {
+    transform: translateY(2px);
+    opacity: 0.9;
+  }
+  
+  .socialIcon:active {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Otimizações para alto contraste */
+@media (prefers-contrast: more) {
+  .heroButton {
+    border: 2px solid currentColor;
+  }
+  
+  .heroTitle,
+  .heroSubtitle {
+    text-shadow: 0 0 1px rgba(0,0,0,0.5);
+  }
+  
+  .socialIcon {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Reduções de animações */
+@media (prefers-reduced-motion: reduce) {
+  .heroSection,
+  .heroContent,
+  .heroImage,
+  .heroTitle,
+  .heroSubtitle,
+  .heroDescription,
+  .heroButton,
+  .socialIcon,
+  .scrollPrompt {
+    transition: opacity 0.1s linear !important;
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  .scrollPrompt svg {
+    animation: none !important;
+  }
+}
+/* ======= FIM DAS MEDIA QUERIES ======= */

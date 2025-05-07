@@ -1240,3 +1240,275 @@ html[data-theme="dark"] .optionsContainer::-webkit-scrollbar-thumb:hover {
     animation-duration: 0.001s !important;
   }
 }
+
+/* ======= MEDIA QUERIES APRIMORADAS PARA RESPONSIVIDADE ======= */
+@media (max-width: 1200px) {
+  .contactContainer {
+    padding: var(--space-xl) var(--space-l);
+  }
+  
+  .contactGrid {
+    gap: var(--space-l);
+  }
+  
+  .contactInfo {
+    padding: var(--space-l);
+  }
+  
+  .contactForm {
+    padding: var(--space-l);
+  }
+}
+
+@media (max-width: 992px) {
+  .contactGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .contactInfo {
+    order: 2;
+    max-width: 100%;
+  }
+  
+  .contactForm {
+    order: 1;
+    max-width: 100%;
+  }
+  
+  .contactDetails {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-m);
+  }
+}
+
+@media (max-width: 768px) {
+  .contactContainer {
+    padding: var(--space-l) var(--space-m);
+  }
+  
+  .sectionTitle {
+    font-size: clamp(1.75rem, 5vw, 2.25rem);
+    margin-bottom: var(--space-m);
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+    margin-bottom: var(--space-m);
+  }
+  
+  .contactInfo,
+  .contactForm {
+    padding: var(--space-m);
+    border-radius: var(--radius-m);
+  }
+  
+  .infoTitle {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-s);
+  }
+  
+  .infoText {
+    font-size: 0.95rem;
+    margin-bottom: var(--space-m);
+  }
+  
+  .contactDetailItem {
+    margin-bottom: var(--space-s);
+  }
+  
+  .contactDetailTitle {
+    font-size: 0.9rem;
+  }
+  
+  .contactDetailValue {
+    font-size: 1rem;
+  }
+  
+  .socialLinks {
+    gap: var(--space-s);
+  }
+  
+  .socialIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+  
+  .formGroup {
+    margin-bottom: var(--space-s);
+  }
+  
+  .formLabel {
+    font-size: 0.9rem;
+    margin-bottom: var(--space-xs);
+  }
+  
+  .formInput,
+  .formTextarea {
+    padding: var(--space-s);
+    font-size: 0.95rem;
+  }
+  
+  .formTextarea {
+    min-height: 120px;
+  }
+  
+  .submitButton {
+    padding: var(--space-s) var(--space-m);
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .contactContainer {
+    padding: var(--space-m) var(--space-s);
+  }
+  
+  .contactDetails {
+    grid-template-columns: 1fr;
+  }
+  
+  .contactInfo,
+  .contactForm {
+    padding: var(--space-s);
+    border-radius: var(--radius-s);
+  }
+  
+  .formGroup.half {
+    width: 100%;
+  }
+  
+  .formRow {
+    flex-direction: column;
+  }
+  
+  .infoTitle {
+    font-size: 1.25rem;
+  }
+  
+  .infoText {
+    font-size: 0.9rem;
+  }
+  
+  .contactDetailTitle {
+    font-size: 0.85rem;
+  }
+  
+  .contactDetailValue {
+    font-size: 0.95rem;
+  }
+  
+  .socialLinks {
+    justify-content: center;
+  }
+  
+  .socialIcon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+  
+  .submitButton {
+    width: 100%;
+    margin-top: var(--space-s);
+  }
+}
+
+@media (max-width: 480px) {
+  .contactContainer {
+    padding: var(--space-s) var(--space-xs);
+  }
+  
+  .sectionTitle {
+    font-size: clamp(1.5rem, 7vw, 1.75rem);
+  }
+  
+  .subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .contactInfo,
+  .contactForm {
+    padding: var(--space-s);
+  }
+  
+  .infoTitle {
+    font-size: 1.2rem;
+  }
+  
+  .infoText {
+    font-size: 0.85rem;
+  }
+  
+  .socialIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+  
+  .formInput,
+  .formTextarea {
+    padding: calc(var(--space-s) - 2px);
+    font-size: 0.9rem;
+  }
+  
+  .formTextarea {
+    min-height: 100px;
+  }
+  
+  .submitButton {
+    padding: calc(var(--space-s) - 2px) var(--space-s);
+    font-size: 0.9rem;
+  }
+}
+
+/* Melhorias para interfaces touch */
+@media (hover: none) {
+  .socialIcon,
+  .submitButton {
+    transition: transform 0.2s ease;
+  }
+  
+  .socialIcon:active {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  
+  .submitButton:active {
+    transform: translateY(2px);
+  }
+}
+
+/* Otimizações para alto contraste */
+@media (prefers-contrast: more) {
+  .contactInfo,
+  .contactForm {
+    border: 1px solid currentColor;
+  }
+  
+  .formInput,
+  .formTextarea {
+    border-width: 2px;
+  }
+  
+  .submitButton {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduções de animações */
+@media (prefers-reduced-motion: reduce) {
+  .contactContainer,
+  .contactInfo,
+  .contactForm,
+  .formInput,
+  .formTextarea,
+  .submitButton,
+  .socialIcon {
+    transition: opacity 0.1s linear !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+/* ======= FIM DAS MEDIA QUERIES ======= */
