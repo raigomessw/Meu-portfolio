@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './ServiceDetailLayout.module.css';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
@@ -18,36 +18,39 @@ const ServiceDetailLayout = ({ serviceData }) => {
   const caseStudyRef = useRef(null);
   const ctaRef = useRef(null);
   
-  // Configurar observadores de interseção para animações de rolagem
+  // Configurar observadores de interseção para animações de rolagem com configuração otimizada
+  // Ajustado para desempenho em dispositivos móveis
   const { observedElements, setObservedElements } = useIntersectionObserver({
-    threshold: 0.15,
-    rootMargin: '-50px 0px',
+    threshold: 0.1, // Reduzido para melhorar performance
+    rootMargin: '-30px 0px',
+    // Limitando a frequência de verificação para melhorar desempenho
+    debounce: 100
   });
 
-  // Registrar elementos para observação
+  // Registrar elementos para observação com otimizações de performance
   useEffect(() => {
-    const elementsToObserve = [
-      { id: 'hero', ref: heroRef },
-      { id: 'benefits', ref: benefitsRef },
-      { id: 'process', ref: processRef },
-      { id: 'deliverables', ref: deliverablesRef },
-      { id: 'caseStudy', ref: caseStudyRef },
-      { id: 'cta', ref: ctaRef }
-    ].filter(item => item.ref.current);
-    
-    setObservedElements(elementsToObserve);
-    
-    // Animação de entrada inicial
-    setTimeout(() => {
+    // Registra os elementos apenas após o carregamento inicial do componente
+    const timer = setTimeout(() => {
+      const elementsToObserve = [
+        { id: 'hero', ref: heroRef },
+        { id: 'benefits', ref: benefitsRef },
+        { id: 'process', ref: processRef },
+        { id: 'deliverables', ref: deliverablesRef },
+        { id: 'caseStudy', ref: caseStudyRef },
+        { id: 'cta', ref: ctaRef }
+      ].filter(item => item.ref.current);
+      
+      setObservedElements(elementsToObserve);
+      
+      // Animação de entrada inicial com delay
       setIsLoaded(true);
-    }, 100);
+    }, 200);
     
-    // Rolagem suave para o topo
-    window.scrollTo({
-      top: 0,
-      behavior: reducedMotion ? 'auto' : 'smooth'
-    });
-  }, [setObservedElements, reducedMotion]);
+    // Rolagem suave para o topo - removendo comportamento que causa travamento
+    window.scrollTo(0, 0);
+    
+    return () => clearTimeout(timer);
+  }, [setObservedElements]);
   
   // Se não houver dados do serviço
   if (!serviceData) {
@@ -71,18 +74,21 @@ const ServiceDetailLayout = ({ serviceData }) => {
   }
 
   // Extrair cores do tema para uso dinâmico
-  const accentRgb = serviceData.accent && serviceData.accent.match(/\d+/g)
+  const accentRgb = serviceData?.accent?.match(/\d+/g)
     ? serviceData.accent.match(/\d+/g).join(',')
     : '75,75,75';
 
   // Variáveis CSS dinâmicas
   const rootStyle = {
-    '--accent': serviceData.accent || 'var(--color-primary)',
+    '--accent': serviceData?.accent || 'var(--color-primary)',
     '--accent-rgb': accentRgb,
     '--accent-soft': `rgba(${accentRgb}, 0.15)`,
     '--accent-lighten': `rgba(${accentRgb}, 0.07)`,
-    '--accent-darken': serviceData.accentDarken || serviceData.accent || 'var(--color-primary)'
+    '--accent-darken': serviceData?.accentDarken || serviceData?.accent || 'var(--color-primary)'
   };
+
+  // Função de otimização para animações em dispositivos móveis
+  const shouldAnimate = window.innerWidth > 768 && !reducedMotion;
 
   return (
     <div
@@ -90,20 +96,24 @@ const ServiceDetailLayout = ({ serviceData }) => {
       style={rootStyle}
       ref={containerRef}
     >
-      {/* Decorações de fundo premium */}
-      <div className={styles.backgroundDecorations}>
-        <div className={`${styles.decoration} ${styles.decorationPrimary}`}></div>
-        <div className={`${styles.decoration} ${styles.decorationSecondary}`}></div>
-        <div className={`${styles.decoration} ${styles.decorationTertiary}`}></div>
-        <div className={`${styles.decoration} ${styles.decorationAccent}`}></div>
-      </div>
+      {/* Decorações de fundo premium - com renderização condicional para dispositivos de baixo desempenho */}
+      {shouldAnimate && (
+        <div className={styles.backgroundDecorations}>
+          <div className={`${styles.decoration} ${styles.decorationPrimary}`}></div>
+          <div className={`${styles.decoration} ${styles.decorationSecondary}`}></div>
+          <div className={`${styles.decoration} ${styles.decorationTertiary}`}></div>
+          <div className={`${styles.decoration} ${styles.decorationAccent}`}></div>
+        </div>
+      )}
       
-      {/* Linhas de grade */}
-      <div className={styles.gridLines}>
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className={styles.gridLine}></div>
-        ))}
-      </div>
+      {/* Linhas de grade - com renderização condicional para dispositivos de baixo desempenho */}
+      {shouldAnimate && (
+        <div className={styles.gridLines}>
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className={styles.gridLine}></div>
+          ))}
+        </div>
+      )}
       
       {/* Hero Section */}
       <section 
@@ -202,7 +212,17 @@ const ServiceDetailLayout = ({ serviceData }) => {
             </h2>
             
             <div className={styles.processContainer}>
-              <div className={styles.processTimeline} aria-hidden="true"></div>
+              <div className={styles.processTimeline} aria-hidden="true">
+                {/* Marcadores da linha do tempo */}
+                {serviceData.process.map((_, index) => (
+                  <div 
+                    key={index} 
+                    className={styles.timelineMarker}
+                    style={{ '--marker-order': index }}
+                    aria-hidden="true"
+                  />
+                ))}
+              </div>
               
               <ol className={styles.processList}>
                 {serviceData.process.map((step, index) => (
@@ -212,22 +232,14 @@ const ServiceDetailLayout = ({ serviceData }) => {
                     style={{ '--animation-order': index }}
                   >
                     <div className={styles.processStepContent}>
-                      <div className={styles.stepNumberContainer}>
-                        <div className={styles.stepNumber} aria-hidden="true">
-                          <span>{index + 1}</span>
-                        </div>
-                      </div>
-                      
-                      <div className={styles.stepContent}>
-                        {typeof step === 'string' ? (
-                          <p className={styles.stepDescription}>{step}</p>
-                        ) : (
-                          <>
-                            <h3 className={styles.stepTitle}>{step.title}</h3>
-                            <p className={styles.stepDescription}>{step.description}</p>
-                          </>
-                        )}
-                      </div>
+                      {typeof step === 'string' ? (
+                        <p className={styles.stepDescription}>{step}</p>
+                      ) : (
+                        <>
+                          <h3 className={styles.stepTitle}>{step.title}</h3>
+                          <p className={styles.stepDescription}>{step.description}</p>
+                        </>
+                      )}
                     </div>
                   </li>
                 ))}

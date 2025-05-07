@@ -772,51 +772,88 @@ html[data-theme="dark"] .section {
   margin: 0;
 }
 
-/* ======= PROCESSO ======= */
+/* ======= PROCESSO COM LINHA DO TEMPO ======= */
 .processContainer {
   position: relative;
-  padding: var(--space-m) 0;
+  padding: var(--space-m) 0 var(--space-m) var(--space-l);
+  margin-left: var(--space-s);
 }
 
 .processTimeline {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 24px;
-  width: 2px;
+  left: 0;
+  width: 3px;
   background: linear-gradient(
     to bottom,
     var(--accent),
-    hsla(var(--accent-rgb), 0.1)
+    rgba(var(--accent-rgb), 0.3)
   );
+  border-radius: var(--radius-full);
 }
 
+/* Marcadores na linha do tempo */
+.timelineMarker {
+  position: absolute;
+  left: -4px;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.2);
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.5s var(--transition-bounce);
+  transition-delay: calc(var(--marker-order, 0) * 0.15s + 0.3s);
+}
+
+/* Posicionamento dos marcadores na linha do tempo */
 .processList {
   list-style: none;
   margin: 0;
   padding: 0;
   position: relative;
-  z-index: 1;
 }
 
 .processStep {
   position: relative;
-  padding: 0 0 var(--space-xl) var(--space-3xl);
+  padding: 0 0 var(--space-xl) 0;
   opacity: 0;
-  transform: translateX(-30px);
+  transform: translateX(-20px);
   transition: all 0.65s cubic-bezier(0.19, 1, 0.22, 1);
   transition-delay: calc(var(--animation-order, 0) * 0.15s + 0.1s);
-}
-
-.section.inView .processStep {
-  opacity: 1;
-  transform: translateX(0);
 }
 
 .processStep:last-child {
   padding-bottom: 0;
 }
 
+/* Posicionamento dos marcadores */
+.section.inView .timelineMarker {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Posicionamos cada marcador na linha do tempo conforme a posição de cada passo */
+.timelineMarker:nth-child(1) { top: calc(0% + var(--space-m)); }
+.timelineMarker:nth-child(2) { top: calc(25% + var(--space-m)); }
+.timelineMarker:nth-child(3) { top: calc(50% + var(--space-m)); }
+.timelineMarker:nth-child(4) { top: calc(75% + var(--space-m)); }
+.timelineMarker:nth-child(5) { top: calc(100% - var(--space-xl)); }
+.timelineMarker:nth-child(6) { top: calc(100% - var(--space-s)); }
+
+/* Ajustamos os espaçamentos para menos passos ou mais passos */
+.processTimeline:has(.timelineMarker:nth-child(1):last-child) .timelineMarker:nth-child(1) { top: 50%; }
+
+.processTimeline:has(.timelineMarker:nth-child(2):last-child) .timelineMarker:nth-child(1) { top: 33%; }
+.processTimeline:has(.timelineMarker:nth-child(2):last-child) .timelineMarker:nth-child(2) { top: 66%; }
+
+.processTimeline:has(.timelineMarker:nth-child(3):last-child) .timelineMarker:nth-child(1) { top: 25%; }
+.processTimeline:has(.timelineMarker:nth-child(3):last-child) .timelineMarker:nth-child(2) { top: 50%; }
+.processTimeline:has(.timelineMarker:nth-child(3):last-child) .timelineMarker:nth-child(3) { top: 75%; }
+
+/* Conteúdo de cada passo */
 .processStepContent {
   position: relative;
   background: var(--card-bg);
@@ -826,67 +863,37 @@ html[data-theme="dark"] .section {
   box-shadow: var(--card-shadow);
   transition: all var(--transition-base);
   backdrop-filter: blur(var(--blur-sm));
+  margin-bottom: var(--space-s);
+}
+
+/* Pequena conexão entre a linha do tempo e o conteúdo */
+.processStepContent::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 20px;
+  width: 10px;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.processStep:hover .processStepContent::before {
+  opacity: 1;
 }
 
 .processStep:hover .processStepContent {
   transform: translateX(var(--hover-x));
+  border-left: 3px solid var(--accent);
   box-shadow: 
     0 15px 30px -10px hsla(var(--accent-rgb), 0.1),
     0 30px 60px -30px hsla(var(--accent-rgb), 0.15);
 }
 
-.stepNumberContainer {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translate(-50%, -50%);
-}
-
-.stepNumber {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-full);
-  background: var(--accent);
-  color: white;
-  font-weight: bold;
-  font-size: 1.2rem;
-  box-shadow: 
-    0 5px 15px -5px hsla(var(--accent-rgb), 0.4),
-    0 10px 30px -10px hsla(var(--accent-rgb), 0.2);
-  position: relative;
-  z-index: 1;
-  transition: all 0.6s var(--transition-bounce);
-}
-
-.stepNumber::before {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: var(--radius-full);
-  background: conic-gradient(
-    from 0deg,
-    transparent,
-    hsla(var(--accent-rgb), 1),
-    transparent,
-    transparent,
-    hsla(var(--accent-rgb), 1),
-    transparent
-  );
-  opacity: 0;
-  transition: opacity 0.4s, transform 0.4s;
-  z-index: -1;
-}
-
-.processStep:hover .stepNumber {
-  transform: scale(1.1);
-}
-
-.processStep:hover .stepNumber::before {
-  opacity: 0.6;
-  animation: spin 2s linear infinite;
+.section.inView .processStep {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .stepTitle {
@@ -906,6 +913,76 @@ html[data-theme="dark"] .section {
   line-height: 1.6;
   color: var(--text-secondary);
   margin: 0;
+}
+
+/* Responsividade para mobile - Linha do tempo vertical otimizada */
+@media (max-width: 700px) {
+  .processContainer {
+    padding-left: var(--space-s);
+    margin-left: var(--space-2xs);
+  }
+  
+  .processTimeline {
+    left: 0;
+    width: 2px;
+  }
+  
+  .timelineMarker {
+    width: 8px;
+    height: 8px;
+    left: -3px;
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15);
+  }
+  
+  /* Ajustamos os marcadores em mobile para distribuir igualmente */
+  .timelineMarker:nth-child(1) { top: 0; }
+  .timelineMarker:nth-child(2) { top: 20%; }
+  .timelineMarker:nth-child(3) { top: 40%; }
+  .timelineMarker:nth-child(4) { top: 60%; }
+  .timelineMarker:nth-child(5) { top: 80%; }
+  .timelineMarker:nth-child(6) { top: 100%; }
+  
+  .processStep {
+    padding: 0 0 var(--space-l) 0;
+    margin-left: var(--space-l);
+  }
+  
+  .processStepContent {
+    padding: var(--space-m);
+  }
+  
+  .processStepContent::before {
+    left: -8px;
+    width: 8px;
+    height: 1px;
+    top: 15px;
+  }
+}
+
+/* Ajustes para telas menores */
+@media (max-width: 500px) {
+  .processStep {
+    margin-left: var(--space-m);
+  }
+  
+  .stepTitle {
+    font-size: 1.1rem;
+  }
+  
+  .stepDescription {
+    font-size: 0.95rem;
+  }
+}
+
+/* Ajustes para telas muito pequenas */
+@media (max-width: 375px) {
+  .processContainer {
+    padding-left: 2px;
+  }
+  
+  .processStep {
+    margin-left: var(--space-s);
+  }
 }
 
 /* ======= ENTREGAS ======= */
@@ -1300,6 +1377,8 @@ html[data-theme="dark"] .ctaBackdrop {
     --space-xl: 2.25rem;
     --space-l: 1.5rem;
     --space-m: 1.25rem;
+    --space-s: 1rem;
+    --space-xs: 0.75rem;
   }
   
   .section {
@@ -1337,7 +1416,7 @@ html[data-theme="dark"] .ctaBackdrop {
   }
   
   .stepNumberContainer {
-    left: 5px;
+    left: 7px;
   }
   
   .processTimeline {
@@ -1348,12 +1427,172 @@ html[data-theme="dark"] .ctaBackdrop {
   .decoration {
     opacity: 0.3;
   }
+  
+  /* Ajustes para tornar os cartões mais compactos */
+  .benefitCardInner {
+    padding: var(--space-m);
+  }
+  
+  .benefitIconWrapper {
+    margin-bottom: var(--space-xs);
+  }
 }
 
+/* Posicionamento completamente refeito para a seção de processo em mobile */
 @media (max-width: 500px) {
+  /* Redefinindo o container de processo */
+  .processContainer {
+    padding: var(--space-m) 0 var(--space-m) 0; /* Removendo o padding à esquerda */
+    width: 100%;
+    position: relative;
+  }
+  
+  /* Ajustando a linha do tempo */
+  .processTimeline {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 16px; /* Linha do tempo mais à esquerda */
+    width: 2px;
+  }
+  
+  /* Redefinindo os itens do processo com posicionamento mais preciso */
+  .processList {
+    width: 100%;
+    padding-left: 0; /* Removendo padding para ajustar posicionamento */
+  }
+  
+  .processStep {
+    position: relative;
+    padding: 0;
+    margin: 0 0 var(--space-xl) 45px; /* Margem à esquerda mais ampla */
+    display: block;
+  }
+  
+  /* Posicionando o círculo com o número */
+  .stepNumberContainer {
+    position: absolute;
+    top: 15px; /* Alinhado verticalmente com o início do texto */
+    left: -45px; /* Posicionado mais à esquerda */
+    width: 32px;
+    height: 32px;
+  }
+  
+  /* Garantindo que o número fique centralizado no círculo */
+  .stepNumber {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Ajustando o conteúdo do passo */
+  .processStepContent {
+    width: 100%;
+    padding: var(--space-m);
+    margin-left: 8px; /* Adicionando espaço entre o círculo e o conteúdo */
+    border-radius: var(--radius-m);
+  }
+  
+  /* Ajustes de texto */
+  .stepTitle {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-xs);
+  }
+  
+  .stepDescription {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}
+
+/* Ajuste específico para o espaçamento dos círculos numerados na seção de processo */
+@media (max-width: 500px) {
+  /* Redefinindo completamente o posicionamento dos elementos de processo */
+  .processContainer {
+    padding: 0;
+    margin: 0;
+    position: relative;
+  }
+  
+  /* Posicionando a linha do tempo */
+  .processTimeline {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 16px;
+    width: 2px;
+  }
+  
+  /* Estruturando a lista de processos */
+  .processList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  /* Posicionamento do passo do processo com margem esquerda adequada */
+  .processStep {
+    position: relative;
+    margin: 0 0 var(--space-l) 0; /* Reset das margens */
+    padding: 0 0 0 40px; /* Padding esquerdo de 40px */
+  }
+  
+  /* Posicionando o container do número para ficar alinhado */
+  .stepNumberContainer {
+    position: absolute;
+    top: 12px; /* Alinhado com o topo do conteúdo */
+    left: 0; /* Alinhado à esquerda */
+  }
+  
+  /* Garantindo tamanho e posicionamento corretos para o círculo */
+  .stepNumber {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Ajustando o conteúdo principal com espaçamento correto */
+  .processStepContent {
+    padding: var(--space-s);
+    margin-left: 8px; /* Adicionando espaçamento de 8px entre o círculo e o conteúdo */
+  }
+}
+
+/* Ajustes para telas menores */
+@media (max-width: 375px) {
+  .processTimeline {
+    left: 14px;
+  }
+}
+
+@media (max-width: 320px) {
+  .processStep {
+    padding-left: 38px; /* Ligeiramente menor para telas muito pequenas */
+  }
+  
+  .processTimeline {
+    left: 13px;
+  }
+}
+
+/* Melhorando para celulares médios */
+@media (max-width: 500px) {
+  :root {
+    --hover-y: -4px; /* Reduzir efeito de hover em telas pequenas */
+  }
+
   .heroContent {
     padding: var(--space-l) var(--space-s);
     border-radius: var(--radius-m);
+    margin: 0 var(--space-xs);
+    width: calc(100% - var(--space-xs) * 2);
   }
   
   .iconWrapper {
@@ -1385,6 +1624,7 @@ html[data-theme="dark"] .ctaBackdrop {
   
   .backLink {
     font-size: 0.85rem;
+    margin-bottom: var(--space-m);
   }
   
   .backLink svg {
@@ -1399,7 +1639,7 @@ html[data-theme="dark"] .ctaBackdrop {
   }
   
   .processStepContent {
-    padding: var(--space-s) var(--space-xs) var(--space-s) var(--space-s);
+    padding: var(--space-s);
   }
   
   .processStep {
@@ -1452,27 +1692,63 @@ html[data-theme="dark"] .ctaBackdrop {
     padding: var(--space-2xl) var(--space-s);
     margin-top: var(--space-2xl);
   }
+  
+  /* Ajuste adicional para o nível de zoom em dispositivos móveis */
+  .benefitCard:hover .benefitCardInner {
+    transform: translateY(-4px); /* Reduzir movimento em telas pequenas */
+  }
+  
+  .processStep:hover .processStepContent {
+    transform: translateX(5px); /* Menor movimento para evitar problemas de layout */
+  }
+  
+  /* Melhorar legibilidade dos textos */
+  .stepDescription, 
+  .benefitDescription, 
+  .deliverableText {
+    line-height: 1.5;
+  }
+  
+  /* Ajustes para decorações de fundo */
+  .decorationPrimary,
+  .decorationSecondary,
+  .decorationTertiary,
+  .decorationAccent {
+    opacity: 0.2; /* Reduzir opacidade para não distrair em telas pequenas */
+  }
 }
 
 /* Melhorando para dispositivos muito pequenos */
-@media (max-width: 360px) {
+@media (max-width: 375px) {
+  :root {
+    --space-xl: 2rem;
+    --space-l: 1.25rem;
+    --space-m: 1rem;
+    --space-s: 0.75rem;
+    --space-xs: 0.5rem;
+  }
+
   .title {
     font-size: clamp(1.5rem, 6vw, 1.75rem);
   }
   
   .heroContent {
     padding: var(--space-m) var(--space-xs);
+    margin: 0 var(--space-xs);
   }
   
   .iconWrapper {
     width: 60px;
     height: 60px;
     font-size: 1.5rem;
+    margin-bottom: var(--space-xs);
   }
   
   .section {
     padding: var(--space-m) var(--space-xs);
     border-radius: var(--radius-s);
+    margin-left: var(--space-2xs);
+    margin-right: var(--space-2xs);
   }
   
   .sectionTitle {
@@ -1481,7 +1757,7 @@ html[data-theme="dark"] .ctaBackdrop {
   }
   
   .processStep {
-    padding-left: var(--space-l);
+    padding-left: var(--space-xl);
   }
   
   .stepNumber {
@@ -1492,6 +1768,100 @@ html[data-theme="dark"] .ctaBackdrop {
   
   .processTimeline {
     left: 14px;
+  }
+  
+  /* Tornar cards ainda mais compactos */
+  .benefitCardInner {
+    padding: var(--space-s);
+  }
+  
+  .caseStudyBody {
+    padding: var(--space-s);
+  }
+  
+  .caseStudyHeader {
+    padding: var(--space-s);
+  }
+  
+  .caseStudyResult {
+    padding: var(--space-s);
+  }
+  
+  .processStepContent {
+    padding: var(--space-xs) var(--space-s);
+  }
+  
+  /* Ajustes para botões */
+  .ctaButton {
+    padding: var(--space-xs) var(--space-m);
+    font-size: 0.9rem;
+  }
+  
+  /* Ajustes para o tamanho das fontes */
+  .deliverableText, 
+  .stepDescription, 
+  .benefitDescription {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  
+  .iconContainer {
+    margin-bottom: var(--space-xs);
+  }
+  
+  .backLink {
+    margin-bottom: var(--space-s);
+    padding: var(--space-2xs) var(--space-xs);
+  }
+}
+
+/* Melhorias para dispositivos extremamente pequenos (iPhone 5/SE antigo) */
+@media (max-width: 320px) {
+  .title {
+    font-size: 1.4rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .iconWrapper {
+    width: 50px;
+    height: 50px;
+    font-size: 1.3rem;
+  }
+  
+  .stepNumber {
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+  }
+  
+  .processTimeline {
+    left: 12px;
+  }
+  
+  .benefitTitle,
+  .stepTitle {
+    font-size: 1rem;
+  }
+  
+  .processStep {
+    padding-left: var(--space-l);
+    padding-bottom: var(--space-s);
+  }
+  
+  /* Espaçamento ainda mais compacto */
+  .section {
+    margin: var(--space-s) var(--space-2xs);
+  }
+  
+  /* Garantir que todos os elementos estejam visíveis */
+  .benefitCard,
+  .processStep,
+  .deliverableItem,
+  .caseStudyCard {
+    margin-bottom: var(--space-xs);
   }
 }
 
@@ -1525,6 +1895,13 @@ html[data-theme="dark"] .ctaBackdrop {
   
   .heroContent {
     padding: var(--space-m);
+  }
+  
+  /* Layout em duas colunas em dispositivos em modo paisagem */
+  .benefitsGrid,
+  .deliverablesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-s);
   }
 }
 
