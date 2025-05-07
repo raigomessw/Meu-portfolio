@@ -4,6 +4,7 @@
   padding: 8rem 0 6rem;
   overflow: hidden;
   background-color: var(--color-bg-1);
+  border-radius: var(--premium-border-radius);
   color: var(--color-text-1);
   min-height: 100vh;
   display: flex;

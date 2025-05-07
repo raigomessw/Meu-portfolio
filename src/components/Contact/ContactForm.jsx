@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faPaperPlane, 
@@ -6,7 +6,6 @@ import {
   faEnvelope, 
   faCheckCircle,
   faComment,
-  faCircleNotch,
   faPaperclip,
   faShield,
   faExclamationCircle
@@ -58,8 +57,6 @@ function ContactForm({
     setFormProgress(progress);
   }, [formData, requiredFields]);
 
-  
-
   // Importante: verifique se handleChange está disponível
   const onChangeHandler = handleChange || ((e) => console.warn("onChange handler not provided"));
 
@@ -67,14 +64,10 @@ function ContactForm({
     <div className={styles.formContainer}>
       <h3>Skicka ett meddelande</h3>
       
-      <div className={styles.progressContainer}>
+      <div className={styles.progressContainer} role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={formProgress}>
         <div 
           className={styles.progressBar} 
           style={{ width: `${formProgress}%` }}
-          aria-valuemin="0"
-          aria-valuemax="100"
-          aria-valuenow={formProgress}
-          role="progressbar"
         >
           {formProgress === 100 && (
             <span className={styles.progressComplete}>
@@ -184,7 +177,6 @@ function ContactForm({
               {/* CustomSelect dentro da label não precisa de htmlFor/id */}
               <CustomSelect
                 name="subject"
-                className={styles.select}
                 value={formData.subject || ''}
                 onChange={onChangeHandler}
                 onBlur={() => setFocusedField(null)}
@@ -202,7 +194,7 @@ function ContactForm({
           </div>
         </div>
         
-        <div className={`${styles.formMessageBlock} ${focusedField === 'message' ? styles.focused : ''}`}>
+        <div className={`${styles.formGroup} ${styles.formMessageBlock} ${focusedField === 'message' ? styles.focused : ''}`}>
           <label htmlFor="message" className={styles.label}>
             <FontAwesomeIcon icon={faComment} className={styles.labelIcon} /> Ditt meddelande
           </label>
@@ -268,7 +260,7 @@ function ContactForm({
         
         {submitMessage && (
           <div 
-            className={`${styles.feedbackMessage} ${submitStatus === 'success' ? styles.successMessage : styles.errorMessage}`}
+            className={`${styles.feedbackMessage} ${submitStatus === 'success' ? styles.successMessage : styles.errorFeedback}`}
           >
             {submitStatus === 'success' ? (
               <FontAwesomeIcon icon={faCheckCircle} />

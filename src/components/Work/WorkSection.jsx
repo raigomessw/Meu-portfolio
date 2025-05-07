@@ -35,7 +35,6 @@ const WorkSection = () => {
       <div className={styles.sectionHeader}>
         <h2>Mina Projekt</h2>
         <div className={styles.headerAccent}></div>
-        <p>Kolla in några av mina senaste arbeten inom utveckling och design.</p>
       </div>
 
       {/* Mostrar erro se houver */}

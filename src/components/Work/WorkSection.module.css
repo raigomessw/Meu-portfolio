@@ -3,7 +3,7 @@
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  /* Usando variáveis do tema para as cores de fundo */
+  border-radius: var(--premium-border-radius);
   background-color: var(--dark-color-bg-1);
   color: var(--dark-color-text-1);
   transition: background-color var(--transition-slow), color var(--transition-slow);

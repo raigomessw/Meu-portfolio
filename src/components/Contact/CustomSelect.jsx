@@ -54,24 +54,36 @@ const CustomSelect = ({
       <div 
         className={`${styles.customSelect} ${isOpen ? styles.open : ''}`}
         onClick={handleToggle}
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-labelledby={`select-label-${name}`}
       >
-        <div className={styles.selectedOption}>
+        <div className={styles.selectedOption} id={`select-label-${name}`}>
           <span className={value ? '' : styles.placeholder}>
             {displayValue}
           </span>
           <FontAwesomeIcon 
             icon={faChevronDown} 
             className={styles.selectArrow} 
+            aria-hidden="true"
           />
         </div>
         
         {isOpen && (
-          <div className={styles.optionsContainer}>
+          <div 
+            className={styles.optionsContainer}
+            role="listbox"
+            aria-activedescendant={value ? `option-${value}` : undefined}
+          >
             {options.map((option) => (
               <div
                 key={option.value}
+                id={`option-${option.value}`}
                 className={`${styles.option} ${option.value === value ? styles.selected : ''}`}
                 onClick={() => handleSelect(option.value)}
+                role="option"
+                aria-selected={option.value === value}
               >
                 {option.label}
               </div>

@@ -23,6 +23,15 @@
   --section-spacing: clamp(80px, 10vw, 120px);
   --content-max-width: 1400px;
   --content-padding: clamp(16px, 5vw, 40px);
+  
+  /* Novas variáveis para animações otimizadas */
+  --animation-timing: 0.8s;
+  --animation-curve: cubic-bezier(0.16, 1, 0.3, 1);
+  --stagger-delay: 120ms;
+  --parallax-depth: 60px;
+  --hover-lift: 10px;
+  --animation-distance: 40px;
+  --animation-scale: 0.96;
 }
 
 /* Variantes para o tema claro */
@@ -66,6 +75,7 @@ html[data-theme="light"] .homePage {
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 1.5s ease-out, transform 1.5s var(--premium-transition);
+  will-change: opacity, transform;
 }
 
 .visible .gradientLayer {
@@ -115,6 +125,7 @@ html[data-theme="light"] .homePage {
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.8s ease-out, transform 0.8s var(--premium-transition);
+  will-change: opacity, transform;
 }
 
 .visible .sectionTitle {
@@ -151,6 +162,7 @@ html[data-theme="light"] .homePage {
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.8s ease-out, transform 0.8s var(--premium-transition);
+  will-change: opacity, transform;
 }
 
 .sectionWrapper.visible {
@@ -178,6 +190,7 @@ html[data-theme="light"] .homePage {
   transform: translateY(30px);
   transition: opacity 0.8s ease-out, transform 0.8s var(--premium-transition);
   transition-delay: 0.2s;
+  will-change: opacity, transform;
 }
 
 .visible .preHeading {
@@ -197,6 +210,7 @@ html[data-theme="light"] .homePage {
   transform: translateY(30px);
   transition: opacity 0.8s ease-out, transform 0.8s var(--premium-transition);
   transition-delay: 0.3s;
+  will-change: opacity, transform;
 }
 
 .visible .sectionSubtitle {
@@ -236,6 +250,7 @@ html[data-theme="light"] .homePage {
   transform: translateY(30px);
   transition: all 0.8s var(--premium-transition);
   transition-delay: 0.4s;
+  will-change: opacity, transform, box-shadow;
 }
 
 .visible .navButton {
@@ -256,6 +271,143 @@ html[data-theme="light"] .homePage {
 
 .navButton:hover svg {
   transform: translateX(4px);
+}
+
+/* ========== NOVAS ANIMAÇÕES OTIMIZADAS ========== */
+
+/* Elemento com efeito de parallax */
+.parallaxElement {
+  position: relative;
+  will-change: transform;
+  transform: translateZ(0);
+  transition: transform 0.1s linear;
+}
+
+/* Card com animação premium */
+.premiumCard {
+  position: relative;
+  background-color: var(--homepage-card-bg);
+  border-radius: var(--premium-border-radius);
+  border: var(--premium-card-border);
+  overflow: hidden;
+  transition: all 0.4s var(--premium-transition);
+  transform-origin: center bottom;
+  opacity: 0;
+  transform: translateY(var(--animation-distance)) scale(var(--animation-scale));
+  will-change: transform, opacity, box-shadow;
+}
+
+.visible .premiumCard {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  box-shadow: var(--premium-box-shadow);
+}
+
+/* Criando atrasos escalonados para elementos */
+.staggerItem {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: opacity var(--animation-timing) var(--animation-curve),
+              transform var(--animation-timing) var(--animation-curve);
+  will-change: opacity, transform;
+}
+
+.visible .staggerItem:nth-child(1) { transition-delay: calc(var(--stagger-delay) * 1); }
+.visible .staggerItem:nth-child(2) { transition-delay: calc(var(--stagger-delay) * 2); }
+.visible .staggerItem:nth-child(3) { transition-delay: calc(var(--stagger-delay) * 3); }
+.visible .staggerItem:nth-child(4) { transition-delay: calc(var(--stagger-delay) * 4); }
+.visible .staggerItem:nth-child(5) { transition-delay: calc(var(--stagger-delay) * 5); }
+.visible .staggerItem:nth-child(6) { transition-delay: calc(var(--stagger-delay) * 6); }
+
+.visible .staggerItem {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Cards com efeito 3D premium ao hover */
+.cardHover3D {
+  transition: transform 0.3s var(--premium-transition), box-shadow 0.3s var(--premium-transition);
+  perspective: 1000px;
+  will-change: transform, box-shadow;
+}
+
+.cardHover3D:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Efeito de foco brilhante */
+.glowFocus {
+  position: relative;
+  overflow: hidden;
+}
+
+.glowFocus::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(var(--color-primary-rgb), 0.15),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.glowFocus:hover::before {
+  opacity: 1;
+}
+
+/* Efeito de texto com revelação progressiva */
+.revealText {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.revealText > span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.5s var(--premium-transition),
+              transform 0.5s var(--premium-transition);
+  will-change: transform, opacity;
+}
+
+.visible .revealText > span {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.visible .revealText > span:nth-child(1) { transition-delay: 0.1s; }
+.visible .revealText > span:nth-child(2) { transition-delay: 0.2s; }
+.visible .revealText > span:nth-child(3) { transition-delay: 0.3s; }
+.visible .revealText > span:nth-child(4) { transition-delay: 0.4s; }
+.visible .revealText > span:nth-child(5) { transition-delay: 0.5s; }
+
+/* Elementos decorativos flutuando */
+.floatingElement {
+  animation: floatAnimation 6s ease-in-out infinite;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.floatingElement:nth-child(odd) {
+  animation-duration: 8s;
+  animation-delay: 1s;
+}
+
+.floatingElement:nth-child(3n) {
+  animation-duration: 10s;
+  animation-delay: 2s;
+}
+
+.floatingElement:nth-child(3n+1) {
+  animation-duration: 7s;
+  animation-delay: 0.5s;
 }
 
 /* ========== ANIMAÇÕES PERSONALIZADAS ========== */
@@ -296,6 +448,43 @@ html[data-theme="light"] .homePage {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+/* Nova animação de pulsação suave */
+@keyframes gentlePulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* Nova animação de deslocamento suave */
+@keyframes parallaxShift {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(5px) translateY(-5px);
+  }
+  75% {
+    transform: translateX(-5px) translateY(5px);
+  }
+}
+
+/* Nova animação de borda brilhante */
+@keyframes glowingBorder {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(var(--color-primary-rgb), 0.3),
+                0 0 10px rgba(var(--color-primary-rgb), 0.2);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.5),
+                0 0 20px rgba(var(--color-primary-rgb), 0.3);
   }
 }
 
@@ -363,5 +552,38 @@ html[data-theme="light"] .homePage {
   .navButton {
     padding: 0.6rem 1.2rem;
     font-size: 0.9rem;
+  }
+}
+
+/* Suporte melhorado para redução de movimento */
+@media (prefers-reduced-motion: reduce) {
+  .homePage * {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+  
+  .staggerItem,
+  .premiumCard,
+  .visible .staggerItem,
+  .visible .premiumCard,
+  .parallaxElement,
+  .floatingElement,
+  .sectionTitle,
+  .sectionSubtitle,
+  .preHeading,
+  .navButton,
+  .visible .sectionTitle,
+  .visible .sectionSubtitle,
+  .visible .preHeading,
+  .visible .navButton,
+  .revealText > span,
+  .visible .revealText > span {
+    opacity: 1;
+    transform: none;
+    animation: none;
+    transition: none;
   }
 }

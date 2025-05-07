@@ -194,7 +194,7 @@ function Contact() {
   };
   
   return (
-    <div ref={sectionRef} className={`${styles.contactContainer} ${isVisible ? styles.visible : ''}`}>
+    <div ref={sectionRef} className={`${styles.contactContainer} ${styles.contactComponent} ${isVisible ? styles.visible : ''}`}>
       <div className={styles.backgroundWrapper}>
         <div className={styles.gradientBackground}></div>
         <div className={styles.patternGrid}></div>
