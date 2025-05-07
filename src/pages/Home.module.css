@@ -499,6 +499,10 @@ html[data-theme="light"] .homePage {
   .sectionTitle {
     font-size: clamp(2rem, 5vw, 3.5rem);
   }
+
+  .sectionNav {
+    bottom: 20px;
+  }
   
   .sectionSubtitle {
     font-size: clamp(1rem, 2vw, 1.2rem);
@@ -511,6 +515,8 @@ html[data-theme="light"] .homePage {
     --content-padding: 20px;
   }
   
+  
+
   .sectionTitle {
     font-size: clamp(1.8rem, 4vw, 3rem);
     margin-bottom: 2rem;
@@ -531,6 +537,10 @@ html[data-theme="light"] .homePage {
   :root {
     --section-spacing: clamp(40px, 5vw, 60px);
     --content-padding: 16px;
+  }
+
+  .sectionNav {
+    bottom: 20px;
   }
   
   .sectionTitle {
