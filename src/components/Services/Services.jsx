@@ -187,7 +187,7 @@ function Services() {
 
   return (
     <section 
-      id="services" 
+      id="servicesSection" 
       className={`${styles.container} ${isInView ? styles.inView : ''}`}
       ref={containerRef}
       aria-label="UX-designtjänster"

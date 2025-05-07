@@ -479,19 +479,20 @@ html[data-theme="dark"] .particle {
 /* ========== BOTÃO DE SCROLL + CONTAINER (POSIÇÃO FIXA CENTRALIZADA) ========== */
 .heroScrollContainer {
   position: absolute;
-  bottom: 40px;
+  bottom: 40px; /* Mantém na parte inferior */
   left: 0;
   right: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  z-index: 9999;
-  top: var(--space-md);
+  top: 20px; 
+  z-index: 50; /* Reduzido para ficar abaixo de outros elementos importantes */
+  pointer-events: none; /* Permite que os cliques passem através do container */
 }
 
 .heroScroll {
-  position: static; /* Alterado de absolute para static */
+  position: static;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -510,6 +511,8 @@ html[data-theme="dark"] .particle {
   font-size: var(--button);
   opacity: 0;
   animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 8) forwards;
+  pointer-events: auto; /* IMPORTANTE: garante que o botão receba eventos de clique */
+  cursor: pointer; /* adiciona cursor de mão ao passar sobre o botão */
 }
 
 

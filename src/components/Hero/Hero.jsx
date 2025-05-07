@@ -288,21 +288,46 @@ const Hero = () => {
     // Usa a detecção de preferência de movimento do premium performance
     const noSmoothScroll = deviceInfo.prefersReducedMotion;
     
-    // Ajuste aqui para o ID correto da sua seção de serviços ou projetos
-    const targetSection = document.getElementById('services') || document.querySelector('.services');
+    // Adiciona um console.log para debug
+    console.log('Botão clicado - tentando rolar para a seção de serviços');
     
-    if (targetSection) {
-      targetSection.scrollIntoView({
-        behavior: noSmoothScroll ? 'auto' : 'smooth',
-        block: 'start'
-      });
-    } else {
-      // Fallback: rolar para uma posição aproximada se não encontrar a seção
-      window.scrollTo({
-        top: window.innerHeight,
-        behavior: noSmoothScroll ? 'auto' : 'smooth'
-      });
-    }
+    // Tenta encontrar a seção várias vezes em caso de renderização condicional
+    const findAndScrollToSection = () => {
+      // Busca pelo ID services em qualquer elemento
+      const targetSection = document.getElementById('services');
+      
+      if (targetSection) {
+        console.log('Seção de serviços encontrada, realizando rolagem');
+        targetSection.scrollIntoView({
+          behavior: noSmoothScroll ? 'auto' : 'smooth',
+          block: 'start'
+        });
+        return true;
+      } else {
+        console.log('Seção de serviços não encontrada ainda');
+        return false;
+      }
+    };
+    
+    // Tenta imediatamente
+    if (findAndScrollToSection()) return;
+    
+    // Se não encontrou, tenta novamente após um pequeno atraso (para dar tempo ao React)
+    setTimeout(() => {
+      if (findAndScrollToSection()) return;
+      
+      // Se ainda não encontrou, tenta uma última vez com um atraso maior
+      setTimeout(() => {
+        if (findAndScrollToSection()) return;
+        
+        // Último recurso: simplesmente role para baixo
+        console.log('Não foi possível encontrar a seção, usando fallback');
+        window.scrollTo({
+          top: window.innerHeight,
+          behavior: noSmoothScroll ? 'auto' : 'smooth'
+        });
+      }, 500);
+    }, 100);
   }, [deviceInfo.prefersReducedMotion]);
 
   return (
