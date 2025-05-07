@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useWorkProjects } from './WorkProjectContext';
-import { useTheme } from '../../Hooks/useTheme';
+import { useTheme } from '../../components/context/ThemeContext';
 import styles from './ProjectDetail.module.css';
 
 // Importar todos os ícones necessários do arquivo Icons.jsx

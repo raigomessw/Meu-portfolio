@@ -1,5 +1,5 @@
 /* Variáveis de cor para o componente About - Paleta escandinava refinada */
-:root {
+.aboutContainer {
   /* Usando variáveis globais ao invés de valores fixos */
   --about-bg-primary: var(--color-bg-0);
   --about-text-main: var(--color-text-0);
@@ -27,7 +27,7 @@
 }
 
 /* Ajustes específicos para o tema escuro */
-html[data-theme="dark"] {
+html[data-theme="dark"] .aboutContainer {
   /* Ajustes refinados para o dark mode escandinavo */
   --about-glass-bg: var(--color-glass-dark);
   --about-glass-border: var(--color-glass-border-dark);
