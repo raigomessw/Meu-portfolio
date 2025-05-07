@@ -515,8 +515,6 @@ html[data-theme="dark"] .particle {
   cursor: pointer; /* adiciona cursor de mão ao passar sobre o botão */
 }
 
-
-
 .heroScroll:hover, .heroScroll:focus {
   transform: translateY(-5px); /* Simplificado */
   background: rgba(var(--color-bg-1-rgb), 0.4);
@@ -682,44 +680,167 @@ html[data-theme="dark"] .particle {
   font-weight: var(--font-semi-bold);
   margin-bottom: var(--space-sm);
   display: block;
-  color: var(--hero-text-main);
+  position: relative;
+  letter-spacing: -0.02em;
+  /* Gradiente premium com efeito de brilho */
+  background: linear-gradient(
+    to right, 
+    #ffffff 0%,
+    #6e07f3 45%,
+    #b476ff 55%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  text-shadow: 0 5px 15px rgba(110, 7, 243, 0.15);
   opacity: 0;
   transform: translateY(30px);
-  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 1) forwards;
+  animation: 
+    fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 1) forwards,
+    shineText 8s linear infinite;
 }
 
 /* Estilos específicos para o tema escuro */
 html[data-theme="dark"] .greeting {
-  color: rgba(248, 250, 252, 0.95); /* Branco mais puro no tema escuro */
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Sombra sutil para melhorar legibilidade */
+  background: linear-gradient(
+    to right, 
+    #ffffff 0%,
+    #a48efa 50%,  /* Roxo mais suave em vez de #9f60ff */
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  text-shadow: 0 5px 15px rgba(164, 142, 250, 0.2); /* Sombra correspondente ao novo roxo */
+}
+
+/* Efeito de névoa por trás do título */
+.greeting::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -20px;
+  right: -20px;
+  bottom: -10px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(110, 7, 243, 0.15) 0%,
+    rgba(110, 7, 243, 0) 70%
+  );
+  z-index: -1;
+  filter: blur(20px);
+  opacity: 0.8;
+  transform: translateZ(-10px);
+  animation: pulseGlow 6s ease-in-out infinite alternate;
+}
+
+/* Animação de fluxo de gradiente mais suave */
+@keyframes shineText {
+  0% { background-position: -100% center; }
+  50% { background-position: 100% center; }
+  100% { background-position: -100% center; }
+}
+
+/* Estilos específicos para o tema escuro no texto da profissão */
+html[data-theme="dark"] .profession {
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(164, 142, 250, 0.9) 50%,  /* Roxo mais suave */
+    rgba(132, 108, 220, 0.85) 100%  /* Versão ainda mais suave do roxo */
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  text-shadow: 0 8px 20px rgba(132, 108, 220, 0.3); /* Sombra correspondente ao novo roxo */
 }
 
 .profession {
   font-size: var(--heading-h1);
   font-weight: var(--font-semi-bold);
-  background: linear-gradient(135deg, 
-    var(--hero-text-main) 0%, 
-    var(--hero-accent) 50%, 
-    var(--hero-accent-secondary) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
   display: block;
   line-height: 1.4;
+  position: relative;
   opacity: 0;
   transform: translateY(30px);
-  animation: fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 2) forwards;
   word-break: break-word; /* Evita overflow em telas pequenas */
   hyphens: auto; /* Permite hifenização em telas pequenas */
+  background: linear-gradient(
+    135deg, 
+    var(--hero-text-main) 0%, 
+    var(--hero-accent) 40%,
+    var(--hero-accent-secondary) 60%,
+    var(--hero-text-main) 100%
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  animation: 
+    fadeInUp 0.6s var(--hero-animation-curve) calc(var(--hero-animation-stagger) * 2) forwards,
+    gradientFlow 10s ease infinite;
 }
 
-/* Estilos específicos para o tema escuro no texto da profissão - aprimorados para corresponder à imagem */
+/* Efeito de brilho sutil atrás do texto */
+.profession::before {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: -25px;
+  right: -25px;
+  bottom: -15px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(var(--color-primary-rgb), 0.1) 0%,
+    rgba(var(--color-primary-rgb), 0) 70%
+  );
+  z-index: -1;
+  filter: blur(25px);
+  opacity: 0.8;
+  animation: pulseGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulseGlow {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+/* Estilos específicos para o tema escuro no texto da profissão */
 html[data-theme="dark"] .profession {
-  background: none;
-  -webkit-background-clip: unset;
-  background-clip: unset;
-  color: #e3e8ed; /* Cor azulada para o texto principal no tema escuro */
-  text-shadow: none;
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(164, 142, 250, 0.9) 50%,  /* Roxo mais suave */
+    rgba(132, 108, 220, 0.85) 100%  /* Versão ainda mais suave do roxo */
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  text-shadow: 0 8px 20px rgba(132, 108, 220, 0.3); /* Sombra correspondente ao novo roxo */
 }
 
 /* Estilos para destaque dentro do texto */
@@ -728,18 +849,54 @@ html[data-theme="dark"] .profession {
   font-weight: var(--font-semi-bold);
   position: relative;
   display: inline-block;
+  overflow: hidden;
+}
+
+.highlight::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(
+    to right,
+    rgba(var(--color-primary-rgb), 0.3),
+    rgba(var(--color-accent-rgb), 0.5),
+    rgba(var(--color-primary-rgb), 0.3)
+  );
+  border-radius: 2px;
+  opacity: 0.7;
+  animation: shimmerHighlight 3s infinite;
+}
+
+@keyframes shimmerHighlight {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 /* Melhorando o destaque no tema escuro para a palavra "kreativ" - mais brilhante e com destaque */
 html[data-theme="dark"] .highlight {
-  color: #4dabf7; /* Azul mais vibrante e claro */
+  color: transparent;
+  background: linear-gradient(
+    to right,
+    #4dabf7 20%,
+    #a48efa 50%,  /* Roxo mais suave em vez de #9f60ff */
+    #4dabf7 80%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shineHighlight 3s linear infinite;
   text-shadow: 
     0 0 10px rgba(77, 171, 247, 0.6),
-    0 0 20px rgba(77, 171, 247, 0.4);
-  background: none;
-  -webkit-background-clip: unset;
-  background-clip: unset;
+    0 0 20px rgba(132, 108, 220, 0.4);  /* Sombra mais suave */
   font-weight: 700; /* Mais negrito para dar destaque */
+}
+
+@keyframes shineHighlight {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
 /* ========== SUBTÍTULO - RESPONSIVO ========== */
