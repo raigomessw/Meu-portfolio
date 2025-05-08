@@ -1,12 +1,12 @@
-/* ======== VARIÁVEIS PRINCIPAIS ======== */
+/* ======== HUVUDVARIABLER ======== */
 :root {
-  /* Dimensões da navbar */
-  --navbar-height: 90px; /* Aumentado para 90px */
-  --navbar-height-scrolled: 80px; /* Aumentado para 80px */
+  /* Navbar dimensioner */
+  --navbar-height: 90px; 
+  --navbar-height-scrolled: 80px;
   --navbar-mobile-height: 70px;
   --navbar-mobile-height-scrolled: 60px;
   
-  /* Cores para tema escuro (padrão) */
+  /* Färger för mörkt tema (standard) */
   --navbar-background: rgba(15, 15, 30, 0.572);
   --navbar-background-scrolled: rgba(10, 10, 20, 0.883);
   --navbar-border: rgba(255, 255, 255, 0.08);
@@ -17,14 +17,14 @@
   --shadow-color: rgba(0, 0, 0, 0.1);
   --shadow-intense: rgba(0, 0, 0, 0.15);
   
-  /* Cores de destaque e transições */
+  /* Accentfärger och övergångar */
   --accent-color: #6e07f3;
   --accent-color-hover: #7f28fa;
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
 }
 
-/* Variáveis para tema claro */
+/* Variabler för ljust tema */
 html[data-theme="light"] {
   --navbar-background: rgba(255, 255, 255, 0.572);
   --navbar-background-scrolled: rgba(255, 255, 255, 0.883);
@@ -37,7 +37,7 @@ html[data-theme="light"] {
   --shadow-intense: rgba(0, 0, 0, 0.08);
 }
 
-/* ======== CABEÇALHO PRINCIPAL ======== */
+/* ======== HUVUD ======== */
 .header {
   position: fixed;
   top: 0;
@@ -87,19 +87,19 @@ html[data-theme="light"] {
 }
 
 .logoText {
-  font-size: 1.9rem; /* Aumentado */
+  font-size: 1.9rem; 
   font-weight: 700;
   color: var(--text-color);
 }
 
 .logoDot {
-  font-size: 2.3rem; /* Aumentado */
+  font-size: 2.3rem; 
   font-weight: 700;
   color: var(--accent-color);
   margin-left: 2px;
 }
 
-/* Efeito de brilho no logo (opcional) */
+/* Effekt av glans på logotypen (valfritt) */
 .logo::after {
   content: '';
   position: absolute;
@@ -120,7 +120,7 @@ html[data-theme="light"] {
   opacity: 0.6;
 }
 
-/* ======== NAVEGAÇÃO DESKTOP ======== */
+/* ======== DESKTOP NAVIGATION ======== */
 .desktopNav {
   display: flex;
   align-items: center;
@@ -140,10 +140,10 @@ html[data-theme="light"] {
 
 .navLink, .navLinkActive {
   display: block;
-  padding: 0.6rem 1.2rem; /* Aumentado */
+  padding: 0.6rem 1.2rem; 
   color: var(--text-color-muted);
   text-decoration: none;
-  font-size: 1rem; /* Aumentado */
+  font-size: 1rem; 
   font-weight: 500;
   transition: all var(--transition-fast);
   border-radius: 6px;
@@ -180,13 +180,13 @@ html[data-theme="light"] {
   transform: scaleX(1);
 }
 
-/* ======== BOTÃO DE TEMA ======== */
+/* ======== TEMA KNAPP ======== */
 .themeToggle {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px; /* Aumentado */
-  height: 40px; /* Aumentado */
+  width: 40px; 
+  height: 40px; 
   border-radius: 50%;
   background: transparent;
   border: 1px solid var(--navbar-border);
@@ -194,7 +194,7 @@ html[data-theme="light"] {
   transition: all 0.2s ease;
   margin-left: 16px;
   color: var(--text-color);
-  font-size: 1.2rem; /* Aumentado */
+  font-size: 1.2rem; 
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -208,14 +208,14 @@ html[data-theme="light"] {
   transform: scale(0.95);
 }
 
-/* ======== CONTROLES MOBILE ======== */
+/* ======== MOBIL KONTROLLER ======== */
 .mobileControls {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-/* ======== BOTÃO MENU MOBILE ======== */
+/* ======== MOBIL MENY KNAPP ======== */
 .menuButton {
   display: none;
   background: transparent;
@@ -271,14 +271,14 @@ html[data-theme="light"] {
   transform: rotate(-45deg);
 }
 
-/* ======== MENU MOBILE DROPDOWN ======== */
+/* ======== MOBIL MENY DROPDOWN ======== */
 .mobileMenu {
   display: none;
-  position: fixed; /* Alterado: absolute para fixed para resolver problemas no mobile */
+  position: fixed; 
   top: var(--navbar-mobile-height);
   left: 0;
   right: 0;
-  height: calc(100vh - var(--navbar-mobile-height)); /* Altura explícita para mobile */
+  height: calc(100vh - var(--navbar-mobile-height));
   background-color: var(--navbar-background-scrolled);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -291,7 +291,7 @@ html[data-theme="light"] {
   border-bottom: 1px solid var(--navbar-border);
   box-shadow: 0 10px 20px var(--shadow-intense);
   z-index: 999;
-  overflow-y: auto; /* Para permitir rolagem se o menu for grande */
+  overflow-y: auto; /* För att tillåta rullning om menyn är stor */
 }
 
 .header.scrolled .mobileMenu {
@@ -322,7 +322,7 @@ html[data-theme="light"] {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem; /* Aumentado */
+  gap: 1.2rem; /* Ökad från 0.8rem till 1.2rem för bättre touch-upplevelse */
   padding-bottom: 1rem;
 }
 
@@ -341,7 +341,7 @@ html[data-theme="light"] {
 
 .mobileNavLink, .mobileNavLinkActive {
   display: block;
-  padding: 1.2rem 1rem; /* Aumentado: mais espaço para toque */
+  padding: 1.2rem 1.2rem; /* Ökad horisontell padding för bättre touch-yta */
   color: var(--text-color-muted);
   text-decoration: none;
   font-size: 1.2rem;
@@ -363,7 +363,7 @@ html[data-theme="light"] {
   box-shadow: 0 0 0 1px var(--navbar-border);
 }
 
-/* Indicador visual para link ativo no mobile */
+/* Visuell indikator för aktiv länk i mobil */
 .mobileNavLinkActive::before {
   content: '';
   position: absolute;
@@ -376,7 +376,7 @@ html[data-theme="light"] {
   border-radius: 2px;
 }
 
-/* ======== RESPONSIVIDADE ======== */
+/* ======== RESPONSIVITET ======== */
 @media (max-width: 992px) {
   .container {
     padding: 0 1.5rem;
@@ -396,7 +396,7 @@ html[data-theme="light"] {
   
   .menuButton {
     display: block;
-    z-index: 1001; /* Garantir que o botão fique acima do menu */
+    z-index: 1001; /* Se till att knappen är ovanför menyn */
   }
   
   .mobileMenu {
@@ -411,14 +411,14 @@ html[data-theme="light"] {
     font-size: 2rem;
   }
   
-  /* Ocultar botão de tema desktop em telas pequenas */
+  /* Dölj tema-knapp på desktop för små skärmar */
   .desktopNav .themeToggle {
     display: none;
   }
 }
 
 @media (min-width: 993px) {
-  /* Ocultar botão de tema mobile em telas grandes */
+  /* Dölj tema-knapp på mobil för stora skärmar */
   .mobileControls {
     display: none;
   }
@@ -438,7 +438,7 @@ html[data-theme="light"] {
   }
   
   .mobileNavLink, .mobileNavLinkActive {
-    padding: 1rem 0.8rem; /* Ajustado para melhor usabilidade */
+    padding: 1.1rem 1rem; /* Justerad för bättre användbarhet */
     font-size: 1.1rem;
     margin-bottom: 0.25rem;
   }
@@ -449,35 +449,36 @@ html[data-theme="light"] {
     font-size: 1rem;
   }
   
-  /* Garantir que o menu se abra corretamente */
+  /* Se till att menyn öppnas korrekt */
   .mobileMenu {
     max-height: calc(100vh - var(--navbar-mobile-height));
   }
 }
 
-/* ======== MELHORIAS ESPECÍFICAS PARA DISPOSITIVOS MÓVEIS ======== */
+/* ======== SPECIFIKA FÖRBÄTTRINGAR FÖR MOBIL ======== */
 @media (hover: none) {
   .navLink:hover::after {
-    transform: scaleX(0); /* Desativa o hover em dispositivos touch */
+    transform: scaleX(0); /* Inaktivera hover på touch-enheter */
   }
   
   .logo:hover::after {
-    opacity: 0; /* Desativa o efeito de brilho em dispositivos touch */
+    opacity: 0; /* Inaktivera glanseffekt på touch-enheter */
   }
 }
 
-/* Otimização para iOS */
+/* Optimering för iOS */
 @supports (-webkit-touch-callout: none) {
   .mobileMenu {
     padding-bottom: max(env(safe-area-inset-bottom, 20px), 20px);
-    height: calc(100vh - var(--navbar-mobile-height) + env(safe-area-inset-top, 0px));
+    /* Förenklad höjdberäkning för att undvika problem */
+    height: calc(100vh - var(--navbar-mobile-height));
   }
   
   .header.scrolled .mobileMenu {
-    height: calc(100vh - var(--navbar-mobile-height-scrolled) + env(safe-area-inset-top, 0px));
+    height: calc(100vh - var(--navbar-mobile-height-scrolled));
   }
   
-  /* Corrigir problema de rolagem em iOS */
+  /* Fixa scrollningsproblem på iOS */
   body.nav-menu-open {
     position: fixed;
     width: 100%;
@@ -486,7 +487,7 @@ html[data-theme="light"] {
   }
 }
 
-/* Suporte para safe areas em dispositivos com notch */
+/* Stöd för safe areas på enheter med notch */
 @supports (padding: max(0px)) {
   .container {
     padding-left: max(1.5rem, env(safe-area-inset-left));
@@ -498,7 +499,7 @@ html[data-theme="light"] {
   }
 }
 
-/* Preferências para redução de movimento */
+/* Preferenser för reducerad rörelse */
 @media (prefers-reduced-motion: reduce) {
   .logo, 
   .navLink::after, 
@@ -517,7 +518,7 @@ html[data-theme="light"] {
   }
 }
 
-/* Acessibilidade - foco */
+/* Tillgänglighet - fokus */
 .themeToggle:focus-visible,
 .menuButton:focus-visible,
 .logo:focus-visible,
@@ -527,12 +528,12 @@ html[data-theme="light"] {
   outline-offset: 2px;
 }
 
-/* Estilo global - adicione no seu arquivo CSS global */
+/* Global stil - lägg till i din globala CSS-fil */
 body.nav-menu-open {
   overflow: hidden;
 }
 
-/* Animações para os itens do menu mobile */
+/* Animationer för mobil meny-objekt */
 .mobileMenu.open .mobileNavItem:nth-child(1) {
   --delay: 0.05s;
 }
@@ -557,7 +558,7 @@ body.nav-menu-open {
   --delay: 0.3s;
 }
 
-/* Efeito de destaque para links no menu mobile */
+/* Förstärkningseffekt för länkar i mobilmenyn */
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -570,11 +571,37 @@ body.nav-menu-open {
   }
 }
 
+/* Pulserande animation bara på aktiva mobillänkar */
 .mobileNavLinkActive {
   animation: pulse 2s infinite;
 }
 
-/* Animação ao mudar de tema */
+/* Lägg till motsvarande subtil animation för desktop för konsekvens */
+.navLinkActive {
+  position: relative;
+  overflow: hidden;
+}
+
+.navLinkActive::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--accent-color);
+  opacity: 0.7;
+  transform-origin: center;
+  animation: navPulse 2s infinite;
+}
+
+@keyframes navPulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+/* Animering vid temabyte */
 .header,
 .mobileMenu,
 .navLink,
@@ -590,4 +617,12 @@ body.nav-menu-open {
     box-shadow var(--transition-normal),
     transform var(--transition-fast), 
     opacity var(--transition-normal);
+}
+
+/* Inaktivera pulsanimation för personer som föredrar reducerad rörelse */
+@media (prefers-reduced-motion: reduce) {
+  .mobileNavLinkActive,
+  .navLinkActive::before {
+    animation: none;
+  }
 }
