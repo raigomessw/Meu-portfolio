@@ -33,13 +33,19 @@
   --blur-sm: var(--backdrop-blur);
   --blur-md: calc(var(--backdrop-blur) * 2);
   --blur-lg: calc(var(--backdrop-blur) * 3);
-  --glow-opacity: 0.5;
-  --glow-spread: 70px;
+  --glow-opacity: 0.6;
+  --glow-spread: 90px;
   
   /* Interação */
-  --hover-y: -6px;
-  --hover-x: 10px;
-  --hover-scale: 1.03;
+  --hover-y: -8px;
+  --hover-x: 12px;
+  --hover-scale: 1.05;
+  --hover-rotate: 2deg;
+}
+
+/* Configurações gerais para garantir que não haja overflow horizontal */
+body {
+  overflow-x: hidden;
 }
 
 /* ======= CONTAINER PRINCIPAL ======= */
@@ -47,7 +53,8 @@
   position: relative;
   min-height: 100vh;
   width: 100%;
-  overflow-x: hidden;
+  max-width: 100vw;
+  overflow-y: visible; /* Alterado de auto-hidden para visible para evitar scroll duplo */
   isolation: isolate;
   background-attachment: fixed;
   opacity: 0;
@@ -116,6 +123,8 @@ html[data-theme="dark"] .container {
   overflow: hidden;
   opacity: 0.7;
   pointer-events: none;
+  width: 100%;
+  max-width: 100vw;
 }
 
 .decoration {
@@ -125,6 +134,7 @@ html[data-theme="dark"] .container {
   opacity: var(--glow-opacity);
   will-change: transform;
   transition: all 1.5s var(--transition-smooth);
+  max-width: 100%;
 }
 
 .decorationPrimary {
@@ -198,6 +208,9 @@ html[data-theme="dark"] .container {
   grid-template-columns: repeat(6, 1fr);
   opacity: 0.1;
   pointer-events: none;
+  width: 100%;
+  max-width: 100vw;
+  overflow: hidden;
 }
 
 .gridLine {
@@ -225,19 +238,26 @@ html[data-theme="dark"] .container {
 /* ======= HERO SECTION ======= */
 .hero {
   position: relative;
-  min-height: 70vh;
+  min-height: 60vh; /* Reduzido de 70vh para melhor visualização em dispositivos pequenos */
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-xl) var(--space-m);
+  padding: var(--space-l) var(--space-s);
   overflow: hidden;
   z-index: 1;
+  width: 100%;
+  max-width: 100%;
 }
 
 .heroBackdrop {
   position: absolute;
   inset: 0;
   z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  opacity: 0.3; /* Reduzindo significativamente a opacidade do backdrop para melhorar visibilidade */
+  pointer-events: none; /* Garantindo que não interfira nos cliques */
 }
 
 html[data-theme="light"] .heroBackdrop {
@@ -258,41 +278,65 @@ html[data-theme="dark"] .heroBackdrop {
   );
 }
 
-.heroBackdrop::before,
-.heroBackdrop::after {
+/* Simplificando os pseudo-elementos para melhor desempenho em dispositivos móveis */
+.heroBackdrop::before {
   content: '';
   position: absolute;
   inset: 0;
-  opacity: 0.4;
+  opacity: 0.2;
   background-size: 30px 30px;
   background-image: 
     radial-gradient(circle, currentColor 1px, transparent 1px);
-  mask-image: linear-gradient(to bottom, transparent, white, transparent);
-  animation: fadeIn 1.5s forwards;
+  pointer-events: none;
 }
 
-.heroBackdrop::after {
-  background-size: 20px 20px;
-  opacity: 0.2;
-  animation: floatingDots 60s linear infinite;
+/* Removendo a animação em dispositivos móveis para melhorar o desempenho */
+@media (min-width: 768px) {
+  .heroBackdrop::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background-size: 20px 20px;
+    background-image: 
+      radial-gradient(circle, currentColor 1px, transparent 1px);
+    background-attachment: fixed;
+    animation: simpleDots 60s linear infinite;
+    pointer-events: none;
+  }
+  
+  @keyframes simpleDots {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
 }
 
-@keyframes floatingDots {
-  0% { background-position: 0 0; }
-  100% { background-position: 100px 100px; }
+/* Ajustes específicos para dispositivos móveis */
+@media (max-width: 500px) {
+  .heroBackdrop {
+    opacity: 0.7; /* Reduzindo opacidade em dispositivos móveis */
+  }
+}
+
+/* Ajustes específicos para iPhone SE e dispositivos pequenos */
+@media (max-width: 375px) {
+  .heroBackdrop {
+    opacity: 0.5; /* Reduzindo ainda mais para telas muito pequenas */
+  }
 }
 
 .heroContent {
   max-width: 900px;
-  width: 100%;
+  width: calc(100% - 2rem);
   margin: 0 auto;
   position: relative;
   backdrop-filter: blur(var(--blur-sm));
-  padding: var(--space-2xl);
-  border-radius: var(--radius-xl);
+  padding: var(--space-l); /* Reduzindo o padding para telas menores */
+  border-radius: var(--radius-l);
   text-align: center;
   transform: translateY(30px);
   opacity: 0;
+  overflow: hidden;
 }
 
 .hero.inView .heroContent {
@@ -325,6 +369,7 @@ html[data-theme="dark"] .heroContent {
   color: var(--accent);
   text-decoration: none;
   font-weight: 500;
+  margin-top: 40px; /* Adicionando margem superior para afastar da navbar */
   margin-bottom: var(--space-l);
   padding: var(--space-xs) var(--space-s);
   border-radius: var(--radius-full);
@@ -417,7 +462,7 @@ html[data-theme="dark"] .backLink {
 
 /* Título e Subtítulo */
 .title {
-  font-size: clamp(2.1rem, 3vw, 4rem);
+  font-size: clamp(1.8rem, 5vw, 4rem); /* Ajustando o tamanho mínimo da fonte */
   line-height: 1.2;
   margin: 0 0 var(--space-s);
   font-weight: 800;
@@ -429,7 +474,7 @@ html[data-theme="dark"] .backLink {
 }
 
 .subtitle {
-  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-size: clamp(1.1rem, 3vw, 1.5rem); /* Ajustando o tamanho mínimo da fonte */
   font-weight: 400;
   line-height: 1.5;
   margin: 0 0 var(--space-m);
@@ -443,8 +488,8 @@ html[data-theme="dark"] .backLink {
 }
 
 .description {
-  font-size: clamp(1rem, 2vw, 1.125rem);
-  line-height: 1.7;
+  font-size: clamp(0.95rem, 2vw, 1.125rem); /* Ajustando o tamanho mínimo da fonte */
+  line-height: 1.6;
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
@@ -515,25 +560,120 @@ html[data-theme="dark"] .subtitle {
 /* Divisor de hero */
 .heroDivider {
   position: absolute;
-  bottom: -2px;
+  bottom: -1px;
   left: 0;
   width: 100%;
+  max-width: 100vw;
   overflow: hidden;
   line-height: 0;
-  transform: rotate(180deg);
+  z-index: 1;
   pointer-events: none;
 }
 
 .heroDivider svg {
-  position: relative;
   display: block;
-  width: calc(100% + 1.3px);
-  height: 50px;
+  width: 100%;
+  height: 80px;
+  max-width: 100vw;
 }
 
-.heroDivider path {
-  opacity: 0.1;
-  fill: var(--text-primary);
+html[data-theme="light"] .shapeFill {
+  fill: var(--light-color-bg-0);
+  opacity: 0.95;
+}
+
+html[data-theme="dark"] .shapeFill {
+  fill: var(--dark-color-bg-0);
+  opacity: 0.95;
+}
+
+/* Indicador de rolagem na seção hero */
+.scrollIndicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: fadeInUp 1.5s ease forwards;
+  animation-delay: 1.5s;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.scrollIndicator svg {
+  width: 24px;
+  height: 24px;
+  color: var(--accent);
+  animation: bounce 2s infinite;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 0.7;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Ajustes específicos para iPhone SE e dispositivos pequenos */
+@media (max-width: 375px) {
+  .heroContent {
+    padding: var(--space-s);
+    border-radius: var(--radius-m);
+    background: hsla(0, 0%, 100%, 0.85); /* Aumentando opacidade do fundo para dispositivos pequenos no tema claro */
+  }
+
+  html[data-theme="dark"] .heroContent {
+    background: hsla(230, 25%, 15%, 0.85); /* Aumentando opacidade do fundo para dispositivos pequenos no tema escuro */
+  }
+  
+  .backLink {
+    margin-top: 50px; /* Aumentando ainda mais a margem superior em telas pequenas */
+    margin-bottom: var(--space-s);
+    font-size: 0.85rem;
+  }
+}
+
+/* Ajustes para o heroContent em dispositivos muito pequenos como iPhone SE */
+@media (max-width: 375px) and (max-height: 700px) {
+  .heroContent {
+    margin-top: 60px; /* Forçando mais espaço entre a navbar e o conteúdo */
+    padding-top: var(--space-xs);
+    padding-bottom: var(--space-xs);
+  }
+  
+  .backLink {
+    margin-top: 20px; /* Ajustando a margem para depois da navbar */
+    margin-bottom: var(--space-xs);
+  }
+
+  .title {
+    font-size: 1.5rem; /* Reduzindo o tamanho do título para telas pequenas */
+  }
+  
+  .subtitle {
+    font-size: 0.95rem; /* Reduzindo o tamanho do subtítulo */
+  }
+
+  .description {
+    font-size: 0.85rem; /* Texto menor para melhor legibilidade */
+    line-height: 1.4;
+  }
 }
 
 /* Melhorias específicas para a página de Pesquisa de Usuário (UserResearch) */
@@ -585,12 +725,14 @@ html[data-theme="dark"] .subtitle {
   position: relative;
   padding: var(--space-2xl) var(--space-l);
   margin: var(--space-xl) auto;
-  max-width: 1200px;
+  max-width: calc(100% - 2rem);
+  width: 100%;
   border-radius: var(--radius-l);
   opacity: 0;
   transform: translateY(40px);
   transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
   will-change: opacity, transform;
+  overflow: hidden;
 }
 
 .section.inView {
@@ -749,7 +891,8 @@ html[data-theme="dark"] .section {
 }
 
 .benefitCard:hover .benefitIcon svg {
-  transform: scale(1.2);
+  transform: scale(1.2) rotate(10deg);
+  transition-delay: 0.1s;
 }
 
 .benefitTitle {
@@ -777,6 +920,9 @@ html[data-theme="dark"] .section {
   position: relative;
   padding: var(--space-m) 0 var(--space-m) var(--space-l);
   margin-left: var(--space-s);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .processTimeline {
@@ -791,21 +937,12 @@ html[data-theme="dark"] .section {
     rgba(var(--accent-rgb), 0.3)
   );
   border-radius: var(--radius-full);
+  z-index: 1;
 }
 
-/* Marcadores na linha do tempo */
+/* Removendo as bolinhas (timelineMarker) do processo */
 .timelineMarker {
-  position: absolute;
-  left: -4px;
-  width: 12px;
-  height: 12px;
-  background: var(--accent);
-  border-radius: 50%;
-  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.2);
-  opacity: 0;
-  transform: scale(0);
-  transition: all 0.5s var(--transition-bounce);
-  transition-delay: calc(var(--marker-order, 0) * 0.15s + 0.3s);
+  display: none; /* Escondendo as bolinhas para limpar a estética */
 }
 
 /* Posicionamento dos marcadores na linha do tempo */
@@ -814,6 +951,7 @@ html[data-theme="dark"] .section {
   margin: 0;
   padding: 0;
   position: relative;
+  width: 100%;
 }
 
 .processStep {
@@ -823,35 +961,39 @@ html[data-theme="dark"] .section {
   transform: translateX(-20px);
   transition: all 0.65s cubic-bezier(0.19, 1, 0.22, 1);
   transition-delay: calc(var(--animation-order, 0) * 0.15s + 0.1s);
+  margin-bottom: var(--space-m);
+  display: flex;
+  flex-direction: column;
 }
 
 .processStep:last-child {
   padding-bottom: 0;
+  margin-bottom: 0;
 }
 
-/* Posicionamento dos marcadores */
-.section.inView .timelineMarker {
-  opacity: 1;
-  transform: scale(1);
+/* Posicionamento dos números das etapas */
+.stepNumberContainer {
+  position: absolute;
+  top: 15px;
+  left: -50px;
+  z-index: 3;
 }
 
-/* Posicionamos cada marcador na linha do tempo conforme a posição de cada passo */
-.timelineMarker:nth-child(1) { top: calc(0% + var(--space-m)); }
-.timelineMarker:nth-child(2) { top: calc(25% + var(--space-m)); }
-.timelineMarker:nth-child(3) { top: calc(50% + var(--space-m)); }
-.timelineMarker:nth-child(4) { top: calc(75% + var(--space-m)); }
-.timelineMarker:nth-child(5) { top: calc(100% - var(--space-xl)); }
-.timelineMarker:nth-child(6) { top: calc(100% - var(--space-s)); }
-
-/* Ajustamos os espaçamentos para menos passos ou mais passos */
-.processTimeline:has(.timelineMarker:nth-child(1):last-child) .timelineMarker:nth-child(1) { top: 50%; }
-
-.processTimeline:has(.timelineMarker:nth-child(2):last-child) .timelineMarker:nth-child(1) { top: 33%; }
-.processTimeline:has(.timelineMarker:nth-child(2):last-child) .timelineMarker:nth-child(2) { top: 66%; }
-
-.processTimeline:has(.timelineMarker:nth-child(3):last-child) .timelineMarker:nth-child(1) { top: 25%; }
-.processTimeline:has(.timelineMarker:nth-child(3):last-child) .timelineMarker:nth-child(2) { top: 50%; }
-.processTimeline:has(.timelineMarker:nth-child(3):last-child) .timelineMarker:nth-child(3) { top: 75%; }
+.stepNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  font-weight: 600;
+  box-shadow: 
+    0 4px 8px rgba(var(--accent-rgb), 0.3),
+    0 8px 16px -8px rgba(var(--accent-rgb), 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
 
 /* Conteúdo de cada passo */
 .processStepContent {
@@ -863,7 +1005,8 @@ html[data-theme="dark"] .section {
   box-shadow: var(--card-shadow);
   transition: all var(--transition-base);
   backdrop-filter: blur(var(--blur-sm));
-  margin-bottom: var(--space-s);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Pequena conexão entre a linha do tempo e o conteúdo */
@@ -902,6 +1045,7 @@ html[data-theme="dark"] .section {
   font-weight: 600;
   color: var(--accent);
   transition: transform 0.3s ease-out;
+  line-height: 1.3;
 }
 
 .processStep:hover .stepTitle {
@@ -915,40 +1059,57 @@ html[data-theme="dark"] .section {
   margin: 0;
 }
 
-/* Responsividade para mobile - Linha do tempo vertical otimizada */
-@media (max-width: 700px) {
+/* Responsividade melhorada para a seção de processo */
+@media (max-width: 768px) {
   .processContainer {
-    padding-left: var(--space-s);
+    padding: var(--space-m) 0 var(--space-m) var(--space-m);
     margin-left: var(--space-2xs);
   }
   
-  .processTimeline {
-    left: 0;
-    width: 2px;
+  .stepNumberContainer {
+    left: -40px;
   }
   
-  .timelineMarker {
-    width: 8px;
-    height: 8px;
-    left: -3px;
-    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15);
-  }
-  
-  /* Ajustamos os marcadores em mobile para distribuir igualmente */
-  .timelineMarker:nth-child(1) { top: 0; }
-  .timelineMarker:nth-child(2) { top: 20%; }
-  .timelineMarker:nth-child(3) { top: 40%; }
-  .timelineMarker:nth-child(4) { top: 60%; }
-  .timelineMarker:nth-child(5) { top: 80%; }
-  .timelineMarker:nth-child(6) { top: 100%; }
-  
-  .processStep {
-    padding: 0 0 var(--space-l) 0;
-    margin-left: var(--space-l);
+  .stepNumber {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
   }
   
   .processStepContent {
     padding: var(--space-m);
+  }
+  
+  .stepTitle {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .processContainer {
+    padding-left: 30px;  /* Espaço fixo para melhor consistência */
+    margin-left: 0;
+  }
+  
+  .processTimeline {
+    left: 14px;
+    width: 2px;
+  }
+  
+  .stepNumberContainer {
+    top: 12px;
+    left: -24px;
+  }
+  
+  .stepNumber {
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+  
+  /* Ajustes de espaçamento para maior clareza */
+  .processStep {
+    padding-bottom: var(--space-l);
   }
   
   .processStepContent::before {
@@ -959,46 +1120,123 @@ html[data-theme="dark"] .section {
   }
 }
 
-/* Ajustes para telas menores */
+/* Layout aprimorado para dispositivos móveis */
 @media (max-width: 500px) {
+  .processContainer {
+    padding: 0 0 0 24px; /* Alinhamento refinado */
+    margin: 0;
+    width: 100%;
+  }
+  
+  .processTimeline {
+    left: 10px; /* Alinhamento consistente */
+  }
+  
+  /* Organização mais clara dos passos do processo */
+  .processList {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
   .processStep {
-    margin-left: var(--space-m);
+    margin: 0 0 var(--space-l) 0;
+    padding: 0;
+  }
+  
+  .stepNumberContainer {
+    top: 12px;
+    left: -20px;
+  }
+  
+  .stepNumber {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+  
+  .processStepContent {
+    padding: var(--space-s);
+    width: calc(100% - 10px); /* Ajuste para não ultrapassar a largura disponível */
+    margin-left: 0;
+    box-sizing: border-box;
   }
   
   .stepTitle {
     font-size: 1.1rem;
+    margin-bottom: var(--space-2xs);
   }
   
   .stepDescription {
     font-size: 0.95rem;
   }
+  
+  /* Melhorando a interatividade em dispositivos móveis */
+  .processStep:hover .processStepContent {
+    transform: translateX(5px); /* Movimento mais sutil em telas menores */
+  }
 }
 
-/* Ajustes para telas muito pequenas */
+/* Ajustes finos para telas muito pequenas */
 @media (max-width: 375px) {
   .processContainer {
-    padding-left: 2px;
+    padding-left: 20px;
   }
   
-  .processStep {
-    margin-left: var(--space-s);
+  .processTimeline {
+    left: 9px;
+  }
+  
+  .stepNumberContainer {
+    left: -18px;
+  }
+  
+  .stepNumber {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
   }
 }
 
-/* ======= ENTREGAS ======= */
+/* Dispositivos extremamente pequenos */
+@media (max-width: 320px) {
+  .processContainer {
+    padding-left: 18px;
+  }
+  
+  .processTimeline {
+    left: 8px;
+  }
+  
+  .stepNumber {
+    width: 22px;
+    height: 22px;
+    font-size: 0.7rem;
+  }
+  
+  .stepTitle {
+    font-size: 1rem;
+  }
+  
+  .stepDescription {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+}
+
+/* ======= CARDS DE ENTREGA ======= */
 .deliverablesGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: var(--space-m);
-  margin-top: var(--space-l);
+  gap: var(--space-l); /* Aumentando o espaçamento entre os cards */
+  margin-top: var(--space-xl); /* Aumentando o espaçamento superior */
 }
 
-/* Melhorando a visibilidade dos cards de entrega */
 .deliverableItem {
   display: flex;
-  align-items: flex-start; /* Alterado para alinhar no topo */
+  align-items: flex-start;
   gap: var(--space-s);
-  padding: var(--space-m);
+  padding: var(--space-l); /* Aumentando o padding interno para dar mais respiro */
+  margin-bottom: var(--space-s); /* Adicionando margem inferior para espaçamento vertical */
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: var(--radius-m);
@@ -1045,6 +1283,19 @@ html[data-theme="dark"] .section {
   color: var(--text-primary);
   margin: 0;
   font-weight: 500;
+}
+
+/* Ajustando o responsivo para garantir que os cards não fiquem muito juntos em telas menores */
+@media (max-width: 700px) {
+  .deliverablesGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-m); /* Mantendo um gap adequado mesmo em telas menores */
+  }
+  
+  .deliverableItem {
+    padding: var(--space-m); /* Padding um pouco menor em telas pequenas, mas ainda confortável */
+    margin-bottom: var(--space-xs);
+  }
 }
 
 /* ======= ESTUDO DE CASO ======= */
@@ -1153,6 +1404,8 @@ html[data-theme="dark"] .section {
   border-radius: 0;
   opacity: 0;
   transform: translateY(40px);
+  width: 100%;
+  max-width: 100%;
 }
 
 .ctaSection.inView {
@@ -1311,7 +1564,8 @@ html[data-theme="dark"] .ctaBackdrop {
 }
 
 .ctaButton:hover svg {
-  transform: translateX(3px);
+  transform: translateX(6px);
+  transition: transform 0.5s var(--transition-bounce);
 }
 
 /* ======= RESPONSIVIDADE ======= */
@@ -1940,51 +2194,5 @@ html[data-theme="dark"] .ctaBackdrop {
   
   .decoration {
     animation: none !important;
-  }
-}
-
-:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 3px;
-}
-
-/* Modo de alto contraste */
-@media (forced-colors: active) {
-  .heroContent,
-  .section,
-  .benefitCardInner,
-  .processStepContent,
-  .deliverableItem,
-  .caseStudyCard {
-    border: 1px solid ButtonText !important;
-  }
-  
-  .iconWrapper,
-  .benefitIcon,
-  .stepNumber,
-  .ctaButton {
-    background: Highlight !important;
-    color: HighlightText !important;
-  }
-}
-
-/* Esconde elementos decorativos das tecnologias assistivas */
-.backgroundDecorations,
-.gridLines,
-.heroBackdrop,
-.processTimeline,
-.ctaBackdrop {
-  aria-hidden: "true";
-}
-
-/* Animação de entrada dos elementos */
-@keyframes fadeIn {
-  from { 
-    opacity: 0; 
-    transform: translateY(30px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
   }
 }

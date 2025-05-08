@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './ServiceDetailLayout.module.css';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
@@ -8,6 +8,7 @@ const ServiceDetailLayout = ({ serviceData }) => {
   // Referências e estados
   const containerRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const reducedMotion = useReducedMotion();
   
   // References para seções animadas
@@ -19,16 +20,26 @@ const ServiceDetailLayout = ({ serviceData }) => {
   const ctaRef = useRef(null);
   
   // Configurar observadores de interseção para animações de rolagem com configuração otimizada
-  // Ajustado para desempenho em dispositivos móveis
   const { observedElements, setObservedElements } = useIntersectionObserver({
-    threshold: 0.1, // Reduzido para melhorar performance
+    threshold: 0.1,
     rootMargin: '-30px 0px',
-    // Limitando a frequência de verificação para melhorar desempenho
     debounce: 100
   });
 
+  // Detectar interação do usuário para otimizar animações
+  const handleUserInteraction = useCallback(() => {
+    if (!hasInteracted) {
+      setHasInteracted(true);
+    }
+  }, [hasInteracted]);
+
   // Registrar elementos para observação com otimizações de performance
   useEffect(() => {
+    // Event listeners para detectar interação
+    window.addEventListener('scroll', handleUserInteraction, { passive: true });
+    window.addEventListener('mousemove', handleUserInteraction, { passive: true });
+    window.addEventListener('touchstart', handleUserInteraction, { passive: true });
+    
     // Registra os elementos apenas após o carregamento inicial do componente
     const timer = setTimeout(() => {
       const elementsToObserve = [
@@ -49,8 +60,13 @@ const ServiceDetailLayout = ({ serviceData }) => {
     // Rolagem suave para o topo - removendo comportamento que causa travamento
     window.scrollTo(0, 0);
     
-    return () => clearTimeout(timer);
-  }, [setObservedElements]);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleUserInteraction);
+      window.removeEventListener('mousemove', handleUserInteraction);
+      window.removeEventListener('touchstart', handleUserInteraction);
+    };
+  }, [setObservedElements, handleUserInteraction]);
   
   // Se não houver dados do serviço
   if (!serviceData) {
@@ -58,7 +74,7 @@ const ServiceDetailLayout = ({ serviceData }) => {
       <div className={styles.container}>
         <div className={styles.hero} role="banner">
           <div className={styles.heroContent}>
-            <Link to="/#services" className={styles.backLink} aria-label="Gå tillbaka till tjänstelistan">
+            <Link to="/#services" className={styles.backLink} aria-label="Voltar para serviços">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M19 12H5"></path>
                 <path d="M12 19l-7-7 7-7"></path>
@@ -88,7 +104,41 @@ const ServiceDetailLayout = ({ serviceData }) => {
   };
 
   // Função de otimização para animações em dispositivos móveis
-  const shouldAnimate = window.innerWidth > 768 && !reducedMotion;
+  const shouldAnimate = (window.innerWidth > 768 && !reducedMotion) || hasInteracted;
+  
+  // Gerar ícones de benefício personalizados
+  const renderBenefitIcon = (index) => {
+    // Lista de ícones diferentes para os benefícios
+    const icons = [
+      // Checkmark
+      <svg key="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <path d="M22 4L12 14.01l-3-3"></path>
+      </svg>,
+      // Star
+      <svg key="star" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+      </svg>,
+      // Award/Trophy
+      <svg key="award" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="7"></circle>
+        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+      </svg>,
+      // Target
+      <svg key="target" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <circle cx="12" cy="12" r="6"></circle>
+        <circle cx="12" cy="12" r="2"></circle>
+      </svg>,
+      // Chart
+      <svg key="chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15V19H5V5H9"></path>
+        <path d="M9 15H19L15 9L12 13L9 10"></path>
+      </svg>,
+    ];
+    
+    return icons[index % icons.length];
+  };
 
   return (
     <div
@@ -98,7 +148,7 @@ const ServiceDetailLayout = ({ serviceData }) => {
     >
       {/* Decorações de fundo premium - com renderização condicional para dispositivos de baixo desempenho */}
       {shouldAnimate && (
-        <div className={styles.backgroundDecorations}>
+        <div className={styles.backgroundDecorations} aria-hidden="true">
           <div className={`${styles.decoration} ${styles.decorationPrimary}`}></div>
           <div className={`${styles.decoration} ${styles.decorationSecondary}`}></div>
           <div className={`${styles.decoration} ${styles.decorationTertiary}`}></div>
@@ -108,7 +158,7 @@ const ServiceDetailLayout = ({ serviceData }) => {
       
       {/* Linhas de grade - com renderização condicional para dispositivos de baixo desempenho */}
       {shouldAnimate && (
-        <div className={styles.gridLines}>
+        <div className={styles.gridLines} aria-hidden="true">
           {[...Array(6)].map((_, i) => (
             <div key={i} className={styles.gridLine}></div>
           ))}
@@ -122,12 +172,11 @@ const ServiceDetailLayout = ({ serviceData }) => {
         id="hero"
         role="banner"
       >
-        <div className={styles.heroBackdrop} aria-hidden="true"></div>
         <div className={styles.heroContent}>
           <Link 
             to="/#services" 
             className={styles.backLink}
-            aria-label="Gå tillbaka till tjänstelistan"
+            aria-label="Voltar para a lista de serviços"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5"></path>
@@ -151,13 +200,11 @@ const ServiceDetailLayout = ({ serviceData }) => {
           <div className={styles.descriptionWrapper}>
             <p className={styles.description}>{serviceData.description}</p>
           </div>
-          
-          <div className={styles.heroDivider} aria-hidden="true">
-            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-              <path d="M1200 0L0 0 598.97 114.72 1200 0z" fill="currentColor"></path>
-            </svg>
-          </div>
         </div>
+        <div className={styles.heroBackdrop} aria-hidden="true">
+          <div className={styles.heroGlow}></div>  
+        </div>
+        
       </section>
       
       {/* Seção de Benefícios */}
@@ -182,10 +229,7 @@ const ServiceDetailLayout = ({ serviceData }) => {
                   <div className={styles.benefitCardInner}>
                     <div className={styles.benefitIconWrapper}>
                       <div className={styles.benefitIcon}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                          <path d="M22 4L12 14.01l-3-3"></path>
-                        </svg>
+                        {renderBenefitIcon(index)}
                       </div>
                     </div>
                     
@@ -231,6 +275,9 @@ const ServiceDetailLayout = ({ serviceData }) => {
                     className={styles.processStep}
                     style={{ '--animation-order': index }}
                   >
+                    <div className={styles.stepNumberContainer} aria-hidden="true">
+                      <div className={styles.stepNumber}>{index + 1}</div>
+                    </div>
                     <div className={styles.processStepContent}>
                       {typeof step === 'string' ? (
                         <p className={styles.stepDescription}>{step}</p>
