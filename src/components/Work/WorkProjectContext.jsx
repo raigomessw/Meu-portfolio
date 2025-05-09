@@ -259,55 +259,92 @@ export function WorkProjectProvider({ children }) {
           {
             id: "studantEkonomiApp",
             title: "App Studant Ekonomi",
-            description: "Finansapp för universitetsstudenter",
+            description: "Finansapp för studenter",
             tags: ['Finans', 'Mobil', 'Utbildning'],
             backgroundImage: '/work/studantEkonomiApp/background.jpg',
             coverImage: '/work/studantEkonomiApp/cover.jpg',
             thumbnailImage: '/work/studantEkonomiApp/thumbnail.jpg',
-            date: "2022",
+            date: "2024",
             projectLink: "/work/studantEkonomiApp",
-            figmaUrl: "https://figma.com/seu-link-para-o-projeto",
-            liveUrl: "https://example.com/studant-ekonomi",
-            githubUrl: "https://github.com/username/studant-ekonomi",
-            extendedDescription: "En intuitiv app för att hjälpa universitetsstudenter att hantera sina finanser, med fokus på användbarhet och utbildningsverktyg om ekonomisk förvaltning.",
-            challenges: "Att skapa en finansiell lösning som tillgodoser studenters specifika behov, med begränsade budgetar och säsongsbetonade akademiska utgifter.",
-            solution: "Vi utvecklade en app med automatisk utgiftskategorisering, räkningspåminnelser, besparingstips och tydlig visualisering av utgifter per termin.",
+            figmaUrl: "https://www.figma.com/proto/J5QPe7LvXzOWU2wlCrKD4u/App-Studant-Ekonomi?page-id=3007%3A5081&node-id=3007-8511&viewport=8933%2C3253%2C0.27&t=vODXa1vZIomNn6YS-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=3022%3A1700",
+            liveUrl: null,
+            githubUrl: null,
+            extendedDescription: "Ett ekonomiskt planerings- och ledningsverktyg för studenter som ofta har svårt att balansera sin ekonomiska situation under sina studier. Intervjuerna avslöjar en varierad uppsättning användare, alla med olika behov men som delar gemensamma ekonomiska utmaningar som budgetering, sparande och utnyttjande av studentrabatter.",
+            challenges: "Den främsta utmaningen är att skapa en ekonomisk app som verkligen möter de unika behoven hos universitetsstudenter, vilka ofta har en snäv budget och varierande akademiska utgifter. Detta inkluderar att utveckla en tillgänglig och lättanvänd lösning (med fokus på integritet), som kan hantera säsongsbetonade utgifter, engagera användare med olika nivåer av finansiell kunskap och övervinna den initiala motviljan mot att använda finansiella verktyg, samt säkerställa kontinuerlig användning av appen.",
+            solution: "Den föreslagna lösningen är en intuitiv app med automatisk utgiftskategorisering, räkningspåminnelser, spartips och tydlig visualisering av utgifter per termin. Fokus ligger på användbarhet och att tillhandahålla utbildningsverktyg om ekonomisk förvaltning för att hjälpa alla studenter, oavsett deras tidigare kunskaper, att hantera sin budget, spara pengar och utveckla sunda ekonomiska vanor, med löftet om enkel integration i deras dagliga rutiner och hänsyn till integritet.",
             technologies: [
-              { name: "React Native", icon: "⚛️" },
-              { name: "Firebase", icon: "🔥" },
-              { name: "Chart.js", icon: "📊" },
-              { name: "UX Research", icon: "🔍" }
+              { name: "Figma", icon: "🎨" },
+              { name: "UI", icon: "🎨" },
+              { name: "UX Research", icon: "🔍" },
+              { name: "Prototyping", icon: "🧩"},
+
             ],
             media: [
               {
                 id: "student-media-1",
                 type: "image",
-                url: '/work/studantEkonomiApp/gallery/colors.jpg',
-                title: "Finansiell dashboard",
-                caption: "Översikt över studentens ekonomi med intuitiva diagram",
-                tags: ["Dashboard", "Dataviz"],
+                url: '/work/studantEkonomiApp/gallery/Appintro.png',
+                title: "Appintroduktion",
+                caption: "Introduktion till appens funktioner och fördelar",
+                tags: ["Dashboard", "Data", "UI"],
                 category: "interface"
               },
               {
                 id: "student-media-2",
                 type: "image",
-                url: '/work/studantEkonomiApp/gallery/components.jpg',
+                url: '/work/studantEkonomiApp/gallery/dashboard.jpg',
+                title: "Finansiell dashboard",
+                caption: "Översikt över studentens ekonomi med intuitiva diagram",
+                tags: ["Dashboard", "Data", "UI"],
+                category: "interface"
+              },
+              {
+                id: "student-media-3",
+                type: "image",
+                url: '/work/studantEkonomiApp/gallery/startsida-spandering.png',
+                title: "Start sida med Spandering översikt",
+                caption: "Översikt över studentens ekonomi med intuitiva diagram",
+                tags: ["Dashboard", "Data", "UI"],
+                category: "interface"
+              },
+              {
+                id: "student-media-4",
+                type: "image",
+                url: '/work/studantEkonomiApp/gallery/månaderSpecifikation.png',
+                title: "Månadsöversikt",
+                caption: "Detaljerad översikt över månatliga utgifter och inkomster",
+                tags: ["Dashboard", "Data", "UI"],
+                category: "interface"
+              },
+              {
+                id: "student-media-5",
+                type: "image",
+                url: '/work/studantEkonomiApp/gallery/typography.jpg',
                 title: "Terminsbudget",
                 caption: "Planeringsverktyg för den akademiska terminen",
                 tags: ["Komponenter", "UI"],
                 category: "design"
               },
               {
-                id: "student-media-3",
+                id: "student-media-6",
                 type: "image",
-                url: '/work/studantEkonomiApp/gallery/documentation.jpg',
+                url: '/work/studantEkonomiApp/gallery/components.jpg',
+                title: "Componenter",
+                caption: "Design av komponenter och gränssnittselement",
+                tags: ["Komponenter", "UI"],
+                category: "design"
+              },
+              {
+                id: "student-media-7",
+                type: "image",
+                url: '/work/studantEkonomiApp/gallery/colors.jpg',
                 title: "Dokumentation",
                 caption: "Teknisk dokumentation och användarmanual",
                 tags: ["Dokumentation", "Process"],
                 category: "process"
               },
               {
-                id: "student-media-4",
+                id: "student-media-8",
                 type: "video",
                 url: '/work/studantEkonomiApp/gallery/usage-flow.mp4',
                 thumbnail: '/work/studantEkonomiApp/gallery/video-thumb.jpg',
@@ -315,7 +352,7 @@ export function WorkProjectProvider({ children }) {
                 caption: "Demonstration av typiskt användarflöde från registrering till daglig användning",
                 tags: ["Användarflöde", "Demo"],
                 category: "demo"
-              }
+              },
             ],
             featured: false
           },

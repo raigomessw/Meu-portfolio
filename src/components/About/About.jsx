@@ -136,14 +136,11 @@ const About = () => {
             </div>
             
             <div className={styles.socialLinks}>
-              <a href="https://github.com/seugitHub" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <a href="https://github.com/raigomessw" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                 <FaGithub />
               </a>
-              <a href="https://linkedin.com/in/seulinkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <a href="https://www.linkedin.com/in/rai-gomes-6487b2153/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                 <FaLinkedin />
-              </a>
-              <a href="https://twitter.com/seutwitter" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-                <FaTwitter />
               </a>
               <a href={CVsv} target="_blank" rel="noopener noreferrer" className={styles.resumeLink} aria-label="CV SV">
                 <FaFileAlt />

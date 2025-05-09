@@ -97,16 +97,18 @@ const Hero = () => {
   
   // Define as tecnologias com cores correspondentes e componentes de ícones
   const technologies = useMemo(() => [
-    { name: 'React', color: '#61DAFB', icon: <TECH_ICONS.REACT className={styles.techSvgIcon} /> },
-    { name: 'JavaScript', color: '#F7DF1E', icon: <TECH_ICONS.JS className={styles.techSvgIcon} /> },
-    { name: 'UI/UX', color: '#FF7EB6', icon: <TECH_ICONS.UI className={styles.techSvgIcon} /> },
-    { name: 'Node.js', color: '#68A063', icon: <TECH_ICONS.NODE className={styles.techSvgIcon} /> },
-    { name: 'CSS', color: '#264DE4', icon: <TECH_ICONS.CSS className={styles.techSvgIcon} /> },
-    { name: 'HTML', color: '#E34F26', icon: <TECH_ICONS.HTML className={styles.techSvgIcon} /> },
-    { name: 'Git', color: '#F05032', icon: <TECH_ICONS.GIT className={styles.techSvgIcon} /> },
-    { name: 'Figma', color: '#F24E1E', icon: <TECH_ICONS.FIGMA className={styles.techSvgIcon} /> },
-    { name: 'Tillgänglighet', color: '#0D96F2', icon: <TECH_ICONS.ACCESS className={styles.techSvgIcon} /> },
-    { name: 'AI i allmänhet', color: '#8C52FF', icon: <TECH_ICONS.AI className={styles.techSvgIcon} /> },
+    { name: 'React', color: '#61DAFB', icon: <TECH_ICONS.REACT className={styles.techSvgIcon} alt="React" /> },
+    { name: 'JavaScript', color: '#F7DF1E', icon: <TECH_ICONS.JS className={styles.techSvgIcon} alt="JavaScript" /> },
+    { name: 'UI/UX', color: '#FF7EB6', icon: <TECH_ICONS.UI className={styles.techSvgIcon} alt="UI/UX" /> },
+    { name: 'Node.js', color: '#68A063', icon: <TECH_ICONS.NODE className={styles.techSvgIcon} alt="Node.js" /> },
+    { name: 'CSS', color: '#264DE4', icon: <TECH_ICONS.CSS className={styles.techSvgIcon} alt="CSS" /> },
+    { name: 'HTML', color: '#E34F26', icon: <TECH_ICONS.HTML className={styles.techSvgIcon} alt="HTML" /> },
+    { name: 'Git', color: '#F05032', icon: <TECH_ICONS.GIT className={styles.techSvgIcon} alt="Git" /> },
+    { name: 'Figma', color: '#F24E1E', icon: <TECH_ICONS.FIGMA className={styles.techSvgIcon} alt="Figma" /> },
+    { name: 'Tillgänglighet', color: '#0D96F2', icon: <TECH_ICONS.ACCESS className={styles.techSvgIcon} alt="Tillgänglighet" /> },
+    { name: 'AI i allmänhet', color: '#8C52FF', icon: <TECH_ICONS.AI className={styles.techSvgIcon} alt="AI i allmänhet" /> },
+    { name: 'Applikationsutveckling', color: '#8C52FF', icon: <TECH_ICONS.APP_DEV className={styles.techSvgIcon} alt="Aplikationsutveckling" /> },
+
   ], []);
   
   // Lista de frases para efeito de digitação - Traduzidas para sueco

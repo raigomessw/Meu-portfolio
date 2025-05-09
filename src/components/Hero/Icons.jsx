@@ -66,6 +66,14 @@ export const AIIcon = ({ className }) => (
  </svg>
 );
 
+export const Aplikationsutveckling = ({ className }) => (
+  <svg viewBox="0 0 24 24" className={className}>
+    <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M13.5,7H10.5V9H13.5V7M13.5,11H10.5V13H13.5V11M13.5,15H10.5V17H13.5V15Z" />
+    <path fill="currentColor" d="M16.5,7H19.5V9H16.5V7M16.5,11H19.5V13H16.5V11M16.5,15H19.5V17H16.5V15Z" />
+    <path fill="currentColor" d="M6.5,7H9.5V9H6.5V7M6.5,11H9.5V13H6.5V11M6.5,15H9.5V17H6.5V15Z" />
+ </svg>
+);
+
 // Exportamos o objeto de ícones para facilitar o uso
 const TECH_ICONS = {
   REACT: ReactIcon,
@@ -77,7 +85,8 @@ const TECH_ICONS = {
   GIT: GitIcon,
   FIGMA: FigmaIcon,
   ACCESS: AccessibilityIcon,
-  AI: AIIcon  
+  AI: AIIcon,
+  APP_DEV: Aplikationsutveckling,  
 };
 
 export default TECH_ICONS;
