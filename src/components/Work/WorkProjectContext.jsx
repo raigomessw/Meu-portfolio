@@ -270,7 +270,7 @@ export function WorkProjectProvider({ children }) {
             liveUrl: null,
             githubUrl: null,
             extendedDescription: "Ett ekonomiskt planerings- och ledningsverktyg för studenter som ofta har svårt att balansera sin ekonomiska situation under sina studier. Intervjuerna avslöjar en varierad uppsättning användare, alla med olika behov men som delar gemensamma ekonomiska utmaningar som budgetering, sparande och utnyttjande av studentrabatter.",
-            challenges: "Den främsta utmaningen är att skapa en ekonomisk app som verkligen möter de unika behoven hos universitetsstudenter, vilka ofta har en snäv budget och varierande akademiska utgifter. Detta inkluderar att utveckla en tillgänglig och lättanvänd lösning (med fokus på integritet), som kan hantera säsongsbetonade utgifter, engagera användare med olika nivåer av finansiell kunskap och övervinna den initiala motviljan mot att använda finansiella verktyg, samt säkerställa kontinuerlig användning av appen.",
+            challenges: "Den främsta utmaningen är att skapa en ekonomisk app som verkligen möter de unika behoven hos studenter, vilka ofta har en snäv budget och varierande akademiska utgifter. Detta inkluderar att utveckla en tillgänglig och lättanvänd lösning (med fokus på integritet), som kan hantera säsongsbetonade utgifter, engagera användare med olika nivåer av finansiell kunskap och övervinna den initiala motviljan mot att använda finansiella verktyg, samt säkerställa kontinuerlig användning av appen.",
             solution: "Den föreslagna lösningen är en intuitiv app med automatisk utgiftskategorisering, räkningspåminnelser, spartips och tydlig visualisering av utgifter per termin. Fokus ligger på användbarhet och att tillhandahålla utbildningsverktyg om ekonomisk förvaltning för att hjälpa alla studenter, oavsett deras tidigare kunskaper, att hantera sin budget, spara pengar och utveckla sunda ekonomiska vanor, med löftet om enkel integration i deras dagliga rutiner och hänsyn till integritet.",
             technologies: [
               { name: "Figma", icon: "🎨" },
@@ -307,17 +307,9 @@ export function WorkProjectProvider({ children }) {
                 tags: ["Dashboard", "Data", "UI"],
                 category: "interface"
               },
+
               {
                 id: "student-media-4",
-                type: "image",
-                url: '/work/studantEkonomiApp/gallery/månaderSpecifikation.png',
-                title: "Månadsöversikt",
-                caption: "Detaljerad översikt över månatliga utgifter och inkomster",
-                tags: ["Dashboard", "Data", "UI"],
-                category: "interface"
-              },
-              {
-                id: "student-media-5",
                 type: "image",
                 url: '/work/studantEkonomiApp/gallery/typography.jpg',
                 title: "Terminsbudget",
@@ -326,7 +318,7 @@ export function WorkProjectProvider({ children }) {
                 category: "design"
               },
               {
-                id: "student-media-6",
+                id: "student-media-5",
                 type: "image",
                 url: '/work/studantEkonomiApp/gallery/components.jpg',
                 title: "Componenter",
@@ -335,7 +327,7 @@ export function WorkProjectProvider({ children }) {
                 category: "design"
               },
               {
-                id: "student-media-7",
+                id: "student-media-6",
                 type: "image",
                 url: '/work/studantEkonomiApp/gallery/colors.jpg',
                 title: "Dokumentation",
@@ -344,7 +336,7 @@ export function WorkProjectProvider({ children }) {
                 category: "process"
               },
               {
-                id: "student-media-8",
+                id: "student-media-7",
                 type: "video",
                 url: '/work/studantEkonomiApp/gallery/usage-flow.mp4',
                 thumbnail: '/work/studantEkonomiApp/gallery/video-thumb.jpg',
